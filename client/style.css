@@ -1,0 +1,93 @@
+
+canvas {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+body {
+    overflow: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+}
+  
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+  
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+@font-face {
+    font-family: 'pixel';
+    src: url(/client/websiteAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff) format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+#disconnected {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.UI-button-light {
+    position: absolute;
+    font-family: 'pixel';
+    color: #ffffff;
+    background-color: #502000;
+    border: 1px solid #000000;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+}
+.UI-button-light:hover {
+    background-color: #251000;
+}
+.disconnected {
+    background-color: #ff0000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-family: 'pixel';
+    text-align: center;
+    font-size: 75px;
+    color: #000000;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    transition-duration: 0.4s;
+    opacity: 0.75;
+}
+.disconnected:hover {
+    opacity: 1;
+    font-size: 150px;
+}
+.spectator {
+    background-color: #ffffff;
+    top: 45;
+    left: 0;
+    position: absolute;
+    font-family: 'pixel';
+    text-align: center;
+    font-size: 20px;
+    color: #000000;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    transition-duration: 0.4s;
+    opacity: 0.75;
+}
+.spectator:hover {
+    opacity: 1;
+    font-size: 45px;
+}

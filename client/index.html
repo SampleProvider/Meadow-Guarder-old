@@ -1,0 +1,224 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>123</title>
+	<link href="client/style.css" rel="stylesheet" type="text/css" >
+	<style>
+	</style>
+</head>
+<body>
+
+	<div id="game">
+		<canvas id="ctx"></canvas>
+		<button class="UI-button-light">Sign In</button>
+	</div>
+	<div id="disconnected" style="display:none;">
+		<button class="disconnected">Disconnected</button>
+	</div>
+	<div id="spectator" style="display:none;">
+		<button class="spectator">You're a spectator!</button>
+	</div>
+	<link href="/webpackAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff" rel="stylesheet">
+
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+	<!--<script src="/client/socket.js"></script>-->
+
+	<script>
+		
+		var WIDTH = window.innerWidth;
+		var HEIGHT = window.innerHeight;
+
+		var STATE = 'signIn';
+		
+		var socket = io();
+
+		var game = document.getElementById('game');
+		var disconnectedDiv = document.getElementById('disconnected');
+		var spectatorDiv = document.getElementById('spectator');
+		var ctx = document.getElementById('ctx');
+		
+		socket.emit('signIn',{username:'123',password:'123'});
+		var Img = {};
+		Img.player = new Image();
+		Img.player.src = '/client/img/Test Player.png';
+		Img.ghost = new Image();
+		Img.ghost.src = '/client/img/ghost.png';
+		Img.bullet = new Image();
+		Img.bullet.src = '/client/img/Bullet.png';
+		Img.map = new Image();
+		Img.map.src = '/client/img/map.png';
+
+		var ctx = document.getElementById("ctx").getContext("2d");
+		ctx.canvas.width  = window.innerWidth;
+		ctx.canvas.height = window.innerHeight;
+
+		var selfId = null;
+
+
+		var Player = function(initPack){
+			var self = {};
+			self.id = initPack.id;
+			self.username = initPack.username;
+			self.x = initPack.x;
+			self.y = initPack.y;
+			self.img = initPack.img;
+			self.direction = initPack.direction;
+			self.hp = initPack.hp;
+			self.hpMax = initPack.hpMax;
+			self.map = initPack.map;
+			
+			self.draw = function(){
+				switch(self.img){
+					case 'player':
+						ctx.drawImage(Img.player,self.x - 56,self.y - 48);
+						break;
+					case 'none':
+						ctx.drawImage(Img.ghost,self.x - 56,self.y - 48);
+						break;
+				}
+			}
+			self.drawName = function(){
+				
+			}
+			Player.list[self.id] = self;
+			return self;
+		}
+		Player.list = {};
+		var Projectile = function(initPack){
+			var self = {};
+			self.id = initPack.id;
+			self.x = initPack.x;
+			self.y = initPack.y;
+			self.direction = initPack.direction;
+			self.hp = initPack.hp;
+			self.hpMax = initPack.hpMax;
+			self.map = initPack.map;
+			self.draw = function(){
+				ctx.drawImage(Img.bullet,self.x - 24,self.y - 24);
+			}
+			Projectile.list[self.id] = self;
+			return self;
+		}
+		Projectile.list = {};
+
+		socket.on('selfId',function(data){
+			selfId = data;
+		});
+		socket.on('init',function(data){
+			if(data){
+				for(var i = 0;i < data.player.length;i++){
+					new Player(data.player[i]);
+				}
+				for(var i = 0;i < data.projectile.length;i++){
+					new Projectile(data.projectile[i]);
+				}
+			}
+		});
+		socket.on('update',function(data){
+			if(data){
+				for(var i = 0;i < data.player.length;i++){
+					if(data.player[i].x){
+						Player.list[data.player[i].id].x = data.player[i].x;
+					}
+					if(data.player[i].y){
+						Player.list[data.player[i].id].y = data.player[i].y;
+					}
+					if(data.player[i].img){
+						Player.list[data.player[i].id].img = data.player[i].img;
+					}
+				}
+				for(var i = 0;i < data.projectile.length;i++){
+					if(data.projectile[i].x){
+						Projectile.list[data.projectile[i].id].x = data.projectile[i].x;
+					}
+					if(data.projectile[i].y){
+						Projectile.list[data.projectile[i].id].y = data.projectile[i].y;
+					}
+				}
+			}
+		});
+		socket.on('remove',function(data){
+			if(data){
+				for(var i = 0;i < data.player.length;i++){
+					delete Player.list[data.player[i]];
+				}
+				for(var i = 0;i < data.projectile.length;i++){
+					delete Projectile.list[data.projectile[i]];
+				}
+			}
+		});
+		socket.on('disconnected',function(data){
+			//game.style.display = 'none';
+			disconnectedDiv.style.display = 'inline-block';
+			STATE = 'disconnected';
+		});
+		socket.on('spectator',function(data){
+			spectatorDiv.style.display = 'inline-block';
+		});
+		setInterval(function(){
+			if(!selfId){
+				return;
+			}
+			WIDTH = window.innerWidth;
+			HEIGHT = window.innerHeight;
+			ctx.canvas.width = window.innerWidth;
+			ctx.canvas.height = window.innerHeight;
+			ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
+			ctx.clearRect(0,0,WIDTH,HEIGHT);
+			var x = WIDTH/2 - Player.list[selfId].x;
+			var y = HEIGHT/2 - Player.list[selfId].y;
+			ctx.translate(x,y);
+			ctx.drawImage(Img.map,0,0);
+			ctx.drawImage(Img.map,640,0);
+			ctx.drawImage(Img.map,0,480);
+			ctx.drawImage(Img.map,640,480);
+			for(var i in Player.list){
+				Player.list[i].draw();
+				if(Player.list[i] != Player.list[selfId]){
+					Player.list[i].drawName();
+				}
+			}
+			for(var i in Projectile.list){
+				Projectile.list[i].draw();
+			}
+			ctx.translate(-x,-y);
+			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
+		},25);
+		document.onkeydown = function(event){
+			socket.emit('keyPress',{inputId:event.keyCode,state:true});
+		}
+		document.onkeyup = function(event){
+			socket.emit('keyPress',{inputId:event.keyCode,state:false});
+		}
+		
+		document.onmousedown = function(event){
+			if(event.button == 0){
+				socket.emit('keyPress',{inputId:'attack',state:true});
+			}
+			if(event.button == 2){
+				socket.emit('keyPress',{inputId:'second',state:true});
+			}
+		}
+		document.onmouseup = function(event){
+			if(event.button == 0){
+				socket.emit('keyPress',{inputId:'attack',state:false});
+			}
+			if(event.button == 2){
+				socket.emit('keyPress',{inputId:'second',state:false});
+			}
+		}
+		document.onmousemove = function(event){
+			var x = -window.innerWidth/2 + event.clientX + 18;
+			var y = -window.innerHeight/2 + event.clientY;
+			var angle = Math.atan2(y,x) / Math.PI * 180;
+			socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
+		}
+		
+		document.oncontextmenu = function(event){
+			event.preventDefault();
+		}
+	</script>
+</body>
+</html>
