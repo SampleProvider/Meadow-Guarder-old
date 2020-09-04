@@ -10,6 +10,15 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
+app.use((req,res,next) => {
+	if(mongoose.connection.readyState){
+		next();
+	}
+	else{
+		require("./mongo")().then(() => next());
+	}
+});
+
 serv.listen(process.env.PORT);
 //serv.listen(3000);
 console.log('Server Started.');
