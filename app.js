@@ -10,8 +10,8 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
-serv.listen(process.env.PORT);
-//serv.listen(3000);
+//serv.listen(process.env.PORT);
+serv.listen(3000);
 console.log('Server Started.');
 SOCKET_LIST = {};
 
@@ -27,42 +27,50 @@ io.sockets.on('connection', function(socket){
 			if(res === 1){
 				for(var i in Player.list){
 					if(Player.list[i].username === data.username){
-						SOCKET_LIST[i].emit('eventChange','disconnected');
+						SOCKET_LIST[i].emit('disconnected');
 						Player.onDisconnect(SOCKET_LIST[i]);
 						delete SOCKET_LIST[i];
 					}
 				}
-				Player.onConnect(socket,data.username);
 			}
 			socket.emit('signInResponse',{success:res});
 		});
 	});
 	socket.on('createAccount',function(data){
-		Database.isUsernameTaken(data,function(res){
-			if(res){
-				socket.emit('createAccountResponse',{success:false});
-			}
-			else{
-				Database.addUser(data,function(){
-					socket.emit('createAccountResponse',{success:true});
-				});
-			}
-		});
+		if(data.username.length > 3){
+			Database.isUsernameTaken(data,function(res){
+				if(res){
+					socket.emit('createAccountResponse',{success:0});
+				}
+				else{
+					Database.addUser(data,function(){
+						socket.emit('createAccountResponse',{success:1});
+					});
+				}
+			});
+		}
+			else{socket.emit('createAccountResponse',{success:2});
+		}
 	});
 	socket.on('deleteAccount',function(data){
 		Database.isUsernameTaken(data,function(res){
 			if(res){
 				Database.removeUser(data,function(){
-					socket.emit('deleteAccountResponse',{success:true});
+					socket.emit('deleteAccountResponse',{success:1});
 				});
 			}
 			else{
-				socket.emit('deleteAccountResponse',{success:false});
+				socket.emit('deleteAccountResponse',{success:2});
 			}
 		});
 	});
+	socket.on('fake',function(){
+		socket.emit('disconnected');
+		Player.onDisconnect(socket);
+		delete SOCKET_LIST[socket.id];
+	})
 	socket.on('disconnect',function(){
-		socket.emit('eventChange','disconnected');
+		socket.emit('disconnected');
 		Player.onDisconnect(socket);
 		delete SOCKET_LIST[socket.id];
 	});

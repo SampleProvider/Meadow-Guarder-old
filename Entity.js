@@ -206,13 +206,17 @@ Player.onConnect = function(socket,username){
 		}
     });
 
+    socket.on('respawn',function(data){
+        player.img = 'player';
+    });
+
     socket.emit('init',{
 		player:Player.getAllInitPack(),
 		projectile:Projectile.getAllInitPack(),
 	});
 }
 
-Player.onDisconnect = function(socket){
+Player.spectate = function(socket){
     for(var i in Projectile.list){
         if(socket && Projectile.list[i].parent === socket.id){
             removePack[Projectile.list[i].map].projectile.push(i);
@@ -225,8 +229,22 @@ Player.onDisconnect = function(socket){
 	socket.emit("spectator");
     if(Player.list[socket.id]){
         Player.list[socket.id].img = 'none';
-        //removePack[Player.list[socket.id].map].player.push(socket.id);
-        //delete Player.list[socket.id];
+    }
+}
+Player.onDisconnect = function(socket){
+    for(var i in Projectile.list){
+        if(socket && Projectile.list[i].parent === socket.id){
+            removePack[Projectile.list[i].map].projectile.push(i);
+            delete Projectile.list[i];
+        }
+    }
+    if(!socket){
+        return;
+    }
+	socket.emit("disconnected");
+    if(Player.list[socket.id]){
+        removePack[Player.list[socket.id].map].player.push(socket.id);
+        delete Player.list[socket.id];
     }
 }
 
@@ -292,7 +310,7 @@ updateCrashes = function(){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && Projectile.list[j].parent != i && Player.list[i].img == 'player'){
                     Projectile.list[j].toRemove = true;
-                    Player.onDisconnect(SOCKET_LIST[i]);
+                    Player.spectate(SOCKET_LIST[i]);
                 }
             }
         }

@@ -2,22 +2,36 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Siege of Monsters Snapshot 000f1b</title>
+	<title>Siege of Monsters 0.0.1</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css" >
 	<style>
 	</style>
 </head>
 <body>
 
-	<div id="game">
+	<div id="sign" style="display:inline-block;">
+		<button id = "signIn" class="UI-button-light">Sign In</button>
+		<label id="username-label" class="UI-text-light" for="username">Username:</label>
+		<input class="UI-input-light" type="text" id="username" name="username" autocomplete="off"><br><br>
+		<label id="password-label" class="UI-text-light" for="password">Password:</label>
+		<input class="UI-input-light" type="password" id="password" name="password" autocomplete="off"><br><br>
+		<button id ="createAccount" class="UI-button-light">Create Account</button>
+		<button id ="deleteAccount" class="UI-button-light">Delete Account</button>
+	</div>
+	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
-		<button class="UI-button-light">Sign In</button>
+	</div>
+	<div id="ads" style="display:none">
+		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
+		<button id="ad2" class="UI-button-light" onclick="disconnect()">Do YOU want YOUR ad featured here? Then click <a href="https://forms.gle/stnavsadkja7r7b96">THIS LINK</a> to write a application!</button>
+		<button id="ad3" class="UI-button-light" onclick="history.go(0)">OOoOOOOooOOoO!</button>
 	</div>
 	<div id="disconnected" style="display:none;">
 		<button class="disconnected">Disconnected</button>
 	</div>
 	<div id="spectator" style="display:none;">
 		<button class="spectator">You're a spectator!</button>
+		<button class="respawn" onclick="respawn()">Respawn</button>
 	</div>
 	<link href="/webpackAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff" rel="stylesheet">
 
@@ -34,12 +48,81 @@
 		
 		var socket = io();
 
-		var game = document.getElementById('game');
+		var gameDiv = document.getElementById('gameDiv');
+		var forestName = document.getElementById('forest-name');
 		var disconnectedDiv = document.getElementById('disconnected');
 		var spectatorDiv = document.getElementById('spectator');
+		var adDiv = document.getElementById('ads');
 		var ctx = document.getElementById('ctx');
+		var signDiv = document.getElementById('sign');
+		var signDivUsername = document.getElementById('username');
+		var signDivPassword = document.getElementById('password');
+		var signDivSignIn = document.getElementById('signIn');
+		var signDivCreateAccount = document.getElementById('createAccount');
+		var signDivDeleteAccount = document.getElementById('deleteAccount');
 		
-		socket.emit('signIn',{username:'123',password:'123'});
+
+		signDivSignIn.onclick = function(){
+			socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+		}
+		signDivCreateAccount.onclick = function(){
+			socket.emit('createAccount',{username:signDivUsername.value,password:signDivPassword.value});
+		}
+		signDivDeleteAccount.onclick = function(){
+			socket.emit('deleteAccount',{username:signDivUsername.value});
+		}
+		socket.on('signInResponse',function(data){
+			if(data.success == 2){
+				STATE = 'game';
+			}
+			else if(data.success == 1){
+				alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. The other account will be disconnected shortly. Please try to sign again.");
+			}
+			else{
+				alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+			}
+		});
+		socket.on('createAccountResponse',function(data){
+			if(data.success == 1){
+				alert("Account created with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+			}
+			else if(data.success == 0){
+				alert("Sorry, there is already an account with username \'" + signDivUsername.value + "\'.");
+			}
+			else if(data.success == 2){
+				alert("Please use a username with 3+ characters.");
+			}
+		});
+		socket.on('deleteAccountResponse',function(data){
+			if(data.success == 1){
+				alert("Deleted account created with username \'" + signDivUsername.value + "\'.");
+			}
+			else if(data.success == 0){
+				alert("Sorry, there is no account with username \'" + signDivUsername.value + "\'.");
+			}
+		});
+		
+		/*var chatText = document.getElementById('chat-text');
+		var chatInput = document.getElementById('chat-input');
+		var chatForm = document.getElementById('chat-form');	
+		chatText.style.top = window.innerHeight - 135;
+		chatForm.style.top = window.innerHeight - 50;
+		chatInput.style.top = window.innerHeight - 50;
+
+		socket.on('addToChat',function(data){
+			chatText.innerHTML += '<div>' + data + '</div>';
+		});
+		
+		chatForm.onsubmit = function(e){
+			e.preventDefault();
+			socket.emit('sendMsgToServer',chatInput.value);
+			chatInput.value = '';
+		}*/
+
+		var disconnect = function(){
+			socket.emit("fake");
+		}
+
 		var Img = {};
 		Img.player = new Image();
 		Img.player.src = '/client/img/Test Player.png';
@@ -56,6 +139,10 @@
 
 		var selfId = null;
 
+		var respawn = function(){
+			socket.emit('respawn');
+			STATE = 'game';
+		}
 
 		var Player = function(initPack){
 			var self = {};
@@ -80,7 +167,10 @@
 				}
 			}
 			self.drawName = function(){
-				
+				ctx.font = "15px pixel";
+				ctx.fillStyle = '#ff7700';
+				ctx.textAlign = "center";
+				ctx.fillText(self.username,self.x,self.y - 70);
 			}
 			Player.list[self.id] = self;
 			return self;
@@ -150,17 +240,44 @@
 			}
 		});
 		socket.on('disconnected',function(data){
-			//game.style.display = 'none';
-			disconnectedDiv.style.display = 'inline-block';
 			STATE = 'disconnected';
+			setTimeout(function(){
+				location.reload();
+			},5000);
 		});
 		socket.on('spectator',function(data){
-			spectatorDiv.style.display = 'inline-block';
+			STATE = 'spectator';
 		});
 		setInterval(function(){
-			if(!selfId){
-				return;
+			if(STATE === 'signIn'){
+				gameDiv.style.display = 'none';
+				signDiv.style.display = 'inline-block';
+				disconnectedDiv.style.display = 'none';
+				spectatorDiv.style.display = 'none';
+				adDiv.style.display = 'none';
 			}
+			if(STATE === 'disconnected'){
+				gameDiv.style.display = 'inline-block';
+				signDiv.style.display = 'none';
+				disconnectedDiv.style.display = 'inline-block';
+				spectatorDiv.style.display = 'none';
+				adDiv.style.display = 'none';
+			}
+			if(STATE === 'spectator'){
+				gameDiv.style.display = 'inline-block';
+				signDiv.style.display = 'none';
+				disconnectedDiv.style.display = 'none';
+				spectatorDiv.style.display = 'inline-block';
+				adDiv.style.display = 'inline-block';
+			}
+			if(STATE === 'game'){
+				gameDiv.style.display = 'inline-block';
+				signDiv.style.display = 'none';
+				disconnectedDiv.style.display = 'none';
+				spectatorDiv.style.display = 'none';
+				adDiv.style.display = 'inline-block';
+			}
+			
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
 			ctx.canvas.width = window.innerWidth;
@@ -176,15 +293,14 @@
 			ctx.drawImage(Img.map,640,480);
 			for(var i in Player.list){
 				Player.list[i].draw();
-				if(Player.list[i] != Player.list[selfId]){
-					Player.list[i].drawName();
-				}
+				Player.list[i].drawName();
 			}
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
 			}
 			ctx.translate(-x,-y);
 			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
+			
 		},25);
 		document.onkeydown = function(event){
 			socket.emit('keyPress',{inputId:event.keyCode,state:true});

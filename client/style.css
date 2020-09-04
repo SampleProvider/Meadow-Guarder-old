@@ -3,6 +3,7 @@ canvas {
     position: absolute;
     top: 0px;
     left: 0px;
+    cursor: crosshair;
 }
 body {
     overflow: hidden;
@@ -46,9 +47,32 @@ body {
     padding-right: 5px;
     padding-bottom: 2px;
     padding-left: 5px;
+    cursor: pointer;
 }
 .UI-button-light:hover {
     background-color: #251000;
+}
+.UI-input-light {
+    position: absolute;
+    font-family: 'pixel';
+    color: #000000;
+    border: 1px solid #000000;
+    transition-duration: 0.4s;
+    cursor: text;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+}
+.UI-text-light {
+    position: absolute;
+    font-family: 'pixel';
+    color: #000000;
+    border: 0px;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
 }
 .disconnected {
     background-color: #ff0000;
@@ -73,7 +97,7 @@ body {
 }
 .spectator {
     background-color: #ffffff;
-    top: 45;
+    top: 0;
     left: 0;
     position: absolute;
     font-family: 'pixel';
@@ -90,4 +114,72 @@ body {
 .spectator:hover {
     opacity: 1;
     font-size: 45px;
+}
+.respawn {
+    background-color: #555555;
+    top: 0;
+    right: 0;
+    position: absolute;
+    font-family: 'pixel';
+    text-align: center;
+    font-size: 20px;
+    color: #ffffff;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    transition-duration: 0.4s;
+    opacity: 0.75;
+}
+.respawn:hover {
+    opacity: 1;
+    font-size: 45px;
+}
+.name {
+    position: absolute;
+    font-family: 'pixel';
+    text-align: center;
+    font-size: 15px;
+}
+#username {
+    position: absolute;
+    top:60;
+    left:100;
+}
+#password {
+    position: absolute;
+    top:90;
+    left:100;
+}
+#username-label {
+    position: absolute;
+    top:60;
+    left:10;
+}
+#password-label {
+    position: absolute;
+    top:90;
+    left:10;
+}
+#createAccount {
+    position: absolute;
+    top:120;
+    left:10;
+}
+#deleteAccount {
+    position: absolute;
+    top:150;
+    left:10;
+}
+#ad1 {
+    top:150;
+    left:10;
+}
+#ad2 {
+    top:175;
+    left:10;
+}
+#ad3 {
+    top:200;
+    left:10;
 }
