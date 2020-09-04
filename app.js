@@ -1,7 +1,7 @@
 
 var express = require('express');
 var app = express();
-var mongojs = require("mongojs");
+//var mongojs = require("mongojs");
 var serv = require('http').Server(app);
 require('./Database');
 require('./Entity');
@@ -11,14 +11,14 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
-app.use((req,res,next) => {
+/*app.use((req,res,next) => {
 	if(mongojs.connection.readyState){
 		next();
 	}
 	else{
 		require("./mongo")().then(() => next());
 	}
-});
+});*/
 
 serv.listen(process.env.PORT);
 //serv.listen(3000);

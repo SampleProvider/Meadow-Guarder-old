@@ -1,7 +1,16 @@
 var USE_DB = true;
 
 var mongojs = USE_DB ? require("mongojs") : null;
-var db = USE_DB ? mongojs('localhost:27017/game',['account','progress']) : null;
+//var db = USE_DB ? mongojs('localhost:27017/game',['account','progress']) : null;
+var db = USE_DB ? mongojs('heroku.com/maitianGame',['account','progress']) : null;
+
+db.on('error', function (err) {
+    console.log('Database error', err)
+})
+
+db.on('connect', function () {
+    console.log('Database connected')
+})
 
 Database = {};
 
