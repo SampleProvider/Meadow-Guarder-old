@@ -16,8 +16,6 @@ var account = new mongoose.Schema({
 var Account = mongoose.model("Account", account);
 
 
-
-
 Database = {};
 
 Database.isValidPassword = function(data,cb){
