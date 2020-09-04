@@ -3,10 +3,10 @@ var USE_DB = true;
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/game', {useNewUrlParser: true});
-const db = mongoose.connection;
+var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  // we're connected!
+    console.log("Database connected");
 });
 var account = new mongoose.Schema({
 	username: String,
