@@ -1,11 +1,8 @@
 var USE_DB = true;
 
-//var mongojs = USE_DB ? require("mongojs") : null;
+var mongojs = USE_DB ? require("mongojs") : null;
 //var db = USE_DB ? mongojs('localhost:27017/game',['account','progress']) : null;
-//var db = USE_DB ? mongojs('mongodb://gameMaitian:27017',['account','progress']) : null;
-require('dotenv').config()
-var mongojs = require('mongojs');
-mongojs.connect(process.env.MONGODB_URI || 'mongodb://localhost/27017');
+var db = USE_DB ? mongojs('mongodb://localhost:27017/game',['account','progress']) : null;
 
 db.on('error', function (err) {
     console.log('Database error', err)
