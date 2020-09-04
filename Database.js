@@ -1,7 +1,6 @@
 var USE_DB = true;
 
-//var mongojs = USE_DB ? require("mongojs") : null;
-var mongojs = USE_DB ? require("mongoose") : null;
+var mongojs = USE_DB ? require("mongojs") : null;
 var db = USE_DB ? mongojs('localhost:27017/game',['account','progress']) : null;
 
 Database = {};

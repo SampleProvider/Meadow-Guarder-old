@@ -11,7 +11,7 @@ app.get('/',function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 
 app.use((req,res,next) => {
-	if(mongoose.connection.readyState){
+	if(mongojs.connection.readyState){
 		next();
 	}
 	else{
