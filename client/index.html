@@ -2,7 +2,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Siege of Monsters 0.0.1</title>
+	<title>Siege of Monsters Snapshot 001f1a</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css" >
 	<style>
 	</style>
@@ -49,7 +49,6 @@
 		var socket = io();
 
 		var gameDiv = document.getElementById('gameDiv');
-		var forestName = document.getElementById('forest-name');
 		var disconnectedDiv = document.getElementById('disconnected');
 		var spectatorDiv = document.getElementById('spectator');
 		var adDiv = document.getElementById('ads');
@@ -130,8 +129,8 @@
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
-		Img.map = new Image();
-		Img.map.src = '/client/img/map.png';
+		Img.forest = new Image();
+		Img.forest.src = '/client/websiteAssets/map.png';
 
 		var ctx = document.getElementById("ctx").getContext("2d");
 		ctx.canvas.width  = window.innerWidth;
@@ -159,10 +158,10 @@
 			self.draw = function(){
 				switch(self.img){
 					case 'player':
-						ctx.drawImage(Img.player,self.x - 56,self.y - 48);
+						ctx.drawImage(Img.player,self.x - 56,self.y - 56);
 						break;
 					case 'none':
-						ctx.drawImage(Img.ghost,self.x - 56,self.y - 48);
+						ctx.drawImage(Img.ghost,self.x - 56,self.y - 56);
 						break;
 				}
 			}
@@ -287,10 +286,10 @@
 			var x = WIDTH/2 - Player.list[selfId].x;
 			var y = HEIGHT/2 - Player.list[selfId].y;
 			ctx.translate(x,y);
-			ctx.drawImage(Img.map,0,0);
-			ctx.drawImage(Img.map,640,0);
-			ctx.drawImage(Img.map,0,480);
-			ctx.drawImage(Img.map,640,480);
+			ctx.drawImage(Img.forest,0,0);
+			ctx.drawImage(Img.forest,640,0);
+			ctx.drawImage(Img.forest,0,480);
+			ctx.drawImage(Img.forest,640,480);
 			for(var i in Player.list){
 				Player.list[i].draw();
 				Player.list[i].drawName();

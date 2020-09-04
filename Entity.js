@@ -304,6 +304,9 @@ Projectile.getAllInitPack = function(){
 	return projectiles;
 }
 
+
+
+
 updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
