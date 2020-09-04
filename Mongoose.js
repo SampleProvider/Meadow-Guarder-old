@@ -22,7 +22,7 @@ Database.isValidPassword = function(data,cb){
     if(!USE_DB)
 	    return cb(2);
 	console.log(1);
-	Account.find({
+	Account.findOne({
 		username: data.username,
 		password: data.password,
 	},function(err,res){
@@ -44,7 +44,7 @@ Database.isValidPassword = function(data,cb){
 Database.isUsernameTaken = function(data,cb){
     if(!USE_DB)
 	    return cb(true);
-	Account.find({
+	Account.findOne({
 		username: data.username,
 	},function(err,res){
 		if(res.length > 0){
