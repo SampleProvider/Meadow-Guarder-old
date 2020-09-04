@@ -2,7 +2,7 @@ var USE_DB = true;
 
 var mongojs = USE_DB ? require("mongojs") : null;
 //var db = USE_DB ? mongojs('localhost:27017/game',['account','progress']) : null;
-var db = USE_DB ? mongojs('mongo.com/maitiangame',['account','progress']) : null;
+var db = USE_DB ? mongojs('mongodb://mongodb0.game.com:27017',['account','progress']) : null;
 
 db.on('error', function (err) {
     console.log('Database error', err)
