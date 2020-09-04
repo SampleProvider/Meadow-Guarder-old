@@ -24,7 +24,7 @@ Database.isValidPassword = function(data,cb){
 	
 	Account.find({
 		username: data.username,
-		password: data,password,
+		password: data.password,
 	}.exec(function(err,res){
 		if(res.length > 0){
 			var x = 2;
