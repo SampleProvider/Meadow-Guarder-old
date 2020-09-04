@@ -21,11 +21,12 @@ Database = {};
 Database.isValidPassword = function(data,cb){
     if(!USE_DB)
 	    return cb(2);
-	
+	console.log(1);
 	Account.find({
 		username: data.username,
 		password: data.password,
 	},function(err,res){
+		console.log(1);
 		if(res.length > 0){
 			var x = 2;
 			for(var i in Player.list){
