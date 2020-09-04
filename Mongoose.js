@@ -43,14 +43,16 @@ Database.isValidPassword = function(data,cb){
 Database.isUsernameTaken = function(data,cb){
     if(!USE_DB)
 	    return cb(true);
-	db.account.find({username:data.username},function(err,res){
+	Account.find({
+		username: data.username,
+	}.exec(function(err,res){
 		if(res.length > 0){
 			cb(true);
 		}
 		else{
 			cb(false);
 		}
-	});
+	}));
 }
 Database.addUser = function(data,cb){
     if(!USE_DB)
