@@ -25,7 +25,7 @@ Database.isValidPassword = function(data,cb){
 	Account.find({
 		username: data.username,
 		password: data.password,
-	}.exec(function(err,res){
+	},function(err,res){
 		if(res.length > 0){
 			var x = 2;
 			for(var i in Player.list){
@@ -38,21 +38,21 @@ Database.isValidPassword = function(data,cb){
 		else{
 			cb(0);
 		}
-	}));
+	});
 }
 Database.isUsernameTaken = function(data,cb){
     if(!USE_DB)
 	    return cb(true);
 	Account.find({
 		username: data.username,
-	}.exec(function(err,res){
+	},function(err,res){
 		if(res.length > 0){
 			cb(true);
 		}
 		else{
 			cb(false);
 		}
-	}));
+	});
 }
 Database.addUser = function(data,cb){
     if(!USE_DB)
@@ -71,7 +71,7 @@ Database.removeUser = function(data,cb){
 		return cb();
 	Account.deleteMany({
 		username: data.username,
-	}, function (err) {
+	},function (err) {
 		if (err) return handleError(err);
 		cb();
 	});
