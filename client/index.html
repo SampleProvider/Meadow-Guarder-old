@@ -2,7 +2,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Siege of Monsters Snapshot 001f1f</title>
+	<title>123</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css" >
 	<style>
 	</style>
@@ -20,11 +20,13 @@
 	</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
+		<div id="mainAttack" class="UI-text-light"></div>
+		<div id="secondaryAttack" class="UI-text-light"></div>
 	</div>
 	<div id="ads" style="display:none">
 		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
 		<button id="ad2" class="UI-button-light" onclick="disconnect()">Do YOU want YOUR ad featured here? Then click <a href="https://forms.gle/stnavsadkja7r7b96">THIS LINK</a> to write a application!</button>
-		<button id="ad3" class="UI-button-light" onclick="history.go(0)">OOoOOOOooOOoO!</button>
+		<button id="ad3" class="UI-button-light" onclick="history.go(0)">InstaPlastiSnow(tm)</button>
 	</div>
 	<div id="disconnected" style="display:none;">
 		<button class="disconnected">Disconnected</button>
@@ -33,7 +35,8 @@
 		<button class="spectator">You're a spectator!</button>
 		<button class="respawn" onclick="respawn()">Respawn</button>
 	</div>
-	<link href="/webpackAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<link href="/client/websiteAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff" rel="stylesheet">
 
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
@@ -44,11 +47,14 @@
 		var WIDTH = window.innerWidth;
 		var HEIGHT = window.innerHeight;
 
+		var RENDERDIST = 2;
 		var STATE = 'signIn';
 		
 		var socket = io();
 
 		var gameDiv = document.getElementById('gameDiv');
+		var mainAttackDiv = document.getElementById('mainAttack');
+		var secondaryAttackDiv = document.getElementById('secondaryAttack');
 		var disconnectedDiv = document.getElementById('disconnected');
 		var spectatorDiv = document.getElementById('spectator');
 		var adDiv = document.getElementById('ads');
@@ -121,20 +127,80 @@
 		var disconnect = function(){
 			socket.emit("fake");
 		}
-
+		var ctx = document.getElementById("ctx").getContext("2d");
+		ctx.canvas.width  = window.innerWidth;
+		ctx.canvas.height = window.innerHeight;
+		
 		var Img = {};
 		Img.player = new Image();
 		Img.player.src = '/client/img/Test Player.png';
+		Img.player2 = new Image();
+		Img.player2.src = '/client/img/Base Player.png';
+		Img.player3 = new Image();
+		Img.player3.src = '/client/img/Base Player Walk 3.png';
+		Img.player4 = new Image();
+		Img.player4.src = '/client/img/Base Player Walk 4.png';
 		Img.ghost = new Image();
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.forest = new Image();
-		Img.forest.src = '/client/websiteAssets/map.png';
+		Img.forest.src = '/client/websiteAssets/Forest.png';
+		var c;
+		var data;
+		var tileset;
+		var layers;
+		var loaded = false;
+		var renderLayer = function(layer){
+			if(layer.type !== "tilelayer" || !layer.opacity){
+				return;
+			}
+			var s = ctx.canvas.cloneNode(),
+			size = data.tilewidth;
+			s = s.getContext("2d");
+			if(layers.length < data.layers.length || 1){
+				layer.data.forEach(function(tile_idx, i){
+					if(!tile_idx){
+						return;
+					}
+					var img_x, img_y, s_x, s_y,
+					tile = data.tilesets[0];
+					tile_idx -= 1;
+					console.log(tile);
+					img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+					s_x = (i % layer.width) * size;
+					s_y = ~~(i / layer.width) * size;
+					if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
+						ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+					}
+				});
+				//layers.push(s.canvas.toDataURL());
+				//ctx.drawImage(s.canvas, 0, 0);
+			}
+		}
+		var renderLayers = function(){
+			if(Array.isArray(layers) === false){
+				layers = data.layers;
+			}
+    		layers.forEach(renderLayer);
+		}
+		var loadTileset = function(json){
+			data = json;
+			tileset = $("<img />",{Src:json.tilesets[0].image})[0];
+			tileset.onload = renderLayers();
+			loaded = true;
+		}
+		var load = function(name){
+			if(loaded){
+				renderLayers();
+				return;
+			}
+			return $.getJSON("/client/maps/" + name + ".json",function(json){
+				loadTileset(json);
+			});
+		}
 
-		var ctx = document.getElementById("ctx").getContext("2d");
-		ctx.canvas.width  = window.innerWidth;
-		ctx.canvas.height = window.innerHeight;
 
 		var selfId = null;
 
@@ -154,9 +220,22 @@
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
+			self.attackReload = initPack.attackReload;
+			self.secondReload = initPack.secondReload;
+			self.mapHeight = 3200;
+			self.mapWidth = 3200;
 			
 			self.draw = function(){
 				switch(self.img){
+					case 'Back':
+						ctx.drawImage(Img.player2,self.x - 56,self.y - 56,72,96);
+						break;
+					case 'Back 3':
+						ctx.drawImage(Img.player3,self.x - 56,self.y - 56,72,96);
+						break;
+					case 'Back 4':
+						ctx.drawImage(Img.player4,self.x - 56,self.y - 56,72,96);
+						break;
 					case 'player':
 						ctx.drawImage(Img.player,self.x - 56,self.y - 56);
 						break;
@@ -166,10 +245,33 @@
 				}
 			}
 			self.drawName = function(){
+				if(self.img === 'none'){
+					return;
+				}
 				ctx.font = "15px pixel";
 				ctx.fillStyle = '#ff7700';
 				ctx.textAlign = "center";
-				ctx.fillText(self.username,self.x,self.y - 70);
+				ctx.fillText(self.username,self.x - 1,self.y - 80);
+				ctx.fillStyle = '#555555';
+				ctx.fillRect(self.x - 52,self.y - 70,104,10);
+				ctx.fillStyle = '#aa5525';
+				ctx.fillRect(self.x - 50,self.y - 68,self.hp / self.hpMax * 100,6);
+				if(self.attackReload > 24){
+					self.attackReload = 25;
+					mainAttackDiv.style.color = "#25ff25";
+				}
+				else{
+					mainAttackDiv.style.color = "#ff2525";
+				}
+				if(self.secondReload > 249){
+					self.secondReload = 250;
+					secondaryAttackDiv.style.color = "#25ff25";
+				}
+				else{
+					secondaryAttackDiv.style.color = "#ff2525";
+				}
+				mainAttackDiv.innerHTML = "Main Attack: " + self.attackReload / 25;
+				secondaryAttackDiv.innerHTML = "Secondary Attack: " + self.secondReload / 25;
 			}
 			Player.list[self.id] = self;
 			return self;
@@ -217,6 +319,21 @@
 					if(data.player[i].img){
 						Player.list[data.player[i].id].img = data.player[i].img;
 					}
+					if(data.player[i].hp){
+						Player.list[data.player[i].id].hp = data.player[i].hp;
+					}
+					if(data.player[i].attackReload){
+						Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
+					}
+					if(data.player[i].secondReload){
+						Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
+					}
+					if(data.player[i].mapWidth){
+						Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
+					}
+					if(data.player[i].mapHeight){
+						Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
+					}
 				}
 				for(var i = 0;i < data.projectile.length;i++){
 					if(data.projectile[i].x){
@@ -247,6 +364,7 @@
 		socket.on('spectator',function(data){
 			STATE = 'spectator';
 		});
+		
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -277,19 +395,34 @@
 				adDiv.style.display = 'inline-block';
 			}
 			
+			if(!selfId){
+				return;
+			}
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
 			ctx.canvas.width = window.innerWidth;
 			ctx.canvas.height = window.innerHeight;
 			ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
 			ctx.clearRect(0,0,WIDTH,HEIGHT);
+			if(!Player.list[selfId]){
+				return;
+			}
 			var x = WIDTH/2 - Player.list[selfId].x;
 			var y = HEIGHT/2 - Player.list[selfId].y;
+			if(Player.list[selfId].x < WIDTH / 2){
+				x = 0;
+			}
+			if(Player.list[selfId].x > Player.list[selfId].mapWidth - WIDTH / 2){
+				x = WIDTH - Player.list[selfId].mapWidth;
+			}
+			if(Player.list[selfId].y < HEIGHT / 2){
+				y = 0;
+			}
+			if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
+				y = HEIGHT - Player.list[selfId].mapHeight;
+			}
 			ctx.translate(x,y);
-			ctx.drawImage(Img.forest,0,0);
-			ctx.drawImage(Img.forest,640,0);
-			ctx.drawImage(Img.forest,0,480);
-			ctx.drawImage(Img.forest,640,480);
+			load("untitled");
 			for(var i in Player.list){
 				Player.list[i].draw();
 				Player.list[i].drawName();

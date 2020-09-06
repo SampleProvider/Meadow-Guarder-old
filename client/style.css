@@ -90,6 +90,7 @@ body {
     padding-left: 5px;
     transition-duration: 0.4s;
     opacity: 0.75;
+    user-select: none;
 }
 .disconnected:hover {
     opacity: 1;
@@ -130,10 +131,12 @@ body {
     padding-left: 5px;
     transition-duration: 0.4s;
     opacity: 0.75;
+    user-select: none;
 }
 .respawn:hover {
     opacity: 1;
     font-size: 45px;
+    user-select: none;
 }
 .name {
     position: absolute;
@@ -182,4 +185,17 @@ body {
 #ad3 {
     top:200;
     left:10;
+}
+#mainAttack {
+    bottom:45;
+    left:10;
+    user-select: none;
+}
+#secondaryAttack {
+    bottom:15;
+    left:10;
+    user-select: none;
+}
+div{
+    user-select: none;
 }

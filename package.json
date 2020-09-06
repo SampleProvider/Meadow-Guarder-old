@@ -14,7 +14,9 @@
     "node": "12.16.3",
     "npm": "6.14.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@prisma/cli": "^2.6.2"
+  },
   "scripts": {
     "start": "node app.js"
   },

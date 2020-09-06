@@ -3,8 +3,9 @@ var express = require('express');
 var app = express();
 //var mongojs = require("mongojs");
 var serv = require('http').Server(app);
-//require('./Database');
-require('./Mongoose');
+require('./Database');
+//require('./Mongoose');
+require('./collision')
 require('./Entity');
 
 app.get('/',function(req, res) {
@@ -21,8 +22,8 @@ app.use('/client',express.static(__dirname + '/client'));
 	}
 });*/
 
-serv.listen(process.env.PORT);
-//serv.listen(3000);
+//serv.listen(process.env.PORT);
+serv.listen(3000);
 console.log('Server Started.');
 SOCKET_LIST = {};
 
@@ -38,9 +39,11 @@ io.sockets.on('connection', function(socket){
 			if(res === 1){
 				for(var i in Player.list){
 					if(Player.list[i].username === data.username){
-						SOCKET_LIST[i].emit('disconnected');
-						Player.onDisconnect(SOCKET_LIST[i]);
-						delete SOCKET_LIST[i];
+						if(SOCKET_LIST[i]){
+							SOCKET_LIST[i].emit('disconnected');
+							Player.onDisconnect(SOCKET_LIST[i]);
+							delete SOCKET_LIST[i];
+						}
 					}
 				}
 			}
@@ -95,7 +98,11 @@ setInterval(function(){
 		var socket = SOCKET_LIST[i];
 		if(Player.list[socket.id]){
 			socket.emit('init',packs.initPack[Player.list[socket.id].map]);
+		}
+		if(Player.list[socket.id]){
 			socket.emit('update',packs.updatePack[Player.list[socket.id].map]);
+		}
+		if(Player.list[socket.id]){
 			socket.emit('remove',packs.removePack[Player.list[socket.id].map]);
 		}
 	}

@@ -2,6 +2,60 @@
 initPack = {'forest':[]};
 removePack = {'forest':[]};
 
+/*var data;
+var tileset;
+var layers;
+var loaded = false;
+var renderLayer = function(layer){
+    if(layer.type !== "tilelayer" || !layer.opacity){
+        return;
+    }
+    var s = ctx.canvas.cloneNode(),
+    size = data.tilewidth;
+    s = s.getContext("2d");
+    if(layers.length < data.layers.length || 1){
+        layer.data.forEach(function(tile_idx, i){
+            if(!tile_idx){
+                return;
+            }
+            var img_x, img_y, s_x, s_y,
+            tile = data.tilesets[0];
+            tile_idx -= 1;
+            img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+            img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+            s_x = (i % layer.width) * size;
+            s_y = ~~(i / layer.width) * size;
+            if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
+                ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+            }
+        });
+        //layers.push(s.canvas.toDataURL());
+        //ctx.drawImage(s.canvas, 0, 0);
+    }
+}
+var renderLayers = function(){
+    if(Array.isArray(layers) === false){
+        layers = data.layers;
+    }
+    layers.forEach(renderLayer);
+}
+var loadTileset = function(json){
+    data = json;
+    tileset = $("<img />",{Src:json.tilesets[0].image})[0];
+    tileset.onload = renderLayers();
+    loaded = true;
+}
+var load = function(name){
+    if(loaded){
+        renderLayers();
+        return;
+    }
+    return $.getJSON("/client/maps/" + name + ".json",function(json){
+        loadTileset(json);
+    });
+}
+
+*/
 Entity = function(param){
     var self = {};
     self.id = Math.random();
@@ -42,8 +96,10 @@ Entity = function(param){
 Entity.getFrameUpdateData = function(){
     var pack = {initPack:initPack,updatePack:{'forest':{player:[],projectile:[]}},removePack:removePack};
     for(var i in Player.list){
-        Player.list[i].update();
-        pack.updatePack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
+        if(Player.list[i]){
+            Player.list[i].update();
+            pack.updatePack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
+        }
     }
     for(var i in Projectile.list){
         Projectile.list[i].update();
@@ -62,6 +118,7 @@ Entity.getFrameUpdateData = function(){
 
 Player = function(param){
     var self = Entity(param);
+    var socket = SOCKET_LIST[self.id];
     self.x = 0;
     self.y = 0;
     self.spdX = 0;
@@ -72,6 +129,9 @@ Player = function(param){
     self.hpMax = 1000;
     self.direction = 0;
     self.map = 'forest';
+    self.animation = 0;
+    self.mapHeight = 3200;
+    self.mapWidth = 3200;
     self.username = param.username;
 	self.keyPress = {
         up:false,
@@ -91,18 +151,19 @@ Player = function(param){
         second:'second',
         heal:'second',
     };
+    self.keyMove = {
+        up:false,
+        down:false,
+        left:false,
+        right:false,
+    };
+    self.attackReload = 25;
+    self.secondReload = 250;
     var super_update = self.update;
     self.update = function(){
         self.updateSpd();
         super_update();
-        if(self.img === 'player'){
-            if(self.keyPress.attack === true){
-                self.shootProjectile();
-            }
-            if(self.keyPress.second === true){
-                self.secondaryAttack();
-            }
-        }
+        self.updateAttack();
     }
     self.updateSpd = function(){
         self.spdX = 0;
@@ -112,12 +173,49 @@ Player = function(param){
         }
         if(self.keyPress.down){
             self.spdY += self.moveSpeed;
+            /*self.animation += 1;
+            switch(self.animation){
+                case 0:
+                    self.img = 'Back';
+                    break;
+                case 4:
+                    self.img = 'Back 3';
+                    break;
+                case 8:
+                    self.img = 'Back';
+                    break;
+                case 12:
+                    self.img = 'Back 4';
+                    self.animation = 0;
+                    break;
+            }*/
         }
         if(self.keyPress.left){
             self.spdX -= self.moveSpeed;
         }
         if(self.keyPress.right){
             self.spdX += self.moveSpeed;
+        }
+        if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
+            self.animation = 0;
+            //self.img = 'Back';
+        }
+    }
+    self.updateAttack = function(){
+        self.attackReload += 1;
+        self.secondReload += 1;
+        if(self.img === 'player'){
+            if(self.keyPress.attack === true && self.attackReload > 25){
+                self.shootProjectile();
+                self.attackReload = 1;
+            }
+            if(self.keyPress.second === true && self.secondReload > 250){
+                self.secondaryAttack();
+                self.secondReload = 1;
+            }
+        }
+        if(self.hp < 1){
+            Player.spectate(socket);
         }
     }
     self.shootProjectile = function(){
@@ -154,6 +252,8 @@ Player = function(param){
             hpMax:self.hpMax,
             username:self.username,
             img:self.img,
+            attackReload:self.attackReload,
+            secondReload:self.secondReload,
         }
     }
     self.getUpdatePack = function(){
@@ -162,6 +262,11 @@ Player = function(param){
             x:self.x,
             y:self.y,
             img:self.img,
+            hp:self.hp,
+            attackReload:self.attackReload,
+            secondReload:self.secondReload,
+            mapWidth:self.mapWidth,
+            mapHeight:self.mapHeight,
         }
     }
     initPack[self.map].player.push(self.getInitPack());
@@ -174,7 +279,7 @@ Player.list = {};
 Player.onConnect = function(socket,username){
     var player = Player({
 		id:socket.id,
-		username:username,
+        username:username,
 	});
 
     socket.emit('selfId',socket.id);
@@ -207,6 +312,7 @@ Player.onConnect = function(socket,username){
     });
 
     socket.on('respawn',function(data){
+        player.hp = 1000;
         player.img = 'player';
     });
 
@@ -313,7 +419,7 @@ updateCrashes = function(){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && Projectile.list[j].parent != i && Player.list[i].img == 'player'){
                     Projectile.list[j].toRemove = true;
-                    Player.spectate(SOCKET_LIST[i]);
+                    Player.list[i].hp -= 100;
                 }
             }
         }
