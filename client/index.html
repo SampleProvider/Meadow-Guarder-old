@@ -41,11 +41,15 @@
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
 	<!--<script src="/client/socket.js"></script>-->
+	<script src="/socket.io/socket.io.js"></script>
 
 	<script>
 		
 		var WIDTH = window.innerWidth;
 		var HEIGHT = window.innerHeight;
+
+		var cameraX = 0;
+		var cameraY = 0;
 
 		var RENDERDIST = 2;
 		var STATE = 'signIn';
@@ -133,7 +137,7 @@
 		
 		var Img = {};
 		Img.player = new Image();
-		Img.player.src = '/client/img/Test Player.png';
+		Img.player.src = '/client/img/Player.png';
 		Img.player2 = new Image();
 		Img.player2.src = '/client/img/Base Player.png';
 		Img.player3 = new Image();
@@ -166,7 +170,6 @@
 					var img_x, img_y, s_x, s_y,
 					tile = data.tilesets[0];
 					tile_idx -= 1;
-					console.log(tile);
 					img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
 					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
 					s_x = (i % layer.width) * size;
@@ -227,20 +230,11 @@
 			
 			self.draw = function(){
 				switch(self.img){
-					case 'Back':
-						ctx.drawImage(Img.player2,self.x - 56,self.y - 56,72,96);
-						break;
-					case 'Back 3':
-						ctx.drawImage(Img.player3,self.x - 56,self.y - 56,72,96);
-						break;
-					case 'Back 4':
-						ctx.drawImage(Img.player4,self.x - 56,self.y - 56,72,96);
-						break;
 					case 'player':
-						ctx.drawImage(Img.player,self.x - 56,self.y - 56);
+						ctx.drawImage(Img.player,self.x - 16,self.y - 30);
 						break;
 					case 'none':
-						ctx.drawImage(Img.ghost,self.x - 56,self.y - 56);
+						ctx.drawImage(Img.ghost,self.x - 16,self.y - 30);
 						break;
 				}
 			}
@@ -321,6 +315,9 @@
 					}
 					if(data.player[i].hp){
 						Player.list[data.player[i].id].hp = data.player[i].hp;
+					}
+					if(data.player[i].map){
+						Player.list[data.player[i].id].map = data.player[i].map;
 					}
 					if(data.player[i].attackReload){
 						Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
@@ -407,22 +404,28 @@
 			if(!Player.list[selfId]){
 				return;
 			}
-			var x = WIDTH/2 - Player.list[selfId].x;
-			var y = HEIGHT/2 - Player.list[selfId].y;
+			cameraX = WIDTH/2 - Player.list[selfId].x;
+			cameraY = HEIGHT/2 - Player.list[selfId].y;
 			if(Player.list[selfId].x < WIDTH / 2){
-				x = 0;
+				cameraX = 0;
 			}
 			if(Player.list[selfId].x > Player.list[selfId].mapWidth - WIDTH / 2){
-				x = WIDTH - Player.list[selfId].mapWidth;
+				cameraX = WIDTH - Player.list[selfId].mapWidth;
 			}
 			if(Player.list[selfId].y < HEIGHT / 2){
-				y = 0;
+				cameraY = 0;
 			}
 			if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
-				y = HEIGHT - Player.list[selfId].mapHeight;
+				cameraY = HEIGHT - Player.list[selfId].mapHeight;
 			}
-			ctx.translate(x,y);
-			load("untitled");
+			ctx.translate(cameraX,cameraY);
+			console.log(Player.list[selfId].map);
+			if(Player.list[selfId].map === 'forest'){
+				load("river");
+			}
+			else{
+				load("untitled");
+			}
 			for(var i in Player.list){
 				Player.list[i].draw();
 				Player.list[i].drawName();
@@ -430,7 +433,7 @@
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
 			}
-			ctx.translate(-x,-y);
+			ctx.translate(-cameraX,-cameraY);
 			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 			
 		},25);
@@ -458,10 +461,11 @@
 			}
 		}
 		document.onmousemove = function(event){
-			var x = -window.innerWidth/2 + event.clientX + 18;
-			var y = -window.innerHeight/2 + event.clientY;
-			var angle = Math.atan2(y,x) / Math.PI * 180;
-			socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
+			if(Player.list[selfId]){
+				var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
+				var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
+				socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
+			}
 		}
 		
 		document.oncontextmenu = function(event){

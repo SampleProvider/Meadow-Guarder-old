@@ -5,7 +5,7 @@ var app = express();
 var serv = require('http').Server(app);
 require('./Database');
 //require('./Mongoose');
-require('./collision')
+require('./collision');
 require('./Entity');
 
 app.get('/',function(req, res) {
@@ -13,21 +13,11 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 
-/*app.use((req,res,next) => {
-	if(mongojs.connection.readyState){
-		next();
-	}
-	else{
-		require("./mongo")().then(() => next());
-	}
-});*/
-
 //serv.listen(process.env.PORT);
 serv.listen(3000);
 console.log('Server Started.');
 SOCKET_LIST = {};
-
-io = require('socket.io')(serv,{});
+io = require('socket.io')(serv,{upgradeTimeout: 30000});
 io.sockets.on('connection', function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;

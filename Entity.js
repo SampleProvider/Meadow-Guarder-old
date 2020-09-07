@@ -1,68 +1,18 @@
 
-initPack = {'forest':[]};
-removePack = {'forest':[]};
+initPack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
+removePack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
 
-/*var data;
-var tileset;
-var layers;
-var loaded = false;
-var renderLayer = function(layer){
-    if(layer.type !== "tilelayer" || !layer.opacity){
-        return;
-    }
-    var s = ctx.canvas.cloneNode(),
-    size = data.tilewidth;
-    s = s.getContext("2d");
-    if(layers.length < data.layers.length || 1){
-        layer.data.forEach(function(tile_idx, i){
-            if(!tile_idx){
-                return;
-            }
-            var img_x, img_y, s_x, s_y,
-            tile = data.tilesets[0];
-            tile_idx -= 1;
-            img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-            img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-            s_x = (i % layer.width) * size;
-            s_y = ~~(i / layer.width) * size;
-            if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
-                ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-            }
-        });
-        //layers.push(s.canvas.toDataURL());
-        //ctx.drawImage(s.canvas, 0, 0);
-    }
-}
-var renderLayers = function(){
-    if(Array.isArray(layers) === false){
-        layers = data.layers;
-    }
-    layers.forEach(renderLayer);
-}
-var loadTileset = function(json){
-    data = json;
-    tileset = $("<img />",{Src:json.tilesets[0].image})[0];
-    tileset.onload = renderLayers();
-    loaded = true;
-}
-var load = function(name){
-    if(loaded){
-        renderLayers();
-        return;
-    }
-    return $.getJSON("/client/maps/" + name + ".json",function(json){
-        loadTileset(json);
-    });
-}
 
-*/
 Entity = function(param){
     var self = {};
     self.id = Math.random();
     self.x = 0;
     self.y = 0;
+    self.width = 0;
+    self.heigth = 0;
     self.spdX = 0;
     self.spdY = 0;
+    self.map = '';
     if(param){
         if(param.id){
             self.id = param.id;
@@ -79,6 +29,9 @@ Entity = function(param){
         if(param.spdY){
             self.spdY = param.spdY;
         }
+        if(param.map){
+            self.map = param.map;
+        }
     }
     self.update = function(){
         self.updatePosition();
@@ -89,16 +42,21 @@ Entity = function(param){
     }
 	self.getDistance = function(pt){
 		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2))
-	}
+    }
+    self.isColliding = function(pt){
+        if(pt.x + pt.width / 2 > self.x && pt.x  - pt.width / 2 < self.x + self.width && pt.y + pt.height / 2 > self.y && pt.y - pt.height / 2 < self.y + self.height){
+            return true;
+        }
+        return false;
+    }
     return self;
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {initPack:initPack,updatePack:{'forest':{player:[],projectile:[]}},removePack:removePack};
+    var pack = {initPack:initPack,updatePack:{'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}},removePack:removePack};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
-            pack.updatePack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
         }
     }
     for(var i in Projectile.list){
@@ -111,8 +69,19 @@ Entity.getFrameUpdateData = function(){
             pack.updatePack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
     }
-    initPack = {'forest':{player:[],projectile:[]}};
-    removePack = {'forest':{player:[],projectile:[]}};
+    for(var i in Collision.list){
+        Collision.list[i].update();
+    }
+    for(var i in Transporter.list){
+        Transporter.list[i].update();
+    }
+    for(var i in Player.list){
+        if(Player.list[i]){
+            pack.updatePack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
+        }
+    }
+    initPack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
+    removePack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
     return pack;
 }
 
@@ -121,8 +90,12 @@ Player = function(param){
     var socket = SOCKET_LIST[self.id];
     self.x = 0;
     self.y = 0;
+    self.lastX = 0;
+    self.lastY = 0;
     self.spdX = 0;
     self.spdY = 0;
+    self.width = 32;
+    self.height = 48;
     self.moveSpeed = 10;
     self.img = 'player';
     self.hp = 1000;
@@ -151,12 +124,6 @@ Player = function(param){
         second:'second',
         heal:'second',
     };
-    self.keyMove = {
-        up:false,
-        down:false,
-        left:false,
-        right:false,
-    };
     self.attackReload = 25;
     self.secondReload = 250;
     var super_update = self.update;
@@ -168,27 +135,13 @@ Player = function(param){
     self.updateSpd = function(){
         self.spdX = 0;
         self.spdY = 0;
+        self.lastX = self.x;
+        self.lastY = self.y;
         if(self.keyPress.up){
             self.spdY -= self.moveSpeed;
         }
         if(self.keyPress.down){
             self.spdY += self.moveSpeed;
-            /*self.animation += 1;
-            switch(self.animation){
-                case 0:
-                    self.img = 'Back';
-                    break;
-                case 4:
-                    self.img = 'Back 3';
-                    break;
-                case 8:
-                    self.img = 'Back';
-                    break;
-                case 12:
-                    self.img = 'Back 4';
-                    self.animation = 0;
-                    break;
-            }*/
         }
         if(self.keyPress.left){
             self.spdX -= self.moveSpeed;
@@ -198,7 +151,18 @@ Player = function(param){
         }
         if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
             self.animation = 0;
-            //self.img = 'Back';
+        }
+        if(self.x < self.width / 2){
+            self.x = self.width / 2;
+        }
+        if(self.x > self.mapWidth - self.width / 2){
+            self.x = self.mapWidth - self.width / 2;
+        }
+        if(self.y < self.height / 2){
+            self.y = self.height / 2;
+        }
+        if(self.y > self.mapHeight - self.height / 2){
+            self.y = self.mapHeight - self.height / 2;
         }
     }
     self.updateAttack = function(){
@@ -250,6 +214,7 @@ Player = function(param){
             spdY:self.spdY,
             hp:self.hp,
             hpMax:self.hpMax,
+            map:self.map,
             username:self.username,
             img:self.img,
             attackReload:self.attackReload,
@@ -263,6 +228,7 @@ Player = function(param){
             y:self.y,
             img:self.img,
             hp:self.hp,
+            map:self.map,
             attackReload:self.attackReload,
             secondReload:self.secondReload,
             mapWidth:self.mapWidth,
@@ -281,6 +247,7 @@ Player.onConnect = function(socket,username){
 		id:socket.id,
         username:username,
 	});
+
 
     socket.emit('selfId',socket.id);
 
@@ -366,10 +333,11 @@ Projectile = function(param){
 	self.id = Math.random();
 	self.parent = param.id;
 	self.spdX = Math.cos(param.angle/180 * Math.PI) * 20;
-	self.spdY = Math.sin(param.angle/180 * Math.PI) * 20;
+    self.spdY = Math.sin(param.angle/180 * Math.PI) * 20;
+    self.width = 48;
+    self.height = 48;
 	self.direction = param.direction;
 	self.timer = 0;
-    self.map = 'forest';
 	self.toRemove = false;
 	var super_update = self.update;
 	self.update = function(){
@@ -411,6 +379,84 @@ Projectile.getAllInitPack = function(){
 }
 
 
+var fs = require('fs');
+
+var data;
+var tileset;
+var layers;
+var loaded = false;
+var renderLayer = function(layer){
+    if(layer.type !== "tilelayer" || layer.opacity){
+        return;
+    }
+    size = data.tilewidth;
+    if(layers.length < data.layers.length || 1){
+        layer.data.forEach(function(tile_idx, i){
+            if(!tile_idx){
+                return;
+            }
+            tile = data.tilesets[0];
+            if(tile_idx === 1690){
+                var collision = Collision({
+                    x:(i % layer.width) * size,
+                    y:~~(i / layer.width) * size,
+                    size:size,
+                });
+			}
+            if(tile_idx === 1622){
+				var teleport = "";
+				var teleportj = 0;
+				var x = "";
+				var xj = 0;
+				var y = "";
+				for(var j = 0;j < layer.name.length;j++){
+					if(layer.name[j] === ':'){
+						if(teleport === ""){
+							teleport = layer.name.substr(0,j);
+							teleportj = j;
+						}
+						else if(x === ""){
+							x = layer.name.substr(teleportj + 1,j - teleportj - 1);
+							xj = j;
+						}
+						else if(y === ""){
+							y = layer.name.substr(xj + 1,j - xj - 1);
+						}
+					}
+				}
+                var transporter = Transporter({
+                    x:(i % layer.width) * size,
+                    y:~~(i / layer.width) * size,
+					size:size,
+					teleport:teleport,
+					teleportx:x,
+					teleporty:y,
+                });
+			}
+        });
+    }
+}
+var renderLayers = function(){
+    if(Array.isArray(layers) === false){
+        layers = data.layers;
+    }
+    layers.forEach(renderLayer);
+}
+var loadTileset = function(json){
+    data = json;
+    tileset = json.tilesets[0].image;
+    tileset.onload = renderLayers();
+    loaded = true;
+}
+var load = function(name){
+    if(loaded){
+        renderLayers();
+        return;
+    }
+	var rawdata = fs.readFileSync("C:/Users/gu/Documents/game/client/maps/" + name + ".json");
+    loadTileset(JSON.parse(rawdata));
+}
+load("river");
 
 
 updateCrashes = function(){
