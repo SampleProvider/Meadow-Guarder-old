@@ -1,4 +1,4 @@
-var USE_DB = true;
+var USE_DB = false;
 
 
 /*var mongoose = require('mongoose');
@@ -30,7 +30,6 @@ Database = {};
 Database.isValidPassword = function(data,cb){
     if(!USE_DB)
 	    return cb(2);
-	console.log(1);
 	Account.findOne({
 		username: data.username,
 		password: data.password,
