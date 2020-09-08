@@ -571,7 +571,7 @@ var loadTileset = function(json){
 }
 var load = function(name){
     map = name;
-	var rawdata = fs.readFileSync("C:/Users/gu/Documents/game/client/maps/" + name + ".json");
+	var rawdata = fs.readFileSync("/client/maps/" + name + ".json");
     loadTileset(JSON.parse(rawdata));
 }
 load("river");
