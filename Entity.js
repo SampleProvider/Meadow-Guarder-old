@@ -571,8 +571,9 @@ var loadTileset = function(json){
 }
 var load = function(name){
     map = name;
-	var rawdata = fs.readFileSync("/client/maps/" + name + ".json");
-    loadTileset(JSON.parse(rawdata));
+	//var rawdata = fs.readFileSync("/client/maps/" + name + ".json");
+    //loadTileset(JSON.parse(rawdata));
+    loadTileset(require("/client/maps" + name + ".json"));
 }
 load("river");
 load("House");
