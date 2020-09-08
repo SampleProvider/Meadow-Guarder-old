@@ -150,11 +150,9 @@
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.forest = new Image();
 		Img.forest.src = '/client/websiteAssets/Forest.png';
-		var c;
 		var data;
 		var tileset;
 		var layers;
-		var loaded = false;
 		var renderLayer = function(layer){
 			if(layer.type !== "tilelayer" || !layer.opacity){
 				return;
@@ -174,6 +172,9 @@
 					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
 					s_x = (i % layer.width) * size;
 					s_y = ~~(i / layer.width) * size;
+					if(!Player.list[selfId]){
+						return;
+					}
 					if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
 						ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
 					}
@@ -190,15 +191,11 @@
 		}
 		var loadTileset = function(json){
 			data = json;
+			layers = undefined;
 			tileset = $("<img />",{Src:json.tilesets[0].image})[0];
 			tileset.onload = renderLayers();
-			loaded = true;
 		}
 		var load = function(name){
-			if(loaded){
-				renderLayers();
-				return;
-			}
 			return $.getJSON("/client/maps/" + name + ".json",function(json){
 				loadTileset(json);
 			});
@@ -227,6 +224,7 @@
 			self.secondReload = initPack.secondReload;
 			self.mapHeight = 3200;
 			self.mapWidth = 3200;
+			self.updated = true;
 			
 			self.draw = function(){
 				switch(self.img){
@@ -280,6 +278,7 @@
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
+			self.updated = true;
 			self.draw = function(){
 				ctx.drawImage(Img.bullet,self.x - 24,self.y - 24);
 			}
@@ -291,64 +290,74 @@
 		socket.on('selfId',function(data){
 			selfId = data;
 		});
-		socket.on('init',function(data){
-			if(data){
-				for(var i = 0;i < data.player.length;i++){
-					new Player(data.player[i]);
-				}
-				for(var i = 0;i < data.projectile.length;i++){
-					new Projectile(data.projectile[i]);
-				}
-			}
-		});
 		socket.on('update',function(data){
+			for(var i in Player.list){
+				Player.list[i].updated = false;
+			}
+			for(var i in Projectile.list){
+				Projectile.list[i].updated = false;
+			}
 			if(data){
 				for(var i = 0;i < data.player.length;i++){
-					if(data.player[i].x){
-						Player.list[data.player[i].id].x = data.player[i].x;
+					if(Player.list[data.player[i].id]){
+						if(data.player[i].x){
+							Player.list[data.player[i].id].x = data.player[i].x;
+						}
+						if(data.player[i].y){
+							Player.list[data.player[i].id].y = data.player[i].y;
+						}
+						if(data.player[i].img){
+							Player.list[data.player[i].id].img = data.player[i].img;
+						}
+						if(data.player[i].hp){
+							Player.list[data.player[i].id].hp = data.player[i].hp;
+						}
+						if(data.player[i].map){
+							Player.list[data.player[i].id].map = data.player[i].map;
+						}
+						if(data.player[i].attackReload){
+							Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
+						}
+						if(data.player[i].secondReload){
+							Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
+						}
+						if(data.player[i].mapWidth){
+							Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
+						}
+						if(data.player[i].mapHeight){
+							Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
+						}
+						Player.list[data.player[i].id].updated = true;
 					}
-					if(data.player[i].y){
-						Player.list[data.player[i].id].y = data.player[i].y;
-					}
-					if(data.player[i].img){
-						Player.list[data.player[i].id].img = data.player[i].img;
-					}
-					if(data.player[i].hp){
-						Player.list[data.player[i].id].hp = data.player[i].hp;
-					}
-					if(data.player[i].map){
-						Player.list[data.player[i].id].map = data.player[i].map;
-					}
-					if(data.player[i].attackReload){
-						Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
-					}
-					if(data.player[i].secondReload){
-						Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
-					}
-					if(data.player[i].mapWidth){
-						Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
-					}
-					if(data.player[i].mapHeight){
-						Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
+					else{
+						new Player(data.player[i]);
 					}
 				}
-				for(var i = 0;i < data.projectile.length;i++){
-					if(data.projectile[i].x){
-						Projectile.list[data.projectile[i].id].x = data.projectile[i].x;
-					}
-					if(data.projectile[i].y){
-						Projectile.list[data.projectile[i].id].y = data.projectile[i].y;
+				if(data.projectile.length > 0){
+					for(var i = 0;i < data.projectile.length;i++){
+						if(Projectile.list[data.projectile[i].id]){
+							if(data.projectile[i].x){
+								Projectile.list[data.projectile[i].id].x = data.projectile[i].x;
+							}
+							if(data.projectile[i].y){
+								Projectile.list[data.projectile[i].id].y = data.projectile[i].y;
+							}
+							Projectile.list[data.projectile[i].id].updated = true;
+						}
+						else{
+							new Projectile(data.projectile[i]);
+						}
 					}
 				}
 			}
-		});
-		socket.on('remove',function(data){
-			if(data){
-				for(var i = 0;i < data.player.length;i++){
-					delete Player.list[data.player[i]];
+			for(var i in Player.list){
+				if(Player.list[i].updated === false){
+					delete Player.list[i];
 				}
-				for(var i = 0;i < data.projectile.length;i++){
-					delete Projectile.list[data.projectile[i]];
+			}
+			for(var i in Projectile.list){
+				if(Projectile.list[i].updated === false){
+					delete Projectile.list[i];
 				}
 			}
 		});
@@ -361,7 +370,10 @@
 		socket.on('spectator',function(data){
 			STATE = 'spectator';
 		});
-		
+		socket.on('changeMap',function(data){
+			load(data);
+		});
+		load('river');
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -419,13 +431,7 @@
 				cameraY = HEIGHT - Player.list[selfId].mapHeight;
 			}
 			ctx.translate(cameraX,cameraY);
-			console.log(Player.list[selfId].map);
-			if(Player.list[selfId].map === 'forest'){
-				load("river");
-			}
-			else{
-				load("untitled");
-			}
+			renderLayers();
 			for(var i in Player.list){
 				Player.list[i].draw();
 				Player.list[i].drawName();

@@ -1,7 +1,4 @@
 
-initPack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
-removePack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
-
 
 Entity = function(param){
     var self = {};
@@ -44,7 +41,7 @@ Entity = function(param){
 		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2))
     }
     self.isColliding = function(pt){
-        if(pt.x + pt.width / 2 > self.x && pt.x  - pt.width / 2 < self.x + self.width && pt.y + pt.height / 2 > self.y && pt.y - pt.height / 2 < self.y + self.height){
+        if(pt.x + pt.width / 2 > self.x && pt.x  - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y && pt.y - pt.height / 2 < self.y + self.height / 2){
             return true;
         }
         return false;
@@ -53,7 +50,7 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {initPack:initPack,updatePack:{'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}},removePack:removePack};
+    var pack = {'river':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
@@ -62,26 +59,17 @@ Entity.getFrameUpdateData = function(){
     for(var i in Projectile.list){
         Projectile.list[i].update();
         if(Projectile.list[i].toRemove){
-            removePack[Projectile.list[i].map].projectile.push(i);
             delete Projectile.list[i];
         }
         else{
-            pack.updatePack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
+            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getInitPack());
         }
-    }
-    for(var i in Collision.list){
-        Collision.list[i].update();
-    }
-    for(var i in Transporter.list){
-        Transporter.list[i].update();
     }
     for(var i in Player.list){
         if(Player.list[i]){
-            pack.updatePack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
+            pack[Player.list[i].map].player.push(Player.list[i].getInitPack());
         }
     }
-    initPack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
-    removePack = {'forest':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
     return pack;
 }
 
@@ -101,7 +89,9 @@ Player = function(param){
     self.hp = 1000;
     self.hpMax = 1000;
     self.direction = 0;
-    self.map = 'forest';
+    self.map = 'river';
+    self.state = 'game';
+    self.changeMap = true;
     self.animation = 0;
     self.mapHeight = 3200;
     self.mapWidth = 3200;
@@ -131,6 +121,14 @@ Player = function(param){
         self.updateSpd();
         super_update();
         self.updateAttack();
+        self.updateCollisions();
+        if(self.changeMap){
+            self.changeMap = false;
+            socket.emit('changeMap',[self.map,{
+                player:Player.getMapInitPack(),
+                projectile:Projectile.getMapInitPack(),
+            }]);
+        }
     }
     self.updateSpd = function(){
         self.spdX = 0;
@@ -205,6 +203,85 @@ Player = function(param){
         }
         
     }
+    self.updateCollisions = function(){
+        var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
+        var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
+        var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
+        var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
+        if(Collision.list[firstTile]){
+            self.doCollision(Collision.list[firstTile]);
+        }
+        if(Collision.list[secondTile]){
+            self.doCollision(Collision.list[secondTile]);
+        }
+        if(Collision.list[thirdTile]){
+            self.doCollision(Collision.list[thirdTile]);
+        }
+        if(Collision.list[fourthTile]){
+            self.doCollision(Collision.list[fourthTile]);
+        }
+        if(Transporter.list[firstTile]){
+            if(self.isColliding(Transporter.list[firstTile])){
+                self.map = Transporter.list[firstTile].teleport;
+                self.x = Transporter.list[firstTile].teleportx;
+                self.y = Transporter.list[firstTile].teleporty;
+                socket.emit('changeMap',self.map);
+            }
+        }
+        if(Transporter.list[secondTile]){
+            if(self.isColliding(Transporter.list[secondTile])){
+                self.map = Transporter.list[secondTile].teleport;
+                self.x = Transporter.list[secondTile].teleportx;
+                self.y = Transporter.list[secondTile].teleporty;
+                socket.emit('changeMap',self.map);
+            }
+        }
+        if(Transporter.list[thirdTile]){
+            if(self.isColliding(Transporter.list[thirdTile])){
+                self.map = Transporter.list[thirdTile].teleport;
+                self.x = Transporter.list[thirdTile].teleportx;
+                self.y = Transporter.list[thirdTile].teleporty;
+                socket.emit('changeMap',self.map);
+            }
+        }
+        if(Transporter.list[fourthTile]){
+            if(self.isColliding(Transporter.list[fourthTile])){
+                self.map = Transporter.list[fourthTile].teleport;
+                self.x = Transporter.list[fourthTile].teleportx;
+                self.y = Transporter.list[fourthTile].teleporty;
+                socket.emit('changeMap',self.map);
+            }
+        }
+    }
+    self.doCollision = function(collsiion){
+        if(self.isColliding(collsiion)){
+            if(self.spdX !== 0 && self.spdY !== 0){
+                var x = self.x;
+                self.x = self.lastX;
+                if(self.isColliding(collsiion)){
+                    self.x = x;
+                    self.y = self.lastY;
+                    if(self.isColliding(collsiion)){
+                        self.x = self.lastX;
+                        self.y = self.lastY;
+                    }
+                    else{
+
+                    }
+                }
+                else{
+
+                }
+            }
+            else if(self.spdX === 0 && self.spdY === 0){
+
+            }
+            else{
+                self.x = self.lastX;
+                self.y = self.lastY;
+            }
+        }
+    }
     self.getInitPack = function(){
         return{
             id:self.id,
@@ -235,7 +312,6 @@ Player = function(param){
             mapHeight:self.mapHeight,
         }
     }
-    initPack[self.map].player.push(self.getInitPack());
     Player.list[self.id] = self;
     return self;
 }
@@ -284,15 +360,15 @@ Player.onConnect = function(socket,username){
     });
 
     socket.emit('init',{
-		player:Player.getAllInitPack(),
-		projectile:Projectile.getAllInitPack(),
-	});
+		player:Player.getMapInitPack(),
+		projectile:Projectile.getMapInitPack(),
+    });
+    
 }
 
 Player.spectate = function(socket){
     for(var i in Projectile.list){
         if(socket && Projectile.list[i].parent === socket.id){
-            removePack[Projectile.list[i].map].projectile.push(i);
             delete Projectile.list[i];
         }
     }
@@ -307,7 +383,6 @@ Player.spectate = function(socket){
 Player.onDisconnect = function(socket){
     for(var i in Projectile.list){
         if(socket && Projectile.list[i].parent === socket.id){
-            removePack[Projectile.list[i].map].projectile.push(i);
             delete Projectile.list[i];
         }
     }
@@ -316,7 +391,6 @@ Player.onDisconnect = function(socket){
     }
 	socket.emit("disconnected");
     if(Player.list[socket.id]){
-        removePack[Player.list[socket.id].map].player.push(socket.id);
         delete Player.list[socket.id];
     }
 }
@@ -325,6 +399,15 @@ Player.getAllInitPack = function(){
 	var players = [];
 	for(var i in Player.list)
 		players.push(Player.list[i].getInitPack())
+	return players;
+}
+Player.getMapInitPack = function(map){
+	var players = [];
+	for(var i in Player.list){
+        if(Player.list[i].map === map){
+            players.push(Player.list[i].getInitPack());
+        }
+    }
 	return players;
 }
 
@@ -346,7 +429,34 @@ Projectile = function(param){
         if(self.timer > 30){
             self.toRemove = true;
         }
-	}
+        self.updateCollisions();
+    }
+    self.updateCollisions = function(){
+        var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
+        var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
+        var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
+        var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
+        if(Collision.list[firstTile]){
+            if(self.isColliding(firstTile)){
+                self.toRemove = true;
+            }
+        }
+        if(Collision.list[secondTile]){
+            if(self.isColliding(secondTile)){
+                self.toRemove = true;
+            }
+        }
+        if(Collision.list[thirdTile]){
+            if(self.isColliding(thirdTile)){
+                self.toRemove = true;
+            }
+        }
+        if(Collision.list[fourthTile]){
+            if(self.isColliding(fourthTile)){
+                self.toRemove = true;
+            }
+        }
+    }
 	self.getInitPack = function(){
 		return {
 			x:self.x,
@@ -365,7 +475,6 @@ Projectile = function(param){
 			direction:self.direction,
 		}
 	}
-    initPack[self.map].projectile.push(self.getInitPack());
 	Projectile.list[self.id] = self;
 	return self;
 }
@@ -378,14 +487,24 @@ Projectile.getAllInitPack = function(){
 	return projectiles;
 }
 
+Projectile.getMapInitPack = function(map){
+	var projectiles = [];
+	for(var i in Projectile.list){
+        if(Projectile.list[i].map === map){
+            projectiles.push(Projectile.list[i].getInitPack());
+        }
+    }
+	return projectiles;
+}
 
 var fs = require('fs');
 
 var data;
 var tileset;
 var layers;
-var loaded = false;
+var map;
 var renderLayer = function(layer){
+    console.log(layer.name);
     if(layer.type !== "tilelayer" || layer.opacity){
         return;
     }
@@ -397,10 +516,11 @@ var renderLayer = function(layer){
             }
             tile = data.tilesets[0];
             if(tile_idx === 1690){
-                var collision = Collision({
+                var collision = new Collision({
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
                     size:size,
+                    map:map,
                 });
 			}
             if(tile_idx === 1622){
@@ -408,7 +528,7 @@ var renderLayer = function(layer){
 				var teleportj = 0;
 				var x = "";
 				var xj = 0;
-				var y = "";
+                var y = "";
 				for(var j = 0;j < layer.name.length;j++){
 					if(layer.name[j] === ':'){
 						if(teleport === ""){
@@ -424,13 +544,14 @@ var renderLayer = function(layer){
 						}
 					}
 				}
-                var transporter = Transporter({
+                var transporter = new Transporter({
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
 					size:size,
 					teleport:teleport,
 					teleportx:x,
-					teleporty:y,
+                    teleporty:y,
+                    map:map,
                 });
 			}
         });
@@ -444,19 +565,17 @@ var renderLayers = function(){
 }
 var loadTileset = function(json){
     data = json;
+    layers = undefined;
     tileset = json.tilesets[0].image;
     tileset.onload = renderLayers();
-    loaded = true;
 }
 var load = function(name){
-    if(loaded){
-        renderLayers();
-        return;
-    }
+    map = name;
 	var rawdata = fs.readFileSync("C:/Users/gu/Documents/game/client/maps/" + name + ".json");
     loadTileset(JSON.parse(rawdata));
 }
 load("river");
+load("House");
 
 
 updateCrashes = function(){

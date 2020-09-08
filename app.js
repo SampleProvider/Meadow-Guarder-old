@@ -87,13 +87,7 @@ setInterval(function(){
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
 		if(Player.list[socket.id]){
-			socket.emit('init',packs.initPack[Player.list[socket.id].map]);
-		}
-		if(Player.list[socket.id]){
-			socket.emit('update',packs.updatePack[Player.list[socket.id].map]);
-		}
-		if(Player.list[socket.id]){
-			socket.emit('remove',packs.removePack[Player.list[socket.id].map]);
+			socket.emit('update',packs[Player.list[socket.id].map]);
 		}
 	}
 },1000/25);
