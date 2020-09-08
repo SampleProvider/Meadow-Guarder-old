@@ -1,13 +1,22 @@
 var USE_DB = true;
 
 
-var mongoose = require('mongoose');
+/*var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/game', {useNewUrlParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log("Database connected");
-});
+});*/
+var mongoose = require("mongoose");
+var MONGODB_URI = process.env.MONGODB_URL || "mongodb://localhost/game";
+var options = {
+  useNewUrlParser:true,
+  useCreateIndex:true,
+  useFindAndModify:false,
+  family:4,
+};
+mongoose.connect(MONGODB_URI,options);
 var account = new mongoose.Schema({
 	username: String,
 	password: String,

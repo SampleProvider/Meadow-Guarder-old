@@ -3,8 +3,8 @@ var express = require('express');
 var app = express();
 //var mongojs = require("mongojs");
 var serv = require('http').Server(app);
-require('./Database');
-//require('./Mongoose');
+//require('./Database');
+require('./Mongoose');
 require('./collision');
 require('./Entity');
 
