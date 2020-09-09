@@ -1,10 +1,13 @@
 
+SERVER = 'localhost';
+
+
 var express = require('express');
 var app = express();
 //var mongojs = require("mongojs");
 var serv = require('http').Server(app);
-//require('./Database');
-require('./Mongoose');
+require('./Database');
+//require('./Mongoose');
 require('./collision');
 require('./Entity');
 
@@ -12,8 +15,12 @@ app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/client',express.static(__dirname + '/client'));
-serv.listen(process.env.PORT);
-//serv.listen(3000);
+if(SERVER === 'localhost'){
+	serv.listen(3000);
+}
+else{
+	serv.listen(process.env.PORT);
+}
 console.log('Server Started.');
 SOCKET_LIST = {};
 io = require('socket.io')(serv,{upgradeTimeout: 30000});
@@ -42,7 +49,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('createAccount',function(data){
 		if(data.username.length > 3){
 			Database.isUsernameTaken(data,function(res){
-				if(res){
+				if(res === 0){
 					socket.emit('createAccountResponse',{success:0});
 				}
 				else{
@@ -52,7 +59,8 @@ io.sockets.on('connection', function(socket){
 				}
 			});
 		}
-			else{socket.emit('createAccountResponse',{success:2});
+		else{
+			socket.emit('createAccountResponse',{success:2});
 		}
 	});
 	socket.on('deleteAccount',function(data){

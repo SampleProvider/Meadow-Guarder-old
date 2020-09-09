@@ -504,7 +504,6 @@ var tileset;
 var layers;
 var map;
 var renderLayer = function(layer){
-    console.log(layer.name);
     if(layer.type !== "tilelayer" || layer.opacity){
         return;
     }
@@ -571,9 +570,12 @@ var loadTileset = function(json){
 }
 var load = function(name){
     map = name;
-	//var rawdata = fs.readFileSync("/client/maps/" + name + ".json");
-    //loadTileset(JSON.parse(rawdata));
-    loadTileset(require("/app/client/maps/" + name + ".json"));
+    if(SERVER === 'localhost'){
+        loadTileset(require("C:/Users/gu/Documents/game/client/maps/" + name + ".json"));
+    }
+    else{
+        loadTileset(require("/app/client/maps/" + name + ".json"));
+    }
 }
 load("river");
 load("House");
