@@ -34,7 +34,7 @@ Database.isValidPassword = function(data,cb){
 	Account.findOne({
 		username: data.username,
 		password: data.password,
-	},function(err,res){
+	}).exec(function(err,res){
 		console.log(1);
 		if(res.length > 0){
 			var x = 2;
@@ -55,7 +55,7 @@ Database.isUsernameTaken = function(data,cb){
 	    return cb(true);
 	Account.findOne({
 		username: data.username,
-	},function(err,res){
+	}).exec(function(err,res){
 		console.log(res);
 		if(res.length > 0){
 			cb(true);
@@ -82,7 +82,7 @@ Database.removeUser = function(data,cb){
 		return cb();
 	Account.deleteMany({
 		username: data.username,
-	},function (err) {
+	}).exec(function (err) {
 		if (err) return handleError(err);
 		cb();
 	});
