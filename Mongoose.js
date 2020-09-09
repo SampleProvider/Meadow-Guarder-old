@@ -22,15 +22,16 @@ var account = new mongoose.Schema({
 	password: String,
 });
 
-var Account = mongoose.model("dfsdfs", account);
+var Account = mongoose.model("Account", account);
 
 
 Database = {};
 
 Database.isValidPassword = function(data,cb){
+	console.log(1);
     if(!USE_DB)
 	    return cb(2);
-	Account.findOne({
+	accounts.findOne({
 		username: data.username,
 		password: data.password,
 	},function(err,res){
@@ -52,9 +53,10 @@ Database.isValidPassword = function(data,cb){
 Database.isUsernameTaken = function(data,cb){
     if(!USE_DB)
 	    return cb(true);
-	Account.findOne({
+		accounts.findOne({
 		username: data.username,
 	},function(err,res){
+		console.log(res);
 		if(res.length > 0){
 			cb(true);
 		}
@@ -78,7 +80,7 @@ Database.addUser = function(data,cb){
 Database.removeUser = function(data,cb){
     if(!USE_DB)
 		return cb();
-	Account.deleteMany({
+	accounts.deleteMany({
 		username: data.username,
 	},function (err) {
 		if (err) return handleError(err);
