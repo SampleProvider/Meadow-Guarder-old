@@ -17,9 +17,6 @@ var options = {
   family:4,
 };
 mongoose.connect(MONGODB_URI,options);
-db.once('open', function() {
-    console.log("Database connected");
-});
 var account = new mongoose.Schema({
 	username: String,
 	password: String,
