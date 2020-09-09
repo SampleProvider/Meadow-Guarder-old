@@ -9,7 +9,7 @@ db.once('open', function() {
     console.log("Database connected");
 });*/
 var mongoose = require("mongoose");
-var MONGODB_URI = process.env.MONGODB_URL || "mongodb://localhost/game";
+var MONGODB_URI = "mongodb://heroku_qlp3lzc4:summer1803@ds035358.mlab.com:35358/heroku_qlp3lzc4";
 var options = {
   useNewUrlParser:true,
   useCreateIndex:true,
