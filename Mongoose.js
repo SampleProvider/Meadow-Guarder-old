@@ -31,7 +31,7 @@ Database.isValidPassword = function(data,cb){
 	console.log(1);
     if(!USE_DB)
 	    return cb(2);
-	accounts.findOne({
+	Account.findOne({
 		username: data.username,
 		password: data.password,
 	},function(err,res){
@@ -53,7 +53,7 @@ Database.isValidPassword = function(data,cb){
 Database.isUsernameTaken = function(data,cb){
     if(!USE_DB)
 	    return cb(true);
-		accounts.findOne({
+	Account.findOne({
 		username: data.username,
 	},function(err,res){
 		console.log(res);
@@ -80,7 +80,7 @@ Database.addUser = function(data,cb){
 Database.removeUser = function(data,cb){
     if(!USE_DB)
 		return cb();
-	accounts.deleteMany({
+	Account.deleteMany({
 		username: data.username,
 	},function (err) {
 		if (err) return handleError(err);
