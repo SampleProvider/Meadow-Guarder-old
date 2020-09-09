@@ -1,4 +1,4 @@
-var USE_DB = false;
+var USE_DB = true;
 
 
 /*var mongoose = require('mongoose');
@@ -22,7 +22,7 @@ var account = new mongoose.Schema({
 	password: String,
 });
 
-var Account = mongoose.model("Account", account);
+var Account = mongoose.model("dfsdfs", account);
 
 
 Database = {};
