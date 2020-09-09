@@ -32,8 +32,8 @@ Database.isValidPassword = function(data,cb){
     if(!USE_DB)
 	    return cb(2);
 	Account.findOne({
-		username: data.username,
-		password: data.password,
+		'username': data.username,
+		'password': data.password,
 	},function(err,res){
 		console.log(1);
 		if(res.length > 0){
@@ -54,7 +54,7 @@ Database.isUsernameTaken = function(data,cb){
     if(!USE_DB)
 	    return cb(true);
 	Account.findOne({
-		username: data.username,
+		'username': data.username,
 	},function(err,res){
 		console.log(res);
 		if(res.length > 0){
@@ -69,8 +69,8 @@ Database.addUser = function(data,cb){
     if(!USE_DB)
 		return cb();
 	var basic = new Account({
-		username: data.username,
-		password: data.password,
+		'username': data.username,
+		'password': data.password,
 	});
 	basic.save(function (err) {
 		if (err) return handleError(err);
@@ -81,7 +81,7 @@ Database.removeUser = function(data,cb){
     if(!USE_DB)
 		return cb();
 	Account.deleteMany({
-		username: data.username,
+		'username': data.username,
 	},function (err) {
 		if (err) return handleError(err);
 		cb();
