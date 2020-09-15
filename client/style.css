@@ -8,29 +8,27 @@ canvas {
 body {
     overflow: hidden;
 }
+div {
+    user-select: none;
+}
 
 ::-webkit-scrollbar {
     width: 20px;
 }
-  
 ::-webkit-scrollbar-track {
     background: rgba(40,40,40,0.5);
 }
-  
 ::-webkit-scrollbar-thumb {
     background: rgba(20,20,20,0.5);
 }
+
 @font-face {
     font-family: 'pixel';
     src: url(/client/websiteAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff) format('woff');
     font-weight: normal;
     font-style: normal;
 }
-#disconnected {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-}
+
 .UI-button-light {
     position: absolute;
     font-family: 'pixel';
@@ -94,8 +92,8 @@ body {
 }
 .spectator {
     background-color: #ffffff;
-    top: 0;
-    left: 0;
+    top: 0px;
+    left: 0px;
     position: absolute;
     font-family: 'pixel';
     text-align: center;
@@ -114,8 +112,8 @@ body {
 }
 .respawn {
     background-color: #555555;
-    top: 0;
-    right: 0;
+    top: 0px;
+    right: 0px;
     position: absolute;
     font-family: 'pixel';
     text-align: center;
@@ -142,60 +140,57 @@ body {
 }
 #username {
     position: absolute;
-    top: 60;
-    left: 100;
+    top: 60px;
+    left: 100px;
 }
 #password {
     position: absolute;
-    top: 90;
-    left: 100;
+    top: 90px;
+    left: 100px;
 }
 #username-label {
     position: absolute;
-    top: 60;
-    left: 10;
+    top: 60px;
+    left: 10px;
 }
 #password-label {
     position: absolute;
-    top: 90;
-    left: 10;
+    top: 90px;
+    left: 10px;
 }
 #createAccount {
     position: absolute;
-    top: 120;
-    left: 10;
+    top: 120px;
+    left: 10px;
 }
 #deleteAccount {
     position: absolute;
-    top: 150;
-    left: 10;
+    top: 150px;
+    left: 10px;
 }
 #ad1 {
-    top: 150;
-    left: 10;
+    top: 150px;
+    left: 10px;
 }
 #ad2 {
-    top: 175;
-    left: 10;
+    top: 175px;
+    left: 10px;
 }
 #ad3 {
-    top: 200;
-    left: 10;
+    top: 200px;
+    left: 10px;
 }
 #mainAttack {
-    bottom: 45;
-    left: 10;
+    bottom: 45px;
+    left: 10px;
     user-select: none;
 }
 #secondaryAttack {
-    bottom: 15;
-    left: 10;
+    bottom: 15px;
+    left: 10px;
     user-select: none;
 }
-div{
-    user-select: none;
-}
-#gameDiv{
+#gameDiv {
     top: 100%;
     left: 100%;
     width: 100%;
@@ -205,7 +200,7 @@ div{
     margin-left: 0px;
     margin-right: 0px;
 }
-#chat-text{
+#chat-text {
     position: absolute;
     bottom: 10px;
     left: 35%;
@@ -213,10 +208,23 @@ div{
     height: 150px;
     overflow-y: scroll;
 }
-#chat-input{
+#chat-input {
     position: absolute;
     bottom: 10px;
     left: 35%;
     width: 500px;
     height: 25px;
+}
+.death-screen {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background: rgba(255,0,0,0.3);
+}
+#disconnected {
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }

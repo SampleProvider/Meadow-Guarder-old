@@ -20,7 +20,6 @@
 	</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
-		<canvas id="entityCanvas"></canvas>
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		
@@ -28,10 +27,14 @@
 			<div>Hello!</div>
 		</div>
 
-		
 		<form id="chat-form" autocomplete="off">
 			<input id="chat-input" class="UI-input-light" type="text"></input>
 		</form>
+	</div>
+	<div id="spectator" style="display:none;">
+		<div class="death-screen"></div>
+		<button class="spectator">You're a spectator!</button>
+		<button class="respawn" onclick="respawn()">Respawn</button>
 	</div>
 	<div id="ads" style="display:none">
 		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
@@ -40,10 +43,6 @@
 	</div>
 	<div id="disconnected" style="display:none;">
 		<button class="disconnected">Disconnected</button>
-	</div>
-	<div id="spectator" style="display:none;">
-		<button class="spectator">You're a spectator!</button>
-		<button class="respawn" onclick="respawn()">Respawn</button>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<link href="/client/websiteAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff" rel="stylesheet">
@@ -73,7 +72,6 @@
 		var spectatorDiv = document.getElementById('spectator');
 		var adDiv = document.getElementById('ads');
 		var ctxRaw = document.getElementById('ctx');
-		var entityCanvasRaw = document.getElementById('entityCanvas');
 		var signDiv = document.getElementById('sign');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
@@ -112,6 +110,9 @@
 			else if(data.success == 2){
 				alert("Please use a username with 3+ characters.");
 			}
+			else if(data.success == 3){
+				alert("Invalid characters.");
+			}
 		});
 		socket.on('deleteAccountResponse',function(data){
 			if(data.success == 1){
@@ -126,7 +127,6 @@
 		var chatInput = document.getElementById('chat-input');
 		var chatForm = document.getElementById('chat-form');
 		var chat = '<div>Hello!</div>';
-		var oldChat = '';
 		var chatPress = false;
 
 		socket.on('addToChat',function(data){
@@ -145,7 +145,6 @@
 			e.preventDefault();
 			socket.emit('sendMsgToServer',chatInput.value);
 			chatInput.value = '';
-			oldChat = '';
 		}
 		chatInput.onkeydown = function(e){
 			chatPress = true;
@@ -155,11 +154,8 @@
 			socket.emit("fake");
 		}
 		var ctx = document.getElementById("ctx").getContext("2d");
-		var entityCanvas = document.getElementById("entityCanvas").getContext("2d");
 		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
-		entityCanvas.canvas.width  = window.innerWidth;
-		entityCanvas.canvas.height = window.innerHeight;
 		
 		var Img = {};
 		Img.player = new Image();
@@ -184,82 +180,6 @@
 		Img.Town0.src = '/client/maps/Town0.png';
 		Img.Town1 = new Image();
 		Img.Town1.src = '/client/maps/Town1.png';
-		var data;
-		var tileset;
-		var layers;
-		var loaded = false;
-		var image = new Image();
-		var renderLayer = function(layer){
-			if(layer.type !== "tilelayer" || !layer.opacity){
-				return;
-			}
-			
-			if(!Player.list[selfId]){
-				return;
-			}
-			var s = ctx.canvas.cloneNode(),
-			size = data.tilewidth;
-			s = s.getContext("2d");
-			if(layers.length < data.layers.length || 1){
-				/*var p_x = ~~(Player.list[selfId].x / 64);
-				var p_y = ~~(Player.list[selfId].y / 64);
-				var tile_idx;
-				var img_x;
-				var img_y;
-				var s_x;
-				var s_y;
-				var tile = data.tilesets[0];
-				for(var i = -RENDERDIST;i < RENDERDIST * 2 + 1;i++){
-					for(var j = -RENDERDIST;j < RENDERDIST * 2 + 1;j++){
-						tile_idx = layer.data[p_x + j + (p_y + i) * layer.width];
-						tile_idx -= 1;
-						img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-						img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-						//s_x = (i % layer.width) * size;
-						//s_y = ~~(i / layer.width) * size;
-						ctx.drawImage(tileset,img_x,img_y,size,size,p_x + j * size,p_y + i * size,size,size);
-					}
-				}*/
-				layer.data.forEach(function(tile_idx, i){
-					if(!tile_idx){
-						return;
-					}
-					var img_x, img_y, s_x, s_y,
-					tile = data.tilesets[0];
-					tile_idx -= 1;
-					img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-					s_x = (i % layer.width) * size;
-					s_y = ~~(i / layer.width) * size;
-					if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
-						ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-					}
-					//if(Player.list[selfId].x - RENDERDIST < s_x && Player.list[selfId].x + RENDERDIST > s_x && Player.list[selfId].y - RENDERDIST < s_y && Player.list[selfId].y + RENDERDIST > s_y){
-						//ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-					//}
-				});
-				//layers.push(s.canvas.toDataURL());
-				//ctx.drawImage(s.canvas, 0, 0);
-			}
-		}
-		var renderLayers = function(){
-			if(Array.isArray(layers) === false){
-				layers = data.layers;
-			}
-			layers.forEach(renderLayer);
-			//image.src = ctxRaw.toDataURL();
-		}
-		var loadTileset = function(json){
-			data = json;
-			layers = undefined;
-			tileset = $("<img />",{Src:json.tilesets[0].image})[0];
-			tileset.onload = renderLayers();
-		}
-		var load = function(name){
-			return $.getJSON("/client/maps/" + name + ".json",function(json){
-				loadTileset(json);
-			});
-		}
 
 
 		var selfId = null;
@@ -288,16 +208,15 @@
 			self.ani = 0;
 			
 			self.draw = function(){
-				/*switch(self.img){
-					case 'player':
-						ctx.drawImage(Img.player,self.x - 16,self.y - 30);
-						break;
-					case 'none':
-						ctx.drawImage(Img.ghost,self.x - 16,self.y - 30);
-						break;
-				}*/
+				if(self.id === selfId && self.img === 'none'){
+					ctx.drawImage(Img.ghost,self.x - 20,self.y - 40);
+					return;
+				}
+				else if(self.img === 'none'){
+					return;
+				}
 				var ani = ~~(self.ani / 3)
-				entityCanvas.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 40,40,64);
+				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 40,40,64);
 				self.ani += 1;
 				if(self.ani === 18){
 					self.ani = 0;
@@ -307,14 +226,14 @@
 				if(self.img === 'none'){
 					return;
 				}
-				entityCanvas.font = "15px pixel";
-				entityCanvas.fillStyle = '#ff7700';
-				entityCanvas.textAlign = "center";
-				entityCanvas.fillText(self.username,self.x - 1,self.y - 80);
-				entityCanvas.fillStyle = '#555555';
-				entityCanvas.fillRect(self.x - 52,self.y - 70,104,10);
-				entityCanvas.fillStyle = '#aa5525';
-				entityCanvas.fillRect(self.x - 50,self.y - 68,self.hp / self.hpMax * 100,6);
+				ctx.font = "15px pixel";
+				ctx.fillStyle = '#ff7700';
+				ctx.textAlign = "center";
+				ctx.fillText(self.username,self.x - 1,self.y - 80);
+				ctx.fillStyle = '#555555';
+				ctx.fillRect(self.x - 52,self.y - 70,104,10);
+				ctx.fillStyle = '#aa5525';
+				ctx.fillRect(self.x - 50,self.y - 68,self.hp / self.hpMax * 100,6);
 				if(self.attackReload > 24){
 					self.attackReload = 25;
 					mainAttackDiv.style.color = "#25ff25";
@@ -347,7 +266,7 @@
 			self.map = initPack.map;
 			self.updated = true;
 			self.draw = function(){
-				entityCanvas.drawImage(Img.bullet,self.x - 24,self.y - 24);
+				ctx.drawImage(Img.bullet,self.x - 24,self.y - 24);
 			}
 			Projectile.list[self.id] = self;
 			return self;
@@ -356,12 +275,6 @@
 
 		socket.on('selfId',function(data){
 			selfId = data;
-			//load('Town');
-			/*image.onload = function(){
-				ctx.drawImage(image,0,0);
-				console.log(1);
-				loaded = true;
-			}*/
 		});
 		socket.on('update',function(data){
 			for(var i in Player.list){
@@ -443,9 +356,6 @@
 		socket.on('spectator',function(data){
 			STATE = 'spectator';
 		});
-		socket.on('changeMap',function(data){
-			load(data);
-		});
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -486,18 +396,8 @@
 			}
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
-			if(window.innerWidth * 5 !== ctx.canvas.width){
-				//load(Player.list[selfId].map);
-				//ctx.canvas.width = window.innerWidth * 5;
-			}
-			if(window.innerHeight * 5 !== ctx.canvas.height){
-				//load(Player.list[selfId].map);
-				//ctx.canvas.height = window.innerHeight * 5;
-			}
-			//ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			entityCanvas.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			//ctx.clearRect(0,0,WIDTH,HEIGHT);
-			entityCanvas.clearRect(0,0,WIDTH,HEIGHT);
+			ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
+			ctx.clearRect(0,0,WIDTH,HEIGHT);
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
 			if(Player.list[selfId].x < WIDTH / 2){
@@ -512,32 +412,20 @@
 			if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
 				cameraY = HEIGHT - Player.list[selfId].mapHeight;
 			}
-			//ctx.translate(cameraX,cameraY);
-			//ctxRaw.style.marginLeft = -cameraX;
-			//ctxRaw.style.marginTop = -cameraY;
-			//ctxRaw.style.marginLeft = -100;
-			//ctxRaw.style.marginTop = -100;
-			entityCanvas.translate(cameraX,cameraY);
-			entityCanvas.drawImage(Img.Town0,0,0);
-			//entityCanvas.drawImage(ctxRaw,0,0);
+			ctx.translate(cameraX,cameraY);
+			ctx.drawImage(Img.Town0,0,0);
 			for(var i in Player.list){
 				Player.list[i].draw();
 			}
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
 			}
-			entityCanvas.drawImage(Img.Town1,0,0);
+			ctx.drawImage(Img.Town1,0,0);
 			for(var i in Player.list){
 				Player.list[i].drawName();
 			}
-			//if(loaded){
-				//ctx.drawImage(image,0,0);
-			//}
-			//renderLayers();
-			//ctx.translate(-cameraX,-cameraY);
-			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
-			entityCanvas.translate(-cameraX,-cameraY);
-			entityCanvas.scale(1536 / window.innerWidth,1536 / window.innerWidth);
+			ctx.translate(-cameraX,-cameraY);
+			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 		},25);
 		document.onkeydown = function(event){
 			if(chatPress){

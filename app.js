@@ -48,7 +48,10 @@ io.sockets.on('connection', function(socket){
 		});
 	});
 	socket.on('createAccount',function(data){
-		if(data.username.length > 3){
+		if(data.username.includes(' ')){
+			socket.emit('createAccountResponse',{success:3});
+		}
+		else if(data.username.length > 3){
 			Database.isUsernameTaken(data,function(res){
 				if(res === 0){
 					socket.emit('createAccountResponse',{success:0});
