@@ -1,7 +1,6 @@
 
 SERVER = 'heroku';
 
-
 var express = require('express');
 var app = express();
 //var mongojs = require("mongojs");
@@ -22,8 +21,10 @@ else{
 	serv.listen(process.env.PORT);
 }
 console.log('Server Started.');
+require('./command');
+
 SOCKET_LIST = {};
-io = require('socket.io')(serv,{upgradeTimeout: 30000});
+io = require('socket.io')(serv,{upgradeTimeout: 50000});
 io.sockets.on('connection', function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
@@ -79,11 +80,16 @@ io.sockets.on('connection', function(socket){
 		socket.emit('disconnected');
 		Player.onDisconnect(socket);
 		delete SOCKET_LIST[socket.id];
-	})
+	});
 	socket.on('disconnect',function(){
 		socket.emit('disconnected');
 		Player.onDisconnect(socket);
 		delete SOCKET_LIST[socket.id];
+	});
+	socket.on('sendMsgToServer',function(data){
+		for(var i in SOCKET_LIST){
+			SOCKET_LIST[i].emit('addToChat',Player.list[socket.id].username + ': ' + data);
+		}
 	});
 });
 pack = {};

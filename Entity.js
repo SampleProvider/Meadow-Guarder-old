@@ -50,7 +50,7 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {'river':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
+    var pack = {'Town':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
@@ -89,7 +89,7 @@ Player = function(param){
     self.hp = 1000;
     self.hpMax = 1000;
     self.direction = 0;
-    self.map = 'river';
+    self.map = 'Town';
     self.state = 'game';
     self.changeMap = true;
     self.animation = 0;
@@ -358,11 +358,6 @@ Player.onConnect = function(socket,username){
         player.hp = 1000;
         player.img = 'player';
     });
-
-    socket.emit('init',{
-		player:Player.getMapInitPack(),
-		projectile:Projectile.getMapInitPack(),
-    });
     
 }
 
@@ -514,7 +509,7 @@ var renderLayer = function(layer){
                 return;
             }
             tile = data.tilesets[0];
-            if(tile_idx === 1690){
+            if(tile_idx === 2122){
                 var collision = new Collision({
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
@@ -522,7 +517,7 @@ var renderLayer = function(layer){
                     map:map,
                 });
 			}
-            if(tile_idx === 1622){
+            if(tile_idx === 160022){
 				var teleport = "";
 				var teleportj = 0;
 				var x = "";
@@ -577,8 +572,7 @@ var load = function(name){
         loadTileset(require("/app/client/maps/" + name + ".json"));
     }
 }
-load("river");
-load("House");
+load("Town");
 
 
 updateCrashes = function(){

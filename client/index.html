@@ -20,8 +20,18 @@
 	</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
+		<canvas id="entityCanvas"></canvas>
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
+		
+		<div id="chat-text" class="UI-text-light">
+			<div>Hello!</div>
+		</div>
+
+		
+		<form id="chat-form" autocomplete="off">
+			<input id="chat-input" class="UI-input-light" type="text"></input>
+		</form>
 	</div>
 	<div id="ads" style="display:none">
 		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
@@ -40,8 +50,8 @@
 
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
-	<!--<script src="/client/socket.js"></script>-->
-	<script src="/socket.io/socket.io.js"></script>
+	<script src="/client/socket.js"></script>
+	<!--<script src="/socket.io/socket.io.js"></script>-->
 
 	<script>
 		
@@ -51,7 +61,7 @@
 		var cameraX = 0;
 		var cameraY = 0;
 
-		var RENDERDIST = 2;
+		var RENDERDIST = 5;
 		var STATE = 'signIn';
 		
 		var socket = io();
@@ -62,7 +72,8 @@
 		var disconnectedDiv = document.getElementById('disconnected');
 		var spectatorDiv = document.getElementById('spectator');
 		var adDiv = document.getElementById('ads');
-		var ctx = document.getElementById('ctx');
+		var ctxRaw = document.getElementById('ctx');
+		var entityCanvasRaw = document.getElementById('entityCanvas');
 		var signDiv = document.getElementById('sign');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
@@ -111,29 +122,44 @@
 			}
 		});
 		
-		/*var chatText = document.getElementById('chat-text');
+		var chatText = document.getElementById('chat-text');
 		var chatInput = document.getElementById('chat-input');
-		var chatForm = document.getElementById('chat-form');	
-		chatText.style.top = window.innerHeight - 135;
-		chatForm.style.top = window.innerHeight - 50;
-		chatInput.style.top = window.innerHeight - 50;
+		var chatForm = document.getElementById('chat-form');
+		var chat = '<div>Hello!</div>';
+		var oldChat = '';
+		var chatPress = false;
 
 		socket.on('addToChat',function(data){
-			chatText.innerHTML += '<div>' + data + '</div>';
+			var scroll = false;
+			if(chatText.scrollTop + chatText.clientHeight >= chatText.scrollHeight - 5){
+				scroll = true;
+			}
+			chat += '<div>' + data + '</div>';
+			chatText.innerHTML = chat + '<br>';
+			if(scroll){
+				chatText.scrollTop = chatText.scrollHeight;
+			}
 		});
 		
 		chatForm.onsubmit = function(e){
 			e.preventDefault();
 			socket.emit('sendMsgToServer',chatInput.value);
 			chatInput.value = '';
-		}*/
+			oldChat = '';
+		}
+		chatInput.onkeydown = function(e){
+			chatPress = true;
+		}
 
 		var disconnect = function(){
 			socket.emit("fake");
 		}
 		var ctx = document.getElementById("ctx").getContext("2d");
-		ctx.canvas.width  = window.innerWidth;
+		var entityCanvas = document.getElementById("entityCanvas").getContext("2d");
+		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
+		entityCanvas.canvas.width  = window.innerWidth;
+		entityCanvas.canvas.height = window.innerHeight;
 		
 		var Img = {};
 		Img.player = new Image();
@@ -146,21 +172,54 @@
 		Img.player4.src = '/client/img/Base Player Walk 4.png';
 		Img.ghost = new Image();
 		Img.ghost.src = '/client/img/ghost.png';
+		Img.map = new Image();
+		Img.map.src = '/client/img/Player Map.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.forest = new Image();
 		Img.forest.src = '/client/websiteAssets/Forest.png';
+		Img.Town = new Image();
+		Img.Town.src = '/client/maps/Town.png';
+		Img.Town0 = new Image();
+		Img.Town0.src = '/client/maps/Town0.png';
+		Img.Town1 = new Image();
+		Img.Town1.src = '/client/maps/Town1.png';
 		var data;
 		var tileset;
 		var layers;
+		var loaded = false;
+		var image = new Image();
 		var renderLayer = function(layer){
 			if(layer.type !== "tilelayer" || !layer.opacity){
+				return;
+			}
+			
+			if(!Player.list[selfId]){
 				return;
 			}
 			var s = ctx.canvas.cloneNode(),
 			size = data.tilewidth;
 			s = s.getContext("2d");
 			if(layers.length < data.layers.length || 1){
+				/*var p_x = ~~(Player.list[selfId].x / 64);
+				var p_y = ~~(Player.list[selfId].y / 64);
+				var tile_idx;
+				var img_x;
+				var img_y;
+				var s_x;
+				var s_y;
+				var tile = data.tilesets[0];
+				for(var i = -RENDERDIST;i < RENDERDIST * 2 + 1;i++){
+					for(var j = -RENDERDIST;j < RENDERDIST * 2 + 1;j++){
+						tile_idx = layer.data[p_x + j + (p_y + i) * layer.width];
+						tile_idx -= 1;
+						img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+						img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+						//s_x = (i % layer.width) * size;
+						//s_y = ~~(i / layer.width) * size;
+						ctx.drawImage(tileset,img_x,img_y,size,size,p_x + j * size,p_y + i * size,size,size);
+					}
+				}*/
 				layer.data.forEach(function(tile_idx, i){
 					if(!tile_idx){
 						return;
@@ -172,12 +231,12 @@
 					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
 					s_x = (i % layer.width) * size;
 					s_y = ~~(i / layer.width) * size;
-					if(!Player.list[selfId]){
-						return;
-					}
 					if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
 						ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
 					}
+					//if(Player.list[selfId].x - RENDERDIST < s_x && Player.list[selfId].x + RENDERDIST > s_x && Player.list[selfId].y - RENDERDIST < s_y && Player.list[selfId].y + RENDERDIST > s_y){
+						//ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+					//}
 				});
 				//layers.push(s.canvas.toDataURL());
 				//ctx.drawImage(s.canvas, 0, 0);
@@ -187,7 +246,8 @@
 			if(Array.isArray(layers) === false){
 				layers = data.layers;
 			}
-    		layers.forEach(renderLayer);
+			layers.forEach(renderLayer);
+			//image.src = ctxRaw.toDataURL();
 		}
 		var loadTileset = function(json){
 			data = json;
@@ -225,29 +285,36 @@
 			self.mapHeight = 3200;
 			self.mapWidth = 3200;
 			self.updated = true;
+			self.ani = 0;
 			
 			self.draw = function(){
-				switch(self.img){
+				/*switch(self.img){
 					case 'player':
 						ctx.drawImage(Img.player,self.x - 16,self.y - 30);
 						break;
 					case 'none':
 						ctx.drawImage(Img.ghost,self.x - 16,self.y - 30);
 						break;
+				}*/
+				var ani = ~~(self.ani / 3)
+				entityCanvas.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 40,40,64);
+				self.ani += 1;
+				if(self.ani === 18){
+					self.ani = 0;
 				}
 			}
 			self.drawName = function(){
 				if(self.img === 'none'){
 					return;
 				}
-				ctx.font = "15px pixel";
-				ctx.fillStyle = '#ff7700';
-				ctx.textAlign = "center";
-				ctx.fillText(self.username,self.x - 1,self.y - 80);
-				ctx.fillStyle = '#555555';
-				ctx.fillRect(self.x - 52,self.y - 70,104,10);
-				ctx.fillStyle = '#aa5525';
-				ctx.fillRect(self.x - 50,self.y - 68,self.hp / self.hpMax * 100,6);
+				entityCanvas.font = "15px pixel";
+				entityCanvas.fillStyle = '#ff7700';
+				entityCanvas.textAlign = "center";
+				entityCanvas.fillText(self.username,self.x - 1,self.y - 80);
+				entityCanvas.fillStyle = '#555555';
+				entityCanvas.fillRect(self.x - 52,self.y - 70,104,10);
+				entityCanvas.fillStyle = '#aa5525';
+				entityCanvas.fillRect(self.x - 50,self.y - 68,self.hp / self.hpMax * 100,6);
 				if(self.attackReload > 24){
 					self.attackReload = 25;
 					mainAttackDiv.style.color = "#25ff25";
@@ -280,7 +347,7 @@
 			self.map = initPack.map;
 			self.updated = true;
 			self.draw = function(){
-				ctx.drawImage(Img.bullet,self.x - 24,self.y - 24);
+				entityCanvas.drawImage(Img.bullet,self.x - 24,self.y - 24);
 			}
 			Projectile.list[self.id] = self;
 			return self;
@@ -289,6 +356,12 @@
 
 		socket.on('selfId',function(data){
 			selfId = data;
+			//load('Town');
+			/*image.onload = function(){
+				ctx.drawImage(image,0,0);
+				console.log(1);
+				loaded = true;
+			}*/
 		});
 		socket.on('update',function(data){
 			for(var i in Player.list){
@@ -373,7 +446,6 @@
 		socket.on('changeMap',function(data){
 			load(data);
 		});
-		load('river');
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -407,15 +479,25 @@
 			if(!selfId){
 				return;
 			}
-			WIDTH = window.innerWidth;
-			HEIGHT = window.innerHeight;
-			ctx.canvas.width = window.innerWidth;
-			ctx.canvas.height = window.innerHeight;
-			ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			ctx.clearRect(0,0,WIDTH,HEIGHT);
+			
+			
 			if(!Player.list[selfId]){
 				return;
 			}
+			WIDTH = window.innerWidth;
+			HEIGHT = window.innerHeight;
+			if(window.innerWidth * 5 !== ctx.canvas.width){
+				//load(Player.list[selfId].map);
+				//ctx.canvas.width = window.innerWidth * 5;
+			}
+			if(window.innerHeight * 5 !== ctx.canvas.height){
+				//load(Player.list[selfId].map);
+				//ctx.canvas.height = window.innerHeight * 5;
+			}
+			//ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
+			entityCanvas.scale(window.innerWidth / 1536,window.innerWidth / 1536);
+			//ctx.clearRect(0,0,WIDTH,HEIGHT);
+			entityCanvas.clearRect(0,0,WIDTH,HEIGHT);
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
 			if(Player.list[selfId].x < WIDTH / 2){
@@ -430,23 +512,42 @@
 			if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
 				cameraY = HEIGHT - Player.list[selfId].mapHeight;
 			}
-			ctx.translate(cameraX,cameraY);
-			renderLayers();
+			//ctx.translate(cameraX,cameraY);
+			//ctxRaw.style.marginLeft = -cameraX;
+			//ctxRaw.style.marginTop = -cameraY;
+			//ctxRaw.style.marginLeft = -100;
+			//ctxRaw.style.marginTop = -100;
+			entityCanvas.translate(cameraX,cameraY);
+			entityCanvas.drawImage(Img.Town0,0,0);
+			//entityCanvas.drawImage(ctxRaw,0,0);
 			for(var i in Player.list){
 				Player.list[i].draw();
-				Player.list[i].drawName();
 			}
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
 			}
-			ctx.translate(-cameraX,-cameraY);
-			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
-			
+			entityCanvas.drawImage(Img.Town1,0,0);
+			for(var i in Player.list){
+				Player.list[i].drawName();
+			}
+			//if(loaded){
+				//ctx.drawImage(image,0,0);
+			//}
+			//renderLayers();
+			//ctx.translate(-cameraX,-cameraY);
+			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
+			entityCanvas.translate(-cameraX,-cameraY);
+			entityCanvas.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 		},25);
 		document.onkeydown = function(event){
-			socket.emit('keyPress',{inputId:event.keyCode,state:true});
+			if(chatPress){
+			}
+			else{
+				socket.emit('keyPress',{inputId:event.keyCode,state:true});
+			}
 		}
 		document.onkeyup = function(event){
+			chatPress = false;
 			socket.emit('keyPress',{inputId:event.keyCode,state:false});
 		}
 		
