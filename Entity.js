@@ -1,4 +1,8 @@
 
+var playerMap = {
+    'Town':0,
+};
+
 
 Entity = function(param){
     var self = {};
@@ -50,14 +54,28 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {'Town':{player:[],projectile:[]},'House':{player:[],projectile:[]}};
+    var pack = {'Town':{player:[],projectile:[],pet:[]},'House':{player:[],projectile:[],pet:[]}};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
+            pack[Player.list[i].map].player.push(Player.list[i].getInitPack());
+        }
+    }
+    for(var i in Pet.list){
+        if(Pet.list[i]){
+            Pet.list[i].update();
+            pack[Pet.list[i].map].pet.push(Pet.list[i].getInitPack());
         }
     }
     for(var i in Projectile.list){
         Projectile.list[i].update();
+    }
+    for(var i in ProjectileCollision.list){
+        if(ProjectileCollision.list[i]){
+            ProjectileCollision.list[i].update();
+        }
+    }
+    for(var i in Projectile.list){
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
         }
@@ -65,143 +83,67 @@ Entity.getFrameUpdateData = function(){
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getInitPack());
         }
     }
-    for(var i in Player.list){
-        if(Player.list[i]){
-            pack[Player.list[i].map].player.push(Player.list[i].getInitPack());
-        }
-    }
     return pack;
 }
 
-Player = function(param){
+Actor = function(param){
     var self = Entity(param);
-    var socket = SOCKET_LIST[self.id];
-    self.x = 0;
-    self.y = 0;
-    self.lastX = 0;
-    self.lastY = 0;
-    self.spdX = 0;
-    self.spdY = 0;
-    self.width = 32;
-    self.height = 48;
-    self.moveSpeed = 10;
-    self.img = 'player';
-    self.hp = 1000;
-    self.hpMax = 1000;
-    self.direction = 0;
-    self.map = 'Town';
-    self.state = 'game';
-    self.changeMap = true;
-    self.animation = 0;
-    self.mapHeight = 3200;
-    self.mapWidth = 3200;
-    self.username = param.username;
-	self.keyPress = {
-        up:false,
-        down:false,
-        left:false,
-        right:false,
-        attack:false,
-        second:false,
-        heal:false,
-    };
-    self.keyMap = {
-        up:87,
-        down:83,
-        left:65,
-        right:68,
-        attack:'attack',
-        second:'second',
-        heal:'second',
-    };
-    self.attackReload = 25;
-    self.secondReload = 250;
+    self.moveSpeed = param.moveSpeed;
+    self.moveArray = [];
+    self.moveDoneX = 0;
+    self.moveDoneY = 0;
     var super_update = self.update;
     self.update = function(){
-        self.updateSpd();
+        self.updateMove();
         super_update();
-        self.updateAttack();
         self.updateCollisions();
-        if(self.changeMap){
-            self.changeMap = false;
-            socket.emit('changeMap',[self.map,{
-                player:Player.getMapInitPack(),
-                projectile:Projectile.getMapInitPack(),
-            }]);
-        }
     }
-    self.updateSpd = function(){
-        self.spdX = 0;
-        self.spdY = 0;
+    self.updateMove = function(){
         self.lastX = self.x;
         self.lastY = self.y;
-        if(self.keyPress.up){
-            self.spdY -= self.moveSpeed;
-        }
-        if(self.keyPress.down){
-            self.spdY += self.moveSpeed;
-        }
-        if(self.keyPress.left){
-            self.spdX -= self.moveSpeed;
-        }
-        if(self.keyPress.right){
-            self.spdX += self.moveSpeed;
-        }
-        if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
-            self.animation = 0;
-        }
-        if(self.x < self.width / 2){
-            self.x = self.width / 2;
-        }
-        if(self.x > self.mapWidth - self.width / 2){
-            self.x = self.mapWidth - self.width / 2;
-        }
-        if(self.y < self.height / 2){
-            self.y = self.height / 2;
-        }
-        if(self.y > self.mapHeight - self.height / 2){
-            self.y = self.mapHeight - self.height / 2;
-        }
-    }
-    self.updateAttack = function(){
-        self.attackReload += 1;
-        self.secondReload += 1;
-        if(self.img === 'player'){
-            if(self.keyPress.attack === true && self.attackReload > 25){
-                self.shootProjectile();
-                self.attackReload = 1;
+        if(self.moveArray[0]){
+            if(self.x < self.moveArray[0][0] - self.moveSpeed && !self.moveDoneX){
+                self.spdX = self.moveSpeed;
             }
-            if(self.keyPress.second === true && self.secondReload > 250){
-                self.secondaryAttack();
-                self.secondReload = 1;
+            else if(self.x > self.moveArray[0][0] + self.moveSpeed && !self.moveDoneX){
+                self.spdX = - self.moveSpeed;
+            }
+            else{
+                self.moveDoneX = 1;
+                self.spdX = 0;
+            }
+            if(self.y < self.moveArray[0][1] - self.moveSpeed && !self.moveDoneY){
+                self.spdY = self.moveSpeed;
+            }
+            else if(self.y > self.moveArray[0][1] + self.moveSpeed && !self.moveDoneY){
+                self.spdY = - self.moveSpeed;
+            }
+            else{
+                self.moveDoneY = 1;
+                self.spdY = 0;
+            }
+            if(self.moveDoneX === 1 && self.moveDoneY === 1){
+                self.moveDoneX = 0;
+                self.moveDoneY = 0;
+                self.moveArray.shift();
+                self.spdX = 0;
+                self.spdY = 0;
             }
         }
-        if(self.hp < 1){
-            Player.spectate(socket);
-        }
     }
-    self.shootProjectile = function(){
+    self.move = function(x,y){
+        self.moveArray.push([x,y]);
+    }
+    self.shootProjectile = function(id,angle,direction,type,distance){
 		var projectile = Projectile({
-			id:self.id,
-			angle:self.direction,
-			direction:self.direction,
-			x:self.x + Math.cos(self.direction/180*Math.PI) * 20,
-			y:self.y + Math.sin(self.direction/180*Math.PI) * 20,
+            id:id,
+            type:type,
+			angle:angle,
+			direction:direction,
+			x:self.x + Math.cos(direction/180*Math.PI) * distance,
+			y:self.y + Math.sin(direction/180*Math.PI) * distance,
 			map:self.map,
 		});
-    }
-    self.secondaryAttack = function(){
-        for(var i = 0; i < 11; i++){
-            var projectile = Projectile({
-            id:self.id,
-            angle:i * 36 + self.direction,
-            direction:i * 36 + self.direction,
-            x:self.x + Math.cos((i * 36 + self.direction)/180*Math.PI) * 40,
-            y:self.y + Math.sin((i * 36 + self.direction)/180*Math.PI) * 40,
-            map:self.map,
-            });
-        }
-        
     }
     self.updateCollisions = function(){
         var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
@@ -274,12 +216,123 @@ Player = function(param){
                 }
             }
             else if(self.spdX === 0 && self.spdY === 0){
-
             }
             else{
                 self.x = self.lastX;
                 self.y = self.lastY;
+                self.spdX = 0;
+                self.spdY = 0;
             }
+        }
+    }
+    return self;
+}
+
+Player = function(param){
+    var self = Actor(param);
+    var socket = SOCKET_LIST[self.id];
+    self.x = 0;
+    self.y = 0;
+    self.lastX = 0;
+    self.lastY = 0;
+    self.spdX = 0;
+    self.spdY = 0;
+    self.mouseX = 0;
+    self.mouseY = 0;
+    self.width = 32;
+    self.height = 48;
+    self.moveSpeed = 10;
+    self.img = 'player';
+    self.hp = 1000;
+    self.hpMax = 1000;
+    self.direction = 0;
+    self.map = 'Town';
+    playerMap[self.map] += 1;
+    self.state = 'game';
+    self.animation = 0;
+    self.mapHeight = 3200;
+    self.mapWidth = 3200;
+    self.username = param.username;
+	self.keyPress = {
+        up:false,
+        down:false,
+        left:false,
+        right:false,
+        attack:false,
+        second:false,
+        heal:false,
+    };
+    self.keyMap = {
+        up:87,
+        down:83,
+        left:65,
+        right:68,
+        attack:'attack',
+        second:'second',
+        heal:'second',
+    };
+    self.attackReload = 25;
+    self.secondReload = 250;
+    self.update = function(){
+        self.updateSpd();
+        self.updateMove();
+        self.updatePosition();
+        self.updateCollisions();
+        self.updateAttack();
+    }
+    self.updateSpd = function(){
+        self.spdX = 0;
+        self.spdY = 0;
+        self.lastX = self.x;
+        self.lastY = self.y;
+        if(self.keyPress.up){
+            self.spdY -= self.moveSpeed;
+        }
+        if(self.keyPress.down){
+            self.spdY += self.moveSpeed;
+        }
+        if(self.keyPress.left){
+            self.spdX -= self.moveSpeed;
+        }
+        if(self.keyPress.right){
+            self.spdX += self.moveSpeed;
+        }
+        if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
+            self.animation = 0;
+        }
+        if(self.x < self.width / 2){
+            self.x = self.width / 2;
+        }
+        if(self.x > self.mapWidth - self.width / 2){
+            self.x = self.mapWidth - self.width / 2;
+        }
+        if(self.y < self.height / 2){
+            self.y = self.height / 2;
+        }
+        if(self.y > self.mapHeight - self.height / 2){
+            self.y = self.mapHeight - self.height / 2;
+        }
+    }
+    self.updateAttack = function(){
+        self.attackReload += 1;
+        self.secondReload += 1;
+        if(self.img === 'player'){
+            if(self.keyPress.attack === true && self.attackReload > 25){
+                self.shootProjectile(self.id,self.direction,self.direction,0,20);
+                self.attackReload = 1;
+            }
+            if(self.keyPress.second === true && self.secondReload > 250){
+                for(var i = 10;i < 80;i+=10){
+                    self.shootProjectile(self.id,0,0,0,i);
+                    self.shootProjectile(self.id,90,90,0,i);
+                    self.shootProjectile(self.id,180,180,0,i);
+                    self.shootProjectile(self.id,-90,-90,0,i);
+                }
+                self.secondReload = 1;
+            }
+        }
+        if(self.hp < 1){
+            Player.spectate(socket);
         }
     }
     self.getInitPack = function(){
@@ -350,7 +403,9 @@ Player.onConnect = function(socket,username){
 			player.keyPress.heal = data.state;
 		}
 		if(data.inputId === 'direction'){
-			player.direction = (Math.atan2(data.state.y,data.state.x) / Math.PI * 180);
+            player.direction = (Math.atan2(data.state.y,data.state.x) / Math.PI * 180);
+            player.mouseX = data.state.x + player.x;
+            player.mouseY = data.state.y + player.y;
 		}
     });
 
@@ -381,11 +436,17 @@ Player.onDisconnect = function(socket){
             delete Projectile.list[i];
         }
     }
+    for(var i in Pet.list){
+        if(socket && Pet.list[i].parent === socket.id){
+            delete Pet.list[i];
+        }
+    }
     if(!socket){
         return;
     }
 	socket.emit("disconnected");
     if(Player.list[socket.id]){
+        playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
     }
 }
@@ -405,6 +466,113 @@ Player.getMapInitPack = function(map){
     }
 	return players;
 }
+
+
+Npc = function(param){
+	var self = Actor(param);
+	self.id = Math.random();
+    self.map = 'Town';
+	var super_update = self.update;
+	self.update = function(){
+        super_update();
+    }
+	self.getInitPack = function(){
+		return {
+			x:self.x,
+			y:self.y,
+			id:self.id,
+			direction:self.direction,
+			map:self.map,
+		}
+	}
+	self.getUpdatePack = function(){
+		return {
+			x:self.x,
+			y:self.y,
+			id:self.id,
+			direction:self.direction,
+		}
+	}
+	Npc.list[self.id] = self;
+	return self;
+}
+Npc.list = {};
+
+Npc.getAllInitPack = function(){
+	var npcs = [];
+	for(var i in Npc.list)
+        npcs.push(Npc.list[i].getInitPack())
+	return npcs;
+}
+
+Npc.getMapInitPack = function(map){
+	var npcs = [];
+	for(var i in Npc.list){
+        if(Npc.list[i].map === map){
+            npcs.push(Npc.list[i].getInitPack());
+        }
+    }
+	return npcs;
+}
+
+Pet = function(param){
+	var self = Npc(param);
+	self.id = Math.random();
+    self.map = 'Town';
+    self.parent = param.parent;
+    self.reload = 0;
+	var super_update = self.update;
+	self.update = function(){
+        super_update();
+        self.updateAttack();
+    }
+    self.updateAttack = function(){
+        self.reload += 1;
+        if(self.reload > 10){
+            self.reload = 0;
+            var direction = (Math.atan2(Player.list[self.parent].mouseY - Player.list[self.parent].y + self.y,Player.list[self.parent].mouseX - Player.list[self.parent].x + self.x) / Math.PI * 180);
+            self.shootProjectile(self.parent,direction,direction,0,35);
+        }
+    }
+	self.getInitPack = function(){
+		return {
+			x:self.x,
+			y:self.y,
+			id:self.id,
+			direction:self.direction,
+			map:self.map,
+		}
+	}
+	self.getUpdatePack = function(){
+		return {
+			x:self.x,
+			y:self.y,
+			id:self.id,
+			direction:self.direction,
+		}
+	}
+	Pet.list[self.id] = self;
+	return self;
+}
+Pet.list = {};
+
+Pet.getAllInitPack = function(){
+	var pets = [];
+	for(var i in Pet.list)
+        pets.push(Pet.list[i].getInitPack())
+	return pets;
+}
+
+Pet.getMapInitPack = function(map){
+	var pets = [];
+	for(var i in Pet.list){
+        if(Pet.list[i].map === map){
+            pets.push(Pet.list[i].getInitPack());
+        }
+    }
+	return pets;
+}
+
 
 Projectile = function(param){
 	var self = Entity(param);
@@ -492,7 +660,6 @@ Projectile.getMapInitPack = function(map){
 	return projectiles;
 }
 
-var fs = require('fs');
 
 var data;
 var tileset;
@@ -511,6 +678,15 @@ var renderLayer = function(layer){
             tile = data.tilesets[0];
             if(tile_idx === 2122){
                 var collision = new Collision({
+                    x:(i % layer.width) * size,
+                    y:~~(i / layer.width) * size,
+                    size:size,
+                    map:map,
+                });
+			}
+            tile = data.tilesets[0];
+            if(tile_idx === 1950){
+                var projectileCollision = new ProjectileCollision({
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
                     size:size,
@@ -582,6 +758,15 @@ updateCrashes = function(){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && Projectile.list[j].parent != i && Player.list[i].img == 'player'){
                     Projectile.list[j].toRemove = true;
                     Player.list[i].hp -= 100;
+                }
+            }
+        }
+    }
+    for(var i in Npc.list){
+        for(var j in Projectile.list){
+            if(Npc.list[i] && Projectile.list[j]){
+                if(Npc.list[i].getDistance(Projectile.list[j]) < 30 && Projectile.list[j].parent != i){
+                    Projectile.list[j].toRemove = true;
                 }
             }
         }

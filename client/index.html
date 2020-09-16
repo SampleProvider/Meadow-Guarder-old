@@ -170,6 +170,8 @@
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.map = new Image();
 		Img.map.src = '/client/img/Player Map.png';
+		Img.pet = new Image();
+		Img.pet.src = '/client/img/Pet.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.forest = new Image();
@@ -272,6 +274,23 @@
 			return self;
 		}
 		Projectile.list = {};
+		var Pet = function(initPack){
+			var self = {};
+			self.id = initPack.id;
+			self.x = initPack.x;
+			self.y = initPack.y;
+			self.direction = initPack.direction;
+			self.hp = initPack.hp;
+			self.hpMax = initPack.hpMax;
+			self.map = initPack.map;
+			self.updated = true;
+			self.draw = function(){
+				ctx.drawImage(Img.pet,self.x - 12,self.y - 18);
+			}
+			Pet.list[self.id] = self;
+			return self;
+		}
+		Pet.list = {};
 
 		socket.on('selfId',function(data){
 			selfId = data;
@@ -282,6 +301,9 @@
 			}
 			for(var i in Projectile.list){
 				Projectile.list[i].updated = false;
+			}
+			for(var i in Pet.list){
+				Pet.list[i].updated = false;
 			}
 			if(data){
 				for(var i = 0;i < data.player.length;i++){
@@ -335,6 +357,22 @@
 						}
 					}
 				}
+				if(data.pet.length > 0){
+					for(var i = 0;i < data.pet.length;i++){
+						if(Pet.list[data.pet[i].id]){
+							if(data.pet[i].x){
+								Pet.list[data.pet[i].id].x = data.pet[i].x;
+							}
+							if(data.pet[i].y){
+								Pet.list[data.pet[i].id].y = data.pet[i].y;
+							}
+							Pet.list[data.pet[i].id].updated = true;
+						}
+						else{
+							new Pet(data.pet[i]);
+						}
+					}
+				}
 			}
 			for(var i in Player.list){
 				if(Player.list[i].updated === false){
@@ -344,6 +382,11 @@
 			for(var i in Projectile.list){
 				if(Projectile.list[i].updated === false){
 					delete Projectile.list[i];
+				}
+			}
+			for(var i in Pet.list){
+				if(Pet.list[i].updated === false){
+					delete Pet.list[i];
 				}
 			}
 		});
@@ -356,6 +399,7 @@
 		socket.on('spectator',function(data){
 			STATE = 'spectator';
 		});
+		
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -420,6 +464,9 @@
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
 			}
+			for(var i in Pet.list){
+				Pet.list[i].draw();
+			}
 			ctx.drawImage(Img.Town1,0,0);
 			for(var i in Player.list){
 				Player.list[i].drawName();
@@ -427,6 +474,7 @@
 			ctx.translate(-cameraX,-cameraY);
 			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 		},25);
+		
 		document.onkeydown = function(event){
 			if(chatPress){
 			}
