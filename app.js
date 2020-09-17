@@ -1,5 +1,5 @@
 
-SERVER = 'heroku';
+SERVER = 'localhost';
 
 var express = require('express');
 var app = express();
@@ -90,6 +90,7 @@ io.sockets.on('connection', function(socket){
 		delete SOCKET_LIST[socket.id];
 	});
 	socket.on('sendMsgToServer',function(data){
+		console.error(Player.list[socket.id].username + ': ' + data);
 		for(var i in SOCKET_LIST){
 			SOCKET_LIST[i].emit('addToChat',Player.list[socket.id].username + ': ' + data);
 		}

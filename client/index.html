@@ -20,6 +20,7 @@
 	</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
+		<div id="blackShade"></div>
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		
@@ -73,6 +74,7 @@
 		var adDiv = document.getElementById('ads');
 		var ctxRaw = document.getElementById('ctx');
 		var signDiv = document.getElementById('sign');
+		var blackShade = document.getElementById('blackShade');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
 		var signDivSignIn = document.getElementById('signIn');
@@ -157,6 +159,17 @@
 		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
 		
+		var maps = {};
+
+		var load = function(name){
+			return $.getJSON("/client/maps/" + name + ".json",function(json){
+				maps[name] = json.backgroundcolor;
+			});
+		}
+		load('Village');
+		load('Starter House');
+		var shadeSpeed = 0;
+		var shadeAmount = 0;
 		var Img = {};
 		Img.player = new Image();
 		Img.player.src = '/client/img/Player.png';
@@ -178,10 +191,14 @@
 		Img.forest.src = '/client/websiteAssets/Forest.png';
 		Img.Town = new Image();
 		Img.Town.src = '/client/maps/Town.png';
+		Img.Village0 = new Image();
+		Img.Village0.src = '/client/maps/Village0.png';
+		Img.Village1 = new Image();
+		Img.Village1.src = '/client/maps/Village1.png';
 		Img.Town0 = new Image();
-		Img.Town0.src = '/client/maps/Town0.png';
+		Img.Town0.src = '/client/maps/Starter House0.png';
 		Img.Town1 = new Image();
-		Img.Town1.src = '/client/maps/Town1.png';
+		Img.Town1.src = '/client/maps/Starter House1.png';
 
 
 		var selfId = null;
@@ -399,7 +416,13 @@
 		socket.on('spectator',function(data){
 			STATE = 'spectator';
 		});
-		
+		socket.on('changeMap',function(){
+			shadeSpeed = 0.05;
+			if(shadeAmount < 0){
+				shadeAmount = 0;
+			}
+		});
+
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -441,23 +464,35 @@
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
 			ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			ctx.clearRect(0,0,WIDTH,HEIGHT);
+			ctx.fillStyle = maps[Player.list[selfId].map];
+			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
-			if(Player.list[selfId].x < WIDTH / 2){
-				cameraX = 0;
+			if(Player.list[selfId].mapWidth > window.innerWidth){
+				if(Player.list[selfId].x < WIDTH / 2){
+					cameraX = 0;
+				}
+				if(Player.list[selfId].x > Player.list[selfId].mapWidth - WIDTH / 2){
+					cameraX = WIDTH - Player.list[selfId].mapWidth;
+				}
 			}
-			if(Player.list[selfId].x > Player.list[selfId].mapWidth - WIDTH / 2){
-				cameraX = WIDTH - Player.list[selfId].mapWidth;
-			}
-			if(Player.list[selfId].y < HEIGHT / 2){
-				cameraY = 0;
-			}
-			if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
-				cameraY = HEIGHT - Player.list[selfId].mapHeight;
+			if(Player.list[selfId].mapHeight > window.innerHeight){
+				if(Player.list[selfId].y < HEIGHT / 2){
+					cameraY = 0;
+				}
+				if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
+					cameraY = HEIGHT - Player.list[selfId].mapHeight;
+				}
 			}
 			ctx.translate(cameraX,cameraY);
-			ctx.drawImage(Img.Town0,0,0);
+			switch(Player.list[selfId].map){
+				case 'Village':
+					ctx.drawImage(Img.Village0,0,0);
+					break;
+				case 'Starter House':
+					ctx.drawImage(Img.Town0,0,0);
+					break;
+			}
 			for(var i in Player.list){
 				Player.list[i].draw();
 			}
@@ -467,12 +502,26 @@
 			for(var i in Pet.list){
 				Pet.list[i].draw();
 			}
-			ctx.drawImage(Img.Town1,0,0);
+			switch(Player.list[selfId].map){
+				case 'Village':
+					ctx.drawImage(Img.Village1,0,0);
+					break;
+				case 'Starter House':
+					ctx.drawImage(Img.Town1,0,0);
+					break;
+			}
 			for(var i in Player.list){
 				Player.list[i].drawName();
 			}
 			ctx.translate(-cameraX,-cameraY);
 			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
+
+			if(shadeAmount > 2){
+				shadeSpeed = -0.05;
+			}
+			console.log(shadeAmount);
+			shadeAmount += shadeSpeed;
+			blackShade.style.opacity = shadeAmount;
 		},25);
 		
 		document.onkeydown = function(event){

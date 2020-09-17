@@ -47,8 +47,18 @@ Transporter = function(param){
     self.x = self.x + 32;
     self.y = self.y + 32;
     self.teleport = param.teleport;
-    self.teleportx = param.teleportx;
-    self.teleporty = param.teleporty;
+    self.teleportx = parseInt(param.teleportx,10);
+    self.teleporty = parseInt(param.teleporty,10);
+    if(Maps[self.teleport]){
+        self.mapx = Maps[self.teleport].width;
+        self.mapy = Maps[self.teleport].height;
+    }
+    setTimeout(function(){
+        if(Maps[self.teleport]){
+            self.mapx = Maps[self.teleport].width;
+            self.mapy = Maps[self.teleport].height;
+        }
+    },2000);
     self.width = param.size;
     self.height = param.size;
     var super_update = self.update;

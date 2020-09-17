@@ -1,7 +1,9 @@
 
 var playerMap = {
-    'Town':0,
+    'Village':0,
 };
+
+Maps = {};
 
 
 Entity = function(param){
@@ -45,7 +47,7 @@ Entity = function(param){
 		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2))
     }
     self.isColliding = function(pt){
-        if(pt.x + pt.width / 2 > self.x && pt.x  - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y && pt.y - pt.height / 2 < self.y + self.height / 2){
+        if(pt.x + pt.width / 2 > self.x - self.width / 2 && pt.x  - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y - self.y && pt.y - pt.height / 2 < self.y + self.height / 2){
             return true;
         }
         return false;
@@ -54,7 +56,7 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {'Town':{player:[],projectile:[],pet:[]},'House':{player:[],projectile:[],pet:[]}};
+    var pack = {'Village':{player:[],projectile:[],pet:[]},'Starter House':{player:[],projectile:[],pet:[]}};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
@@ -92,6 +94,7 @@ Actor = function(param){
     self.moveArray = [];
     self.moveDoneX = 0;
     self.moveDoneY = 0;
+    self.mapChange = false;
     var super_update = self.update;
     self.update = function(){
         self.updateMove();
@@ -164,34 +167,50 @@ Actor = function(param){
         }
         if(Transporter.list[firstTile]){
             if(self.isColliding(Transporter.list[firstTile])){
-                self.map = Transporter.list[firstTile].teleport;
-                self.x = Transporter.list[firstTile].teleportx;
-                self.y = Transporter.list[firstTile].teleporty;
-                socket.emit('changeMap',self.map);
+                setTimeout(function(){
+                    self.map = Transporter.list[firstTile].teleport;
+                    self.x = Transporter.list[firstTile].teleportx;
+                    self.y = Transporter.list[firstTile].teleporty;
+                    self.mapWidth = Transporter.list[firstTile].mapx;
+                    self.mapHeight = Transporter.list[firstTile].mapy;
+                },1000);
+                self.mapChange = true;
             }
         }
         if(Transporter.list[secondTile]){
             if(self.isColliding(Transporter.list[secondTile])){
-                self.map = Transporter.list[secondTile].teleport;
-                self.x = Transporter.list[secondTile].teleportx;
-                self.y = Transporter.list[secondTile].teleporty;
-                socket.emit('changeMap',self.map);
+                setTimeout(function(){
+                    self.map = Transporter.list[secondTile].teleport;
+                    self.x = Transporter.list[secondTile].teleportx;
+                    self.y = Transporter.list[secondTile].teleporty;
+                    self.mapWidth = Transporter.list[secondTile].mapx;
+                    self.mapHeight = Transporter.list[secondTile].mapy;
+                },1000);
+                self.mapChange = true;
             }
         }
         if(Transporter.list[thirdTile]){
             if(self.isColliding(Transporter.list[thirdTile])){
-                self.map = Transporter.list[thirdTile].teleport;
-                self.x = Transporter.list[thirdTile].teleportx;
-                self.y = Transporter.list[thirdTile].teleporty;
-                socket.emit('changeMap',self.map);
+                setTimeout(function(){
+                    self.map = Transporter.list[thirdTile].teleport;
+                    self.x = Transporter.list[thirdTile].teleportx;
+                    self.y = Transporter.list[thirdTile].teleporty;
+                    self.mapWidth = Transporter.list[thirdTile].mapx;
+                    self.mapHeight = Transporter.list[thirdTile].mapy;
+                },1000);
+                self.mapChange = true;
             }
         }
         if(Transporter.list[fourthTile]){
             if(self.isColliding(Transporter.list[fourthTile])){
-                self.map = Transporter.list[fourthTile].teleport;
-                self.x = Transporter.list[fourthTile].teleportx;
-                self.y = Transporter.list[fourthTile].teleporty;
-                socket.emit('changeMap',self.map);
+                setTimeout(function(){
+                    self.map = Transporter.list[fourthTile].teleport;
+                    self.x = Transporter.list[fourthTile].teleportx;
+                    self.y = Transporter.list[fourthTile].teleporty;
+                    self.mapWidth = Transporter.list[fourthTile].mapx;
+                    self.mapHeight = Transporter.list[fourthTile].mapy;
+                },1000);
+                self.mapChange = true;
             }
         }
     }
@@ -246,7 +265,7 @@ Player = function(param){
     self.hp = 1000;
     self.hpMax = 1000;
     self.direction = 0;
-    self.map = 'Town';
+    self.map = 'Village';
     playerMap[self.map] += 1;
     self.state = 'game';
     self.animation = 0;
@@ -279,6 +298,13 @@ Player = function(param){
         self.updatePosition();
         self.updateCollisions();
         self.updateAttack();
+        self.updateMap();
+    }
+    self.updateMap = function(){
+        if(self.mapChange){
+            self.mapChange = false;
+            socket.emit('changeMap');
+        }
     }
     self.updateSpd = function(){
         self.spdX = 0;
@@ -471,7 +497,7 @@ Player.getMapInitPack = function(map){
 Npc = function(param){
 	var self = Actor(param);
 	self.id = Math.random();
-    self.map = 'Town';
+    self.map = 'Village';
 	var super_update = self.update;
 	self.update = function(){
         super_update();
@@ -518,7 +544,7 @@ Npc.getMapInitPack = function(map){
 Pet = function(param){
 	var self = Npc(param);
 	self.id = Math.random();
-    self.map = 'Town';
+    self.map = 'Village';
     self.parent = param.parent;
     self.reload = 0;
 	var super_update = self.update;
@@ -670,6 +696,7 @@ var renderLayer = function(layer){
         return;
     }
     size = data.tilewidth;
+    Maps[map] = {width:layer.width * size,height:layer.height * size};
     if(layers.length < data.layers.length || 1){
         layer.data.forEach(function(tile_idx, i){
             if(!tile_idx){
@@ -693,7 +720,7 @@ var renderLayer = function(layer){
                     map:map,
                 });
 			}
-            if(tile_idx === 160022){
+            if(tile_idx === 2036){
 				var teleport = "";
 				var teleportj = 0;
 				var x = "";
@@ -713,7 +740,7 @@ var renderLayer = function(layer){
 							y = layer.name.substr(xj + 1,j - xj - 1);
 						}
 					}
-				}
+                }
                 var transporter = new Transporter({
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
@@ -748,8 +775,8 @@ var load = function(name){
         loadTileset(require("/app/client/maps/" + name + ".json"));
     }
 }
-load("Town");
-
+load("Village");
+load("Starter House");
 
 updateCrashes = function(){
     for(var i in Player.list){

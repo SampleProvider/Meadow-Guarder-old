@@ -51,15 +51,22 @@ var doCmd = function(text){
                 break;
             }
         }
-        var command = text.substring(1,commandIndex);
-        index = commandIndex + 1;
-        for(var i = commandIndex + 1;i < text.length;i++){
-            if(text[i] === ' '){
-                param.push(text.substring(index,i));
-                index = parseInt(i) + 1;
-            }
+        if(commandIndex === 0){
+            var command = text.substring(1);
+            command = command.toLowerCase();
         }
-        param.push(text.substring(index));
+        else{
+            var command = text.substring(1,commandIndex);
+            command = command.toLowerCase();
+            index = commandIndex + 1;
+            for(var i = commandIndex + 1;i < text.length;i++){
+                if(text[i] === ' '){
+                    param.push(text.substring(index,i));
+                    index = parseInt(i) + 1;
+                }
+            }
+            param.push(text.substring(index));
+        }
         switch(command){
             case 'broadcast':
                 if(param.length < 2){
@@ -84,36 +91,56 @@ var doCmd = function(text){
                     break;
                 }
                 if(param[0] === 'username'){
-                    var username = '';
-                    for(var i = 1;i < param.length;i++){
-                        username += param[i];
-                        if(i !== param.length - 1){
-                            username += ' ';
-                        }
+                    if(param.length === 1){
+                        console.error('Current ConsoleName: '.info + consoleName.help);
                     }
-                    consoleName = username;
-                    cmdDone('commandDone',0);
+                    else{
+                        var username = '';
+                        for(var i = 1;i < param.length;i++){
+                            username += param[i];
+                            if(i !== param.length - 1){
+                                username += ' ';
+                            }
+                        }
+                        consoleName = username;
+                        cmdDone('commandDone',0);
+                    }
                 }
                 else if(param[0] === 'help'){
                     if(param.length === 1){
                         console.error('COMMAND LIST'.help);
-                        console.error('Use / to start a command.'.help);
+                        console.error('Use / to start a command'.help);
                         console.error('BROADCAST-----------(param) BROADCAST-NAME MESSAGE'.help);
                         console.error('CONSOLE-------------(param) TYPE PARAM'.help);
                         console.error('DISCONNECT----------(param) PLAYER-NAME'.help);
+                        console.error('EXIT----------------(param (none)'.help);
                         console.error('KILL----------------(param) PLAYER-NAME'.help);
                         console.error('TIMEOUT-------------(param) TIME'.help);
-                        console.error('\nFor more help on a certain command, try /console help command');
-                        cmdDone('commandDone',0);
+                        console.error('\nFor more help on a certain command, try /console help command'.info);
                     }
                     else if(param.length === 2){
                         switch(param[1]){
                             case 'broadcast':
-                                console.error('Broadcasts a global message into the chat.'.help);
+                                console.error('Broadcasts a global message into the chat'.help);
                                 console.error('\nParameters:'.help);
                                 console.error('BROADCAST-NAME------Display name in the chat'.help);
                                 console.error('MESSAGE-------------Message to display in the chat'.help);
-                                cmdDone('commandDone',0);
+                                break;
+                            case 'console':
+                                console.error('Special console commands'.help);
+                                console.error('\nParameters:'.help);
+                                console.error('TYPE----------------Type of command to do'.help);
+                                console.error('\nTYPE = username-----Change the display username of non-command chats'.help);
+                                console.error('TYPE = username-----Parameters:'.help);
+                                console.error('TYPE = username-----(none)--------------Read currect username'.help);
+                                console.error('TYPE = username-----USERNAME------------Username to set to'.help);
+                                console.error('\nTYPE = help-----Help on commands'.help);
+                                console.error('TYPE = help-----Parameters:'.help);
+                                console.error('TYPE = help-----(none)--------------Briefview of all commands'.help);
+                                console.error('TYPE = help-----COMMAND-------------Extra help on a certain command'.help);
+                                break;
+                            default:
+                                cmdError('param');
                                 break;
                         }
                     }
@@ -155,6 +182,12 @@ var doCmd = function(text){
                 delete SOCKET_LIST[socket.id];
                 cmdDone('commandDone',0);
                 break;
+            case 'exit':
+                if(param.length !== 0){
+                    cmdError('param',0);
+                    break;
+                }
+                process.exit(0);
             case 'kill':
                 if(param.length !== 1){
                     cmdError('param',0);
@@ -169,6 +202,7 @@ var doCmd = function(text){
                 }
                 if(!killed){
                     cmdError('playerFound',param[0]);
+                    break;
                 }
                 cmdDone('commandDone',0);
                 break;
@@ -195,7 +229,7 @@ var doCmd = function(text){
 }
 
 var questionCmd = function(){
-    rl.question('Type your command:\n'.info,function(answer){
+    rl.question('$:',function(answer){
         doCmd(answer);
     });
 }
