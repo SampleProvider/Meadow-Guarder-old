@@ -143,6 +143,7 @@
 			}
 		});
 		
+		
 		chatForm.onsubmit = function(e){
 			e.preventDefault();
 			socket.emit('sendMsgToServer',chatInput.value);
@@ -171,14 +172,6 @@
 		var shadeSpeed = 0;
 		var shadeAmount = 0;
 		var Img = {};
-		Img.player = new Image();
-		Img.player.src = '/client/img/Player.png';
-		Img.player2 = new Image();
-		Img.player2.src = '/client/img/Base Player.png';
-		Img.player3 = new Image();
-		Img.player3.src = '/client/img/Base Player Walk 3.png';
-		Img.player4 = new Image();
-		Img.player4.src = '/client/img/Base Player Walk 4.png';
 		Img.ghost = new Image();
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.map = new Image();
@@ -187,10 +180,6 @@
 		Img.pet.src = '/client/img/Pet.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
-		Img.forest = new Image();
-		Img.forest.src = '/client/websiteAssets/Forest.png';
-		Img.Town = new Image();
-		Img.Town.src = '/client/maps/Town.png';
 		Img.Village0 = new Image();
 		Img.Village0.src = '/client/maps/Village0.png';
 		Img.Village1 = new Image();
@@ -199,7 +188,6 @@
 		Img.Town0.src = '/client/maps/Starter House0.png';
 		Img.Town1 = new Image();
 		Img.Town1.src = '/client/maps/Starter House1.png';
-
 
 		var selfId = null;
 
@@ -235,7 +223,7 @@
 					return;
 				}
 				var ani = ~~(self.ani / 3)
-				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 40,40,64);
+				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 60,40,64);
 				self.ani += 1;
 				if(self.ani === 18){
 					self.ani = 0;

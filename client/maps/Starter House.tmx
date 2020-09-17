@@ -60,7 +60,7 @@
 1319,1318,1318,1321,0,0,1319,1318,1318,1321
 </data>
  </layer>
- <layer id="5" name="Village:2080:480:" width="10" height="10" visible="0" opacity="0">
+ <layer id="5" name="Village:2080:416:down:" width="10" height="10" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,
@@ -74,7 +74,7 @@
 0,0,0,0,2036,2036,0,0,0,0
 </data>
  </layer>
- <layer id="6" name="Collision" width="10" height="10" visible="0" opacity="0">
+ <layer id="6" name="Collision" width="10" height="10" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,

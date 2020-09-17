@@ -49,6 +49,7 @@ Transporter = function(param){
     self.teleport = param.teleport;
     self.teleportx = parseInt(param.teleportx,10);
     self.teleporty = parseInt(param.teleporty,10);
+    self.teleportdirection = param.direction;
     if(Maps[self.teleport]){
         self.mapx = Maps[self.teleport].width;
         self.mapy = Maps[self.teleport].height;

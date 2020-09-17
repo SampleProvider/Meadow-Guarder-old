@@ -47,7 +47,7 @@ Entity = function(param){
 		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2))
     }
     self.isColliding = function(pt){
-        if(pt.x + pt.width / 2 > self.x - self.width / 2 && pt.x  - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y - self.y && pt.y - pt.height / 2 < self.y + self.height / 2){
+        if(pt.x + pt.width / 2 > self.x - self.width / 2 && pt.x - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y - self.height / 2 && pt.y - pt.height / 2 < self.y + self.height / 2){
             return true;
         }
         return false;
@@ -97,29 +97,31 @@ Actor = function(param){
     self.mapChange = false;
     var super_update = self.update;
     self.update = function(){
-        self.updateMove();
-        super_update();
-        self.updateCollisions();
+        for(var i = 0;i < self.moveSpeed;i++){
+            self.updateMove();
+            super_update();
+            self.updateCollisions();
+        }
     }
     self.updateMove = function(){
         self.lastX = self.x;
         self.lastY = self.y;
         if(self.moveArray[0]){
-            if(self.x < self.moveArray[0][0] - self.moveSpeed && !self.moveDoneX){
-                self.spdX = self.moveSpeed;
+            if(self.x < self.moveArray[0][0] - 1 && !self.moveDoneX){
+                self.spdX = 1;
             }
-            else if(self.x > self.moveArray[0][0] + self.moveSpeed && !self.moveDoneX){
-                self.spdX = - self.moveSpeed;
+            else if(self.x > self.moveArray[0][0] + 1 && !self.moveDoneX){
+                self.spdX = -1;
             }
             else{
                 self.moveDoneX = 1;
                 self.spdX = 0;
             }
-            if(self.y < self.moveArray[0][1] - self.moveSpeed && !self.moveDoneY){
-                self.spdY = self.moveSpeed;
+            if(self.y < self.moveArray[0][1] - 1 && !self.moveDoneY){
+                self.spdY = 1;
             }
-            else if(self.y > self.moveArray[0][1] + self.moveSpeed && !self.moveDoneY){
-                self.spdY = - self.moveSpeed;
+            else if(self.y > self.moveArray[0][1] + 1 && !self.moveDoneY){
+                self.spdY = -1;
             }
             else{
                 self.moveDoneY = 1;
@@ -153,6 +155,7 @@ Actor = function(param){
         var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
+        
         if(Collision.list[firstTile]){
             self.doCollision(Collision.list[firstTile]);
         }
@@ -165,83 +168,98 @@ Actor = function(param){
         if(Collision.list[fourthTile]){
             self.doCollision(Collision.list[fourthTile]);
         }
+
         if(Transporter.list[firstTile]){
-            if(self.isColliding(Transporter.list[firstTile])){
-                setTimeout(function(){
-                    self.map = Transporter.list[firstTile].teleport;
-                    self.x = Transporter.list[firstTile].teleportx;
-                    self.y = Transporter.list[firstTile].teleporty;
-                    self.mapWidth = Transporter.list[firstTile].mapx;
-                    self.mapHeight = Transporter.list[firstTile].mapy;
-                },1000);
-                self.mapChange = true;
+            var direction = Transporter.list[firstTile].teleportdirection;
+            if(direction === "up" && self.spdY < 0){
+                self.doTransport(Transporter.list[firstTile]);
+            }
+            if(direction === "down" && self.spdY > 0){
+                self.doTransport(Transporter.list[firstTile]);
+            }
+            if(direction === "left" && self.spdX < 0){
+                self.doTransport(Transporter.list[firstTile]);
+            }
+            if(direction === "right" && self.spdX > 0){
+                self.doTransport(Transporter.list[firstTile]);
             }
         }
         if(Transporter.list[secondTile]){
-            if(self.isColliding(Transporter.list[secondTile])){
-                setTimeout(function(){
-                    self.map = Transporter.list[secondTile].teleport;
-                    self.x = Transporter.list[secondTile].teleportx;
-                    self.y = Transporter.list[secondTile].teleporty;
-                    self.mapWidth = Transporter.list[secondTile].mapx;
-                    self.mapHeight = Transporter.list[secondTile].mapy;
-                },1000);
-                self.mapChange = true;
+            var direction = Transporter.list[secondTile].teleportdirection;
+            if(direction === "up" && self.spdY < 0){
+                self.doTransport(Transporter.list[secondTile]);
+            }
+            if(direction === "down" && self.spdY > 0){
+                self.doTransport(Transporter.list[secondTile]);
+            }
+            if(direction === "left" && self.spdX < 0){
+                self.doTransport(Transporter.list[secondTile]);
+            }
+            if(direction === "right" && self.spdX > 0){
+                self.doTransport(Transporter.list[secondTile]);
             }
         }
         if(Transporter.list[thirdTile]){
-            if(self.isColliding(Transporter.list[thirdTile])){
-                setTimeout(function(){
-                    self.map = Transporter.list[thirdTile].teleport;
-                    self.x = Transporter.list[thirdTile].teleportx;
-                    self.y = Transporter.list[thirdTile].teleporty;
-                    self.mapWidth = Transporter.list[thirdTile].mapx;
-                    self.mapHeight = Transporter.list[thirdTile].mapy;
-                },1000);
-                self.mapChange = true;
+            var direction = Transporter.list[thirdTile].teleportdirection;
+            if(direction === "up" && self.spdY < 0){
+                self.doTransport(Transporter.list[thirdTile]);
+            }
+            if(direction === "down" && self.spdY > 0){
+                self.doTransport(Transporter.list[thirdTile]);
+            }
+            if(direction === "left" && self.spdX < 0){
+                self.doTransport(Transporter.list[thirdTile]);
+            }
+            if(direction === "right" && self.spdX > 0){
+                self.doTransport(Transporter.list[thirdTile]);
             }
         }
         if(Transporter.list[fourthTile]){
-            if(self.isColliding(Transporter.list[fourthTile])){
-                setTimeout(function(){
-                    self.map = Transporter.list[fourthTile].teleport;
-                    self.x = Transporter.list[fourthTile].teleportx;
-                    self.y = Transporter.list[fourthTile].teleporty;
-                    self.mapWidth = Transporter.list[fourthTile].mapx;
-                    self.mapHeight = Transporter.list[fourthTile].mapy;
-                },1000);
-                self.mapChange = true;
+            var direction = Transporter.list[fourthTile].teleportdirection;
+            if(direction === "up" && self.spdY < 0){
+                self.doTransport(Transporter.list[fourthTile]);
+            }
+            if(direction === "down" && self.spdY > 0){
+                self.doTransport(Transporter.list[fourthTile]);
+            }
+            if(direction === "left" && self.spdX < 0){
+                self.doTransport(Transporter.list[fourthTile]);
+            }
+            if(direction === "right" && self.spdX > 0){
+                self.doTransport(Transporter.list[fourthTile]);
             }
         }
     }
-    self.doCollision = function(collsiion){
-        if(self.isColliding(collsiion)){
-            if(self.spdX !== 0 && self.spdY !== 0){
-                var x = self.x;
-                self.x = self.lastX;
-                if(self.isColliding(collsiion)){
-                    self.x = x;
+    self.doCollision = function(collision){
+        if(self.isColliding(collision)){
+            var x = self.x;
+            self.x = self.lastX;
+            if(self.isColliding(collision)){
+                self.x = x;
+                self.y = self.lastY;
+                if(self.isColliding(collision)){
+                    self.x = self.lastX;
                     self.y = self.lastY;
-                    if(self.isColliding(collsiion)){
-                        self.x = self.lastX;
-                        self.y = self.lastY;
-                    }
-                    else{
-
-                    }
                 }
                 else{
 
                 }
             }
-            else if(self.spdX === 0 && self.spdY === 0){
-            }
             else{
-                self.x = self.lastX;
-                self.y = self.lastY;
-                self.spdX = 0;
-                self.spdY = 0;
+
             }
+        }
+    }
+    self.doTransport = function(transporter){
+        if(self.isColliding(transporter)){
+            setTimeout(function(){
+                self.map = transporter.teleport;
+                self.x = transporter.teleportx;
+                self.y = transporter.teleporty;
+                self.mapWidth = transporter.mapx;
+                self.mapHeight = transporter.mapy;
+            },1000);
+            self.mapChange = true;
         }
     }
     return self;
@@ -258,8 +276,8 @@ Player = function(param){
     self.spdY = 0;
     self.mouseX = 0;
     self.mouseY = 0;
-    self.width = 32;
-    self.height = 48;
+    self.width = 24;
+    self.height = 20;
     self.moveSpeed = 10;
     self.img = 'player';
     self.hp = 1000;
@@ -293,10 +311,12 @@ Player = function(param){
     self.attackReload = 25;
     self.secondReload = 250;
     self.update = function(){
-        self.updateSpd();
-        self.updateMove();
-        self.updatePosition();
-        self.updateCollisions();
+        for(var i = 0;i < self.moveSpeed;i++){
+            self.updateSpd();
+            self.updateMove();
+            self.updatePosition();
+            self.updateCollisions();
+        }
         self.updateAttack();
         self.updateMap();
     }
@@ -312,16 +332,16 @@ Player = function(param){
         self.lastX = self.x;
         self.lastY = self.y;
         if(self.keyPress.up){
-            self.spdY -= self.moveSpeed;
+            self.spdY = -1;
         }
         if(self.keyPress.down){
-            self.spdY += self.moveSpeed;
+            self.spdY = 1;
         }
         if(self.keyPress.left){
-            self.spdX -= self.moveSpeed;
+            self.spdX = -1;
         }
         if(self.keyPress.right){
-            self.spdX += self.moveSpeed;
+            self.spdX = 1;
         }
         if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
             self.animation = 0;
@@ -692,7 +712,7 @@ var tileset;
 var layers;
 var map;
 var renderLayer = function(layer){
-    if(layer.type !== "tilelayer" || layer.opacity){
+    if(layer.type !== "tilelayer" && layer.visible === false){
         return;
     }
     size = data.tilewidth;
@@ -726,6 +746,8 @@ var renderLayer = function(layer){
 				var x = "";
 				var xj = 0;
                 var y = "";
+                var yj = 0;
+                var direction = "";
 				for(var j = 0;j < layer.name.length;j++){
 					if(layer.name[j] === ':'){
 						if(teleport === ""){
@@ -738,6 +760,10 @@ var renderLayer = function(layer){
 						}
 						else if(y === ""){
 							y = layer.name.substr(xj + 1,j - xj - 1);
+							yj = j;
+						}
+						else if(direction === ""){
+							direction = layer.name.substr(yj + 1,j - yj - 1);
 						}
 					}
                 }
@@ -748,6 +774,7 @@ var renderLayer = function(layer){
 					teleport:teleport,
 					teleportx:x,
                     teleporty:y,
+                    direction:direction,
                     map:map,
                 });
 			}
