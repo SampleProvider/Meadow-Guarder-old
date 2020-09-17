@@ -63,6 +63,8 @@
 
 		var RENDERDIST = 5;
 		var STATE = 'signIn';
+
+		var DEBUG = false;
 		
 		var socket = io();
 
@@ -184,10 +186,14 @@
 		Img.Village0.src = '/client/maps/Village0.png';
 		Img.Village1 = new Image();
 		Img.Village1.src = '/client/maps/Village1.png';
-		Img.Town0 = new Image();
-		Img.Town0.src = '/client/maps/Starter House0.png';
-		Img.Town1 = new Image();
-		Img.Town1.src = '/client/maps/Starter House1.png';
+		Img.VillageDEBUG = new Image();
+		Img.VillageDEBUG.src = '/client/maps/VillageDEBUG.png';
+		Img.StarterHouse0 = new Image();
+		Img.StarterHouse0.src = '/client/maps/Starter House0.png';
+		Img.StarterHouse1 = new Image();
+		Img.StarterHouse1.src = '/client/maps/Starter House1.png';
+		Img.StarterHouseDEBUG = new Image();
+		Img.StarterHouseDEBUG.src = '/client/maps/Starter HouseDEBUG.png';
 
 		var selfId = null;
 
@@ -223,7 +229,12 @@
 					return;
 				}
 				var ani = ~~(self.ani / 3)
-				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 60,40,64);
+				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 52,40,64);
+				if(DEBUG){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 12,self.y - 10,24,20);
+				}
 				self.ani += 1;
 				if(self.ani === 18){
 					self.ani = 0;
@@ -274,6 +285,11 @@
 			self.updated = true;
 			self.draw = function(){
 				ctx.drawImage(Img.bullet,self.x - 24,self.y - 24);
+				if(DEBUG){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 24,self.y - 24,48,48);
+				}
 			}
 			Projectile.list[self.id] = self;
 			return self;
@@ -478,7 +494,7 @@
 					ctx.drawImage(Img.Village0,0,0);
 					break;
 				case 'Starter House':
-					ctx.drawImage(Img.Town0,0,0);
+					ctx.drawImage(Img.StarterHouse0,0,0);
 					break;
 			}
 			for(var i in Player.list){
@@ -493,9 +509,15 @@
 			switch(Player.list[selfId].map){
 				case 'Village':
 					ctx.drawImage(Img.Village1,0,0);
+					if(DEBUG){
+						ctx.drawImage(Img.VillageDEBUG,0,0);
+					}
 					break;
 				case 'Starter House':
-					ctx.drawImage(Img.Town1,0,0);
+					ctx.drawImage(Img.StarterHouse1,0,0);
+					if(DEBUG){
+						ctx.drawImage(Img.StarterHouseDEBUG,0,0);
+					}
 					break;
 			}
 			for(var i in Player.list){
@@ -516,6 +538,14 @@
 			if(chatPress){
 			}
 			else{
+				if(event.keyCode === 66){
+					if(DEBUG){
+						DEBUG = false;
+					}
+					else{
+						DEBUG = true;
+					}
+				}
 				socket.emit('keyPress',{inputId:event.keyCode,state:true});
 			}
 		}

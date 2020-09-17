@@ -156,17 +156,126 @@ Actor = function(param){
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         
-        if(Collision.list[firstTile]){
-            self.doCollision(Collision.list[firstTile]);
+        if(self.spdX < 0){
+            if(self.spdY < 0){
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+            }
+            else if(self.spdY > 0){
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+            }
+            else{
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+            }
         }
-        if(Collision.list[secondTile]){
-            self.doCollision(Collision.list[secondTile]);
+        else if(self.spdX > 0){
+            if(self.spdY < 0){
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+            }
+            else if(self.spdY > 0){
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+            }
+            else{
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+            }
         }
-        if(Collision.list[thirdTile]){
-            self.doCollision(Collision.list[thirdTile]);
-        }
-        if(Collision.list[fourthTile]){
-            self.doCollision(Collision.list[fourthTile]);
+        else{
+            if(self.spdY < 0){
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+            }
+            else if(self.spdY > 0){
+                if(Collision.list[thirdTile]){
+                    self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision.list[fourthTile]){
+                    self.doCollision(Collision.list[fourthTile]);
+                }
+                if(Collision.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision.list[secondTile]){
+                    self.doCollision(Collision.list[secondTile]);
+                }
+            }
+            else{
+    
+            }
         }
 
         if(Transporter.list[firstTile]){
@@ -242,11 +351,21 @@ Actor = function(param){
                     self.y = self.lastY;
                 }
                 else{
-
+                    if(self.spdY > 0){
+                        self.y = self.lastY - 1;
+                    }
+                    else if(self.spdY < 0){
+                        self.y = self.lastY + 1;
+                    }
                 }
             }
             else{
-
+                if(self.spdX > 0){
+                    self.x = self.lastX - 1;
+                }
+                else if(self.spdX < 0){
+                    self.x = self.lastX + 1;
+                }
             }
         }
     }
