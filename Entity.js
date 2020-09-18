@@ -32,6 +32,12 @@ Entity = function(param){
         if(param.spdY){
             self.spdY = param.spdY;
         }
+        if(param.width){
+            self.width = param.width;
+        }
+        if(param.height){
+            self.height = param.height;
+        }
         if(param.map){
             self.map = param.map;
         }
@@ -56,7 +62,7 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {'Village':{player:[],projectile:[],pet:[]},'Starter House':{player:[],projectile:[],pet:[]}};
+    var pack = {'Village':{player:[],projectile:[],pet:[]},'Starter House':{player:[],projectile:[],pet:[]},'Cave':{player:[],projectile:[],pet:[]}};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
@@ -138,6 +144,14 @@ Actor = function(param){
     }
     self.move = function(x,y){
         self.moveArray.push([x,y]);
+    }
+    self.teleport = function(x,y,map){
+        self.x = x;
+        self.y = y;
+        self.spdX = 0;
+        self.spdY = 0;
+        self.map = map;
+        self.moveArray = [];
     }
     self.shootProjectile = function(id,angle,direction,type,distance){
 		var projectile = Projectile({
@@ -844,13 +858,31 @@ var renderLayer = function(layer){
             tile = data.tilesets[0];
             if(tile_idx === 2122){
                 var collision = new Collision({
-                    x:(i % layer.width) * size,
-                    y:~~(i / layer.width) * size,
-                    size:size,
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size,
+                    height:size,
                     map:map,
                 });
 			}
-            tile = data.tilesets[0];
+            if(tile_idx === 2123){
+                var collision = new Collision({
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 48,
+                    width:size,
+                    height:size / 2,
+                    map:map,
+                });
+			}
+            if(tile_idx === 2124){
+                var collision = new Collision({
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 16,
+                    width:size,
+                    height:size / 2,
+                    map:map,
+                });
+			}
             if(tile_idx === 1950){
                 var projectileCollision = new ProjectileCollision({
                     x:(i % layer.width) * size,
@@ -923,6 +955,7 @@ var load = function(name){
 }
 load("Village");
 load("Starter House");
+load("Cave");
 
 updateCrashes = function(){
     for(var i in Player.list){

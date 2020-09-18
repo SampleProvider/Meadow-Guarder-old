@@ -1,5 +1,5 @@
 
-SERVER = 'localhost';
+SERVER = 'heroku';
 
 var express = require('express');
 var app = express();
@@ -85,6 +85,11 @@ io.sockets.on('connection', function(socket){
 		delete SOCKET_LIST[socket.id];
 	});
 	socket.on('disconnect',function(){
+		socket.emit('disconnected');
+		Player.onDisconnect(socket);
+		delete SOCKET_LIST[socket.id];
+	});
+	socket.on('timeout',function(){
 		socket.emit('disconnected');
 		Player.onDisconnect(socket);
 		delete SOCKET_LIST[socket.id];

@@ -194,6 +194,12 @@
 		Img.StarterHouse1.src = '/client/maps/Starter House1.png';
 		Img.StarterHouseDEBUG = new Image();
 		Img.StarterHouseDEBUG.src = '/client/maps/Starter HouseDEBUG.png';
+		Img.Cave0 = new Image();
+		Img.Cave0.src = '/client/maps/Cave0.png';
+		Img.Cave1 = new Image();
+		Img.Cave1.src = '/client/maps/Cave1.png';
+		Img.CaveDEBUG = new Image();
+		Img.CaveDEBUG.src = '/client/maps/CaveDEBUG.png';
 
 		var selfId = null;
 
@@ -284,7 +290,11 @@
 			self.map = initPack.map;
 			self.updated = true;
 			self.draw = function(){
-				ctx.drawImage(Img.bullet,self.x - 24,self.y - 24);
+				ctx.translate(self.x,self.y);
+				ctx.rotate(self.direction * Math.PI / 180);
+				ctx.drawImage(Img.bullet,-24,-24);
+				ctx.rotate(-self.direction * Math.PI / 180);
+				ctx.translate(-self.x,-self.y);
 				if(DEBUG){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
@@ -496,15 +506,15 @@
 				case 'Starter House':
 					ctx.drawImage(Img.StarterHouse0,0,0);
 					break;
+				case 'Cave':
+					ctx.drawImage(Img.Cave0,0,0);
+					break;
 			}
 			for(var i in Player.list){
 				Player.list[i].draw();
 			}
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
-			}
-			for(var i in Pet.list){
-				Pet.list[i].draw();
 			}
 			switch(Player.list[selfId].map){
 				case 'Village':
@@ -519,6 +529,12 @@
 						ctx.drawImage(Img.StarterHouseDEBUG,0,0);
 					}
 					break;
+				case 'Cave':
+					ctx.drawImage(Img.Cave1,0,0);
+					if(DEBUG){
+						ctx.drawImage(Img.CaveDEBUG,0,0);
+					}
+					break;
 			}
 			for(var i in Player.list){
 				Player.list[i].drawName();
@@ -529,7 +545,6 @@
 			if(shadeAmount > 2){
 				shadeSpeed = -0.05;
 			}
-			console.log(shadeAmount);
 			shadeAmount += shadeSpeed;
 			blackShade.style.opacity = shadeAmount;
 		},25);

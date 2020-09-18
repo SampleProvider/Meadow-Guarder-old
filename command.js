@@ -62,7 +62,7 @@ var doCmd = function(text){
             for(var i = commandIndex + 1;i < text.length;i++){
                 if(text[i] === ' '){
                     param.push(text.substring(index,i));
-                    index = parseInt(i) + 1;
+                    index = parseInt(i,10) + 1;
                 }
             }
             param.push(text.substring(index));
@@ -114,8 +114,6 @@ var doCmd = function(text){
                         console.error('CONSOLE-------------(param) TYPE PARAM'.help);
                         console.error('DISCONNECT----------(param) PLAYER-NAME'.help);
                         console.error('EXIT----------------(param (none)'.help);
-                        console.error('KILL----------------(param) PLAYER-NAME'.help);
-                        console.error('TIMEOUT-------------(param) TIME'.help);
                         console.error('\nFor more help on a certain command, try /console help command'.info);
                     }
                     else if(param.length === 2){
@@ -130,14 +128,20 @@ var doCmd = function(text){
                                 console.error('Special console commands'.help);
                                 console.error('\nParameters:'.help);
                                 console.error('TYPE----------------Type of command to do'.help);
-                                console.error('\nTYPE = username-----Change the display username of non-command chats'.help);
-                                console.error('TYPE = username-----Parameters:'.help);
-                                console.error('TYPE = username-----(none)--------------Read currect username'.help);
-                                console.error('TYPE = username-----USERNAME------------Username to set to'.help);
-                                console.error('\nTYPE = help-----Help on commands'.help);
-                                console.error('TYPE = help-----Parameters:'.help);
-                                console.error('TYPE = help-----(none)--------------Briefview of all commands'.help);
-                                console.error('TYPE = help-----COMMAND-------------Extra help on a certain command'.help);
+                                console.error('\nTYPE = username-------Change the display username of non-command chats'.help);
+                                console.error('TYPE = username-------Parameters:'.help);
+                                console.error('TYPE = username-------(none)--------------Read currect username'.help);
+                                console.error('TYPE = username-------USERNAME------------Username to set to'.help);
+                                console.error('\nTYPE = help-----------Help on commands'.help);
+                                console.error('TYPE = help-----------Parameters:'.help);
+                                console.error('TYPE = help-----------(none)--------------Briefview of all commands'.help);
+                                console.error('TYPE = help-----------COMMAND-------------Extra help on a certain command'.help);
+                                console.error('\nTYPE = clear----------Clears the console'.help);
+                                console.error('TYPE = clear----------Parameters:'.help);
+                                console.error('TYPE = clear----------(none)--------------Clear console'.help);
+                                console.error('\nTYPE = timeout--------Timeouts the console'.help);
+                                console.error('TYPE = timeout--------Parameters:'.help);
+                                console.error('TYPE = timeout--------TIME----------------Time, in ms, of how long you want to wait'.help);
                                 break;
                             default:
                                 cmdError('param');
@@ -157,6 +161,16 @@ var doCmd = function(text){
                     console.clear();
                     console.log('For help on commands, try /console help'.info);
                 }
+                else if(param[0] === 'timeout'){
+                    if(param.length !== 2){
+                        cmdError('param',0);
+                        break;
+                    }
+                    setTimeout(function(){
+                        questionCmd();
+                    },parseInt(param[1],10));
+                    return;
+                }
                 else{
                     cmdError('param',0);
                 }
@@ -175,7 +189,7 @@ var doCmd = function(text){
                 }
                 if(!playerFound){
                     cmdError('playerFound',param[0]);
-                    return;
+                    break;
                 }
                 socket.emit('disconnected');
                 Player.onDisconnect(socket);
@@ -188,33 +202,43 @@ var doCmd = function(text){
                     break;
                 }
                 process.exit(0);
-            case 'kill':
-                if(param.length !== 1){
+            case 'player':
+                if(param.length < 2){
                     cmdError('param',0);
                     break;
                 }
-                var killed = false;
-                for(var i in Player.list){
-                    if(Player.list[i].username === param[0]){
-                        Player.list[i].hp = 0;
-                        killed = true;
+                if(param[0] === 'kill'){
+                    var killed = false;
+                    for(var i in Player.list){
+                        if(Player.list[i].username === param[1]){
+                            Player.list[i].hp = 0;
+                            killed = true;
+                        }
+                    }
+                    if(!killed){
+                        cmdError('playerFound',param[1]);
+                        break;
                     }
                 }
-                if(!killed){
-                    cmdError('playerFound',param[0]);
-                    break;
+                else if(param[0] === 'move'){
+                    if(param.length !== 4){
+                        cmdError('param',0);
+                    }
+                    var moved = false;
+                    for(var i in Player.list){
+                        if(Player.list[i].username === param[1]){
+                            Player.list[i].move(parseInt(param[2],10),parseInt(param[3],10));
+                            moved = true;
+                        }
+                    }
+                    if(!moved){
+                        cmdError('playerFound',param[1]);
+                        break;
+                    }
                 }
                 cmdDone('commandDone',0);
                 break;
-            case 'timeout':
-                if(param.length !== 1){
-                    cmdError('param',0);
-                    break;
-                }
-                setTimeout(function(){
-                    questionCmd();
-                },parseInt(param[0],10));
-                return;
+            
             default:
                 cmdError('command',0);
                 break;
