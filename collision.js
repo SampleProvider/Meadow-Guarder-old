@@ -37,6 +37,18 @@ ProjectileCollision = function(param){
 
 ProjectileCollision.list = {};
 
+SlowDown = function(param){
+    var self = Entity(param);
+    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+    }
+    SlowDown.list[self.id] = self;
+}
+
+SlowDown.list = {};
+
 Transporter = function(param){
     var self = Entity(param);
     self.id = "" + self.map + ":" + self.x + ":" + self.y + ":";

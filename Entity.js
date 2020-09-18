@@ -96,6 +96,7 @@ Entity.getFrameUpdateData = function(){
 
 Actor = function(param){
     var self = Entity(param);
+    self.maxSpeed = param.moveSpeed;
     self.moveSpeed = param.moveSpeed;
     self.moveArray = [];
     self.moveDoneX = 0;
@@ -105,6 +106,7 @@ Actor = function(param){
     self.invincible = false;
     var super_update = self.update;
     self.update = function(){
+        self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateMove();
             if(self.canMove){
@@ -296,7 +298,22 @@ Actor = function(param){
             }
         }
 
-        if(Transporter.list[firstTile]){
+        self.moveSpeed = self.maxSpeed;
+
+        if(SlowDown.list[firstTile]){
+            self.doSlowDown(SlowDown.list[firstTile]);
+        }
+        if(SlowDown.list[secondTile]){
+            self.doSlowDown(SlowDown.list[secondTile]);
+        }
+        if(SlowDown.list[thirdTile]){
+            self.doSlowDown(SlowDown.list[thirdTile]);
+        }
+        if(SlowDown.list[fourthTile]){
+            self.doSlowDown(SlowDown.list[fourthTile]);
+        }
+
+        if(Transporter.list[firstTile] && self.canMove){
             var direction = Transporter.list[firstTile].teleportdirection;
             if(direction === "up" && self.spdY < 0){
                 self.doTransport(Transporter.list[firstTile]);
@@ -311,7 +328,7 @@ Actor = function(param){
                 self.doTransport(Transporter.list[firstTile]);
             }
         }
-        if(Transporter.list[secondTile]){
+        if(Transporter.list[secondTile] && self.canMove){
             var direction = Transporter.list[secondTile].teleportdirection;
             if(direction === "up" && self.spdY < 0){
                 self.doTransport(Transporter.list[secondTile]);
@@ -326,7 +343,7 @@ Actor = function(param){
                 self.doTransport(Transporter.list[secondTile]);
             }
         }
-        if(Transporter.list[thirdTile]){
+        if(Transporter.list[thirdTile] && self.canMove){
             var direction = Transporter.list[thirdTile].teleportdirection;
             if(direction === "up" && self.spdY < 0){
                 self.doTransport(Transporter.list[thirdTile]);
@@ -341,7 +358,7 @@ Actor = function(param){
                 self.doTransport(Transporter.list[thirdTile]);
             }
         }
-        if(Transporter.list[fourthTile]){
+        if(Transporter.list[fourthTile] && self.canMove){
             var direction = Transporter.list[fourthTile].teleportdirection;
             if(direction === "up" && self.spdY < 0){
                 self.doTransport(Transporter.list[fourthTile]);
@@ -405,6 +422,11 @@ Actor = function(param){
             self.mapChange = true;
         }
     }
+    self.doSlowDown = function(slowDown){
+        if(self.isColliding(slowDown)){
+            self.moveSpeed = self.maxSpeed / 2;
+        }
+    }
     return self;
 }
 
@@ -422,6 +444,7 @@ Player = function(param){
     self.width = 24;
     self.height = 20;
     self.moveSpeed = 10;
+    self.maxSpeed = 10;
     self.img = 'player';
     self.hp = 1000;
     self.hpMax = 1000;
@@ -454,6 +477,7 @@ Player = function(param){
     self.attackReload = 25;
     self.secondReload = 250;
     self.update = function(){
+        self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateSpd();
             self.updateMove();
@@ -493,7 +517,12 @@ Player = function(param){
             self.spdX = 1;
         }
         if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
-            self.animation = 0;
+            if(self.direction >= 0 && self.direction < 45){
+
+            }
+            else if(self.direction >= 0 && self.direction < 45){
+
+            }
         }
         if(self.x < self.width / 2){
             self.x = self.width / 2;
@@ -568,6 +597,7 @@ Player.onConnect = function(socket,username){
     var player = Player({
 		id:socket.id,
         username:username,
+        moveSpeed:10,
 	});
 
 
@@ -920,6 +950,51 @@ var renderLayer = function(layer){
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
                     size:size,
+                    map:map,
+                });
+			}
+            if(tile_idx === 1864){
+                var slowDown = new SlowDown({
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size,
+                    height:size,
+                    map:map,
+                });
+			}
+            if(tile_idx === 1865){
+                var slowDown = new SlowDown({
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 48,
+                    width:size,
+                    height:size / 2,
+                    map:map,
+                });
+			}
+            if(tile_idx === 1866){
+                var slowDown = new SlowDown({
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 16,
+                    width:size,
+                    height:size / 2,
+                    map:map,
+                });
+			}
+            if(tile_idx === 1867){
+                var slowDown = new SlowDown({
+                    x:(i % layer.width) * size + 16,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size / 2,
+                    height:size,
+                    map:map,
+                });
+			}
+            if(tile_idx === 1868){
+                var slowDown = new SlowDown({
+                    x:(i % layer.width) * size + 48,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size / 2,
+                    height:size,
                     map:map,
                 });
 			}
