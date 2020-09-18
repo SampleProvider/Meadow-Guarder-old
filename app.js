@@ -1,12 +1,10 @@
 
-SERVER = 'heroku';
+SERVER = 'localhost';
 
 var express = require('express');
 var app = express();
-//var mongojs = require("mongojs");
 var serv = require('http').Server(app);
 require('./Database');
-//require('./Mongoose');
 require('./collision');
 require('./Entity');
 
@@ -78,11 +76,6 @@ io.sockets.on('connection', function(socket){
 				socket.emit('deleteAccountResponse',{success:2});
 			}
 		});
-	});
-	socket.on('fake',function(){
-		socket.emit('disconnected');
-		Player.onDisconnect(socket);
-		delete SOCKET_LIST[socket.id];
 	});
 	socket.on('disconnect',function(){
 		socket.emit('disconnected');

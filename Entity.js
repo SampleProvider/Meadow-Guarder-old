@@ -101,11 +101,15 @@ Actor = function(param){
     self.moveDoneX = 0;
     self.moveDoneY = 0;
     self.mapChange = false;
+    self.canMove = true;
+    self.invincible = false;
     var super_update = self.update;
     self.update = function(){
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateMove();
-            super_update();
+            if(self.canMove){
+                super_update();
+            }
             self.updateCollisions();
         }
     }
@@ -391,7 +395,13 @@ Actor = function(param){
                 self.y = transporter.teleporty;
                 self.mapWidth = transporter.mapx;
                 self.mapHeight = transporter.mapy;
+                self.canMove = false;
+                setTimeout(function(){
+                    self.canMove = true;
+                    self.invincible = false;
+                },1000);
             },1000);
+            self.invincible = true;
             self.mapChange = true;
         }
     }
@@ -447,10 +457,16 @@ Player = function(param){
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateSpd();
             self.updateMove();
-            self.updatePosition();
+            if(self.canMove){
+                self.updatePosition();
+            }
             self.updateCollisions();
         }
-        self.updateAttack();
+        self.attackReload += 1;
+        self.secondReload += 1;
+        if(!self.invincible){
+            self.updateAttack();
+        }
         self.updateMap();
     }
     self.updateMap = function(){
@@ -493,10 +509,8 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
-        self.attackReload += 1;
-        self.secondReload += 1;
         if(self.img === 'player'){
-            if(self.keyPress.attack === true && self.attackReload > 25){
+            if(self.keyPress.attack === true && self.attackReload > 15){
                 self.shootProjectile(self.id,self.direction,self.direction,0,20);
                 self.attackReload = 1;
             }
@@ -759,8 +773,8 @@ Projectile = function(param){
 	self.parent = param.id;
 	self.spdX = Math.cos(param.angle/180 * Math.PI) * 20;
     self.spdY = Math.sin(param.angle/180 * Math.PI) * 20;
-    self.width = 48;
-    self.height = 48;
+    self.width = 24;
+    self.height = 24;
 	self.direction = param.direction;
 	self.timer = 0;
 	self.toRemove = false;
@@ -779,22 +793,22 @@ Projectile = function(param){
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         if(Collision.list[firstTile]){
-            if(self.isColliding(firstTile)){
+            if(self.isColliding(Collision.list[firstTile])){
                 self.toRemove = true;
             }
         }
         if(Collision.list[secondTile]){
-            if(self.isColliding(secondTile)){
+            if(self.isColliding(Collision.list[secondTile])){
                 self.toRemove = true;
             }
         }
         if(Collision.list[thirdTile]){
-            if(self.isColliding(thirdTile)){
+            if(self.isColliding(Collision.list[thirdTile])){
                 self.toRemove = true;
             }
         }
         if(Collision.list[fourthTile]){
-            if(self.isColliding(fourthTile)){
+            if(self.isColliding(Collision.list[fourthTile])){
                 self.toRemove = true;
             }
         }
@@ -880,6 +894,24 @@ var renderLayer = function(layer){
                     y:~~(i / layer.width) * size + 16,
                     width:size,
                     height:size / 2,
+                    map:map,
+                });
+			}
+            if(tile_idx === 2125){
+                var collision = new Collision({
+                    x:(i % layer.width) * size + 16,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size / 2,
+                    height:size,
+                    map:map,
+                });
+			}
+            if(tile_idx === 2126){
+                var collision = new Collision({
+                    x:(i % layer.width) * size + 48,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size / 2,
+                    height:size,
                     map:map,
                 });
 			}

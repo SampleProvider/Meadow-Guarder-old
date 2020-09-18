@@ -144,8 +144,6 @@
 				chatText.scrollTop = chatText.scrollHeight;
 			}
 		});
-		
-		
 		chatForm.onsubmit = function(e){
 			e.preventDefault();
 			socket.emit('sendMsgToServer',chatInput.value);
@@ -156,7 +154,7 @@
 		}
 
 		var disconnect = function(){
-			socket.emit("fake");
+			socket.emit("timeout");
 		}
 		var ctx = document.getElementById("ctx").getContext("2d");
 		ctx.canvas.width = window.innerWidth;
@@ -171,6 +169,7 @@
 		}
 		load('Village');
 		load('Starter House');
+		load('Cave');
 		var shadeSpeed = 0;
 		var shadeAmount = 0;
 		var Img = {};
@@ -235,11 +234,11 @@
 					return;
 				}
 				var ani = ~~(self.ani / 3)
-				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 52,40,64);
+				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 54,40,64);
 				if(DEBUG){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
-					ctx.strokeRect(self.x - 12,self.y - 10,24,20);
+					ctx.strokeRect(self.x - 10,self.y - 8,20,16);
 				}
 				self.ani += 1;
 				if(self.ani === 18){
@@ -258,7 +257,7 @@
 				ctx.fillRect(self.x - 52,self.y - 70,104,10);
 				ctx.fillStyle = '#aa5525';
 				ctx.fillRect(self.x - 50,self.y - 68,self.hp / self.hpMax * 100,6);
-				if(self.attackReload > 24){
+				if(self.attackReload > 14){
 					self.attackReload = 25;
 					mainAttackDiv.style.color = "#25ff25";
 				}
@@ -298,7 +297,7 @@
 				if(DEBUG){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
-					ctx.strokeRect(self.x - 24,self.y - 24,48,48);
+					ctx.strokeRect(self.x - 22,self.y - 22,44,44);
 				}
 			}
 			Projectile.list[self.id] = self;
