@@ -416,8 +416,8 @@ Actor = function(param){
                 setTimeout(function(){
                     self.canMove = true;
                     self.invincible = false;
-                },1000);
-            },1000);
+                },500);
+            },500);
             self.invincible = true;
             self.mapChange = true;
         }
@@ -486,6 +486,15 @@ Player = function(param){
             }
             self.updateCollisions();
         }
+        if(self.animation === -1){
+            self.animation = 0;
+        }
+        else{
+            self.animation += 0.5;
+            if(self.animation > 5){
+                self.animation = 0;
+            }
+        }
         self.attackReload += 1;
         self.secondReload += 1;
         if(!self.invincible){
@@ -516,12 +525,66 @@ Player = function(param){
         if(self.keyPress.right){
             self.spdX = 1;
         }
-        if(self.keyPress.up === false && self.keyPress.down === false && self.keyPress.left === false && self.keyPress.right === false){
-            if(self.direction >= 0 && self.direction < 45){
-
+        if(self.spdX === 1){
+            if(self.spdY === 1){
+                self.img = "rightdown";
             }
-            else if(self.direction >= 0 && self.direction < 45){
-
+            else if(self.spdY === -1){
+                self.img = "rightup";
+            }
+            else if(self.spdY === 0){
+                self.img = "right";
+            }
+        }
+        else if(self.spdX === -1){
+            if(self.spdY === 1){
+                self.img = "leftdown";
+            }
+            else if(self.spdY === -1){
+                self.img = "leftup";
+            }
+            else if(self.spdY === 0){
+                self.img = "left";
+            }
+        }
+        else if(self.spdX === 0){
+            if(self.spdY === 1){
+                self.img = "down";
+            }
+            else if(self.spdY === -1){
+                self.img = "up";
+            }
+            else if(self.spdY === 0){
+                self.animation = -1;
+                switch(Math.round(self.direction / 45)){
+                    case 0:
+                        self.img = "right"
+                        break;
+                    case 1:
+                        self.img = "rightdown"
+                        break;
+                    case 2:
+                        self.img = "down"
+                        break;
+                    case 3:
+                        self.img = "leftdown"
+                        break;
+                    case 4:
+                        self.img = "left"
+                        break;
+                    case -1:
+                        self.img = "rightup"
+                        break;
+                    case -2:
+                        self.img = "up"
+                        break;
+                    case -3:
+                        self.img = "leftup"
+                        break;
+                    case -4:
+                        self.img = "left"
+                        break;
+                }
             }
         }
         if(self.x < self.width / 2){
@@ -571,6 +634,7 @@ Player = function(param){
             img:self.img,
             attackReload:self.attackReload,
             secondReload:self.secondReload,
+            animation:self.animation,
         }
     }
     self.getUpdatePack = function(){
@@ -650,7 +714,7 @@ Player.spectate = function(socket){
     }
 	socket.emit("spectator");
     if(Player.list[socket.id]){
-        Player.list[socket.id].img = 'none';
+        Player.list[socket.id].img = 'dead';
     }
 }
 Player.onDisconnect = function(socket){

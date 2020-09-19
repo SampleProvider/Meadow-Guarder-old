@@ -175,8 +175,8 @@
 		var Img = {};
 		Img.ghost = new Image();
 		Img.ghost.src = '/client/img/ghost.png';
-		Img.map = new Image();
-		Img.map.src = '/client/img/Player Map.png';
+		Img.player = new Image();
+		Img.player.src = '/client/img/Player Map.png';
 		Img.pet = new Image();
 		Img.pet.src = '/client/img/Pet.png';
 		Img.bullet = new Image();
@@ -223,30 +223,46 @@
 			self.mapHeight = 3200;
 			self.mapWidth = 3200;
 			self.updated = true;
-			self.ani = 0;
+			self.animation = initPack.animation;
 			
 			self.draw = function(){
-				if(self.id === selfId && self.img === 'none'){
+				self.animation = Math.round(self.animation);
+				if(self.id === selfId && self.img === 'dead'){
 					ctx.drawImage(Img.ghost,self.x - 20,self.y - 40);
 					return;
 				}
-				else if(self.img === 'none'){
+				else if(self.img === 'dead'){
 					return;
 				}
-				var ani = ~~(self.ani / 3)
-				ctx.drawImage(Img.map,29 + 12 * ani,19 * 0,10,16,self.x - 20,self.y - 54,40,64);
-				if(DEBUG){
-					ctx.strokeStyle = '#000000';
-					ctx.lineWidth = 4;
-					ctx.strokeRect(self.x - 10,self.y - 8,20,16);
-				}
-				self.ani += 1;
-				if(self.ani === 18){
-					self.ani = 0;
+				switch(self.img){
+					case "down":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 1,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "rightdown":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 2,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "right":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 3,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "rightup":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 4,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "up":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 5,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "leftup":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 6,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "left":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 7,40,64,self.x - 20,self.y - 54,40,64);
+						break;
+					case "leftdown":
+						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 8,40,64,self.x - 20,self.y - 54,40,64);
+						break;
 				}
 			}
 			self.drawName = function(){
-				if(self.img === 'none'){
+				if(self.img === 'dead'){
 					return;
 				}
 				ctx.font = "15px pixel";
@@ -273,6 +289,19 @@
 				}
 				mainAttackDiv.innerHTML = "Main Attack: " + self.attackReload / 25;
 				secondaryAttackDiv.innerHTML = "Secondary Attack: " + self.secondReload / 25;
+			}
+			self.drawLight = function(){
+				if(self.id !== selfId){
+					return;
+				}
+				if(self.map !== "Cave"){
+					return;
+				}
+				var grd = ctx.createRadialGradient(self.x,self.y,50,self.x,self.y,500);
+				grd.addColorStop(0,"rgba(0,0,0,0)");
+				grd.addColorStop(1,"rgba(0,0,0,1)");
+				ctx.fillStyle = grd;
+				ctx.fillRect(self.x - WIDTH,self.y - HEIGHT,WIDTH * 2,HEIGHT * 2);
 			}
 			Player.list[self.id] = self;
 			return self;
@@ -365,6 +394,9 @@
 						if(data.player[i].mapHeight){
 							Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
 						}
+						if(data.player[i].animation){
+							Player.list[data.player[i].id].animation = data.player[i].animation;
+						}
 						Player.list[data.player[i].id].updated = true;
 					}
 					else{
@@ -430,7 +462,7 @@
 			STATE = 'spectator';
 		});
 		socket.on('changeMap',function(){
-			shadeSpeed = 0.05;
+			shadeSpeed = 0.08;
 			if(shadeAmount < 0){
 				shadeAmount = 0;
 			}
@@ -537,12 +569,13 @@
 			}
 			for(var i in Player.list){
 				Player.list[i].drawName();
+				Player.list[i].drawLight();
 			}
 			ctx.translate(-cameraX,-cameraY);
 			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 
-			if(shadeAmount > 2){
-				shadeSpeed = -0.05;
+			if(shadeAmount > 1.6){
+				shadeSpeed = -0.08;
 			}
 			shadeAmount += shadeSpeed;
 			blackShade.style.opacity = shadeAmount;
