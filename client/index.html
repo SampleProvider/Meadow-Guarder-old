@@ -177,8 +177,8 @@
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.player = new Image();
 		Img.player.src = '/client/img/Player Map.png';
-		Img.pet = new Image();
-		Img.pet.src = '/client/img/Pet.png';
+		Img.monster = new Image();
+		Img.monster.src = '/client/img/Pet.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.Village0 = new Image();
@@ -260,6 +260,11 @@
 						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 8,40,64,self.x - 20,self.y - 54,40,64);
 						break;
 				}
+				if(DEBUG){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 10,self.y - 8,20,16);
+				}
 			}
 			self.drawName = function(){
 				if(self.img === 'dead'){
@@ -333,23 +338,20 @@
 			return self;
 		}
 		Projectile.list = {};
-		var Pet = function(initPack){
+		var Monster = function(initPack){
 			var self = {};
 			self.id = initPack.id;
 			self.x = initPack.x;
 			self.y = initPack.y;
-			self.direction = initPack.direction;
-			self.hp = initPack.hp;
-			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
 			self.updated = true;
 			self.draw = function(){
-				ctx.drawImage(Img.pet,self.x - 12,self.y - 18);
+				ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
 			}
-			Pet.list[self.id] = self;
+			Monster.list[self.id] = self;
 			return self;
 		}
-		Pet.list = {};
+		Monster.list = {};
 
 		socket.on('selfId',function(data){
 			selfId = data;
@@ -361,8 +363,8 @@
 			for(var i in Projectile.list){
 				Projectile.list[i].updated = false;
 			}
-			for(var i in Pet.list){
-				Pet.list[i].updated = false;
+			for(var i in Monster.list){
+				Monster.list[i].updated = false;
 			}
 			if(data){
 				for(var i = 0;i < data.player.length;i++){
@@ -397,6 +399,9 @@
 						if(data.player[i].animation){
 							Player.list[data.player[i].id].animation = data.player[i].animation;
 						}
+						else{
+							Player.list[data.player[i].id].animation = 0;
+						}
 						Player.list[data.player[i].id].updated = true;
 					}
 					else{
@@ -419,19 +424,19 @@
 						}
 					}
 				}
-				if(data.pet.length > 0){
-					for(var i = 0;i < data.pet.length;i++){
-						if(Pet.list[data.pet[i].id]){
-							if(data.pet[i].x){
-								Pet.list[data.pet[i].id].x = data.pet[i].x;
+				if(data.monster.length > 0){
+					for(var i = 0;i < data.monster.length;i++){
+						if(Monster.list[data.monster[i].id]){
+							if(data.monster[i].x){
+								Monster.list[data.monster[i].id].x = data.monster[i].x;
 							}
-							if(data.pet[i].y){
-								Pet.list[data.pet[i].id].y = data.pet[i].y;
+							if(data.monster[i].y){
+								Monster.list[data.monster[i].id].y = data.monster[i].y;
 							}
-							Pet.list[data.pet[i].id].updated = true;
+							Monster.list[data.monster[i].id].updated = true;
 						}
 						else{
-							new Pet(data.pet[i]);
+							new Monster(data.monster[i]);
 						}
 					}
 				}
@@ -446,9 +451,9 @@
 					delete Projectile.list[i];
 				}
 			}
-			for(var i in Pet.list){
-				if(Pet.list[i].updated === false){
-					delete Pet.list[i];
+			for(var i in Monster.list){
+				if(Monster.list[i].updated === false){
+					delete Monster.list[i];
 				}
 			}
 		});
@@ -546,6 +551,9 @@
 			}
 			for(var i in Projectile.list){
 				Projectile.list[i].draw();
+			}
+			for(var i in Monster.list){
+				Monster.list[i].draw();
 			}
 			switch(Player.list[selfId].map){
 				case 'Village':

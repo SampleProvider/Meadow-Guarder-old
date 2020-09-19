@@ -1,5 +1,5 @@
 
-SERVER = 'localhost';
+SERVER = 'heroku';
 
 var express = require('express');
 var app = express();
@@ -102,6 +102,7 @@ io.sockets.on('connection', function(socket){
 pack = {};
 
 setInterval(function(){
+	spawnEnemies();
 	updateCrashes();
 	var packs = Entity.getFrameUpdateData();
 	for(var i in SOCKET_LIST){

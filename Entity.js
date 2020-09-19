@@ -62,17 +62,22 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {'Village':{player:[],projectile:[],pet:[]},'Starter House':{player:[],projectile:[],pet:[]},'Cave':{player:[],projectile:[],pet:[]}};
+    var pack = {'Village':{player:[],projectile:[],monster:[]},'Starter House':{player:[],projectile:[],monster:[]},'Cave':{player:[],projectile:[],monster:[]}};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
             pack[Player.list[i].map].player.push(Player.list[i].getInitPack());
         }
     }
-    for(var i in Pet.list){
-        if(Pet.list[i]){
-            Pet.list[i].update();
-            pack[Pet.list[i].map].pet.push(Pet.list[i].getInitPack());
+    for(var i in Monster.list){
+        if(Monster.list[i]){
+            Monster.list[i].update();
+            if(Monster.list[i].toRemove){
+                delete Monster.list[i];
+            }
+            else{
+                pack[Monster.list[i].map].monster.push(Monster.list[i].getInitPack());
+            }
         }
     }
     for(var i in Projectile.list){
@@ -601,7 +606,7 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
-        if(self.img === 'player'){
+        if(self.img !== 'dead'){
             if(self.keyPress.attack === true && self.attackReload > 15){
                 self.shootProjectile(self.id,self.direction,self.direction,0,20);
                 self.attackReload = 1;
@@ -738,21 +743,6 @@ Player.onDisconnect = function(socket){
     }
 }
 
-Player.getAllInitPack = function(){
-	var players = [];
-	for(var i in Player.list)
-		players.push(Player.list[i].getInitPack())
-	return players;
-}
-Player.getMapInitPack = function(map){
-	var players = [];
-	for(var i in Player.list){
-        if(Player.list[i].map === map){
-            players.push(Player.list[i].getInitPack());
-        }
-    }
-	return players;
-}
 
 
 Npc = function(param){
@@ -785,22 +775,106 @@ Npc = function(param){
 }
 Npc.list = {};
 
-Npc.getAllInitPack = function(){
-	var npcs = [];
-	for(var i in Npc.list)
-        npcs.push(Npc.list[i].getInitPack())
-	return npcs;
-}
 
-Npc.getMapInitPack = function(map){
-	var npcs = [];
-	for(var i in Npc.list){
-        if(Npc.list[i].map === map){
-            npcs.push(Npc.list[i].getInitPack());
+Monster = function(param){
+    var self = Actor(param);
+    self.attackState = "passive";
+    self.direction = 0;
+    self.hp = 1500;
+    self.hpMax = 1500;
+    self.toRemove = false;
+    self.reload = 0;
+    self.target = {};
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+        self.updateAttack();
+        if(self.target && self.target.img === "dead"){
+            self.target = {};
+            self.attackState = "passive";
+        }
+        if(self.hp < 1){
+            self.toRemove = true;
         }
     }
-	return npcs;
+    self.updateAttack = function(){
+        if(self.target){
+            self.direction = Math.atan2(self.target.y - self.y,self.target.x - self.x) / Math.PI * 180;
+        }
+        switch(self.attackState){
+            case "passive":
+                self.moveArray = [];
+                self.spdX = 0;
+                self.spdY = 0;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].img !== "dead"){
+                        self.attackState = "move";
+                        self.target = Player.list[i];
+                    }
+                }
+                break;
+            case "move":
+                self.move(self.target.x + Math.random() * 128 - 64,self.target.y + Math.random() * 128 - 64);
+                self.reload = 0;
+                self.attackState = "attack";
+                break;
+            case "attack":
+                setTimeout(function(){
+                    if(self.toRemove === false){
+                        for(var i in Player.list){
+                            if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].img !== "dead"){
+                                self.attackState = "move";
+                                self.target = Player.list[i];
+                                return;
+                            }
+                        }
+                        self.attackState = "passive";
+                        self.target = {};
+                    }
+                },5000);
+                self.reload += 1;
+                if(self.reload === 0){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 20){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 40){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 60){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 80){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 82){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 84){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 86){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                break;
+        }
+    }
+    self.getInitPack = function(){
+        return{
+            id:self.id,
+            x:self.x,
+            y:self.y,
+            spdX:self.spdX,
+            spdY:self.spdY,
+            map:self.map,
+        }
+    }
+    Monster.list[self.id] = self;
 }
+Monster.list = {};
+
+
 
 Pet = function(param){
 	var self = Npc(param);
@@ -843,22 +917,6 @@ Pet = function(param){
 }
 Pet.list = {};
 
-Pet.getAllInitPack = function(){
-	var pets = [];
-	for(var i in Pet.list)
-        pets.push(Pet.list[i].getInitPack())
-	return pets;
-}
-
-Pet.getMapInitPack = function(map){
-	var pets = [];
-	for(var i in Pet.list){
-        if(Pet.list[i].map === map){
-            pets.push(Pet.list[i].getInitPack());
-        }
-    }
-	return pets;
-}
 
 
 Projectile = function(param){
@@ -930,22 +988,6 @@ Projectile = function(param){
 }
 Projectile.list = {};
 
-Projectile.getAllInitPack = function(){
-	var projectiles = [];
-	for(var i in Projectile.list)
-        projectiles.push(Projectile.list[i].getInitPack())
-	return projectiles;
-}
-
-Projectile.getMapInitPack = function(map){
-	var projectiles = [];
-	for(var i in Projectile.list){
-        if(Projectile.list[i].map === map){
-            projectiles.push(Projectile.list[i].getInitPack());
-        }
-    }
-	return projectiles;
-}
 
 
 var data;
@@ -1132,9 +1174,19 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && Projectile.list[j].parent != i && Player.list[i].img == 'player'){
+                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].img !== 'dead'){
                     Projectile.list[j].toRemove = true;
                     Player.list[i].hp -= 100;
+                }
+            }
+        }
+    }
+    for(var i in Monster.list){
+        for(var j in Projectile.list){
+            if(Monster.list[i] && Projectile.list[j]){
+                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i){
+                    Projectile.list[j].toRemove = true;
+                    Monster.list[i].hp -= 100;
                 }
             }
         }
@@ -1147,5 +1199,16 @@ updateCrashes = function(){
                 }
             }
         }
+    }
+}
+
+spawnEnemies = function(){
+    if(Math.random() < 0.005){
+        var monster = new Monster({
+            x:1000 + Math.random() * 500,
+            y:1000 + Math.random() * 500,
+            moveSpeed:5,
+            map:"Village"
+        });
     }
 }
