@@ -49,6 +49,19 @@ SlowDown = function(param){
 
 SlowDown.list = {};
 
+Spawner = function(param){
+    var self = Entity(param);
+    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
+    self.spawned = false;
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+    }
+    Spawner.list[self.id] = self;
+}
+
+Spawner.list = {};
+
 Transporter = function(param){
     var self = Entity(param);
     self.id = "" + self.map + ":" + self.x + ":" + self.y + ":";

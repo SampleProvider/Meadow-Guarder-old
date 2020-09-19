@@ -348,6 +348,12 @@
 			self.draw = function(){
 				ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
 			}
+			self.drawHp = function(){
+				ctx.fillStyle = '#555555';
+				ctx.fillRect(self.x - 52,self.y - 30,104,10);
+				ctx.fillStyle = '#aa5525';
+				ctx.fillRect(self.x - 50,self.y - 28,self.hp / self.hpMax * 100,6);
+			}
 			Monster.list[self.id] = self;
 			return self;
 		}
@@ -432,6 +438,12 @@
 							}
 							if(data.monster[i].y){
 								Monster.list[data.monster[i].id].y = data.monster[i].y;
+							}
+							if(data.monster[i].hp){
+								Monster.list[data.monster[i].id].hp = data.monster[i].hp;
+							}
+							if(data.monster[i].hpMax){
+								Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
 							}
 							Monster.list[data.monster[i].id].updated = true;
 						}
@@ -574,6 +586,10 @@
 						ctx.drawImage(Img.CaveDEBUG,0,0);
 					}
 					break;
+			}
+			
+			for(var i in Monster.list){
+				Monster.list[i].drawHp();
 			}
 			for(var i in Player.list){
 				Player.list[i].drawName();

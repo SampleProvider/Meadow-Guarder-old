@@ -1,6 +1,8 @@
 
 var playerMap = {
     'Village':0,
+    'Cave':0,
+    'Starter House':0,
 };
 
 Maps = {};
@@ -456,6 +458,7 @@ Player = function(param){
     self.direction = 0;
     self.map = 'Village';
     playerMap[self.map] += 1;
+    self.changingMap = false;
     self.state = 'game';
     self.animation = 0;
     self.mapHeight = 3200;
@@ -508,6 +511,13 @@ Player = function(param){
         self.updateMap();
     }
     self.updateMap = function(){
+        if(self.mapChange && self.changingMap === false){
+            self.changingMap = true;
+            playerMap[self.map] -= 1;
+            setTimeout(function(){
+                playerMap[self.map] += 1;
+            },1100)
+        }
         if(self.mapChange){
             self.mapChange = false;
             socket.emit('changeMap');
@@ -778,10 +788,13 @@ Npc.list = {};
 
 Monster = function(param){
     var self = Actor(param);
+    self.spawnId = param.spawnId;
     self.attackState = "passive";
     self.direction = 0;
-    self.hp = 1500;
-    self.hpMax = 1500;
+    self.hp = 500;
+    self.hpMax = 500;
+    self.width = 24;
+    self.height = 24;
     self.toRemove = false;
     self.reload = 0;
     self.target = {};
@@ -795,6 +808,7 @@ Monster = function(param){
         }
         if(self.hp < 1){
             self.toRemove = true;
+            Spawner.list[self.spawnId].spawned = false;
         }
     }
     self.updateAttack = function(){
@@ -867,6 +881,8 @@ Monster = function(param){
             y:self.y,
             spdX:self.spdX,
             spdY:self.spdY,
+            hp:self.hp,
+            hpMax:self.hpMax,
             map:self.map,
         }
     }
@@ -1104,6 +1120,15 @@ var renderLayer = function(layer){
                     map:map,
                 });
 			}
+            if(tile_idx === 1778){
+                var spawner = new Spawner({
+                    x:(i % layer.width) * size + 32,
+                    y:~~(i / layer.width) * size + 32,
+                    width:size,
+                    height:size,
+                    map:map,
+                });
+			}
             if(tile_idx === 2036){
 				var teleport = "";
 				var teleportj = 0;
@@ -1203,12 +1228,23 @@ updateCrashes = function(){
 }
 
 spawnEnemies = function(){
-    if(Math.random() < 0.005){
-        var monster = new Monster({
-            x:1000 + Math.random() * 500,
-            y:1000 + Math.random() * 500,
-            moveSpeed:5,
-            map:"Village"
-        });
+    for(var i in Monster.list){
+        if(playerMap[Monster.list[i].map] === 0){
+            delete Monster.list[i];
+        }
+    }
+    for(var i in Spawner.list){
+        if(playerMap[Spawner.list[i].map] !== 0){
+            if(Math.random() < 0.005 && Spawner.list[i].spawned === false){
+                var monster = new Monster({
+                    spawnId:i,
+                    x:Spawner.list[i].x,
+                    y:Spawner.list[i].y,
+                    map:Spawner.list[i].map,
+                    moveSpeed:5,
+                });
+                Spawner.list[i].spawned = true;
+            }
+        }
     }
 }
