@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 require('./Database');
+require('./client/Inventory');
 require('./collision');
 require('./Entity');
 

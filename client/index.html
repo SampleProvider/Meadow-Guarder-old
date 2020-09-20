@@ -24,6 +24,8 @@
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
+		<div id="inventory" class="UI-text-light">
+		</div>
 		
 		<div id="chat-text" class="UI-text-light">
 			<div>Hello!</div>
@@ -52,6 +54,8 @@
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
 	<script src="/client/socket.js"></script>
+
+	<script src="/client/Inventory.js"></script>
 	<!--<script src="/socket.io/socket.io.js"></script>-->
 
 	<script>
@@ -219,6 +223,12 @@
 			STATE = 'game';
 		}
 
+		var inventory = new Inventory(socket,false);
+		socket.on('updateInventory',function(items){
+			inventory.items = items;
+			inventory.refreshRender();
+		});
+		
 		var Player = function(initPack){
 			var self = {};
 			self.id = initPack.id;
@@ -380,7 +390,6 @@
 			return self;
 		}
 		Monster.list = {};
-
 		socket.on('selfId',function(data){
 			selfId = data;
 		});
@@ -537,7 +546,7 @@
 				signDiv.style.display = 'none';
 				disconnectedDiv.style.display = 'none';
 				spectatorDiv.style.display = 'none';
-				adDiv.style.display = 'inline-block';
+				//adDiv.style.display = 'inline-block';
 			}
 			
 			if(!selfId){

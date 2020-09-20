@@ -236,6 +236,9 @@ var doCmd = function(text){
                         break;
                     }
                 }
+                else{
+                    cmdError('param',0);
+                }
                 cmdDone('commandDone',0);
                 break;
             

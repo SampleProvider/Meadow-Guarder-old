@@ -19,6 +19,7 @@ Entity = function(param){
     self.spdX = 0;
     self.spdY = 0;
     self.map = '';
+    self.type = 'Entity';
     if(param){
         if(param.id){
             self.id = param.id;
@@ -81,7 +82,9 @@ Entity.getFrameUpdateData = function(){
         if(Monster.list[i]){
             Monster.list[i].update();
             if(Monster.list[i].toRemove){
-                Spawner.list[Monster.list[i].spawnId].spawned = false;
+                if(Monster.list[i].spawnId){
+                    Spawner.list[Monster.list[i].spawnId].spawned = false;
+                }
                 delete Monster.list[i];
             }
             else{
@@ -118,6 +121,7 @@ Actor = function(param){
     self.mapChange = false;
     self.canMove = true;
     self.invincible = false;
+    self.type = 'Actor';
     var super_update = self.update;
     self.update = function(){
         self.moveSpeed = self.maxSpeed;
@@ -173,7 +177,7 @@ Actor = function(param){
         self.map = map;
         self.moveArray = [];
     }
-    self.shootProjectile = function(id,angle,direction,type,distance){
+    self.shootProjectile = function(id,parentType,angle,direction,type,distance){
 		var projectile = Projectile({
             id:id,
             type:type,
@@ -181,7 +185,8 @@ Actor = function(param){
 			direction:direction,
 			x:self.x + Math.cos(direction/180*Math.PI) * distance,
 			y:self.y + Math.sin(direction/180*Math.PI) * distance,
-			map:self.map,
+            map:self.map,
+            parentType:parentType,
 		});
     }
     self.updateCollisions = function(){
@@ -459,7 +464,7 @@ Player = function(param){
     self.height = 28;
     self.moveSpeed = 10;
     self.maxSpeed = 10;
-    self.img = 'player';
+    self.img = 'up';
     self.hp = 1000;
     self.hpMax = 1000;
     self.direction = 0;
@@ -470,6 +475,7 @@ Player = function(param){
     self.animation = 0;
     self.mapHeight = 3200;
     self.mapWidth = 3200;
+    self.type = 'Player';
     self.username = param.username;
 	self.keyPress = {
         up:false,
@@ -497,6 +503,8 @@ Player = function(param){
     self.healTick = 160;
     self.attackDirection = 0;
     self.secondDirection = 0;
+	self.inventory = new Inventory(socket,true);
+	self.inventory.addItem("potion",10);
     self.update = function(){
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
@@ -668,10 +676,10 @@ Player = function(param){
             }
         }
         if(self.attackTick === 0){
-            self.shootProjectile(self.id,self.direction - 15,self.direction - 15,0,0);
-            self.shootProjectile(self.id,self.direction - 5,self.direction - 5,0,0);
-            self.shootProjectile(self.id,self.direction + 5,self.direction + 5,0,0);
-            self.shootProjectile(self.id,self.direction + 15,self.direction + 15,0,0);
+            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,0,0);
+            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,0,0);
+            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,0,0);
+            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,0,0);
         }
         if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
@@ -680,17 +688,17 @@ Player = function(param){
         }
         if(self.secondTick === 20){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
             }
         }
         if(self.secondTick === 40){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
             }
         }
         if(self.secondTick === 60){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
             }
         }
         if(self.healTick === 0){
@@ -704,6 +712,7 @@ Player = function(param){
         }
         if(self.healTick === 120){
             self.hp += 200;
+            self.inventory.addItem("potion",10);
         }
     }
     self.getInitPack = function(){
@@ -833,6 +842,7 @@ Npc = function(param){
 	var self = Actor(param);
 	self.id = Math.random();
     self.map = 'Village';
+    self.type = 'Npc';
 	var super_update = self.update;
 	self.update = function(){
         super_update();
@@ -872,6 +882,7 @@ Monster = function(param){
     self.toRemove = false;
     self.reload = 0;
     self.target = {};
+    self.type = 'Monster';
     var super_update = self.update;
     self.update = function(){
         super_update();
@@ -882,7 +893,9 @@ Monster = function(param){
         }
         if(self.hp < 1){
             self.toRemove = true;
-            Spawner.list[self.spawnId].spawned = false;
+            if(self.spawnId){
+                Spawner.list[self.spawnId].spawned = false;
+            }
         }
     }
     self.updateAttack = function(){
@@ -928,52 +941,52 @@ Monster = function(param){
                 },10000);
                 self.reload += 1;
                 if(self.reload === 0){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 20){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 40){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 60){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 80){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 82){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 84){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 86){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 500){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 520){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 540){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 560){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 580){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 582){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 584){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 if(self.reload === 586){
-                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
                 }
                 break;
         }
@@ -1003,6 +1016,7 @@ Pet = function(param){
     self.parent = param.parent;
     self.reload = 0;
 	var super_update = self.update;
+    self.type = 'Pet';
 	self.update = function(){
         super_update();
         self.updateAttack();
@@ -1012,7 +1026,7 @@ Pet = function(param){
         if(self.reload > 10){
             self.reload = 0;
             var direction = (Math.atan2(Player.list[self.parent].mouseY - Player.list[self.parent].y + self.y,Player.list[self.parent].mouseX - Player.list[self.parent].x + self.x) / Math.PI * 180);
-            self.shootProjectile(self.parent,direction,direction,0,35);
+            self.shootProjectile(self.parent,'Pet',direction,direction,0,35);
         }
     }
 	self.getInitPack = function(){
@@ -1050,6 +1064,8 @@ Projectile = function(param){
 	self.direction = param.direction;
 	self.timer = 0;
 	self.toRemove = false;
+    self.type = 'Projectile';
+    self.parentType = param.parentType;
 	var super_update = self.update;
 	self.update = function(){
         super_update();
@@ -1304,7 +1320,7 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].img !== 'dead'){
+                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].img !== 'dead' && Projectile.list[j].parentType !== 'Player'){
                     Projectile.list[j].toRemove = true;
                     Player.list[i].hp -= 100;
                 }
@@ -1314,7 +1330,7 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i){
+                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster'){
                     Projectile.list[j].toRemove = true;
                     Monster.list[i].hp -= 100;
                 }
@@ -1335,7 +1351,9 @@ updateCrashes = function(){
 spawnEnemies = function(){
     for(var i in Monster.list){
         if(playerMap[Monster.list[i].map] === 0){
-            Spawner.list[Monster.list[i].spawnId].spawned = false;
+            if(Monster.list[i].spawnId){
+                Spawner.list[Monster.list[i].spawnId].spawned = false;
+            }
             delete Monster.list[i];
         }
     }

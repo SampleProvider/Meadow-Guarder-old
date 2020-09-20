@@ -195,6 +195,12 @@ div {
     left: 10px;
     user-select: none;
 }
+#inventory {
+    top: 15px;
+    float: right;
+    user-select: none;
+    width: 500px;display: block;
+}
 #gameDiv {
     top: 100%;
     left: 100%;
