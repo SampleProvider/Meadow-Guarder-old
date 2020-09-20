@@ -3,6 +3,7 @@ var playerMap = {
     'Village':0,
     'Cave':0,
     'Starter House':0,
+    'House':0,
 };
 
 Maps = {};
@@ -64,7 +65,12 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {'Village':{player:[],projectile:[],monster:[]},'Starter House':{player:[],projectile:[],monster:[]},'Cave':{player:[],projectile:[],monster:[]}};
+    var pack = {
+        'Village':{player:[],projectile:[],monster:[]},
+        'Starter House':{player:[],projectile:[],monster:[]},
+        'Cave':{player:[],projectile:[],monster:[]},
+        'House':{player:[],projectile:[],monster:[]}
+    };
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
@@ -75,6 +81,7 @@ Entity.getFrameUpdateData = function(){
         if(Monster.list[i]){
             Monster.list[i].update();
             if(Monster.list[i].toRemove){
+                Spawner.list[Monster.list[i].spawnId].spawned = false;
                 delete Monster.list[i];
             }
             else{
@@ -449,7 +456,7 @@ Player = function(param){
     self.mouseX = 0;
     self.mouseY = 0;
     self.width = 24;
-    self.height = 20;
+    self.height = 28;
     self.moveSpeed = 10;
     self.maxSpeed = 10;
     self.img = 'player';
@@ -480,10 +487,16 @@ Player = function(param){
         right:68,
         attack:'attack',
         second:'second',
-        heal:'second',
+        heal:32,
     };
     self.attackReload = 25;
     self.secondReload = 250;
+    self.healReload = 500;
+    self.attackTick = 40;
+    self.secondTick = 160;
+    self.healTick = 160;
+    self.attackDirection = 0;
+    self.secondDirection = 0;
     self.update = function(){
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
@@ -505,6 +518,16 @@ Player = function(param){
         }
         self.attackReload += 1;
         self.secondReload += 1;
+        self.healReload += 1;
+        self.attackTick += 1;
+        self.secondTick += 1;
+        self.healTick += 1;
+        if(self.hp < 1){
+            Player.spectate(socket);
+        }
+        if(self.hp > self.hpMax){
+            self.hp = self.hpMax;
+        }
         if(!self.invincible){
             self.updateAttack();
         }
@@ -513,10 +536,24 @@ Player = function(param){
     self.updateMap = function(){
         if(self.mapChange && self.changingMap === false){
             self.changingMap = true;
-            playerMap[self.map] -= 1;
+            var beforeMap = self.map;
             setTimeout(function(){
+                playerMap[beforeMap] -= 1;
                 playerMap[self.map] += 1;
-            },1100)
+                for(var i in Spawner.list){
+                    if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
+                        var monster = new Monster({
+                            spawnId:i,
+                            x:Spawner.list[i].x,
+                            y:Spawner.list[i].y,
+                            map:Spawner.list[i].map,
+                            moveSpeed:5,
+                        });
+                        Spawner.list[i].spawned = true;
+                    }
+                }
+                self.changingMap = false;
+            },750);
         }
         if(self.mapChange){
             self.mapChange = false;
@@ -618,21 +655,55 @@ Player = function(param){
     self.updateAttack = function(){
         if(self.img !== 'dead'){
             if(self.keyPress.attack === true && self.attackReload > 15){
-                self.shootProjectile(self.id,self.direction,self.direction,0,20);
                 self.attackReload = 1;
+                self.attackTick = 0;
             }
             if(self.keyPress.second === true && self.secondReload > 250){
-                for(var i = 10;i < 80;i+=10){
-                    self.shootProjectile(self.id,0,0,0,i);
-                    self.shootProjectile(self.id,90,90,0,i);
-                    self.shootProjectile(self.id,180,180,0,i);
-                    self.shootProjectile(self.id,-90,-90,0,i);
-                }
                 self.secondReload = 1;
+                self.secondTick = 0;
+            }
+            if(self.keyPress.heal === true && self.healReload > 500){
+                self.healReload = 1;
+                self.healTick = 0;
             }
         }
-        if(self.hp < 1){
-            Player.spectate(socket);
+        if(self.attackTick === 0){
+            self.shootProjectile(self.id,self.direction - 15,self.direction - 15,0,0);
+            self.shootProjectile(self.id,self.direction - 5,self.direction - 5,0,0);
+            self.shootProjectile(self.id,self.direction + 5,self.direction + 5,0,0);
+            self.shootProjectile(self.id,self.direction + 15,self.direction + 15,0,0);
+        }
+        if(self.secondTick === 0){
+            for(var i = 0;i < 10;i++){
+                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+            }
+        }
+        if(self.secondTick === 20){
+            for(var i = 0;i < 10;i++){
+                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+            }
+        }
+        if(self.secondTick === 40){
+            for(var i = 0;i < 10;i++){
+                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+            }
+        }
+        if(self.secondTick === 60){
+            for(var i = 0;i < 10;i++){
+                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+            }
+        }
+        if(self.healTick === 0){
+            self.hp += 200;
+        }
+        if(self.healTick === 40){
+            self.hp += 200;
+        }
+        if(self.healTick === 80){
+            self.hp += 200;
+        }
+        if(self.healTick === 120){
+            self.hp += 200;
         }
     }
     self.getInitPack = function(){
@@ -649,6 +720,9 @@ Player = function(param){
             img:self.img,
             attackReload:self.attackReload,
             secondReload:self.secondReload,
+            mapWidth:self.mapWidth,
+            mapHeight:self.mapHeight,
+            healReload:self.healReload,
             animation:self.animation,
         }
     }
@@ -830,6 +904,12 @@ Monster = function(param){
             case "move":
                 self.move(self.target.x + Math.random() * 128 - 64,self.target.y + Math.random() * 128 - 64);
                 self.reload = 0;
+                setTimeout(function(){
+                    self.moveArray = [];
+                    self.spdX = 0;
+                    self.spdY = 0;
+                    self.move(self.target.x + Math.random() * 128 - 64,self.target.y + Math.random() * 128 - 64);
+                },5000);
                 self.attackState = "attack";
                 break;
             case "attack":
@@ -845,7 +925,7 @@ Monster = function(param){
                         self.attackState = "passive";
                         self.target = {};
                     }
-                },5000);
+                },10000);
                 self.reload += 1;
                 if(self.reload === 0){
                     self.shootProjectile(self.id,self.direction,self.direction,0,0);
@@ -869,6 +949,30 @@ Monster = function(param){
                     self.shootProjectile(self.id,self.direction,self.direction,0,0);
                 }
                 if(self.reload === 86){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 500){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 520){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 540){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 560){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 580){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 582){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 584){
+                    self.shootProjectile(self.id,self.direction,self.direction,0,0);
+                }
+                if(self.reload === 586){
                     self.shootProjectile(self.id,self.direction,self.direction,0,0);
                 }
                 break;
@@ -1194,6 +1298,7 @@ var load = function(name){
 load("Village");
 load("Starter House");
 load("Cave");
+load("House");
 
 updateCrashes = function(){
     for(var i in Player.list){
@@ -1230,12 +1335,13 @@ updateCrashes = function(){
 spawnEnemies = function(){
     for(var i in Monster.list){
         if(playerMap[Monster.list[i].map] === 0){
+            Spawner.list[Monster.list[i].spawnId].spawned = false;
             delete Monster.list[i];
         }
     }
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
-            if(Math.random() < 0.005 && Spawner.list[i].spawned === false){
+            if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
                 var monster = new Monster({
                     spawnId:i,
                     x:Spawner.list[i].x,

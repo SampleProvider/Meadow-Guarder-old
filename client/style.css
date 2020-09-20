@@ -181,11 +181,16 @@ div {
     left: 10px;
 }
 #mainAttack {
-    bottom: 45px;
+    bottom: 75px;
     left: 10px;
     user-select: none;
 }
 #secondaryAttack {
+    bottom: 45px;
+    left: 10px;
+    user-select: none;
+}
+#heal {
     bottom: 15px;
     left: 10px;
     user-select: none;
