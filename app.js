@@ -14,12 +14,13 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 if(SERVER === 'localhost'){
-	serv.listen(3000);
+	var port = serv.listen(3000);
 }
 else{
-	serv.listen(process.env.PORT);
+	var port = serv.listen(process.env.PORT);
 }
-console.log('Server Started.');
+
+console.log('Server Started on port ' + port.address().port);
 require('./command');
 
 SOCKET_LIST = {};

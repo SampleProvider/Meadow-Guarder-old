@@ -4,6 +4,7 @@ var playerMap = {
     'Cave':0,
     'Starter House':0,
     'House':0,
+    'River':0,
 };
 
 Maps = {};
@@ -70,7 +71,8 @@ Entity.getFrameUpdateData = function(){
         'Village':{player:[],projectile:[],monster:[]},
         'Starter House':{player:[],projectile:[],monster:[]},
         'Cave':{player:[],projectile:[],monster:[]},
-        'House':{player:[],projectile:[],monster:[]}
+        'House':{player:[],projectile:[],monster:[]},
+        'River':{player:[],projectile:[],monster:[]},
     };
     for(var i in Player.list){
         if(Player.list[i]){
@@ -427,8 +429,12 @@ Actor = function(param){
         if(self.isColliding(transporter)){
             setTimeout(function(){
                 self.map = transporter.teleport;
-                self.x = transporter.teleportx;
-                self.y = transporter.teleporty;
+                if(transporter.teleportx !== -1){
+                    self.x = transporter.teleportx;
+                }
+                if(transporter.teleporty !== -1){
+                    self.y = transporter.teleporty;
+                }
                 self.mapWidth = transporter.mapx;
                 self.mapHeight = transporter.mapy;
                 self.canMove = false;
@@ -503,8 +509,9 @@ Player = function(param){
     self.healTick = 160;
     self.attackDirection = 0;
     self.secondDirection = 0;
+	self.questInventory = new QuestInventory(socket,true);
 	self.inventory = new Inventory(socket,true);
-	self.inventory.addItem("potion",10);
+	self.questInventory.addQuestItem("potion",10);
     self.update = function(){
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
@@ -712,7 +719,7 @@ Player = function(param){
         }
         if(self.healTick === 120){
             self.hp += 200;
-            self.inventory.addItem("potion",10);
+            self.inventory.addItem("sword",10);
         }
     }
     self.getInitPack = function(){
@@ -1315,6 +1322,7 @@ load("Village");
 load("Starter House");
 load("Cave");
 load("House");
+load("River");
 
 updateCrashes = function(){
     for(var i in Player.list){

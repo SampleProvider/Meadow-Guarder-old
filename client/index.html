@@ -24,8 +24,9 @@
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
-		<div id="inventory" class="UI-text-light">
-		</div>
+		<div id="questInventoryDiv" class="UI-text-light"></div>
+		<div id="inventoryDiv" style="display:none;"></div>
+		<button id="inventoryButton" class="UI-button-light">Inventory</button>
 		
 		<div id="chat-text" class="UI-text-light">
 			<div>Hello!</div>
@@ -43,7 +44,7 @@
 	<div id="ads" style="display:none">
 		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
 		<button id="ad2" class="UI-button-light" onclick="disconnect()">Do YOU want YOUR ad featured here? Then click <a href="https://forms.gle/stnavsadkja7r7b96">THIS LINK</a> to write a application!</button>
-		<button id="ad3" class="UI-button-light" onclick="history.go(0)">InstaPlastiSnow(tm)</button>
+		<button id="ad3" class="UI-button-light" onclick="history.go(0)">Go to <a href="https://docs.google.com/forms/d/e/1FAIpQLSfyp_-6rxw0Kh-e4dru1Lpb6VRwoN2f_L_rawko3Hbm6n9KvQ/viewform">Tianmu's Lego center</a>! Get a free discount if your the first 100 People to get there!</button>
 	</div>
 	<div id="disconnected" style="display:none;">
 		<button class="disconnected">Disconnected</button>
@@ -65,6 +66,12 @@
 
 		var cameraX = 0;
 		var cameraY = 0;
+		var lastCameraX = 0;
+		var lastCameraY = 0;
+		var mouseCameraX = 0;
+		var mouseCameraY = 0;
+
+		var menu = 'none';
 
 		var RENDERDIST = 5;
 		var STATE = 'signIn';
@@ -82,6 +89,8 @@
 		var adDiv = document.getElementById('ads');
 		var ctxRaw = document.getElementById('ctx');
 		var signDiv = document.getElementById('sign');
+		var inventoryButton = document.getElementById('inventoryButton');
+		var inventoryDiv = document.getElementById('inventoryDiv');
 		var blackShade = document.getElementById('blackShade');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
@@ -177,6 +186,7 @@
 		load('Starter House');
 		load('Cave');
 		load('House');
+		load('River');
 		var shadeSpeed = 0;
 		var shadeAmount = 0;
 		var Img = {};
@@ -190,6 +200,8 @@
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.healthBar = new Image();
 		Img.healthBar.src = '/client/img/Health0.png';
+		Img.healthBarEnemy = new Image();
+		Img.healthBarEnemy.src = '/client/img/HealthEnemy.png';
 		Img.Village0 = new Image();
 		Img.Village0.src = '/client/maps/Village0.png';
 		Img.Village1 = new Image();
@@ -214,27 +226,54 @@
 		Img.House1.src = '/client/maps/House1.png';
 		Img.HouseDEBUG = new Image();
 		Img.HouseDEBUG.src = '/client/maps/HouseDEBUG.png';
+		Img.River0 = new Image();
+		Img.River0.src = '/client/maps/River0.png';
+		Img.River1 = new Image();
+		Img.River1.src = '/client/maps/River1.png';
+		Img.RiverDEBUG = new Image();
+		Img.RiverDEBUG.src = '/client/maps/RiverDEBUG.png';
+
+		var mouseX = 0;
+		var mouseY = 0;
 
 		var selfId = null;
 
 		var respawn = function(){
 			socket.emit('respawn');
-			spectatorDiv.style.display = 'none';
-			STATE = 'game';
+			STATE = 'respawn';
+			setTimeout(function(){
+				STATE = 'game';
+			},50);
 		}
-
+		var questInventory = new QuestInventory(socket,false);
+		socket.on('updateQuestInventory',function(items){
+			questInventory.items = items;
+			questInventory.refreshRender();
+		});
 		var inventory = new Inventory(socket,false);
 		socket.on('updateInventory',function(items){
 			inventory.items = items;
 			inventory.refreshRender();
 		});
 		
+		inventoryButton.onclick = function(){
+			if(menu === 'none'){
+				menu = 'inventory';
+				inventoryDiv.style.display = 'inline-block';
+			}
+			else{
+				menu = 'none';
+				inventoryDiv.style.display = 'none';
+			}
+		}
 		var Player = function(initPack){
 			var self = {};
 			self.id = initPack.id;
 			self.username = initPack.username;
 			self.x = initPack.x;
 			self.y = initPack.y;
+			self.spdX = initPack.spdX;
+			self.spdY = initPack.spdY;
 			self.img = initPack.img;
 			self.direction = initPack.direction;
 			self.hp = initPack.hp;
@@ -383,8 +422,8 @@
 				}
 			}
 			self.drawHp = function(){
-				ctx.drawImage(Img.healthBar,0,0,168,20,self.x - 63,self.y - 45,126,15);
-				ctx.drawImage(Img.healthBar,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 45,126 * self.hp / self.hpMax,15);
+				ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 45,126,15);
+				ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 45,126 * self.hp / self.hpMax,15);
 			}
 			Monster.list[self.id] = self;
 			return self;
@@ -411,6 +450,12 @@
 						}
 						if(data.player[i].y){
 							Player.list[data.player[i].id].y = data.player[i].y;
+						}
+						if(data.player[i].spdX){
+							Player.list[data.player[i].id].spdX = data.player[i].spdX;
+						}
+						if(data.player[i].spdY){
+							Player.list[data.player[i].id].spdY = data.player[i].spdY;
 						}
 						if(data.player[i].img){
 							Player.list[data.player[i].id].img = data.player[i].img;
@@ -510,7 +555,12 @@
 			},5000);
 		});
 		socket.on('spectator',function(data){
-			STATE = 'spectator';
+			if(STATE !== 'respawn'){
+				STATE = 'spectator';
+			}
+			else{
+				STATE = 'game';
+			}
 		});
 		socket.on('changeMap',function(){
 			shadeSpeed = 0.08;
@@ -546,7 +596,14 @@
 				signDiv.style.display = 'none';
 				disconnectedDiv.style.display = 'none';
 				spectatorDiv.style.display = 'none';
-				//adDiv.style.display = 'inline-block';
+				adDiv.style.display = 'inline-block';
+			}
+			if(STATE === 'respawn'){
+				gameDiv.style.display = 'inline-block';
+				signDiv.style.display = 'none';
+				disconnectedDiv.style.display = 'none';
+				spectatorDiv.style.display = 'none';
+				adDiv.style.display = 'inline-block';
 			}
 			
 			if(!selfId){
@@ -564,22 +621,40 @@
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
-			if(Player.list[selfId].mapWidth > window.innerWidth * 2){
-				if(Player.list[selfId].x < WIDTH / 2){
+			//mouseCameraX = mouseX / 7;
+			//mouseCameraY = mouseY / 7;
+			if(lastCameraX - mouseCameraX > 2){
+				mouseCameraX = lastCameraX - 2;
+			}
+			if(lastCameraX - mouseCameraX < -2){
+				mouseCameraX = lastCameraX + 2;
+			}
+			if(lastCameraY - mouseCameraY > 2){
+				mouseCameraY = lastCameraY - 2;
+			}
+			if(lastCameraY - mouseCameraY < -2){
+				mouseCameraY = lastCameraY + 2;
+			}
+			cameraX -= mouseCameraX;
+			cameraY -= mouseCameraY;
+			if(Player.list[selfId].mapWidth > window.innerWidth){
+				if(cameraX > 0){
 					cameraX = 0;
 				}
-				if(Player.list[selfId].x > Player.list[selfId].mapWidth - WIDTH / 2){
+				if(cameraX < WIDTH - Player.list[selfId].mapWidth){
 					cameraX = WIDTH - Player.list[selfId].mapWidth;
 				}
 			}
-			if(Player.list[selfId].mapHeight > window.innerHeight * 2){
-				if(Player.list[selfId].y < HEIGHT / 2){
+			if(Player.list[selfId].mapHeight > window.innerHeight){
+				if(cameraY > 0){
 					cameraY = 0;
 				}
-				if(Player.list[selfId].y > Player.list[selfId].mapHeight - HEIGHT / 2){
+				if(cameraY < HEIGHT - Player.list[selfId].mapHeight){
 					cameraY = HEIGHT - Player.list[selfId].mapHeight;
 				}
 			}
+			lastCameraX = mouseCameraX;
+			lastCameraY = mouseCameraY;
 			ctx.translate(cameraX,cameraY);
 			switch(Player.list[selfId].map){
 				case 'Village':
@@ -593,6 +668,9 @@
 					break;
 				case 'House':
 					ctx.drawImage(Img.House0,0,0);
+					break;
+				case 'River':
+					ctx.drawImage(Img.River0,0,0);
 					break;
 			}
 			for(var i in Player.list){
@@ -627,6 +705,12 @@
 					ctx.drawImage(Img.House1,0,0);
 					if(DEBUG){
 						ctx.drawImage(Img.HouseDEBUG,0,0);
+					}
+					break;
+				case 'River':
+					ctx.drawImage(Img.River1,0,0);
+					if(DEBUG){
+						ctx.drawImage(Img.RiverDEBUG,0,0);
 					}
 					break;
 			}
@@ -688,10 +772,16 @@
 			if(Player.list[selfId]){
 				var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
 				var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
+				mouseX = event.clientX - WIDTH / 2;
+				mouseY = event.clientY - HEIGHT / 2;
 				socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
 			}
 		}
-		
+		document.querySelectorAll("button").forEach(function(item){
+			item.addEventListener('focus',function(){
+				this.blur();
+			});
+		});
 		document.oncontextmenu = function(event){
 			event.preventDefault();
 		}

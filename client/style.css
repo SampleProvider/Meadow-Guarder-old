@@ -11,6 +11,10 @@ body {
 div {
     user-select: none;
 }
+button {
+    outline: none;
+    cursor: pointer;
+}
 
 ::-webkit-scrollbar {
     width: 20px;
@@ -41,7 +45,6 @@ div {
     padding-right: 5px;
     padding-bottom: 2px;
     padding-left: 5px;
-    cursor: pointer;
 }
 .UI-button-light:hover {
     background-color: #251000;
@@ -169,15 +172,18 @@ div {
     left: 10px;
 }
 #ad1 {
+    width: 200px;
     top: 150px;
     left: 10px;
 }
 #ad2 {
-    top: 175px;
+    width: 200px;
+    top: 200px;
     left: 10px;
 }
 #ad3 {
-    top: 200px;
+    width: 200px;
+    top: 300px;
     left: 10px;
 }
 #mainAttack {
@@ -195,7 +201,7 @@ div {
     left: 10px;
     user-select: none;
 }
-#inventory {
+#questInventoryDiv {
     top: 15px;
     float: right;
     user-select: none;
@@ -247,4 +253,23 @@ div {
     height: 100%;
     background-color: #000000;
     opacity: 0;
+}
+
+#inventoryButton {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    padding: 5px;
+}
+
+#inventoryDiv {
+    position: absolute;
+    left: 25%;
+    top: 25%;
+    width: 50%;
+    height: 50%;
+    font-family: 'pixel';
+    background-color: #502000;
+    border: 1px solid #000000;
+    padding: 5px;
 }
