@@ -15,5 +15,6 @@ Player Sprites: https://www.youtube.com/watch?v=ty-RxDy9_SQ&app=desktop
 Server: heroku
 Database: a file
 npm packages: colors,express,fs,jquery,pg,socket.io
+
 if you want to donate you cant. 
 
