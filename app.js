@@ -24,8 +24,8 @@ console.log('Server Started on port ' + port.address().port);
 require('./command');
 
 SOCKET_LIST = {};
-io = require('socket.io')(serv,{upgradeTimeout: 50000});
-io.sockets.on('connection', function(socket){
+io = require('socket.io')(serv,{upgradeTimeout:50000});
+io.sockets.on('connection',function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
 	socket.on('signIn',function(data){
@@ -44,7 +44,7 @@ io.sockets.on('connection', function(socket){
 					}
 				}
 			}
-			socket.emit('signInResponse',{success:res});
+			socket.emit('signInResponse',{success:res,username:data.username});
 		});
 	});
 	socket.on('createAccount',function(data){

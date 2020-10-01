@@ -53,10 +53,11 @@ QuestInventory = function(socket,server){
             let image = document.createElement('img');
             image.src = "/client/img/" + data.id + ".png";
             button.className = "UI-button-light";
+            image.className = "item";
             button.onclick = function(){
                 self.socket.emit("useQuestItem",questItem.id);
             }
-            button.innerHTML = questItem.name + " x" + data.amount;
+            button.innerHTML = questItem.name + " x" + data.amount + " ";
             button.style.top = index * 30 + 5;
             button.style.textAlign = "center";
             questInventory.appendChild(button);
@@ -159,7 +160,7 @@ Inventory = function(socket,server){
             self.socket.emit('updateInventory',self.items);
             return;
         }
-        var inventory = document.getElementById("inventoryDiv");
+        var inventory = document.getElementById("inventoryItem");
         inventory.innerHTML = "";
         var addButton = function(data,index){
             let item = Item.list[data.id]
@@ -167,10 +168,11 @@ Inventory = function(socket,server){
             let image = document.createElement('img');
             image.src = "/client/img/" + data.id + ".png";
             button.className = "UI-button-light";
+            image.className = "item";
             button.onclick = function(){
                 self.socket.emit("useItem",item.id);
             }
-            button.innerHTML = item.name + " x" + data.amount;
+            button.innerHTML = item.name + " x" + data.amount + " ";
             button.style.top = index * 30 + 5;
             button.style.textAlign = "center";
             inventory.appendChild(button);

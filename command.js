@@ -112,8 +112,8 @@ var doCmd = function(text){
                         console.error('Use / to start a command'.help);
                         console.error('BROADCAST-----------(param) BROADCAST-NAME MESSAGE'.help);
                         console.error('CONSOLE-------------(param) TYPE PARAM'.help);
-                        console.error('DISCONNECT----------(param) PLAYER-NAME'.help);
-                        console.error('EXIT----------------(param (none)'.help);
+                        console.error('PLAYER--------------(param) TYPE PARAM'.help);
+                        console.error('EXIT----------------(param) (none)'.help);
                         console.error('\nFor more help on a certain command, try /console help command'.info);
                     }
                     else if(param.length === 2){
@@ -142,6 +142,28 @@ var doCmd = function(text){
                                 console.error('\nTYPE = timeout--------Timeouts the console'.help);
                                 console.error('TYPE = timeout--------Parameters:'.help);
                                 console.error('TYPE = timeout--------TIME----------------Time, in ms, of how long you want to wait'.help);
+                                break;
+                            case 'player':
+                                console.error('Player commands'.help);
+                                console.error('\nParameters:'.help);
+                                console.error('TYPE----------------Type of command to do'.help);
+                                console.error('\nTYPE = disconnect-----Disconnect a player'.help);
+                                console.error('TYPE = disconnect-----Parameters:'.help);
+                                console.error('TYPE = disconnect-----USERNAME------------Player to disconnect'.help);
+                                console.error('\nTYPE = kill-----------Kill a player'.help);
+                                console.error('TYPE = kill-----------Parameters:'.help);
+                                console.error('TYPE = kill-----------USERNAME------------Player to kill'.help);
+                                console.error('\nTYPE = move-----------Move a player'.help);
+                                console.error('TYPE = move-----------Parameters:'.help);
+                                console.error('TYPE = move-----------USERNAME------------Player to move'.help);
+                                console.error('TYPE = move-----------X-------------------XPos to move to'.help);
+                                console.error('TYPE = move-----------Y-------------------YPos to move to'.help);
+                                console.error('\nTYPE = teleport-------Teleport a player'.help);
+                                console.error('TYPE = teleport-------Parameters:'.help);
+                                console.error('TYPE = teleport-------USERNAME------------Player to teleport'.help);
+                                console.error('TYPE = teleport-------X-------------------XPos to teleport to'.help);
+                                console.error('TYPE = teleport-------Y-------------------YPos to teleport to'.help);
+                                console.error('TYPE = teleport-------MAP-----------------Map to teleport to'.help);
                                 break;
                             default:
                                 cmdError('param');
@@ -176,26 +198,6 @@ var doCmd = function(text){
                 }
                 break;
             case 'disconnect':
-                if(param.length !== 1){
-                    cmdError('param',0);
-                    break;
-                }
-                var playerFound = false;
-                for(var i in Player.list){
-                    if(Player.list[i].username === param[0]){
-                        var socket = SOCKET_LIST[i];
-                        playerFound = true;
-                    }
-                }
-                if(!playerFound){
-                    cmdError('playerFound',param[0]);
-                    break;
-                }
-                socket.emit('disconnected');
-                Player.onDisconnect(socket);
-                delete SOCKET_LIST[socket.id];
-                cmdDone('commandDone',0);
-                break;
             case 'exit':
                 if(param.length !== 0){
                     cmdError('param',0);
@@ -205,6 +207,27 @@ var doCmd = function(text){
             case 'player':
                 if(param.length < 2){
                     cmdError('param',0);
+                    break;
+                }
+                else if(param[0] === 'disconnect'){
+                    if(param.length !== 2){
+                        cmdError('param',0);
+                    }
+                    var playerFound = false;
+                    for(var i in Player.list){
+                        if(Player.list[i].username === param[0]){
+                            var socket = SOCKET_LIST[i];
+                            playerFound = true;
+                        }
+                    }
+                    if(!playerFound){
+                        cmdError('playerFound',param[0]);
+                        break;
+                    }
+                    socket.emit('disconnected');
+                    Player.onDisconnect(socket);
+                    delete SOCKET_LIST[socket.id];
+                    cmdDone('commandDone',0);
                     break;
                 }
                 if(param[0] === 'kill'){
@@ -232,6 +255,22 @@ var doCmd = function(text){
                         }
                     }
                     if(!moved){
+                        cmdError('playerFound',param[1]);
+                        break;
+                    }
+                }
+                else if(param[0] === 'teleport'){
+                    if(param.length !== 5){
+                        cmdError('param',0);
+                    }
+                    var teleported = false;
+                    for(var i in Player.list){
+                        if(Player.list[i].username === param[1]){
+                            Player.list[i].teleport(parseInt(param[2],10),parseInt(param[3],10),param[4]);
+                            teleported = true;
+                        }
+                    }
+                    if(!teleported){
                         cmdError('playerFound',param[1]);
                         break;
                     }

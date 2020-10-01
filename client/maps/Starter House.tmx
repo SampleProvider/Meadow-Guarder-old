@@ -32,7 +32,7 @@
 0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="4" name="Deco 0" width="10" height="10">
+ <layer id="4" name="Deco0" width="10" height="10">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,
 0,1323,1323,1323,1323,1323,1323,1323,1323,0,

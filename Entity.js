@@ -5,6 +5,10 @@ var playerMap = {
     'Starter House':0,
     'House':0,
     'River':0,
+    'Secret Base':0,
+    'Lilypad Path Part 1':0,
+    'The Outskirts':0,
+    'Lower Deadlands':0,
 };
 
 Maps = {};
@@ -73,11 +77,15 @@ Entity.getFrameUpdateData = function(){
         'Cave':{player:[],projectile:[],monster:[]},
         'House':{player:[],projectile:[],monster:[]},
         'River':{player:[],projectile:[],monster:[]},
+        'Secret Base':{player:[],projectile:[],monster:[]},
+        'Lilypad Path Part 1':{player:[],projectile:[],monster:[]},
+        'The Outskirts':{player:[],projectile:[],monster:[]},
+        'Lower Deadlands':{player:[],projectile:[],monster:[]},
     };
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
-            pack[Player.list[i].map].player.push(Player.list[i].getInitPack());
+            pack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
         }
     }
     for(var i in Monster.list){
@@ -90,24 +98,19 @@ Entity.getFrameUpdateData = function(){
                 delete Monster.list[i];
             }
             else{
-                pack[Monster.list[i].map].monster.push(Monster.list[i].getInitPack());
+                pack[Monster.list[i].map].monster.push(Monster.list[i].getUpdatePack());
             }
         }
     }
     for(var i in Projectile.list){
         Projectile.list[i].update();
     }
-    for(var i in ProjectileCollision.list){
-        if(ProjectileCollision.list[i]){
-            ProjectileCollision.list[i].update();
-        }
-    }
     for(var i in Projectile.list){
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
         }
         else{
-            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getInitPack());
+            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
     }
     return pack;
@@ -120,12 +123,15 @@ Actor = function(param){
     self.moveArray = [];
     self.moveDoneX = 0;
     self.moveDoneY = 0;
-    self.mapChange = false;
     self.canMove = true;
+    self.transporter = {};
     self.invincible = false;
     self.type = 'Actor';
+    self.state = 'none';
+    self.mapChange = 100;
     var super_update = self.update;
     self.update = function(){
+        self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateMove();
@@ -133,6 +139,22 @@ Actor = function(param){
                 super_update();
             }
             self.updateCollisions();
+        }
+        if(self.mapChange === 10){
+            self.map = self.transporter.teleport;
+            if(self.transporter.teleportx !== -1){
+                self.x = self.transporter.teleportx;
+            }
+            if(self.transporter.teleporty !== -1){
+                self.y = self.transporter.teleporty;
+            }
+            self.mapWidth = self.transporter.mapx;
+            self.mapHeight = self.transporter.mapy;
+            self.canMove = false;
+        }
+        if(self.mapChange === 20){
+            self.canMove = true;
+            self.invincible = false;
         }
     }
     self.updateMove = function(){
@@ -172,6 +194,9 @@ Actor = function(param){
         self.moveArray.push([x,y]);
     }
     self.teleport = function(x,y,map){
+        if(!playerMap[map]){
+            return;
+        }
         self.x = x;
         self.y = y;
         self.spdX = 0;
@@ -427,24 +452,9 @@ Actor = function(param){
     }
     self.doTransport = function(transporter){
         if(self.isColliding(transporter)){
-            setTimeout(function(){
-                self.map = transporter.teleport;
-                if(transporter.teleportx !== -1){
-                    self.x = transporter.teleportx;
-                }
-                if(transporter.teleporty !== -1){
-                    self.y = transporter.teleporty;
-                }
-                self.mapWidth = transporter.mapx;
-                self.mapHeight = transporter.mapy;
-                self.canMove = false;
-                setTimeout(function(){
-                    self.canMove = true;
-                    self.invincible = false;
-                },500);
-            },500);
             self.invincible = true;
-            self.mapChange = true;
+            self.mapChange = 0;
+            self.transporter = transporter;
         }
     }
     self.doSlowDown = function(slowDown){
@@ -458,8 +468,8 @@ Actor = function(param){
 Player = function(param){
     var self = Actor(param);
     var socket = SOCKET_LIST[self.id];
-    self.x = 0;
-    self.y = 0;
+    self.x = 320;
+    self.y = 320;
     self.lastX = 0;
     self.lastY = 0;
     self.spdX = 0;
@@ -470,17 +480,20 @@ Player = function(param){
     self.height = 28;
     self.moveSpeed = 10;
     self.maxSpeed = 10;
-    self.img = 'up';
+    self.img = 'player';
+    self.animationDirection = 'up';
+    self.animation = 0;
     self.hp = 1000;
     self.hpMax = 1000;
+    self.mg = 1000;
+    self.mgMax = 1000;
+    self.xp = 0;
+    self.xpMax = 1000;
     self.direction = 0;
-    self.map = 'Village';
+    self.map = 'Starter House';
     playerMap[self.map] += 1;
-    self.changingMap = false;
-    self.state = 'game';
-    self.animation = 0;
-    self.mapHeight = 3200;
-    self.mapWidth = 3200;
+    self.mapHeight = 640;
+    self.mapWidth = 640;
     self.type = 'Player';
     self.username = param.username;
 	self.keyPress = {
@@ -511,8 +524,10 @@ Player = function(param){
     self.secondDirection = 0;
 	self.questInventory = new QuestInventory(socket,true);
 	self.inventory = new Inventory(socket,true);
-	self.questInventory.addQuestItem("potion",10);
+    self.questInventory.addQuestItem("potion",10);
+    var lastSelf = {};
     self.update = function(){
+        self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateSpd();
@@ -538,7 +553,18 @@ Player = function(param){
         self.secondTick += 1;
         self.healTick += 1;
         if(self.hp < 1){
-            Player.spectate(socket);
+            self.hp = 0;
+            if(self.state !== 'dead'){
+                Player.spectate(socket);
+                console.error(self.username + ' died.');
+                for(var i in SOCKET_LIST){
+                    SOCKET_LIST[i].emit('addToChat',self.username + ' died.');
+                }
+                self.state = 'dead';
+            }
+        }
+        else{
+            self.state = 'none';
         }
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
@@ -549,30 +575,60 @@ Player = function(param){
         self.updateMap();
     }
     self.updateMap = function(){
-        if(self.mapChange && self.changingMap === false){
-            self.changingMap = true;
+        if(self.mapChange === 0){
+            socket.emit('changeMap',self.transporter);
             var beforeMap = self.map;
-            setTimeout(function(){
-                playerMap[beforeMap] -= 1;
-                playerMap[self.map] += 1;
-                for(var i in Spawner.list){
-                    if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
-                        var monster = new Monster({
-                            spawnId:i,
-                            x:Spawner.list[i].x,
-                            y:Spawner.list[i].y,
-                            map:Spawner.list[i].map,
-                            moveSpeed:5,
-                        });
-                        Spawner.list[i].spawned = true;
-                    }
-                }
-                self.changingMap = false;
-            },750);
+            self.canMove = false;
         }
-        if(self.mapChange){
-            self.mapChange = false;
-            socket.emit('changeMap');
+        if(self.mapChange === 10){
+            self.map = self.transporter.teleport;
+            if(self.transporter.teleportx !== -1){
+                self.x = self.transporter.teleportx;
+            }
+            if(self.transporter.teleporty !== -1){
+                self.y = self.transporter.teleporty;
+            }
+            self.mapWidth = self.transporter.mapx;
+            self.mapHeight = self.transporter.mapy;
+            playerMap[beforeMap] -= 1;
+            playerMap[self.map] += 1;
+            for(var i in Spawner.list){
+                if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
+                    var monster = new Monster({
+                        spawnId:i,
+                        x:Spawner.list[i].x,
+                        y:Spawner.list[i].y,
+                        map:Spawner.list[i].map,
+                        moveSpeed:5,
+                    });
+                    Spawner.list[i].spawned = true;
+                }
+            }
+            console.error(self.username + " went to map " + self.map + ".");
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('addToChat',self.username + " went to map " + self.map + ".");
+            }
+            var pack = {player:[],projectile:[],monster:[]};
+            for(var i in Player.list){
+                if(Player.list[i].map === self.map){
+                    pack.player.push(Player.list[i].getInitPack);
+                }
+            }
+            for(var i in Projectile.list){
+                if(Projectile.list[i].map === self.map){
+                    pack.projectile.push(Projectile.list[i].getInitPack);
+                }
+            }
+            for(var i in Monster.list){
+                if(Monster.list[i].map === self.map){
+                    pack.monster.push(Monster.list[i].getInitPack);
+                }
+            }
+            socket.emit('update',pack);
+        }
+        if(self.mapChange === 20){
+            self.canMove = true;
+            self.invincible = false;
         }
     }
     self.updateSpd = function(){
@@ -594,62 +650,62 @@ Player = function(param){
         }
         if(self.spdX === 1){
             if(self.spdY === 1){
-                self.img = "rightdown";
+                self.animationDirection = "rightdown";
             }
             else if(self.spdY === -1){
-                self.img = "rightup";
+                self.animationDirection = "rightup";
             }
             else if(self.spdY === 0){
-                self.img = "right";
+                self.animationDirection = "right";
             }
         }
         else if(self.spdX === -1){
             if(self.spdY === 1){
-                self.img = "leftdown";
+                self.animationDirection = "leftdown";
             }
             else if(self.spdY === -1){
-                self.img = "leftup";
+                self.animationDirection = "leftup";
             }
             else if(self.spdY === 0){
-                self.img = "left";
+                self.animationDirection = "left";
             }
         }
         else if(self.spdX === 0){
             if(self.spdY === 1){
-                self.img = "down";
+                self.animationDirection = "down";
             }
             else if(self.spdY === -1){
-                self.img = "up";
+                self.animationDirection = "up";
             }
             else if(self.spdY === 0){
                 self.animation = -1;
                 switch(Math.round(self.direction / 45)){
                     case 0:
-                        self.img = "right"
+                        self.animationDirection = "right"
                         break;
                     case 1:
-                        self.img = "rightdown"
+                        self.animationDirection = "rightdown"
                         break;
                     case 2:
-                        self.img = "down"
+                        self.animationDirection = "down"
                         break;
                     case 3:
-                        self.img = "leftdown"
+                        self.animationDirection = "leftdown"
                         break;
                     case 4:
-                        self.img = "left"
+                        self.animationDirection = "left"
                         break;
                     case -1:
-                        self.img = "rightup"
+                        self.animationDirection = "rightup"
                         break;
                     case -2:
-                        self.img = "up"
+                        self.animationDirection = "up"
                         break;
                     case -3:
-                        self.img = "leftup"
+                        self.animationDirection = "leftup"
                         break;
                     case -4:
-                        self.img = "left"
+                        self.animationDirection = "left"
                         break;
                 }
             }
@@ -668,12 +724,12 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
-        if(self.img !== 'dead'){
-            if(self.keyPress.attack === true && self.attackReload > 15){
+        if(self.state !== 'dead'){
+            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village"){
                 self.attackReload = 1;
                 self.attackTick = 0;
             }
-            if(self.keyPress.second === true && self.secondReload > 250){
+            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village"){
                 self.secondReload = 1;
                 self.secondTick = 0;
             }
@@ -690,7 +746,7 @@ Player = function(param){
         }
         if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
             }
         }
         if(self.secondTick === 20){
@@ -722,39 +778,95 @@ Player = function(param){
             self.inventory.addItem("sword",10);
         }
     }
-    self.getInitPack = function(){
-        return{
-            id:self.id,
-            x:self.x,
-            y:self.y,
-            spdX:self.spdX,
-            spdY:self.spdY,
-            hp:self.hp,
-            hpMax:self.hpMax,
-            map:self.map,
-            username:self.username,
-            img:self.img,
-            attackReload:self.attackReload,
-            secondReload:self.secondReload,
-            mapWidth:self.mapWidth,
-            mapHeight:self.mapHeight,
-            healReload:self.healReload,
-            animation:self.animation,
-        }
-    }
     self.getUpdatePack = function(){
-        return{
-            id:self.id,
-            x:self.x,
-            y:self.y,
-            img:self.img,
-            hp:self.hp,
-            map:self.map,
-            attackReload:self.attackReload,
-            secondReload:self.secondReload,
-            mapWidth:self.mapWidth,
-            mapHeight:self.mapHeight,
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
         }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.spdX !== self.spdX){
+            pack.spdX = self.spdX;
+            lastSelf.spdX = self.spdX;
+        }
+        if(lastSelf.spdY !== self.spdY){
+            pack.spdY = self.spdY;
+            lastSelf.spdY = self.spdY;
+        }
+        if(lastSelf.hp !== self.hp){
+            pack.hp = self.hp;
+            lastSelf.hp = self.hp;
+        }
+        if(lastSelf.hpMax !== self.hpMax){
+            pack.hpMax = self.hpMax;
+            lastSelf.hpMax = self.hpMax;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        if(lastSelf.username !== self.username){
+            pack.username = self.username;
+            lastSelf.username = self.username;
+        }
+        if(lastSelf.img !== self.img){
+            pack.img = self.img;
+            lastSelf.img = self.img;
+        }
+        if(lastSelf.animationDirection !== self.animationDirection){
+            pack.animationDirection = self.animationDirection;
+            lastSelf.animationDirection = self.animationDirection;
+        }
+        if(lastSelf.animation !== self.animation){
+            pack.animation = self.animation;
+            lastSelf.animation = self.animation;
+        }
+        if(lastSelf.attackReload !== self.attackReload){
+            pack.attackReload = self.attackReload;
+            lastSelf.attackReload = self.attackReload;
+        }
+        if(lastSelf.secondReload !== self.secondReload){
+            pack.secondReload = self.secondReload;
+            lastSelf.secondReload = self.secondReload;
+        }
+        if(lastSelf.healReload !== self.healReload){
+            pack.healReload = self.healReload;
+            lastSelf.healReload = self.healReload;
+        }
+        if(lastSelf.mapWidth !== self.mapWidth){
+            pack.mapWidth = self.mapWidth;
+            lastSelf.mapWidth = self.mapWidth;
+        }
+        if(lastSelf.mapHeight !== self.mapHeight){
+            pack.mapHeight = self.mapHeight;
+            lastSelf.mapHeight = self.mapHeight;
+        }
+        return pack;
+    }
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.spdX = self.spdX;
+        pack.spdY = self.spdY;
+        pack.hp = self.hp;
+        pack.hpMax = self.hpMax;
+        pack.map = self.map;
+        pack.username = self.username;
+        pack.img = self.img;
+        pack.animationDirection = self.animationDirection;
+        pack.animation = self.animation;
+        pack.attackReload = self.attackReload;
+        pack.secondReload = self.secondReload;
+        pack.healReload = self.healReload;
+        pack.mapWidth = self.mapWidth;
+        pack.mapHeight = self.mapHeight;
+        return pack;
     }
     Player.list[self.id] = self;
     return self;
@@ -766,9 +878,13 @@ Player.onConnect = function(socket,username){
     var player = Player({
 		id:socket.id,
         username:username,
-        moveSpeed:10,
+        moveSpeed:15,
 	});
 
+    console.error(username + " just logged on.");
+    for(var i in SOCKET_LIST){
+        SOCKET_LIST[i].emit('addToChat',username + " just logged on.");
+    }
 
     socket.emit('selfId',socket.id);
 
@@ -802,8 +918,11 @@ Player.onConnect = function(socket,username){
     });
 
     socket.on('respawn',function(data){
-        player.hp = 1000;
-        player.img = 'player';
+        player.hp = player.hpMax / 2;
+        console.error(player.username + ' respawned.');
+        for(var i in SOCKET_LIST){
+            SOCKET_LIST[i].emit('addToChat',player.username + ' respawned.');
+        }
     });
     
 }
@@ -819,7 +938,7 @@ Player.spectate = function(socket){
     }
 	socket.emit("spectator");
     if(Player.list[socket.id]){
-        Player.list[socket.id].img = 'dead';
+        Player.list[socket.id].state = 'dead';
     }
 }
 Player.onDisconnect = function(socket){
@@ -838,6 +957,10 @@ Player.onDisconnect = function(socket){
     }
 	socket.emit("disconnected");
     if(Player.list[socket.id]){
+        console.error(Player.list[socket.id].username + " logged off.");
+        for(var i in SOCKET_LIST){
+            SOCKET_LIST[i].emit('addToChat',Player.list[socket.id].username + " logged off.");
+        }
         playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
     }
@@ -850,27 +973,46 @@ Npc = function(param){
 	self.id = Math.random();
     self.map = 'Village';
     self.type = 'Npc';
+    var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
         super_update();
     }
-	self.getInitPack = function(){
-		return {
-			x:self.x,
-			y:self.y,
-			id:self.id,
-			direction:self.direction,
-			map:self.map,
-		}
-	}
 	self.getUpdatePack = function(){
-		return {
-			x:self.x,
-			y:self.y,
-			id:self.id,
-			direction:self.direction,
-		}
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
+        }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.spdX !== self.spdX){
+            pack.spdX = self.spdX;
+            lastSelf.spdX = self.spdX;
+        }
+        if(lastSelf.spdY !== self.spdY){
+            pack.spdY = self.spdY;
+            lastSelf.spdY = self.spdY;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        return pack;
 	}
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.spdX = self.spdX;
+        pack.spdY = self.spdY;
+        pack.map = self.map;
+        return pack;
+    }
 	Npc.list[self.id] = self;
 	return self;
 }
@@ -890,11 +1032,12 @@ Monster = function(param){
     self.reload = 0;
     self.target = {};
     self.type = 'Monster';
+    var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
         super_update();
         self.updateAttack();
-        if(self.target && self.target.img === "dead"){
+        if(self.target && self.target.state === "dead"){
             self.target = {};
             self.attackState = "passive";
         }
@@ -902,6 +1045,11 @@ Monster = function(param){
             self.toRemove = true;
             if(self.spawnId){
                 Spawner.list[self.spawnId].spawned = false;
+            }
+            for(var i in Projectile.list){
+                if(Projectile.list[i].parent === self.id){
+                    Projectile.list[i].toRemove = true;
+                }
             }
         }
     }
@@ -915,7 +1063,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].img !== "dead"){
+                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead"){
                         self.attackState = "move";
                         self.target = Player.list[i];
                     }
@@ -936,7 +1084,7 @@ Monster = function(param){
                 setTimeout(function(){
                     if(self.toRemove === false){
                         for(var i in Player.list){
-                            if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].img !== "dead"){
+                            if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead"){
                                 self.attackState = "move";
                                 self.target = Player.list[i];
                                 return;
@@ -998,17 +1146,40 @@ Monster = function(param){
                 break;
         }
     }
-    self.getInitPack = function(){
-        return{
-            id:self.id,
-            x:self.x,
-            y:self.y,
-            spdX:self.spdX,
-            spdY:self.spdY,
-            hp:self.hp,
-            hpMax:self.hpMax,
-            map:self.map,
+    self.getUpdatePack = function(){
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
         }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.hp !== self.hp){
+            pack.hp = self.hp;
+            lastSelf.hp = self.hp;
+        }
+        if(lastSelf.hpMax !== self.hpMax){
+            pack.hpMax = self.hpMax;
+            lastSelf.hpMax = self.hpMax;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        return pack;
+    }
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.hp = self.hp;
+        pack.hpMax = self.hpMax;
+        pack.map = self.map;
+        return pack;
     }
     Monster.list[self.id] = self;
 }
@@ -1024,6 +1195,7 @@ Pet = function(param){
     self.reload = 0;
 	var super_update = self.update;
     self.type = 'Pet';
+    var lastSelf = {};
 	self.update = function(){
         super_update();
         self.updateAttack();
@@ -1036,23 +1208,41 @@ Pet = function(param){
             self.shootProjectile(self.parent,'Pet',direction,direction,0,35);
         }
     }
-	self.getInitPack = function(){
-		return {
-			x:self.x,
-			y:self.y,
-			id:self.id,
-			direction:self.direction,
-			map:self.map,
-		}
-	}
 	self.getUpdatePack = function(){
-		return {
-			x:self.x,
-			y:self.y,
-			id:self.id,
-			direction:self.direction,
-		}
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
+        }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.hp !== self.hp){
+            pack.hp = self.hp;
+            lastSelf.hp = self.hp;
+        }
+        if(lastSelf.hpMax !== self.hpMax){
+            pack.hpMax = self.hpMax;
+            lastSelf.hpMax = self.hpMax;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        return pack;
 	}
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.hp = self.hp;
+        pack.hpMax = self.hpMax;
+        pack.map = self.map;
+        return pack;
+    }
 	Pet.list[self.id] = self;
 	return self;
 }
@@ -1073,6 +1263,7 @@ Projectile = function(param){
 	self.toRemove = false;
     self.type = 'Projectile';
     self.parentType = param.parentType;
+    var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
         super_update();
@@ -1108,24 +1299,31 @@ Projectile = function(param){
             }
         }
     }
-	self.getInitPack = function(){
-		return {
-			x:self.x,
-			y:self.y,
-			id:self.id,
-			direction:self.direction,
-			map:self.map,
-			parent:self.parent,
-		}
-	}
 	self.getUpdatePack = function(){
-		return {
-			x:self.x,
-			y:self.y,
-			id:self.id,
-			direction:self.direction,
-		}
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
+        }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        return pack;
 	}
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.map = self.map;
+        return pack;
+    }
 	Projectile.list[self.id] = self;
 	return self;
 }
@@ -1323,12 +1521,16 @@ load("Starter House");
 load("Cave");
 load("House");
 load("River");
+load("Secret Base");
+load("Lilypad Path Part 1");
+load("The Outskirts");
+load("Lower Deadlands");
 
 updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].img !== 'dead' && Projectile.list[j].parentType !== 'Player'){
+                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].state !== 'dead' && Projectile.list[j].parentType !== 'Player'){
                     Projectile.list[j].toRemove = true;
                     Player.list[i].hp -= 100;
                 }

@@ -17,19 +17,42 @@
 		<input class="UI-input-light" type="password" id="password" name="password" autocomplete="off"><br><br>
 		<button id ="createAccount" class="UI-button-light">Create Account</button>
 		<button id ="deleteAccount" class="UI-button-light">Delete Account</button>
+		<div id="signError"></div>
 	</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
-		<div id="blackShade"></div>
+		<div id="blackShade" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
+		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">Starter House</div>
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
 		<div id="questInventoryDiv" class="UI-text-light"></div>
-		<div id="inventoryDiv" style="display:none;"></div>
-		<button id="inventoryButton" class="UI-button-light">Inventory</button>
+		<div id="inventoryDiv" style="display:none;">
+			<div id="inventoryPlayer" class="UI-text-light">
+				<div id="inventoryPlayerName"></div>
+				<canvas id="inventoryPlayerDisplay"></canvas>
+			</div>
+			<div id="inventoryItem"></div>
+			<button id="inventoryExit">x</button>
+		</div>
+		<button id="inventoryButton" class="UI-button-light">Inventory [I]</button>
+		<div id="selfDisplay">
+			<div id="healthBar">
+				<div id="healthBarValue"></div>
+				<div id="healthBarText"></div>
+			</div>
+			<div id="magicBar"></div>
+			<div id="xpBar"></div>
+		</div>
+		<div id="menu">
+			<button id="menuDropdown" class="UI-button-light" onclick="useMenuDropdown()">Menu &#x25BC;</button>
+			<div id="menuDropdownItem" class="UI-dropdown-light">
+				<button id="signOut" class="UI-button-light" onclick="history.go(0)">Log Out</button>
+			</div>
+		</div>
 		
-		<div id="chat-text" class="UI-text-light">
-			<div>Hello!</div>
+		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+			<div>Welcome to Meadow Guarders Open Snapshot 008d12b!</div>
 		</div>
 
 		<form id="chat-form" autocomplete="off">
@@ -54,13 +77,12 @@
 
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
-	<script src="/client/socket.js"></script>
+	<!--<script src="/client/socket.js"></script>-->
 
 	<script src="/client/Inventory.js"></script>
 	<!--<script src="/socket.io/socket.io.js"></script>-->
 
 	<script>
-		
 		var WIDTH = window.innerWidth;
 		var HEIGHT = window.innerHeight;
 
@@ -76,7 +98,7 @@
 		var RENDERDIST = 5;
 		var STATE = 'signIn';
 
-		var DEBUG = false;
+		var DEBUG = 0;
 		
 		var socket = io();
 
@@ -88,10 +110,13 @@
 		var spectatorDiv = document.getElementById('spectator');
 		var adDiv = document.getElementById('ads');
 		var ctxRaw = document.getElementById('ctx');
+		var inventoryPlayerDisplayRaw = document.getElementById('inventoryPlayerDisplay');
 		var signDiv = document.getElementById('sign');
 		var inventoryButton = document.getElementById('inventoryButton');
 		var inventoryDiv = document.getElementById('inventoryDiv');
 		var blackShade = document.getElementById('blackShade');
+		var healthBarText = document.getElementById('healthBarText');
+		var healthBarValue = document.getElementById('healthBarValue');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
 		var signDivSignIn = document.getElementById('signIn');
@@ -110,6 +135,7 @@
 		}
 		socket.on('signInResponse',function(data){
 			if(data.success == 2){
+				document.getElementById('inventoryPlayerName').innerHTML = data.username;
 				STATE = 'game';
 			}
 			else if(data.success == 1){
@@ -145,8 +171,9 @@
 		var chatText = document.getElementById('chat-text');
 		var chatInput = document.getElementById('chat-input');
 		var chatForm = document.getElementById('chat-form');
-		var chat = '<div>Hello!</div>';
+		var chat = '<div>Welcome to Meadow Guarders Open Snapshot 008d12b!</div>';
 		var chatPress = false;
+		var inChat = false;
 
 		socket.on('addToChat',function(data){
 			var scroll = false;
@@ -167,13 +194,23 @@
 		chatInput.onkeydown = function(e){
 			chatPress = true;
 		}
+		chatInput.onmousedown = function(e){
+			inChat = true;
+		}
 
 		var disconnect = function(){
 			socket.emit("timeout");
 		}
 		var ctx = document.getElementById("ctx").getContext("2d");
+		var inventoryPlayerDisplay = document.getElementById("inventoryPlayerDisplay").getContext("2d");
 		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
+		ctx.canvas.width = 1536;
+		ctx.canvas.height = 722;
+		inventoryPlayerDisplay.canvas.width = 80;
+		inventoryPlayerDisplay.canvas.height = 136;
+
+		
 		
 		var maps = {};
 
@@ -187,13 +224,21 @@
 		load('Cave');
 		load('House');
 		load('River');
-		var shadeSpeed = 0;
-		var shadeAmount = 0;
+		load('Secret Base');
+		load('Lilypad Path Part 1');
+		load('The Outskirts');
+		load('Lower Deadlands');
+		var shadeSpeed = -0.01;
+		var shadeAmount = 1;
+		var mapShadeSpeed = 0;
+		var mapShadeAmount = 0;
 		var Img = {};
 		Img.ghost = new Image();
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.player = new Image();
-		Img.player.src = '/client/img/Player Map.png';
+		Img.player.src = '/client/img/Player Map Old.png';
+		Img.playerDisplay = new Image();
+		Img.playerDisplay.src = '/client/img/Untitled.png';
 		Img.monster = new Image();
 		Img.monster.src = '/client/img/Pet.png';
 		Img.bullet = new Image();
@@ -202,39 +247,16 @@
 		Img.healthBar.src = '/client/img/Health0.png';
 		Img.healthBarEnemy = new Image();
 		Img.healthBarEnemy.src = '/client/img/HealthEnemy.png';
-		Img.Village0 = new Image();
-		Img.Village0.src = '/client/maps/Village0.png';
-		Img.Village1 = new Image();
-		Img.Village1.src = '/client/maps/Village1.png';
-		Img.VillageDEBUG = new Image();
-		Img.VillageDEBUG.src = '/client/maps/VillageDEBUG.png';
-		Img.StarterHouse0 = new Image();
-		Img.StarterHouse0.src = '/client/maps/Starter House0.png';
-		Img.StarterHouse1 = new Image();
-		Img.StarterHouse1.src = '/client/maps/Starter House1.png';
-		Img.StarterHouseDEBUG = new Image();
-		Img.StarterHouseDEBUG.src = '/client/maps/Starter HouseDEBUG.png';
-		Img.Cave0 = new Image();
-		Img.Cave0.src = '/client/maps/Cave0.png';
-		Img.Cave1 = new Image();
-		Img.Cave1.src = '/client/maps/Cave1.png';
-		Img.CaveDEBUG = new Image();
-		Img.CaveDEBUG.src = '/client/maps/CaveDEBUG.png';
-		Img.House0 = new Image();
-		Img.House0.src = '/client/maps/House0.png';
-		Img.House1 = new Image();
-		Img.House1.src = '/client/maps/House1.png';
-		Img.HouseDEBUG = new Image();
-		Img.HouseDEBUG.src = '/client/maps/HouseDEBUG.png';
-		Img.River0 = new Image();
-		Img.River0.src = '/client/maps/River0.png';
-		Img.River1 = new Image();
-		Img.River1.src = '/client/maps/River1.png';
-		Img.RiverDEBUG = new Image();
-		Img.RiverDEBUG.src = '/client/maps/RiverDEBUG.png';
 
 		var mouseX = 0;
 		var mouseY = 0;
+
+		var mapChange = 0;
+		var mapDirection = 'up';
+		var mapSlide = 0;
+		var lastMap = '';
+		var currentMap = '';
+		var drewMap = false;
 
 		var selfId = null;
 
@@ -266,6 +288,10 @@
 				inventoryDiv.style.display = 'none';
 			}
 		}
+		document.getElementById('inventoryExit').onclick = function(){
+			menu = 'none';
+			inventoryDiv.style.display = 'none';
+		}
 		var Player = function(initPack){
 			var self = {};
 			self.id = initPack.id;
@@ -282,21 +308,21 @@
 			self.attackReload = initPack.attackReload;
 			self.secondReload = initPack.secondReload;
 			self.healReload = initPack.healReload;
-			self.mapHeight = 3200;
-			self.mapWidth = 3200;
+			self.mapHeight = 640;
+			self.mapWidth = 640;
 			self.updated = true;
 			self.animation = initPack.animation;
+			self.animationDirection = initPack.animationDirection;
 			
 			self.draw = function(){
 				self.animation = Math.round(self.animation);
-				if(self.id === selfId && self.img === 'dead'){
-					ctx.drawImage(Img.ghost,self.x - 20,self.y - 40);
+				if(DEBUG === 2){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 10,self.y - 12,20,24);
 					return;
 				}
-				else if(self.img === 'dead'){
-					return;
-				}
-				switch(self.img){
+				switch(self.animationDirection){
 					case "down":
 						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 1,40,64,self.x - 20,self.y - 54,40,64);
 						break;
@@ -322,10 +348,39 @@
 						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 8,40,64,self.x - 20,self.y - 54,40,64);
 						break;
 				}
-				if(DEBUG){
+				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
 					ctx.strokeRect(self.x - 10,self.y - 12,20,24);
+				}
+				if(self.id === selfId){
+					inventoryPlayerDisplay.clearRect(0,0,80,136);
+					switch(self.img){
+						case "down":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 0,0,80,136,0,0,80,136);
+							break;
+						case "rightdown":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 1,0,80,136,0,0,80,136);
+							break;
+						case "right":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 2,0,80,136,0,0,80,136);
+							break;
+						case "rightup":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 3,0,80,136,0,0,80,136);
+							break;
+						case "up":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 4,0,80,136,0,0,80,136);
+							break;
+						case "leftup":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 5,0,80,136,0,0,80,136);
+							break;
+						case "left":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 6,0,80,136,0,0,80,136);
+							break;
+						case "leftdown":
+							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 7,0,80,136,0,0,80,136);
+							break;
+					}
 				}
 			}
 			self.drawName = function(){
@@ -338,6 +393,9 @@
 				ctx.fillText(self.username,self.x - 1,self.y - 80);
 				ctx.drawImage(Img.healthBar,0,0,168,20,self.x - 63,self.y - 70,126,15);
 				ctx.drawImage(Img.healthBar,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 70,126 * self.hp / self.hpMax,15);
+				if(self.id !== selfId){
+					return;
+				}
 				if(self.attackReload > 14){
 					self.attackReload = 25;
 					mainAttackDiv.style.color = "#25ff25";
@@ -362,6 +420,12 @@
 				mainAttackDiv.innerHTML = "Main Attack: " + self.attackReload / 25;
 				secondaryAttackDiv.innerHTML = "Secondary Attack: " + self.secondReload / 25;
 				healDiv.innerHTML = "Heal: " + self.healReload / 25;
+				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
+				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
+				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
+				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
+				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
+				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
 			}
 			self.drawLight = function(){
 				if(self.id !== selfId){
@@ -391,12 +455,18 @@
 			self.map = initPack.map;
 			self.updated = true;
 			self.draw = function(){
+				if(DEBUG === 2){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 22,self.y - 22,44,44);
+					return;
+				}
 				ctx.translate(self.x,self.y);
 				ctx.rotate(self.direction * Math.PI / 180);
 				ctx.drawImage(Img.bullet,-24,-24);
 				ctx.rotate(-self.direction * Math.PI / 180);
 				ctx.translate(-self.x,-self.y);
-				if(DEBUG){
+				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
 					ctx.strokeRect(self.x - 22,self.y - 22,44,44);
@@ -411,11 +481,19 @@
 			self.id = initPack.id;
 			self.x = initPack.x;
 			self.y = initPack.y;
+			self.hp = initPack.hp;
+			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
 			self.updated = true;
 			self.draw = function(){
+				if(DEBUG === 2){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 10,self.y - 4,20,20);
+					return;
+				}
 				ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
-				if(DEBUG){
+				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
 					ctx.strokeRect(self.x - 10,self.y - 4,20,20);
@@ -460,8 +538,14 @@
 						if(data.player[i].img){
 							Player.list[data.player[i].id].img = data.player[i].img;
 						}
+						if(data.player[i].animationDirection){
+							Player.list[data.player[i].id].animationDirection = data.player[i].animationDirection;
+						}
 						if(data.player[i].hp){
 							Player.list[data.player[i].id].hp = data.player[i].hp;
+						}
+						if(data.player[i].hpMax){
+							Player.list[data.player[i].id].hpMax = data.player[i].hpMax;
 						}
 						if(data.player[i].map){
 							Player.list[data.player[i].id].map = data.player[i].map;
@@ -501,6 +585,9 @@
 							}
 							if(data.projectile[i].y){
 								Projectile.list[data.projectile[i].id].y = data.projectile[i].y;
+							}
+							if(data.projectile[i].map){
+								Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
 							}
 							Projectile.list[data.projectile[i].id].updated = true;
 						}
@@ -562,13 +649,28 @@
 				STATE = 'game';
 			}
 		});
-		socket.on('changeMap',function(){
-			shadeSpeed = 0.08;
-			if(shadeAmount < 0){
-				shadeAmount = 0;
+		socket.on('changeMap',function(data){
+			if(maps[data.teleport] !== undefined){
+				shadeSpeed = 0.08;
+				if(shadeAmount < 0){
+					shadeAmount = 0;
+				}
 			}
+			else if(maps[Player.list[selfId].map] !== undefined){
+				shadeSpeed = 0.08;
+				if(shadeAmount < 0){
+					shadeAmount = 0;
+				}
+			}
+			else{
+				mapChange = 2;
+				mapDirection = data.teleportdirection;
+				lastMap = Player.list[selfId].map;
+				currentMap = data.teleport;
+			}
+			lastMap = Player.list[selfId].map;
+			currentMap = data.teleport;
 		});
-
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -590,13 +692,15 @@
 				disconnectedDiv.style.display = 'none';
 				spectatorDiv.style.display = 'inline-block';
 				adDiv.style.display = 'inline-block';
+				adDiv.style.display = 'none';
 			}
 			if(STATE === 'game'){
 				gameDiv.style.display = 'inline-block';
 				signDiv.style.display = 'none';
 				disconnectedDiv.style.display = 'none';
 				spectatorDiv.style.display = 'none';
-				adDiv.style.display = 'inline-block';
+				//adDiv.style.display = 'inline-block';
+				adDiv.style.display = 'none';
 			}
 			if(STATE === 'respawn'){
 				gameDiv.style.display = 'inline-block';
@@ -614,10 +718,15 @@
 			if(!Player.list[selfId]){
 				return;
 			}
-			WIDTH = window.innerWidth;
-			HEIGHT = window.innerHeight;
-			ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			ctx.fillStyle = maps[Player.list[selfId].map];
+			//WIDTH = window.innerWidth;
+			//HEIGHT = window.innerHeight;
+			//ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
+			if(DEBUG !== 2){
+				ctx.fillStyle = maps[Player.list[selfId].map];
+			}
+			else{
+				ctx.fillStyle = "#ffffff";
+			}
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
@@ -655,23 +764,87 @@
 			}
 			lastCameraX = mouseCameraX;
 			lastCameraY = mouseCameraY;
+			ctx.save();
 			ctx.translate(cameraX,cameraY);
-			switch(Player.list[selfId].map){
-				case 'Village':
-					ctx.drawImage(Img.Village0,0,0);
-					break;
-				case 'Starter House':
-					ctx.drawImage(Img.StarterHouse0,0,0);
-					break;
-				case 'Cave':
-					ctx.drawImage(Img.Cave0,0,0);
-					break;
-				case 'House':
-					ctx.drawImage(Img.House0,0,0);
-					break;
-				case 'River':
-					ctx.drawImage(Img.River0,0,0);
-					break;
+			drewMap = false;
+			if(mapChange !== 0 && Player.list[selfId].map === lastMap){
+				if(mapDirection === 'up'){
+					mapSlide += window.innerHeight / 20;
+					if(mapSlide > window.innerHeight){
+						mapSlide = window.innerHeight;
+						mapChange = 1;
+					}
+					ctx.translate(0,mapSlide);
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '0.png';
+						ctx.drawImage(i,0,-3200);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '0.png';
+						ctx.drawImage(i,0,0);
+					}
+				}
+				if(mapDirection === 'down'){
+					mapSlide -= window.innerHeight / 20;
+					if(mapSlide < -window.innerHeight){
+						mapSlide = -window.innerHeight;
+						mapChange = 1;
+					}
+					ctx.translate(0,mapSlide);
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '0.png';
+						ctx.drawImage(i,0,3200);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '0.png';
+						ctx.drawImage(i,0,0);
+					}
+				}
+				if(mapDirection === 'left'){
+					mapSlide += window.innerWidth / 20;
+					if(mapSlide > window.innerWidth){
+						mapSlide = window.innerWidth;
+						mapChange = 1;
+					}
+					ctx.translate(mapSlide,0);
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '0.png';
+						ctx.drawImage(i,-3200,0);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '0.png';
+						ctx.drawImage(i,0,0);
+					}
+				}
+				if(mapDirection === 'right'){
+					mapSlide -= window.innerWidth / 20;
+					if(mapSlide < -window.innerWidth){
+						mapSlide = -window.innerWidth;
+						mapChange = 1;
+					}
+					ctx.translate(mapSlide,0);
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '0.png';
+						ctx.drawImage(i,3200,0);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '0.png';
+						ctx.drawImage(i,0,0);
+					}
+				}
+				drewMap = true;
+			}
+			if(Player.list[selfId].map !== lastMap){
+				mapChange = 0;
+				mapSlide = 0;
+			}
+			else if(shadeSpeed === 0){
+				mapChange = 2;
+			}
+			if(DEBUG !== 2 && mapChange === 0){
+				var i = new Image();
+				i.src = '/client/maps/' + Player.list[selfId].map + '0.png';
+				ctx.drawImage(i,0,0);
 			}
 			for(var i in Player.list){
 				Player.list[i].draw();
@@ -682,39 +855,93 @@
 			for(var i in Monster.list){
 				Monster.list[i].draw();
 			}
-			switch(Player.list[selfId].map){
-				case 'Village':
-					ctx.drawImage(Img.Village1,0,0);
-					if(DEBUG){
-						ctx.drawImage(Img.VillageDEBUG,0,0);
+			
+			if(drewMap){
+				if(mapDirection === 'up'){
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '1.png';
+						ctx.drawImage(i,0,-3200);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '1.png';
+						ctx.drawImage(i,0,0);
 					}
-					break;
-				case 'Starter House':
-					ctx.drawImage(Img.StarterHouse1,0,0);
-					if(DEBUG){
-						ctx.drawImage(Img.StarterHouseDEBUG,0,0);
+					if(DEBUG !== 0){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
+						ctx.drawImage(i,0,-3200);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
+						ctx.drawImage(i,0,0);
 					}
-					break;
-				case 'Cave':
-					ctx.drawImage(Img.Cave1,0,0);
-					if(DEBUG){
-						ctx.drawImage(Img.CaveDEBUG,0,0);
+				}
+				if(mapDirection === 'down'){
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '1.png';
+						ctx.drawImage(i,0,3200);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '1.png';
+						ctx.drawImage(i,0,0);
 					}
-					break;
-				case 'House':
-					ctx.drawImage(Img.House1,0,0);
-					if(DEBUG){
-						ctx.drawImage(Img.HouseDEBUG,0,0);
+					if(DEBUG !== 0){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
+						ctx.drawImage(i,0,3200);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
+						ctx.drawImage(i,0,0);
 					}
-					break;
-				case 'River':
-					ctx.drawImage(Img.River1,0,0);
-					if(DEBUG){
-						ctx.drawImage(Img.RiverDEBUG,0,0);
+				}
+				if(mapDirection === 'left'){
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '1.png';
+						ctx.drawImage(i,-3200,0);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '1.png';
+						ctx.drawImage(i,0,0);
 					}
-					break;
+					if(DEBUG !== 0){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
+						ctx.drawImage(i,-3200,0);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
+						ctx.drawImage(i,0,0);
+					}
+				}
+				if(mapDirection === 'right'){
+					if(DEBUG !== 2){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + '1.png';
+						ctx.drawImage(i,3200,0);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + '1.png';
+						ctx.drawImage(i,0,0);
+					}
+					if(DEBUG !== 0){
+						var i = new Image();
+						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
+						ctx.drawImage(i,3200,0);
+						var i = new Image();
+						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
+						ctx.drawImage(i,0,0);
+					}
+				}
+			}
+			if(DEBUG !== 2 && mapChange === 0){
+				var i = new Image();
+				i.src = '/client/maps/' + Player.list[selfId].map + '1.png';
+				ctx.drawImage(i,0,0);
+			}
+			if(DEBUG !== 0 && mapChange === 0){
+				var i = new Image();
+				i.src = '/client/maps/' + Player.list[selfId].map + 'DEBUG.png';
+				ctx.drawImage(i,0,0);
 			}
 			
+
 			for(var i in Monster.list){
 				Monster.list[i].drawHp();
 			}
@@ -722,26 +949,70 @@
 				Player.list[i].drawName();
 				Player.list[i].drawLight();
 			}
-			ctx.translate(-cameraX,-cameraY);
-			ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
+			ctx.restore();
+			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 
+			if(mapShadeAmount >= 2){
+				mapShadeSpeed = -0.03;
+			}
 			if(shadeAmount > 1.6){
 				shadeSpeed = -0.08;
 			}
+			if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
+				document.getElementById('mapName').innerHTML = Player.list[selfId].map;
+				mapShadeAmount = 0;
+				mapShadeSpeed = 0.03;
+			}
 			shadeAmount += shadeSpeed;
+			mapShadeAmount += mapShadeSpeed;
 			blackShade.style.opacity = shadeAmount;
+			document.getElementById('mapName').style.opacity = mapShadeAmount;
 		},25);
 		
+		function useMenuDropdown() {
+			var dropdowns = document.getElementsByClassName("UI-dropdown-light");
+			for(var i = 0;i < dropdowns.length;i++){
+				var openDropdown = dropdowns[i];
+				openDropdown.classList.toggle('dropdownShow');
+			}
+		}
+
+		window.onclick = function(event){
+			if(!event.target.matches('#menuDropdown')){
+				var dropdowns = document.getElementsByClassName("UI-dropdown-light");
+				for(var i = 0;i < dropdowns.length;i++){
+					var openDropdown = dropdowns[i];
+					if(openDropdown.classList.contains('dropdownShow')){
+						openDropdown.classList.remove('dropdownShow');
+					}
+				}
+			}
+			if(!event.target.matches('#chat-input')){
+				if(inChat){
+					inChat = false;
+				}
+			}
+		}
 		document.onkeydown = function(event){
 			if(chatPress){
 			}
 			else{
 				if(event.keyCode === 66){
-					if(DEBUG){
-						DEBUG = false;
+					if(DEBUG === 2){
+						DEBUG = 0;
 					}
 					else{
-						DEBUG = true;
+						DEBUG += 1;
+					}
+				}
+				else if(event.keyCode === 73){
+					if(menu === 'none'){
+						menu = 'inventory';
+						inventoryDiv.style.display = 'inline-block';
+					}
+					else{
+						menu = 'none';
+						inventoryDiv.style.display = 'none';
 					}
 				}
 				socket.emit('keyPress',{inputId:event.keyCode,state:true});
@@ -751,8 +1022,10 @@
 			chatPress = false;
 			socket.emit('keyPress',{inputId:event.keyCode,state:false});
 		}
-		
-		document.onmousedown = function(event){
+		mouseDown = function(event){
+			if(inChat){
+				return;
+			}
 			if(event.button == 0){
 				socket.emit('keyPress',{inputId:'attack',state:true});
 			}
@@ -760,7 +1033,7 @@
 				socket.emit('keyPress',{inputId:'second',state:true});
 			}
 		}
-		document.onmouseup = function(event){
+		mouseUp = function(event){
 			if(event.button == 0){
 				socket.emit('keyPress',{inputId:'attack',state:false});
 			}

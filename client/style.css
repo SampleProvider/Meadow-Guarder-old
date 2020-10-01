@@ -1,12 +1,8 @@
 
-canvas {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    cursor: crosshair;
-}
 body {
     overflow: hidden;
+    padding: 0px;
+    margin: 0px;
 }
 div {
     user-select: none;
@@ -14,6 +10,26 @@ div {
 button {
     outline: none;
     cursor: pointer;
+}
+
+#gameDiv {
+    top: 100%;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    background-color: #000000;
+    padding: 0px;
+    margin: 0px;
+}
+#ctx {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    cursor: crosshair;
 }
 
 ::-webkit-scrollbar {
@@ -36,8 +52,9 @@ button {
 .UI-button-light {
     position: absolute;
     font-family: 'pixel';
+    font-size: 15px;
     color: #ffffff;
-    background-color: #502000;
+    background-color: #362a1e;
     border: 1px solid #000000;
     transition-duration: 0.4s;
     cursor: pointer;
@@ -47,7 +64,25 @@ button {
     padding-left: 5px;
 }
 .UI-button-light:hover {
-    background-color: #251000;
+    background-color: #231913;
+}
+.UI-dropdown-light {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    background-color: #362a1e;
+    border: 1px solid #000000;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+    display: none;
+}
+.UI-dropdown-light:hover {
+    background-color: #231913;
 }
 .UI-input-light {
     position: absolute;
@@ -71,6 +106,7 @@ button {
     padding-bottom: 2px;
     padding-left: 5px;
 }
+
 .disconnected {
     background-color: #ff0000;
     top: 50%;
@@ -141,6 +177,20 @@ button {
     text-align: center;
     font-size: 15px;
 }
+.death-screen {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    background: rgba(255,0,0,0.3);
+}
+
+#signIn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
 #username {
     position: absolute;
     top: 60px;
@@ -171,6 +221,7 @@ button {
     top: 150px;
     left: 10px;
 }
+
 #ad1 {
     width: 200px;
     top: 150px;
@@ -186,6 +237,7 @@ button {
     top: 300px;
     left: 10px;
 }
+
 #mainAttack {
     bottom: 75px;
     left: 10px;
@@ -201,45 +253,23 @@ button {
     left: 10px;
     user-select: none;
 }
-#questInventoryDiv {
-    top: 15px;
-    float: right;
-    user-select: none;
-    width: 500px;display: block;
-}
-#gameDiv {
-    top: 100%;
-    left: 100%;
-    width: 100%;
-    height: 100%;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
-}
+
 #chat-text {
     position: absolute;
     bottom: 10px;
-    left: 35%;
-    width: 510px;
+    left: 30%;
+    width: 610px;
     height: 150px;
     overflow-y: scroll;
 }
 #chat-input {
     position: absolute;
     bottom: 10px;
-    left: 35%;
-    width: 500px;
+    left: 30%;
+    width: 600px;
     height: 25px;
 }
-.death-screen {
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    top: 0px;
-    bottom: 0px;
-    background: rgba(255,0,0,0.3);
-}
+
 #disconnected {
     position: absolute;
     top: 50%;
@@ -253,6 +283,24 @@ button {
     height: 100%;
     background-color: #000000;
     opacity: 0;
+    cursor: crosshair;
+}
+#mapName {
+    position: absolute;
+    font-size: 60;
+    top: 15%;
+    left: 50%;
+    margin-right: -50%;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 20px;
+    padding-right: 20px;
+    transform: translate(-50%, -50%);
+    color: #362b20;
+    background-color: #725640;
+    border: 1px solid #000000;
+    opacity: 0;
+    cursor: crosshair;
 }
 
 #inventoryButton {
@@ -261,7 +309,6 @@ button {
     bottom: 15px;
     padding: 5px;
 }
-
 #inventoryDiv {
     position: absolute;
     left: 25%;
@@ -269,7 +316,136 @@ button {
     width: 50%;
     height: 50%;
     font-family: 'pixel';
-    background-color: #502000;
+    background-color: #362a1e;
     border: 1px solid #000000;
     padding: 5px;
+}
+#inventoryPlayer {
+    position: relative;
+    left: 6px;
+    top: 6px;
+    width: 88px;
+    height: 164px;
+    background-color: #1d1100;
+    border: 1px solid #000000;
+    margin: 5px;
+}
+#inventoryPlayerName {
+    position: absolute;
+    top: 4px;
+    left: 0px;
+    width: 100%;
+    color: #ff7700;
+    text-align: center;
+}
+#inventoryPlayerDisplay {
+    position: absolute;
+    left: 8px;
+    top: 20px;
+    margin: auto;
+    width: 80px;
+    height: 136px;
+    cursor: crosshair;
+}
+#inventoryPlayerHead {
+    position: absolute;
+}
+#inventoryPlayerBody {
+    position: absolute;
+}
+#inventoryPlayerDisplayWeapon {
+    position: absolute;
+}
+#inventoryItem {
+    position: relative;
+    margin: auto;
+}
+#inventoryExit {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 18;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #ff0000;
+    border: 1px solid #000000;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    right: -15px;
+    top: -15px;
+}
+#inventoryExit:hover {
+    background-color: #aa0000;
+}
+
+#questInventoryDiv {
+    top: 115px;
+    float: right;
+    user-select: none;
+    width: 100px;
+    height: 0px;
+    display: block;
+}
+
+#selfDisplay {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 160px;
+    height: 75px;
+    background-color: #362a1e;
+    border: 1px solid #000000;
+}
+#healthBar {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 150px;
+    height: 20px;
+    font-family: "pixel";
+    text-align: center;
+    color: #ffffff;
+    background-color: #000000;
+}
+#healthBarValue {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 150px;
+    height: 20px;
+    background-color: #ff0000;
+}
+#healthBarText {
+    position: absolute;
+    left: 0px;
+    top: -2px;
+    width: 150px;
+    height: 20px;
+    font-family: "pixel";
+    text-align: center;
+    color: #ffffff;
+}
+
+#menuDropdown {
+    top: 0px;
+    height: 30px;
+}
+#signOut {
+    top: 30px;
+    height: 30px;
+    width: 80px;
+}
+#menuDropdownItem {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+.dropdownShow {
+    display: inline-block;
+}
+#menu {
+    position: absolute;
+    left: 165px;
+    top: 0px;
+    width: 80px;
 }
