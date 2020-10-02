@@ -72,15 +72,15 @@ Entity = function(param){
 
 Entity.getFrameUpdateData = function(){
     var pack = {
-        'Village':{player:[],projectile:[],monster:[]},
-        'Starter House':{player:[],projectile:[],monster:[]},
-        'Cave':{player:[],projectile:[],monster:[]},
-        'House':{player:[],projectile:[],monster:[]},
-        'River':{player:[],projectile:[],monster:[]},
-        'Secret Base':{player:[],projectile:[],monster:[]},
-        'Lilypad Path Part 1':{player:[],projectile:[],monster:[]},
-        'The Outskirts':{player:[],projectile:[],monster:[]},
-        'Lower Deadlands':{player:[],projectile:[],monster:[]},
+        'Village':{player:[],projectile:[],monster:[],TIME:TIME},
+        'Starter House':{player:[],projectile:[],monster:[],TIME:TIME},
+        'Cave':{player:[],projectile:[],monster:[],TIME:TIME},
+        'House':{player:[],projectile:[],monster:[],TIME:TIME},
+        'River':{player:[],projectile:[],monster:[],TIME:TIME},
+        'Secret Base':{player:[],projectile:[],monster:[],TIME:TIME},
+        'Lilypad Path Part 1':{player:[],projectile:[],monster:[],TIME:TIME},
+        'The Outskirts':{player:[],projectile:[],monster:[],TIME:TIME},
+        'Lower Deadlands':{player:[],projectile:[],monster:[],TIME:TIME},
     };
     for(var i in Player.list){
         if(Player.list[i]){
@@ -478,8 +478,8 @@ Player = function(param){
     self.mouseY = 0;
     self.width = 24;
     self.height = 28;
-    self.moveSpeed = 10;
-    self.maxSpeed = 10;
+    self.moveSpeed = 20;
+    self.maxSpeed = 20;
     self.img = 'player';
     self.animationDirection = 'up';
     self.animation = 0;
@@ -580,7 +580,7 @@ Player = function(param){
             var beforeMap = self.map;
             self.canMove = false;
         }
-        if(self.mapChange === 10){
+        if(self.mapChange === 5){
             self.map = self.transporter.teleport;
             if(self.transporter.teleportx !== -1){
                 self.x = self.transporter.teleportx;
@@ -611,22 +611,25 @@ Player = function(param){
             var pack = {player:[],projectile:[],monster:[]};
             for(var i in Player.list){
                 if(Player.list[i].map === self.map){
-                    pack.player.push(Player.list[i].getInitPack);
+                    pack.player.push(Player.list[i].getInitPack());
                 }
             }
             for(var i in Projectile.list){
                 if(Projectile.list[i].map === self.map){
-                    pack.projectile.push(Projectile.list[i].getInitPack);
+                    pack.projectile.push(Projectile.list[i].getInitPack());
                 }
             }
             for(var i in Monster.list){
                 if(Monster.list[i].map === self.map){
-                    pack.monster.push(Monster.list[i].getInitPack);
+                    pack.monster.push(Monster.list[i].getInitPack());
                 }
             }
             socket.emit('update',pack);
+            for(var i in Player.list){
+                SOCKET_LIST[i].emit('update',self.getInitPack());
+            }
         }
-        if(self.mapChange === 20){
+        if(self.mapChange === 10){
             self.canMove = true;
             self.invincible = false;
         }
@@ -845,6 +848,10 @@ Player = function(param){
             pack.mapHeight = self.mapHeight;
             lastSelf.mapHeight = self.mapHeight;
         }
+        if(lastSelf.moveSpeed !== self.moveSpeed){
+            pack.moveSpeed = self.moveSpeed;
+            lastSelf.moveSpeed = self.moveSpeed;
+        }
         return pack;
     }
     self.getInitPack = function(){
@@ -878,7 +885,7 @@ Player.onConnect = function(socket,username){
     var player = Player({
 		id:socket.id,
         username:username,
-        moveSpeed:15,
+        moveSpeed:0,
 	});
 
     console.error(username + " just logged on.");
@@ -886,7 +893,7 @@ Player.onConnect = function(socket,username){
         SOCKET_LIST[i].emit('addToChat',username + " just logged on.");
     }
 
-    socket.emit('selfId',socket.id);
+    socket.emit('selfId',{id:socket.id,time:TIME});
 
 	socket.on('keyPress',function(data){
 		if(data.inputId === player.keyMap.left){
@@ -924,7 +931,24 @@ Player.onConnect = function(socket,username){
             SOCKET_LIST[i].emit('addToChat',player.username + ' respawned.');
         }
     });
-    
+
+    var pack = {player:[],projectile:[],monster:[]};
+    for(var i in Player.list){
+        if(Player.list[i].map === player.map){
+            pack.player.push(Player.list[i].getInitPack());
+        }
+    }
+    for(var i in Projectile.list){
+        if(Projectile.list[i].map === player.map){
+            pack.projectile.push(Projectile.list[i].getInitPack());
+        }
+    }
+    for(var i in Monster.list){
+        if(Monster.list[i].map === player.map){
+            pack.monster.push(Monster.list[i].getInitPack());
+        }
+    }
+    socket.emit('update',pack);
 }
 
 Player.spectate = function(socket){

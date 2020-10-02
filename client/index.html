@@ -210,8 +210,6 @@
 		inventoryPlayerDisplay.canvas.width = 80;
 		inventoryPlayerDisplay.canvas.height = 136;
 
-		
-		
 		var maps = {};
 
 		var load = function(name){
@@ -258,7 +256,11 @@
 		var currentMap = '';
 		var drewMap = false;
 
+		var requests = [];
+		var playerHistory = [];
+
 		var selfId = null;
+		var time = 0;
 
 		var respawn = function(){
 			socket.emit('respawn');
@@ -298,6 +300,8 @@
 			self.username = initPack.username;
 			self.x = initPack.x;
 			self.y = initPack.y;
+			self.realX = 0;
+			self.realY = 0;
 			self.spdX = initPack.spdX;
 			self.spdY = initPack.spdY;
 			self.img = initPack.img;
@@ -313,7 +317,96 @@
 			self.updated = true;
 			self.animation = initPack.animation;
 			self.animationDirection = initPack.animationDirection;
+			self.moveSpeed = 15;
+			self.keyPress = {
+				up:false,
+				down:false,
+				left:false,
+				right:false,
+				attack:false,
+				second:false,
+				heal:false,
+			};
+			self.keyMap = {
+				up:87,
+				down:83,
+				left:65,
+				right:68,
+				attack:'attack',
+				second:'second',
+				heal:32,
+			};
 			
+			self.update = function(){
+				if(self.realX - self.x >= 30){
+					self.x = self.realX;
+				}
+				else if(self.realX - self.x >= 3.25){
+					self.x += 3.25;
+				}
+				else if(self.realX - self.x <= -30){
+					self.x = self.realX;
+				}
+				else if(self.realX - self.x <= -3.25){
+					self.x -= 3.25;
+				}
+				else{
+					self.x = self.realX;
+				}
+				if(self.realY - self.y >= 30){
+					self.y = self.realY;
+				}
+				else if(self.realY - self.y >= 3.25){
+					self.y += 3.25;
+				}
+				else if(self.realY - self.y <= -30){
+					self.y = self.realY;
+				}
+				else if(self.realY - self.y <= -3.25){
+					self.y -= 3.25;
+				}
+				else{
+					self.y = self.realY;
+				}
+				/*self.spdX = 0;
+				self.spdY = 0;
+				if(self.keyPress.up){
+					self.spdY = -self.moveSpeed;
+				}
+				if(self.keyPress.down){
+					self.spdY = self.moveSpeed;
+				}
+				if(self.keyPress.left){
+					self.spdX = -self.moveSpeed;
+				}
+				if(self.keyPress.right){
+					self.spdX = self.moveSpeed;
+				}
+				
+				self.x += self.spdX;
+				self.y += self.spdY;
+				if(Math.abs(self.x - self.realX) > 30){
+					//self.x = self.realX;
+					self.x -= self.spdX;
+				}
+				if(Math.abs(self.y - self.realY) > 30){
+					//self.y = self.realY;
+					self.y -= self.spdY;
+				}
+				if(self.x < 24 / 2){
+					self.x = 24 / 2;
+				}
+				if(self.x > self.mapWidth - 24 / 2){
+					self.x = self.mapWidth - 24 / 2;
+				}
+				if(self.y < 28 / 2){
+					self.y = 28 / 2;
+				}
+				if(self.y > self.mapHeight - 28 / 2){
+					self.y = self.mapHeight - 28 / 2;
+				}
+				*/
+			}
 			self.draw = function(){
 				self.animation = Math.round(self.animation);
 				if(DEBUG === 2){
@@ -508,7 +601,8 @@
 		}
 		Monster.list = {};
 		socket.on('selfId',function(data){
-			selfId = data;
+			selfId = data.id;
+			var playerHistory = [];
 		});
 		socket.on('update',function(data){
 			for(var i in Player.list){
@@ -521,60 +615,62 @@
 				Monster.list[i].updated = false;
 			}
 			if(data){
-				for(var i = 0;i < data.player.length;i++){
-					if(Player.list[data.player[i].id]){
-						if(data.player[i].x){
-							Player.list[data.player[i].id].x = data.player[i].x;
-						}
-						if(data.player[i].y){
-							Player.list[data.player[i].id].y = data.player[i].y;
-						}
-						if(data.player[i].spdX){
-							Player.list[data.player[i].id].spdX = data.player[i].spdX;
-						}
-						if(data.player[i].spdY){
-							Player.list[data.player[i].id].spdY = data.player[i].spdY;
-						}
-						if(data.player[i].img){
-							Player.list[data.player[i].id].img = data.player[i].img;
-						}
-						if(data.player[i].animationDirection){
-							Player.list[data.player[i].id].animationDirection = data.player[i].animationDirection;
-						}
-						if(data.player[i].hp){
-							Player.list[data.player[i].id].hp = data.player[i].hp;
-						}
-						if(data.player[i].hpMax){
-							Player.list[data.player[i].id].hpMax = data.player[i].hpMax;
-						}
-						if(data.player[i].map){
-							Player.list[data.player[i].id].map = data.player[i].map;
-						}
-						if(data.player[i].attackReload){
-							Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
-						}
-						if(data.player[i].secondReload){
-							Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
-						}
-						if(data.player[i].healReload){
-							Player.list[data.player[i].id].healReload = data.player[i].healReload;
-						}
-						if(data.player[i].mapWidth){
-							Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
-						}
-						if(data.player[i].mapHeight){
-							Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
-						}
-						if(data.player[i].animation){
-							Player.list[data.player[i].id].animation = data.player[i].animation;
+				if(data.player.length > 0){
+					for(var i = 0;i < data.player.length;i++){
+						if(Player.list[data.player[i].id]){
+							if(data.player[i].x){
+								Player.list[data.player[i].id].realX = data.player[i].x;
+							}
+							if(data.player[i].y){
+								Player.list[data.player[i].id].realY = data.player[i].y;
+							}
+							if(data.player[i].spdX){
+								Player.list[data.player[i].id].spdX = data.player[i].spdX;
+							}
+							if(data.player[i].spdY){
+								Player.list[data.player[i].id].spdY = data.player[i].spdY;
+							}
+							if(data.player[i].img){
+								Player.list[data.player[i].id].img = data.player[i].img;
+							}
+							if(data.player[i].animationDirection){
+								Player.list[data.player[i].id].animationDirection = data.player[i].animationDirection;
+							}
+							if(data.player[i].hp){
+								Player.list[data.player[i].id].hp = data.player[i].hp;
+							}
+							if(data.player[i].hpMax){
+								Player.list[data.player[i].id].hpMax = data.player[i].hpMax;
+							}
+							if(data.player[i].map){
+								Player.list[data.player[i].id].map = data.player[i].map;
+							}
+							if(data.player[i].attackReload){
+								Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
+							}
+							if(data.player[i].secondReload){
+								Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
+							}
+							if(data.player[i].healReload){
+								Player.list[data.player[i].id].healReload = data.player[i].healReload;
+							}
+							if(data.player[i].mapWidth){
+								Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
+							}
+							if(data.player[i].mapHeight){
+								Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
+							}
+							if(data.player[i].animation){
+								Player.list[data.player[i].id].animation = data.player[i].animation;
+							}
+							else{
+								Player.list[data.player[i].id].animation = 0;
+							}
+							Player.list[data.player[i].id].updated = true;
 						}
 						else{
-							Player.list[data.player[i].id].animation = 0;
+							new Player(data.player[i]);
 						}
-						Player.list[data.player[i].id].updated = true;
-					}
-					else{
-						new Player(data.player[i]);
 					}
 				}
 				if(data.projectile.length > 0){
@@ -651,13 +747,13 @@
 		});
 		socket.on('changeMap',function(data){
 			if(maps[data.teleport] !== undefined){
-				shadeSpeed = 0.08;
+				shadeSpeed = 0.04 * 4/3;
 				if(shadeAmount < 0){
 					shadeAmount = 0;
 				}
 			}
 			else if(maps[Player.list[selfId].map] !== undefined){
-				shadeSpeed = 0.08;
+				shadeSpeed = 0.04 * 4/3;
 				if(shadeAmount < 0){
 					shadeAmount = 0;
 				}
@@ -846,6 +942,7 @@
 				i.src = '/client/maps/' + Player.list[selfId].map + '0.png';
 				ctx.drawImage(i,0,0);
 			}
+			
 			for(var i in Player.list){
 				Player.list[i].draw();
 			}
@@ -950,24 +1047,27 @@
 				Player.list[i].drawLight();
 			}
 			ctx.restore();
+			Player.list[selfId].update();
 			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 
 			if(mapShadeAmount >= 2){
 				mapShadeSpeed = -0.03;
 			}
 			if(shadeAmount > 1.6){
-				shadeSpeed = -0.08;
+				shadeSpeed = -0.04 * 4/3;
 			}
 			if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
 				document.getElementById('mapName').innerHTML = Player.list[selfId].map;
 				mapShadeAmount = 0;
-				mapShadeSpeed = 0.03;
+				mapShadeSpeed = 0.02;
 			}
 			shadeAmount += shadeSpeed;
 			mapShadeAmount += mapShadeSpeed;
 			blackShade.style.opacity = shadeAmount;
 			document.getElementById('mapName').style.opacity = mapShadeAmount;
-		},25);
+
+			playerHistory.push({x:Player.list[selfId].x,y:Player.list[selfId].y});
+		},3000/320);
 		
 		function useMenuDropdown() {
 			var dropdowns = document.getElementsByClassName("UI-dropdown-light");
@@ -1015,12 +1115,42 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
-				socket.emit('keyPress',{inputId:event.keyCode,state:true});
+				socket.emit('keyPress',{inputId:event.keyCode,state:true,id:requests.length + 1});
+				if(Player.list[selfId]){
+					if(event.keyCode === Player.list[selfId].keyMap.left){
+						Player.list[selfId].keyPress.left = true;
+					}
+					if(event.keyCode === Player.list[selfId].keyMap.right){
+						Player.list[selfId].keyPress.right = true;
+					}
+					if(event.keyCode === Player.list[selfId].keyMap.up){
+						Player.list[selfId].keyPress.up = true;
+					}
+					if(event.keyCode === Player.list[selfId].keyMap.down){
+						Player.list[selfId].keyPress.down = true;
+					}
+					requests.push({state:event.keyCode,value:true});
+				}
 			}
 		}
 		document.onkeyup = function(event){
 			chatPress = false;
-			socket.emit('keyPress',{inputId:event.keyCode,state:false});
+			socket.emit('keyPress',{inputId:event.keyCode,state:false,id:requests.length + 1});
+			if(Player.list[selfId]){
+				if(event.keyCode === Player.list[selfId].keyMap.left){
+					Player.list[selfId].keyPress.left = false;
+				}
+				if(event.keyCode === Player.list[selfId].keyMap.right){
+					Player.list[selfId].keyPress.right = false;
+				}
+				if(event.keyCode === Player.list[selfId].keyMap.up){
+					Player.list[selfId].keyPress.up = false;
+				}
+				if(event.keyCode === Player.list[selfId].keyMap.down){
+					Player.list[selfId].keyPress.down = false;
+				}
+				requests.push({state:event.keyCode,value:false});
+			}
 		}
 		mouseDown = function(event){
 			if(inChat){
@@ -1047,6 +1177,11 @@
 				var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
 				mouseX = event.clientX - WIDTH / 2;
 				mouseY = event.clientY - HEIGHT / 2;
+				if(Player.list[selfId]){
+					Player.list[selfId].direction = (Math.atan2(event.y,event.x) / Math.PI * 180);
+					Player.list[selfId].mouseX = event.x + Player.list[selfId].x;
+					Player.list[selfId].mouseY = event.y + Player.list[selfId].y;
+				}
 				socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
 			}
 		}

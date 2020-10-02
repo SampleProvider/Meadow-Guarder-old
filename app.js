@@ -103,7 +103,9 @@ io.sockets.on('connection',function(socket){
 });
 pack = {};
 
+TIME = 0;
 setInterval(function(){
+	TIME += 1;
 	spawnEnemies();
 	updateCrashes();
 	var packs = Entity.getFrameUpdateData();
@@ -113,4 +115,4 @@ setInterval(function(){
 			socket.emit('update',packs[Player.list[socket.id].map]);
 		}
 	}
-},1000/25);
+},1000/20);
