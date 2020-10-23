@@ -1,5 +1,5 @@
 
-SERVER = 'heroku';
+SERVER = 'localhost';
 
 var express = require('express');
 var app = express();
@@ -93,7 +93,35 @@ io.sockets.on('connection',function(socket){
 		if(Player.list[socket.id]){
 			console.error(Player.list[socket.id].username + ': ' + data);
 			for(var i in SOCKET_LIST){
-				SOCKET_LIST[i].emit('addToChat',Player.list[socket.id].username + ': ' + data);
+				SOCKET_LIST[i].emit('addToChat','style="color: ' + Player.list[socket.id].textColor + '">' + Player.list[socket.id].username + ': ' + data);
+			}
+		}
+		else{
+
+		}
+	});
+	socket.on('sendDebugToServer',function(data){
+		if(Player.list[socket.id]){
+			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu'){
+				if(data === 'process.exit(0);' || data === 'process.exit(0)'){
+					if(Player.list[socket.id].username === 'sp'){
+						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+					}
+					else{
+						socket.emit('addToDebug','style="color: #ff0000">' + 'YOU DO NOT HAVE PERMISSION TO USE THE EXIT FUNCTION!!!');
+					}
+				}
+				else{
+					try{
+						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+					}
+					catch(e){
+						socket.emit('addToDebug','style="color: #ffff00">' + 'Command resulted in server crash.');
+					}
+				}
+			}
+			else{
+				socket.emit('addToDebug','style="color: #ff0000">' + 'YOU DO NOT HAVE PERMISSION TO USE THE EVAL FUNCTION!!!');
 			}
 		}
 		else{
@@ -101,11 +129,8 @@ io.sockets.on('connection',function(socket){
 		}
 	});
 });
-pack = {};
 
-TIME = 0;
 setInterval(function(){
-	TIME += 1;
 	spawnEnemies();
 	updateCrashes();
 	var packs = Entity.getFrameUpdateData();

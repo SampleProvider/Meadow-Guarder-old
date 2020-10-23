@@ -49,6 +49,19 @@ button {
     font-style: normal;
 }
 
+.UI-display-light {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    background-color: #362a1e;
+    border: 1px solid #000000;
+    cursor: default;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    padding-left: 5px;
+}
 .UI-button-light {
     position: absolute;
     font-family: 'pixel';
@@ -306,24 +319,25 @@ button {
 #inventoryButton {
     position: absolute;
     right: 15px;
-    bottom: 15px;
+    bottom: 50px;
     padding: 5px;
 }
 #inventoryDiv {
     position: absolute;
-    left: 25%;
-    top: 25%;
-    width: 50%;
-    height: 50%;
+    left: 50%;
+    top: 50%;
+    width: 800px;
+    height: 400px;
     font-family: 'pixel';
     background-color: #362a1e;
     border: 1px solid #000000;
     padding: 5px;
+    transform: translate(-50%, -50%);
 }
 #inventoryPlayer {
     position: relative;
-    left: 6px;
-    top: 6px;
+    left: 4px;
+    top: 4px;
     width: 88px;
     height: 164px;
     background-color: #1d1100;
@@ -357,8 +371,10 @@ button {
     position: absolute;
 }
 #inventoryItem {
-    position: relative;
-    margin: auto;
+    position: absolute;
+    left: 120px;
+    top: 80px;
+    width: 300px;
 }
 #inventoryExit {
     position: absolute;
@@ -430,10 +446,17 @@ button {
     top: 0px;
     height: 30px;
 }
+#windowtoggle {
+    top: 35px;
+    height: 30px;
+    width: 90px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+}
 #signOut {
-    top: 30px;
+    top: 65px;
     height: 30px;
     width: 80px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
 }
 #menuDropdownItem {
     margin: 0px;
@@ -448,4 +471,171 @@ button {
     left: 165px;
     top: 0px;
     width: 80px;
+}
+#interactMenu {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    width: 700px;
+    height: 180px;
+    background-color: #362a1e;
+    border: 1px solid #000000;
+    transform: translate(-50%, 0%);
+}
+.interactMenuButton {
+    position: relative;
+    left: 50%;
+    top: 4px;
+    width: 688;
+    height: 30px;
+    margin-top: 4px;
+    text-align: left;
+    color: #dddddd;
+    background-color: #2e2317;
+    transform: translate(-50%, 0%);
+}
+#interactMenuText {
+    position: relative;
+    left: 50%;
+    top: 4px;
+    width: 688;
+    color: #dddddd;
+    transform: translate(-50%, 0%);
+}
+#worldMapDiv {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 610px;
+    height: 610px;
+    background-color: #1d1100;
+    border: 1px solid #000000;
+    transform: translate(-50%, -50%);
+}
+#worldMapCanvas {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 600px;
+    height: 600px;
+}
+#worldMapButton {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    padding: 5px;
+}
+#worldMapExit {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 18;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #ff0000;
+    border: 1px solid #000000;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    right: -15px;
+    top: -15px;
+}
+#worldMapExit:hover {
+    background-color: #aa0000;
+}
+.window {
+    z-index: 2;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    width: 600px;
+    height: 400px;
+    font-family: 'pixel';
+    background-color: #362a1e;
+    border: 1px solid #000000;
+    padding: 1px;
+    position: absolute;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.window .window-bar {
+    padding-left: 6px;
+    padding-top: 3px;
+    cursor: move;
+    background-color: #2c2216;
+    border: 1px solid #000000;
+    color: #ffffff;
+}
+
+.window .window-bar .window-close {
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background-color: #eeeeee;
+    width: 16px;
+    height: 16px;
+    padding-left: 2px;
+    padding-top: 2px;
+}
+
+.window-body {
+    margin: 1em;
+    color: #ffffff;
+}
+
+#debug-text {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 440px;
+    height: 320px;
+    color: #ffffff;
+    overflow-y: scroll;
+    user-select: contain;
+}
+#debug-input {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 430px;
+    height: 25px;
+    user-select: text;
+}
+
+.text {
+    user-select: text;
+}
+#inventoryButton {
+    position: relative;
+    top: 3px;
+    left: 1px;
+    width: 103px;
+    height: 30px;
+    margin-bottom: 1px;
+    margin-right: 1px;
+}
+.menuButton {
+    position: relative;
+    top: 3px;
+    left: 1px;
+    width: 103px;
+    height: 30px;
+    margin-bottom: 1px;
+    margin-right: 1px;
+}
+#menu-text {
+    position: absolute;
+    top: 33px;
+    right: 5px;
+    width: 120px;
+    height: 358px;
+    background-color: #2c2216;
+    border: 1px solid #000000;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }

@@ -18,6 +18,8 @@
 		<button id ="createAccount" class="UI-button-light">Create Account</button>
 		<button id ="deleteAccount" class="UI-button-light">Delete Account</button>
 		<div id="signError"></div>
+		<div class="UI-text-light" style="top: 180px;left: 5px;font-size: 50px;">OVER 4500 LINES OF CODE!</div>
+		<div class="UI-text-light" style="bottom: 5px;right: 5px;font-size: 5px;">Disclaimer: We do not take responsibility for your house being blown up by a nuke.</div>
 	</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="ctx"></canvas>
@@ -27,15 +29,71 @@
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
 		<div id="questInventoryDiv" class="UI-text-light"></div>
-		<div id="inventoryDiv" style="display:none;">
-			<div id="inventoryPlayer" class="UI-text-light">
-				<div id="inventoryPlayerName"></div>
-				<canvas id="inventoryPlayerDisplay"></canvas>
-			</div>
-			<div id="inventoryItem"></div>
-			<button id="inventoryExit">x</button>
+		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+			<div>Welcome to Meadow Guarders Open 0.0.9!</div>
 		</div>
-		<button id="inventoryButton" class="UI-button-light">Inventory [I]</button>
+
+		<form id="chat-form" autocomplete="off">
+			<input id="chat-input" class="UI-input-light" type="text"></input>
+		</form>
+		<div id="worldMapDiv" style="display:none;">
+			<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
+			<button id="worldMapExit">x</button>
+		</div>
+		<div id="window" class="window">
+			<div class="window-bar">
+				<div>Window Title</div>
+				<span class="window-close">
+					<svg viewport="0 0 12 12" version="1.1" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+						<line x1="2" y1="12"
+							x2="12" y2="2"
+							stroke="black"
+							strokeWidth="5"/>
+						<line x1="2" y1="2"
+							x2="12" y2="12"
+							stroke="black"
+							strokeWidth="5"/>
+					</svg>
+				</span>
+			</div>
+			<div class="window-body">
+				Window body
+			</div>
+			<div id="inventory">
+				<div id="inventoryPlayer" class="UI-text-light">
+					<div id="inventoryPlayerName"></div>
+					<canvas id="inventoryPlayerDisplay"></canvas>
+				</div>
+				<div id="inventoryItem"></div>
+			</div>
+			
+			<div id="menu-text" class="UI-text-light">
+				<button id="inventoryButton" class="UI-button-light menuButton">Inventory</button>
+				<button id="debugButton" class="UI-button-light menuButton">Debug</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+			</div>
+			<div id="debugScreen" style="display: none;">
+				<div id="debug-text" class="UI-text-light">
+					<div>Debug info will show up here.</div>
+				</div>
+
+				<form id="debug-form" autocomplete="off">
+					<input id="debug-input" class="UI-input-light" type="text"></input>
+				</form>
+			</div>
+		</div>
+		<button id="worldMapButton" class="UI-button-light" style="display:none;">World Map [M]</button>
 		<div id="selfDisplay">
 			<div id="healthBar">
 				<div id="healthBarValue"></div>
@@ -47,17 +105,18 @@
 		<div id="menu">
 			<button id="menuDropdown" class="UI-button-light" onclick="useMenuDropdown()">Menu &#x25BC;</button>
 			<div id="menuDropdownItem" class="UI-dropdown-light">
+				<button id="windowtoggle" class="UI-button-light">Inventory</button>
 				<button id="signOut" class="UI-button-light" onclick="history.go(0)">Log Out</button>
 			</div>
 		</div>
 		
-		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
-			<div>Welcome to Meadow Guarders Open Snapshot 008d12b!</div>
+		<div id="interactMenu" class="UI-display-light" style="display:none;" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+			<div id="interactMenuText" class="UI-text-light">Hey and tianmu is a poop</div>
+			<button id="interactMenuButton1" class="interactMenuButton UI-button-light" onclick="response(1)">Wait really?</button>
+			<button id="interactMenuButton2" class="interactMenuButton UI-button-light" onclick="response(2)">Gotcha.</button>
+			<button id="interactMenuButton3" class="interactMenuButton UI-button-light" onclick="response(3)">HAHAHAHA!</button>
+			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)">NO IM NOT!</button>
 		</div>
-
-		<form id="chat-form" autocomplete="off">
-			<input id="chat-input" class="UI-input-light" type="text"></input>
-		</form>
 	</div>
 	<div id="spectator" style="display:none;">
 		<div class="death-screen"></div>
@@ -112,11 +171,12 @@
 		var ctxRaw = document.getElementById('ctx');
 		var inventoryPlayerDisplayRaw = document.getElementById('inventoryPlayerDisplay');
 		var signDiv = document.getElementById('sign');
-		var inventoryButton = document.getElementById('inventoryButton');
-		var inventoryDiv = document.getElementById('inventoryDiv');
+		var worldMapButton = document.getElementById('worldMapButton');
+		var worldMapDiv = document.getElementById('worldMapDiv');
 		var blackShade = document.getElementById('blackShade');
 		var healthBarText = document.getElementById('healthBarText');
 		var healthBarValue = document.getElementById('healthBarValue');
+		var interactMenu = document.getElementById('interactMenu');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
 		var signDivSignIn = document.getElementById('signIn');
@@ -171,7 +231,11 @@
 		var chatText = document.getElementById('chat-text');
 		var chatInput = document.getElementById('chat-input');
 		var chatForm = document.getElementById('chat-form');
-		var chat = '<div>Welcome to Meadow Guarders Open Snapshot 008d12b!</div>';
+		var debugText = document.getElementById('debug-text');
+		var debugInput = document.getElementById('debug-input');
+		var debugForm = document.getElementById('debug-form');
+		var chat = '<div>Welcome to Meadow Guarders Open 0.0.9!</div>';
+		var debug = '<div>Debug info will show up here.</div>'
 		var chatPress = false;
 		var inChat = false;
 
@@ -180,7 +244,7 @@
 			if(chatText.scrollTop + chatText.clientHeight >= chatText.scrollHeight - 5){
 				scroll = true;
 			}
-			chat += '<div>' + data + '</div>';
+			chat += '<div class="text"' + data + '</div>';
 			chatText.innerHTML = chat + '<br>';
 			if(scroll){
 				chatText.scrollTop = chatText.scrollHeight;
@@ -191,10 +255,32 @@
 			socket.emit('sendMsgToServer',chatInput.value);
 			chatInput.value = '';
 		}
+		socket.on('addToDebug',function(data){
+			var scroll = false;
+			if(debugText.scrollTop + debugText.clientHeight >= debugText.scrollHeight - 5){
+				scroll = true;
+			}
+			debug += '<div class="text"' + data + '</div>';
+			debugText.innerHTML = debug + '<br>';
+			if(scroll){
+				debugText.scrollTop = debugText.scrollHeight;
+			}
+		});
+		debugForm.onsubmit = function(e){
+			e.preventDefault();
+			socket.emit('sendDebugToServer',debugInput.value);
+			debugInput.value = '';
+		}
 		chatInput.onkeydown = function(e){
 			chatPress = true;
 		}
 		chatInput.onmousedown = function(e){
+			inChat = true;
+		}
+		debugInput.onkeydown = function(e){
+			chatPress = true;
+		}
+		debugInput.onmousedown = function(e){
 			inChat = true;
 		}
 
@@ -203,12 +289,15 @@
 		}
 		var ctx = document.getElementById("ctx").getContext("2d");
 		var inventoryPlayerDisplay = document.getElementById("inventoryPlayerDisplay").getContext("2d");
+		var worldMap = document.getElementById("worldMapCanvas").getContext("2d");
 		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
-		ctx.canvas.width = 1536;
-		ctx.canvas.height = 722;
-		inventoryPlayerDisplay.canvas.width = 80;
-		inventoryPlayerDisplay.canvas.height = 136;
+		ctx.canvas.width = 1536 / 4;
+		ctx.canvas.height = 722 / 4;
+		inventoryPlayerDisplay.canvas.width = 96;
+		inventoryPlayerDisplay.canvas.height = 152;
+		worldMap.canvas.width = 2000;
+		worldMap.canvas.height = 2000;
 
 		var maps = {};
 
@@ -226,6 +315,7 @@
 		load('Lilypad Path Part 1');
 		load('The Outskirts');
 		load('Lower Deadlands');
+		load('Forest');
 		var shadeSpeed = -0.01;
 		var shadeAmount = 1;
 		var mapShadeSpeed = 0;
@@ -234,20 +324,32 @@
 		Img.ghost = new Image();
 		Img.ghost.src = '/client/img/ghost.png';
 		Img.player = new Image();
-		Img.player.src = '/client/img/Player Map Old.png';
+		Img.player.src = '/client/img/Player Map Bright.png';
 		Img.playerDisplay = new Image();
 		Img.playerDisplay.src = '/client/img/Untitled.png';
 		Img.monster = new Image();
 		Img.monster.src = '/client/img/Pet.png';
+		Img.npc = new Image();
+		Img.npc.src = '/client/img/Player Map Npc 2.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.healthBar = new Image();
 		Img.healthBar.src = '/client/img/Health0.png';
 		Img.healthBarEnemy = new Image();
 		Img.healthBarEnemy.src = '/client/img/HealthEnemy.png';
+		Img.Village = new Image();
+		Img.Village.src = '/client/img/Village.png';
+		Img.River = new Image();
+		Img.River.src = '/client/img/River.png';
 
 		var mouseX = 0;
 		var mouseY = 0;
+		var mapMouseX = mouseX + WIDTH / 2;
+		var mapMouseY = mouseY + HEIGHT / 2;
+		var mapX = -100;
+		var mapY = -100;
+		var mapDrag = true;
+		var mapRatio = 2000;
 
 		var mapChange = 0;
 		var mapDirection = 'up';
@@ -256,11 +358,100 @@
 		var currentMap = '';
 		var drewMap = false;
 
-		var requests = [];
-		var playerHistory = [];
-
+		var talking = false;
 		var selfId = null;
-		var time = 0;
+
+		var state = {
+			isDragging: false,
+			isHidden: true,
+			xDiff: 0,
+			yDiff: 0,
+			x: 50,
+			y: 50
+		};
+
+		// hehe: http://youmightnotneedjquery.com/
+		function ready(fn){
+			if(document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
+				fn();
+			}
+			else{
+				document.addEventListener('DOMContentLoaded', fn);
+			}
+		}
+
+		function renderWindow(w,myState){
+			if(state.isHidden){
+				w.style.display = 'none';
+			}
+			else{
+				w.style.display = '';
+			}
+
+			w.style.transform = 'translate(' + myState.x + 'px, ' + myState.y + 'px)';
+		}
+
+		function clampX(n){
+			return Math.min(Math.max(n,0),window.innerWidth - 600);
+		}
+
+		function clampY(n){
+			return Math.min(Math.max(n,0),window.innerHeight - 45);
+		}
+
+		function onMouseMove(e){
+			if(state.isDragging){
+				state.x = clampX(e.pageX - state.xDiff);
+				state.y = clampY(e.pageY - state.yDiff);
+			}
+
+			// Update window position
+			var w = document.getElementById('window');
+			renderWindow(w,state);
+		}
+
+		function onMouseDown(e){
+			state.isDragging = true;
+			state.xDiff = e.pageX - state.x;
+			state.yDiff = e.pageY - state.y;
+		}
+
+		function onMouseUp(){
+			state.isDragging = false;
+		}
+
+		function closeWindow(){
+			state.isHidden = true;
+			menu = 'none';
+
+			var w = document.getElementById('window');
+			renderWindow(w,state);
+		}
+
+		ready(function(){
+			var w = document.getElementById('window');
+			renderWindow(w,state);
+
+			var windowBar = document.querySelectorAll('.window-bar');
+			windowBar[0].addEventListener('mousedown',onMouseDown);
+			document.addEventListener('mousemove',onMouseMove);
+			document.addEventListener('mouseup',onMouseUp);
+
+			var closeButton = document.querySelectorAll('.window-close');
+			closeButton[0].addEventListener('click',closeWindow);
+
+			var toggleButton = document.getElementById('windowtoggle');
+			toggleButton.addEventListener('click',function() {
+				state.isHidden = !state.isHidden;
+				if(menu !== 'inventory'){
+					menu = 'inventory';
+				}
+				else{
+					menu = 'none';
+				}
+				renderWindow(w,state);
+			});
+		});
 
 		var respawn = function(){
 			socket.emit('respawn');
@@ -279,20 +470,31 @@
 			inventory.items = items;
 			inventory.refreshRender();
 		});
-		
-		inventoryButton.onclick = function(){
-			if(menu === 'none'){
-				menu = 'inventory';
-				inventoryDiv.style.display = 'inline-block';
+		document.getElementById('debugButton').onclick = function(){
+			if(menu !== 'debug'){
+				menu = 'debug';
+				document.getElementById('inventory').style.display = 'none';
+				document.getElementById('debugScreen').style.display = 'inline-block';
 			}
 			else{
 				menu = 'none';
-				inventoryDiv.style.display = 'none';
+				document.getElementById('debugScreen').style.display = 'none';
 			}
 		}
-		document.getElementById('inventoryExit').onclick = function(){
+		document.getElementById('inventoryButton').onclick = function(){
+			if(menu !== 'inventory'){
+				menu = 'inventory';
+				document.getElementById('debugScreen').style.display = 'none';
+				document.getElementById('inventory').style.display = 'inline-block';
+			}
+			else{
+				menu = 'none';
+				document.getElementById('inventory').style.display = 'none';
+			}
+		}
+		document.getElementById('worldMapExit').onclick = function(){
 			menu = 'none';
-			inventoryDiv.style.display = 'none';
+			worldMapDiv.style.display = 'none';
 		}
 		var Player = function(initPack){
 			var self = {};
@@ -300,8 +502,10 @@
 			self.username = initPack.username;
 			self.x = initPack.x;
 			self.y = initPack.y;
-			self.realX = 0;
-			self.realY = 0;
+			self.moveX = 0;
+			self.moveY = 0;
+			self.lastX = initPack.x;
+			self.lastY = initPack.y;
 			self.spdX = initPack.spdX;
 			self.spdY = initPack.spdY;
 			self.img = initPack.img;
@@ -312,100 +516,19 @@
 			self.attackReload = initPack.attackReload;
 			self.secondReload = initPack.secondReload;
 			self.healReload = initPack.healReload;
-			self.mapHeight = 640;
-			self.mapWidth = 640;
+			self.mapHeight = initPack.mapWidth;
+			self.mapWidth = initPack.mapHeight;
 			self.updated = true;
 			self.animation = initPack.animation;
 			self.animationDirection = initPack.animationDirection;
 			self.moveSpeed = 15;
-			self.keyPress = {
-				up:false,
-				down:false,
-				left:false,
-				right:false,
-				attack:false,
-				second:false,
-				heal:false,
-			};
-			self.keyMap = {
-				up:87,
-				down:83,
-				left:65,
-				right:68,
-				attack:'attack',
-				second:'second',
-				heal:32,
-			};
-			
 			self.update = function(){
-				if(self.realX - self.x >= 30){
-					self.x = self.realX;
+				if(talking && self.id === selfId){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+					return;
 				}
-				else if(self.realX - self.x >= 3.25){
-					self.x += 3.25;
-				}
-				else if(self.realX - self.x <= -30){
-					self.x = self.realX;
-				}
-				else if(self.realX - self.x <= -3.25){
-					self.x -= 3.25;
-				}
-				else{
-					self.x = self.realX;
-				}
-				if(self.realY - self.y >= 30){
-					self.y = self.realY;
-				}
-				else if(self.realY - self.y >= 3.25){
-					self.y += 3.25;
-				}
-				else if(self.realY - self.y <= -30){
-					self.y = self.realY;
-				}
-				else if(self.realY - self.y <= -3.25){
-					self.y -= 3.25;
-				}
-				else{
-					self.y = self.realY;
-				}
-				/*self.spdX = 0;
-				self.spdY = 0;
-				if(self.keyPress.up){
-					self.spdY = -self.moveSpeed;
-				}
-				if(self.keyPress.down){
-					self.spdY = self.moveSpeed;
-				}
-				if(self.keyPress.left){
-					self.spdX = -self.moveSpeed;
-				}
-				if(self.keyPress.right){
-					self.spdX = self.moveSpeed;
-				}
-				
-				self.x += self.spdX;
-				self.y += self.spdY;
-				if(Math.abs(self.x - self.realX) > 30){
-					//self.x = self.realX;
-					self.x -= self.spdX;
-				}
-				if(Math.abs(self.y - self.realY) > 30){
-					//self.y = self.realY;
-					self.y -= self.spdY;
-				}
-				if(self.x < 24 / 2){
-					self.x = 24 / 2;
-				}
-				if(self.x > self.mapWidth - 24 / 2){
-					self.x = self.mapWidth - 24 / 2;
-				}
-				if(self.y < 28 / 2){
-					self.y = 28 / 2;
-				}
-				if(self.y > self.mapHeight - 28 / 2){
-					self.y = self.mapHeight - 28 / 2;
-				}
-				*/
+				self.x += self.moveX;
+				self.y += self.moveY;
 			}
 			self.draw = function(){
 				self.animation = Math.round(self.animation);
@@ -417,28 +540,28 @@
 				}
 				switch(self.animationDirection){
 					case "down":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 1,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 0,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "rightdown":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 2,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 1,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "right":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 3,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 2,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "rightup":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 4,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 3,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "up":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 5,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 4,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "leftup":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 6,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 5,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "left":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 7,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 6,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 					case "leftdown":
-						ctx.drawImage(Img.player,116 + 48 * self.animation,76 * 8,40,64,self.x - 20,self.y - 54,40,64);
+						ctx.drawImage(Img.player,96 * self.animation,152 * 7,96,152,self.x - 24,self.y - 58,48,76);
 						break;
 				}
 				if(DEBUG !== 0){
@@ -447,31 +570,31 @@
 					ctx.strokeRect(self.x - 10,self.y - 12,20,24);
 				}
 				if(self.id === selfId){
-					inventoryPlayerDisplay.clearRect(0,0,80,136);
-					switch(self.img){
+					inventoryPlayerDisplay.clearRect(0,0,96,152);
+					switch(self.animationDirection){
 						case "down":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 0,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 0,96,152,0,0,96,152);
 							break;
 						case "rightdown":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 1,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 1,96,152,0,0,96,152);
 							break;
 						case "right":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 2,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 2,96,152,0,0,96,152);
 							break;
 						case "rightup":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 3,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 3,96,152,0,0,96,152);
 							break;
 						case "up":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 4,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 4,96,152,0,0,96,152);
 							break;
 						case "leftup":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 5,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 5,96,152,0,0,96,152);
 							break;
 						case "left":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 6,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 6,96,152,0,0,96,152);
 							break;
 						case "leftdown":
-							inventoryPlayerDisplay.drawImage(Img.playerDisplay,8 + 96 * 7,0,80,136,0,0,80,136);
+							inventoryPlayerDisplay.drawImage(Img.player,96 * self.animation,152 * 7,96,152,0,0,96,152);
 							break;
 					}
 				}
@@ -542,11 +665,50 @@
 			self.id = initPack.id;
 			self.x = initPack.x;
 			self.y = initPack.y;
+			self.realX = initPack.x;
+			self.realY = initPack.y;
+			self.spdX = initPack.spdX;
+			self.spdY = initPack.spdY;
 			self.direction = initPack.direction;
+			self.projectileType = initPack.projectileType;
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
 			self.updated = true;
+			self.update = function(){
+				self.x += self.spdX / 8;
+				self.y += self.spdY / 8;
+				/*if(self.realX - self.x >= 40){
+					self.x = self.realX;
+				}
+				else if(self.realX - self.x >= 5){
+					self.x += 5;
+				}
+				else if(self.realX - self.x <= -40){
+					self.x = self.realX;
+				}
+				else if(self.realX - self.x <= -5){
+					self.x -= 5;
+				}
+				else{
+					self.x = self.realX;
+				}
+				if(self.realY - self.y >= 40){
+					self.y = self.realY;
+				}
+				else if(self.realY - self.y >= 5){
+					self.y += 5;
+				}
+				else if(self.realY - self.y <= -40){
+					self.y = self.realY;
+				}
+				else if(self.realY - self.y <= -5){
+					self.y -= 5;
+				}
+				else{
+					self.y = self.realY;
+				}*/
+			}
 			self.draw = function(){
 				if(DEBUG === 2){
 					ctx.strokeStyle = '#000000';
@@ -556,7 +718,9 @@
 				}
 				ctx.translate(self.x,self.y);
 				ctx.rotate(self.direction * Math.PI / 180);
-				ctx.drawImage(Img.bullet,-24,-24);
+				var i = new Image();
+				i.src = '/client/img/' + self.projectileType + '.png';
+				ctx.drawImage(i,-24,-24);
 				ctx.rotate(-self.direction * Math.PI / 180);
 				ctx.translate(-self.x,-self.y);
 				if(DEBUG !== 0){
@@ -574,10 +738,16 @@
 			self.id = initPack.id;
 			self.x = initPack.x;
 			self.y = initPack.y;
+			self.moveX = 0;
+			self.moveY = 0;
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
 			self.updated = true;
+			self.update = function(){
+				self.x += self.moveX;
+				self.y += self.moveY;
+			}
 			self.draw = function(){
 				if(DEBUG === 2){
 					ctx.strokeStyle = '#000000';
@@ -600,6 +770,71 @@
 			return self;
 		}
 		Monster.list = {};
+		var Npc = function(initPack){
+			var self = {};
+			self.id = initPack.id;
+			self.x = initPack.x;
+			self.y = initPack.y;
+			self.moveX = 0;
+			self.moveY = 0;
+			self.hp = initPack.hp;
+			self.animation = initPack.animation;
+			self.animationDirection = initPack.animationDirection;
+			self.hpMax = initPack.hpMax;
+			self.map = initPack.map;
+			self.updated = true;
+			self.update = function(){
+				self.x += self.moveX;
+				self.y += self.moveY;
+			}
+			self.draw = function(){
+				if(DEBUG === 2){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 10,self.y - 12,20,24);
+					return;
+				}
+				self.animation = Math.round(self.animation);
+				switch(self.animationDirection){
+					case "down":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 0,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "rightdown":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 1,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "right":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 2,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "rightup":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 3,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "up":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 4,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "leftup":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 5,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "left":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 6,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+					case "leftdown":
+						ctx.drawImage(Img.npc,96 * self.animation,152 * 7,96,152,self.x - 24,self.y - 58,48,76);
+						break;
+				}
+				if(DEBUG !== 0){
+					ctx.strokeStyle = '#000000';
+					ctx.lineWidth = 4;
+					ctx.strokeRect(self.x - 10,self.y - 12,20,24);
+				}
+				ctx.font = "15px pixel";
+				ctx.fillStyle = '#ff7700';
+				ctx.textAlign = "center";
+				ctx.fillText('Bob',self.x,self.y - 58);
+			}
+			Npc.list[self.id] = self;
+			return self;
+		}
+		Npc.list = {};
 		socket.on('selfId',function(data){
 			selfId = data.id;
 			var playerHistory = [];
@@ -614,15 +849,32 @@
 			for(var i in Monster.list){
 				Monster.list[i].updated = false;
 			}
+			for(var i in Npc.list){
+				Npc.list[i].updated = false;
+			}
 			if(data){
 				if(data.player.length > 0){
 					for(var i = 0;i < data.player.length;i++){
 						if(Player.list[data.player[i].id]){
+							Player.list[data.player[i].id].moveX = 0;
+							Player.list[data.player[i].id].moveY = 0;
 							if(data.player[i].x){
-								Player.list[data.player[i].id].realX = data.player[i].x;
+								Player.list[data.player[i].id].lastX = data.player[i].x;
+							}
+							if(Math.abs(Player.list[data.player[i].id].x - Player.list[data.player[i].id].lastX) < 10){
+								Player.list[data.player[i].id].x = Player.list[data.player[i].id].lastX;
+							}
+							else{
+								Player.list[data.player[i].id].moveX = Player.list[data.player[i].id].lastX / 8 - Player.list[data.player[i].id].x / 8;
 							}
 							if(data.player[i].y){
-								Player.list[data.player[i].id].realY = data.player[i].y;
+								Player.list[data.player[i].id].lastY = data.player[i].y;
+							}
+							if(Math.abs(Player.list[data.player[i].id].y - Player.list[data.player[i].id].lastY) < 10){
+								Player.list[data.player[i].id].y = Player.list[data.player[i].id].lastY;
+							}
+							else{
+								Player.list[data.player[i].id].moveY = Player.list[data.player[i].id].lastY / 8 - Player.list[data.player[i].id].y / 8;
 							}
 							if(data.player[i].spdX){
 								Player.list[data.player[i].id].spdX = data.player[i].spdX;
@@ -677,13 +929,16 @@
 					for(var i = 0;i < data.projectile.length;i++){
 						if(Projectile.list[data.projectile[i].id]){
 							if(data.projectile[i].x){
-								Projectile.list[data.projectile[i].id].x = data.projectile[i].x;
+								//Projectile.list[data.projectile[i].id].x = data.projectile[i].x;
 							}
 							if(data.projectile[i].y){
-								Projectile.list[data.projectile[i].id].y = data.projectile[i].y;
+								//Projectile.list[data.projectile[i].id].y = data.projectile[i].y;
 							}
 							if(data.projectile[i].map){
 								Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
+							}
+							if(data.projectile[i].projectileType){
+								Projectile.list[data.projectile[i].id].projectileType = data.projectile[i].projectileType;
 							}
 							Projectile.list[data.projectile[i].id].updated = true;
 						}
@@ -695,11 +950,13 @@
 				if(data.monster.length > 0){
 					for(var i = 0;i < data.monster.length;i++){
 						if(Monster.list[data.monster[i].id]){
+							Monster.list[data.monster[i].id].moveX = 0;
+							Monster.list[data.monster[i].id].moveY = 0;
 							if(data.monster[i].x){
-								Monster.list[data.monster[i].id].x = data.monster[i].x;
+								Monster.list[data.monster[i].id].moveX = data.monster[i].x / 8 - Monster.list[data.monster[i].id].x / 8;
 							}
 							if(data.monster[i].y){
-								Monster.list[data.monster[i].id].y = data.monster[i].y;
+								Monster.list[data.monster[i].id].moveY = data.monster[i].y / 8 - Monster.list[data.monster[i].id].y / 8;
 							}
 							if(data.monster[i].hp){
 								Monster.list[data.monster[i].id].hp = data.monster[i].hp;
@@ -711,6 +968,39 @@
 						}
 						else{
 							new Monster(data.monster[i]);
+						}
+					}
+				}
+				if(data.npc.length > 0){
+					for(var i = 0;i < data.npc.length;i++){
+						if(Npc.list[data.npc[i].id]){
+							Npc.list[data.npc[i].id].moveX = 0;
+							Npc.list[data.npc[i].id].moveY = 0;
+							if(data.npc[i].x){
+								Npc.list[data.npc[i].id].moveX = data.npc[i].x / 8 - Npc.list[data.npc[i].id].x / 8;
+							}
+							if(data.npc[i].y){
+								Npc.list[data.npc[i].id].moveY = data.npc[i].y / 8 - Npc.list[data.npc[i].id].y / 8;
+							}
+							if(data.npc[i].animationDirection){
+								Npc.list[data.npc[i].id].animationDirection = data.npc[i].animationDirection;
+							}
+							if(data.npc[i].hp){
+								Npc.list[data.npc[i].id].hp = data.npc[i].hp;
+							}
+							if(data.npc[i].hpMax){
+								Npc.list[data.npc[i].id].hpMax = data.npc[i].hpMax;
+							}
+							if(data.npc[i].animation){
+								Npc.list[data.npc[i].id].animation = data.npc[i].animation;
+							}
+							else{
+								Npc.list[data.npc[i].id].animation = 0;
+							}
+							Npc.list[data.npc[i].id].updated = true;
+						}
+						else{
+							new Npc(data.npc[i]);
 						}
 					}
 				}
@@ -730,9 +1020,27 @@
 					delete Monster.list[i];
 				}
 			}
+			for(var i in Npc.list){
+				if(Npc.list[i].updated === false){
+					delete Npc.list[i];
+				}
+			}
+		});
+		socket.on('initEntity',function(data){
+			if(data.type === "Player"){
+				new Player(data);
+			}
+			if(data.type === "Projectile"){
+				new Projectile(data);
+			}
+			if(data.type === "Monster"){
+				new Monster(data);
+			}
 		});
 		socket.on('disconnected',function(data){
 			STATE = 'disconnected';
+			Player.list[selfId].moveX = 0;
+			Player.list[selfId].moveY = 0;
 			setTimeout(function(){
 				location.reload();
 			},5000);
@@ -747,26 +1055,75 @@
 		});
 		socket.on('changeMap',function(data){
 			if(maps[data.teleport] !== undefined){
-				shadeSpeed = 0.04 * 4/3;
+				shadeSpeed = 0.03;
 				if(shadeAmount < 0){
 					shadeAmount = 0;
 				}
 			}
 			else if(maps[Player.list[selfId].map] !== undefined){
-				shadeSpeed = 0.04 * 4/3;
+				shadeSpeed = 0.03;
 				if(shadeAmount < 0){
 					shadeAmount = 0;
 				}
 			}
 			else{
+				shadeSpeed = 0.03;
+				if(shadeAmount < 0){
+					shadeAmount = 0;
+				}/*
 				mapChange = 2;
 				mapDirection = data.teleportdirection;
 				lastMap = Player.list[selfId].map;
-				currentMap = data.teleport;
+				currentMap = data.teleport;*/
 			}
 			lastMap = Player.list[selfId].map;
 			currentMap = data.teleport;
 		});
+		socket.on('dialougeLine',function(data){
+			if(data.state === 'remove'){
+				interactMenu.style.display = 'none';
+				talking = false;
+			}
+			else{
+				Player.list[selfId].moveX = 0;
+				Player.list[selfId].moveY = 0;
+				document.getElementById('interactMenuText').innerHTML = data.message;
+				if(data.response1){
+					document.getElementById('interactMenuButton1').innerHTML = data.response1;
+					document.getElementById('interactMenuButton1').style.display = 'inline-block';
+				}
+				else{
+					document.getElementById('interactMenuButton1').style.display = 'none';
+				}
+				if(data.response2){
+					document.getElementById('interactMenuButton2').innerHTML = data.response2;
+					document.getElementById('interactMenuButton2').style.display = 'inline-block';
+				}
+				else{
+					document.getElementById('interactMenuButton2').style.display = 'none';
+				}
+				if(data.response3){
+					document.getElementById('interactMenuButton3').innerHTML = data.response3;
+					document.getElementById('interactMenuButton3').style.display = 'inline-block';
+				}
+				else{
+					document.getElementById('interactMenuButton3').style.display = 'none';
+				}
+				if(data.response4){
+					document.getElementById('interactMenuButton4').innerHTML = data.response4;
+					document.getElementById('interactMenuButton4').style.display = 'inline-block';
+				}
+				else{
+					document.getElementById('interactMenuButton4').style.display = 'none';
+				}
+				interactMenu.style.display = 'inline-block';
+				talking = true;
+			}
+		});
+		var response = function(data){
+			socket.emit('diolougeResponse',data);
+		}
+
 		setInterval(function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
@@ -814,8 +1171,12 @@
 			if(!Player.list[selfId]){
 				return;
 			}
-			//WIDTH = window.innerWidth;
-			//HEIGHT = window.innerHeight;
+			ctxRaw.style.width = window.innerWidth;
+			ctxRaw.style.height = window.innerHeight;
+			ctx.canvas.width = window.innerWidth;
+			ctx.canvas.height = window.innerHeight;
+			WIDTH = window.innerWidth;
+			HEIGHT = window.innerHeight;
 			//ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
 			if(DEBUG !== 2){
 				ctx.fillStyle = maps[Player.list[selfId].map];
@@ -826,9 +1187,11 @@
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
-			//mouseCameraX = mouseX / 7;
-			//mouseCameraY = mouseY / 7;
-			if(lastCameraX - mouseCameraX > 2){
+			if(!talking){
+				mouseCameraX = mouseX * Math.sqrt(Math.abs(mouseX)) / 1000;
+				mouseCameraY = mouseY * Math.sqrt(Math.abs(mouseY)) / 1000;
+			}
+			/*if(lastCameraX - mouseCameraX > 2){
 				mouseCameraX = lastCameraX - 2;
 			}
 			if(lastCameraX - mouseCameraX < -2){
@@ -840,7 +1203,7 @@
 			if(lastCameraY - mouseCameraY < -2){
 				mouseCameraY = lastCameraY + 2;
 			}
-			cameraX -= mouseCameraX;
+			*/cameraX -= mouseCameraX;
 			cameraY -= mouseCameraY;
 			if(Player.list[selfId].mapWidth > window.innerWidth){
 				if(cameraX > 0){
@@ -860,12 +1223,13 @@
 			}
 			lastCameraX = mouseCameraX;
 			lastCameraY = mouseCameraY;
+			
 			ctx.save();
 			ctx.translate(cameraX,cameraY);
 			drewMap = false;
 			if(mapChange !== 0 && Player.list[selfId].map === lastMap){
 				if(mapDirection === 'up'){
-					mapSlide += window.innerHeight / 20;
+					mapSlide += window.innerHeight / 80;
 					if(mapSlide > window.innerHeight){
 						mapSlide = window.innerHeight;
 						mapChange = 1;
@@ -881,7 +1245,7 @@
 					}
 				}
 				if(mapDirection === 'down'){
-					mapSlide -= window.innerHeight / 20;
+					mapSlide -= window.innerHeight / 80;
 					if(mapSlide < -window.innerHeight){
 						mapSlide = -window.innerHeight;
 						mapChange = 1;
@@ -897,7 +1261,7 @@
 					}
 				}
 				if(mapDirection === 'left'){
-					mapSlide += window.innerWidth / 20;
+					mapSlide += window.innerWidth / 80;
 					if(mapSlide > window.innerWidth){
 						mapSlide = window.innerWidth;
 						mapChange = 1;
@@ -913,7 +1277,7 @@
 					}
 				}
 				if(mapDirection === 'right'){
-					mapSlide -= window.innerWidth / 20;
+					mapSlide -= window.innerWidth / 80;
 					if(mapSlide < -window.innerWidth){
 						mapSlide = -window.innerWidth;
 						mapChange = 1;
@@ -951,6 +1315,9 @@
 			}
 			for(var i in Monster.list){
 				Monster.list[i].draw();
+			}
+			for(var i in Npc.list){
+				Npc.list[i].draw();
 			}
 			
 			if(drewMap){
@@ -1045,16 +1412,25 @@
 			for(var i in Player.list){
 				Player.list[i].drawName();
 				Player.list[i].drawLight();
+				Player.list[i].update();
+			}
+			for(var i in Projectile.list){
+				Projectile.list[i].update();
+			}
+			for(var i in Monster.list){
+				Monster.list[i].update();
+			}
+			for(var i in Npc.list){
+				Npc.list[i].update();
 			}
 			ctx.restore();
-			Player.list[selfId].update();
 			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 
 			if(mapShadeAmount >= 2){
 				mapShadeSpeed = -0.03;
 			}
 			if(shadeAmount > 1.6){
-				shadeSpeed = -0.04 * 4/3;
+				shadeSpeed = -0.03;
 			}
 			if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
 				document.getElementById('mapName').innerHTML = Player.list[selfId].map;
@@ -1066,8 +1442,15 @@
 			blackShade.style.opacity = shadeAmount;
 			document.getElementById('mapName').style.opacity = mapShadeAmount;
 
-			playerHistory.push({x:Player.list[selfId].x,y:Player.list[selfId].y});
-		},3000/320);
+			worldMap.save();
+			if(mapDrag){
+				worldMap.clearRect(0,0,2000,2000);
+				worldMap.translate(mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600,mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600);
+				worldMap.drawImage(Img.Village,0,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
+				worldMap.drawImage(Img.River,-mapRatio / 2000 * 3200,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
+			}
+			worldMap.restore();
+		},1000/160);
 		
 		function useMenuDropdown() {
 			var dropdowns = document.getElementsByClassName("UI-dropdown-light");
@@ -1076,7 +1459,6 @@
 				openDropdown.classList.toggle('dropdownShow');
 			}
 		}
-
 		window.onclick = function(event){
 			if(!event.target.matches('#menuDropdown')){
 				var dropdowns = document.getElementsByClassName("UI-dropdown-light");
@@ -1115,41 +1497,15 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
-				socket.emit('keyPress',{inputId:event.keyCode,state:true,id:requests.length + 1});
-				if(Player.list[selfId]){
-					if(event.keyCode === Player.list[selfId].keyMap.left){
-						Player.list[selfId].keyPress.left = true;
-					}
-					if(event.keyCode === Player.list[selfId].keyMap.right){
-						Player.list[selfId].keyPress.right = true;
-					}
-					if(event.keyCode === Player.list[selfId].keyMap.up){
-						Player.list[selfId].keyPress.up = true;
-					}
-					if(event.keyCode === Player.list[selfId].keyMap.down){
-						Player.list[selfId].keyPress.down = true;
-					}
-					requests.push({state:event.keyCode,value:true});
+				if(!talking){
+					socket.emit('keyPress',{inputId:event.keyCode,state:true});
 				}
 			}
 		}
 		document.onkeyup = function(event){
 			chatPress = false;
-			socket.emit('keyPress',{inputId:event.keyCode,state:false,id:requests.length + 1});
-			if(Player.list[selfId]){
-				if(event.keyCode === Player.list[selfId].keyMap.left){
-					Player.list[selfId].keyPress.left = false;
-				}
-				if(event.keyCode === Player.list[selfId].keyMap.right){
-					Player.list[selfId].keyPress.right = false;
-				}
-				if(event.keyCode === Player.list[selfId].keyMap.up){
-					Player.list[selfId].keyPress.up = false;
-				}
-				if(event.keyCode === Player.list[selfId].keyMap.down){
-					Player.list[selfId].keyPress.down = false;
-				}
-				requests.push({state:event.keyCode,value:false});
+			if(!talking){
+				socket.emit('keyPress',{inputId:event.keyCode,state:false});
 			}
 		}
 		mouseDown = function(event){
@@ -1171,18 +1527,48 @@
 				socket.emit('keyPress',{inputId:'second',state:false});
 			}
 		}
+		mapMouseDown = function(event){
+			mapMouseX = mouseX + WIDTH / 2;
+			mapMouseY = mouseY + HEIGHT / 2;
+			mapDrag = true;
+		}
+		mapMouseUp = function(event){
+			//mapDrag = false;
+			//mapX = mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600;
+			//mapY = mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600;
+		}
+		document.onmouseup = function(event){
+			if(mapDrag){
+				mapDrag = false;
+				mapX = mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600;
+				mapY = mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600;
+			}
+		}
+		window.addEventListener('wheel',function(event){
+			mapMouseX = mouseX + WIDTH / 2;
+			mapMouseY = mouseY + HEIGHT / 2;
+			if(event.deltaY < 0){
+				mapRatio += 100;
+			}
+			else if(event.deltaY > 0){
+				mapRatio -= 100;
+			}
+			worldMap.save();
+			worldMap.clearRect(0,0,2000,2000);
+			worldMap.translate(mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600,mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600);
+			worldMap.drawImage(Img.Village,0,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
+			worldMap.drawImage(Img.River,-mapRatio / 2000 * 3200,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
+			worldMap.restore();
+		});
 		document.onmousemove = function(event){
 			if(Player.list[selfId]){
 				var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
 				var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
 				mouseX = event.clientX - WIDTH / 2;
 				mouseY = event.clientY - HEIGHT / 2;
-				if(Player.list[selfId]){
-					Player.list[selfId].direction = (Math.atan2(event.y,event.x) / Math.PI * 180);
-					Player.list[selfId].mouseX = event.x + Player.list[selfId].x;
-					Player.list[selfId].mouseY = event.y + Player.list[selfId].y;
+				if(!talking){
+					socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
 				}
-				socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
 			}
 		}
 		document.querySelectorAll("button").forEach(function(item){

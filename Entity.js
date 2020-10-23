@@ -9,6 +9,7 @@ var playerMap = {
     'Lilypad Path Part 1':0,
     'The Outskirts':0,
     'Lower Deadlands':0,
+    'Forest':0,
 };
 
 Maps = {};
@@ -72,15 +73,16 @@ Entity = function(param){
 
 Entity.getFrameUpdateData = function(){
     var pack = {
-        'Village':{player:[],projectile:[],monster:[],TIME:TIME},
-        'Starter House':{player:[],projectile:[],monster:[],TIME:TIME},
-        'Cave':{player:[],projectile:[],monster:[],TIME:TIME},
-        'House':{player:[],projectile:[],monster:[],TIME:TIME},
-        'River':{player:[],projectile:[],monster:[],TIME:TIME},
-        'Secret Base':{player:[],projectile:[],monster:[],TIME:TIME},
-        'Lilypad Path Part 1':{player:[],projectile:[],monster:[],TIME:TIME},
-        'The Outskirts':{player:[],projectile:[],monster:[],TIME:TIME},
-        'Lower Deadlands':{player:[],projectile:[],monster:[],TIME:TIME},
+        'Village':{player:[],projectile:[],monster:[],npc:[]},
+        'Starter House':{player:[],projectile:[],monster:[],npc:[]},
+        'Cave':{player:[],projectile:[],monster:[],npc:[]},
+        'House':{player:[],projectile:[],monster:[],npc:[]},
+        'River':{player:[],projectile:[],monster:[],npc:[]},
+        'Secret Base':{player:[],projectile:[],monster:[],npc:[]},
+        'Lilypad Path Part 1':{player:[],projectile:[],monster:[],npc:[]},
+        'The Outskirts':{player:[],projectile:[],monster:[],npc:[]},
+        'Lower Deadlands':{player:[],projectile:[],monster:[],npc:[]},
+        'Forest':{player:[],projectile:[],monster:[],npc:[]},
     };
     for(var i in Player.list){
         if(Player.list[i]){
@@ -105,6 +107,10 @@ Entity.getFrameUpdateData = function(){
     for(var i in Projectile.list){
         Projectile.list[i].update();
     }
+    for(var i in Npc.list){
+        Npc.list[i].update();
+        pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
+    }
     for(var i in Projectile.list){
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
@@ -121,12 +127,14 @@ Actor = function(param){
     self.maxSpeed = param.moveSpeed;
     self.moveSpeed = param.moveSpeed;
     self.moveArray = [];
-    self.moveDoneX = 0;
-    self.moveDoneY = 0;
+    self.randomPos = {walking:false,x:0,y:0,directionX:0,directionY:0};
+    self.trackingEntity = undefined;
     self.canMove = true;
     self.transporter = {};
     self.invincible = false;
     self.type = 'Actor';
+    self.animationDirection = 'up';
+    self.animation = 0;
     self.state = 'none';
     self.mapChange = 100;
     var super_update = self.update;
@@ -135,12 +143,13 @@ Actor = function(param){
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateMove();
+            self.updateAnimation();
             if(self.canMove){
                 super_update();
             }
             self.updateCollisions();
         }
-        if(self.mapChange === 10){
+        if(self.mapChange === 5){
             self.map = self.transporter.teleport;
             if(self.transporter.teleportx !== -1){
                 self.x = self.transporter.teleportx;
@@ -152,7 +161,7 @@ Actor = function(param){
             self.mapHeight = self.transporter.mapy;
             self.canMove = false;
         }
-        if(self.mapChange === 20){
+        if(self.mapChange === 10){
             self.canMove = true;
             self.invincible = false;
         }
@@ -161,40 +170,131 @@ Actor = function(param){
         self.lastX = self.x;
         self.lastY = self.y;
         if(self.moveArray[0]){
-            if(self.x < self.moveArray[0][0] - 1 && !self.moveDoneX){
+            self.spdX = 0;
+            self.spdY = 0;
+            if(self.x < self.moveArray[0].x){
                 self.spdX = 1;
             }
-            else if(self.x > self.moveArray[0][0] + 1 && !self.moveDoneX){
+            if(self.x > self.moveArray[0].x){
                 self.spdX = -1;
             }
-            else{
-                self.moveDoneX = 1;
-                self.spdX = 0;
-            }
-            if(self.y < self.moveArray[0][1] - 1 && !self.moveDoneY){
+            if(self.y < self.moveArray[0].y){
                 self.spdY = 1;
             }
-            else if(self.y > self.moveArray[0][1] + 1 && !self.moveDoneY){
+            if(self.y > self.moveArray[0].y){
                 self.spdY = -1;
             }
-            else{
-                self.moveDoneY = 1;
-                self.spdY = 0;
-            }
-            if(self.moveDoneX === 1 && self.moveDoneY === 1){
-                self.moveDoneX = 0;
-                self.moveDoneY = 0;
+            if(self.x === self.moveArray[0].x && self.y === self.moveArray[0].y){
                 self.moveArray.shift();
-                self.spdX = 0;
-                self.spdY = 0;
+            }
+        }
+        else if(self.trackingEntity){
+            self.spdX = 0;
+            self.spdY = 0;
+            if(self.x < self.trackingEntity.x){
+                self.spdX = 1;
+            }
+            if(self.x > self.trackingEntity.x){
+                self.spdX = -1;
+            }
+            if(self.y < self.trackingEntity.y){
+                self.spdY = 1;
+            }
+            if(self.y > self.trackingEntity.y){
+                self.spdY = -1;
+            }
+            if(self.x === self.trackingEntity.x && self.y === self.trackingEntity.y){
+                self.trackingEntity = undefined;
+            }
+        }
+        else if(self.randomPos.walking){
+            if(self.x < self.randomPos.x && self.x > self.randomPos.x - 256 && self.randomPos.directionX === -1){
+                self.spdX = -1;
+                self.randomPos.directionX = -1;
+            }
+            else if(self.x < self.randomPos.x){
+                self.spdX = 1;
+                self.randomPos.directionX = 1;
+            }
+            else if(self.x > self.randomPos.x && self.x < self.randomPos.x + 256 && self.randomPos.directionX === 1){
+                self.spdX = 1;
+                self.randomPos.directionX = 1;
+            }
+            else if(self.x > self.randomPos.x){
+                self.spdX = -1;
+                self.randomPos.directionX = -1;
+            }
+            else{
+                self.spdX = Math.round(Math.random() * 2 - 1);
+                self.randomPos.directionX = self.spdX;
+            }
+            if(self.y < self.randomPos.y && self.y > self.randomPos.y - 256 && self.randomPos.directionY === -1){
+                self.spdY = -1;
+                self.randomPos.directionY = -1;
+            }
+            else if(self.y < self.randomPos.y){
+                self.spdY = 1;
+                self.randomPos.directionY = 1;
+            }
+            else if(self.y > self.randomPos.y && self.y < self.randomPos.y + 256 && self.randomPos.directionY === 1){
+                self.spdY = 1;
+                self.randomPos.directionY = 1;
+            }
+            else if(self.y > self.randomPos.y){
+                self.spdY = -1;
+                self.randomPos.directionY = -1;
+            }
+            else{
+                self.spdY = Math.round(Math.random() * 2 - 1);
+                self.randomPos.directionY = self.spdY;
+            }
+        }
+    }
+    self.updateAnimation = function(){
+        if(self.spdX === 1){
+            if(self.spdY === 1){
+                self.animationDirection = "rightdown";
+            }
+            else if(self.spdY === -1){
+                self.animationDirection = "rightup";
+            }
+            else if(self.spdY === 0){
+                self.animationDirection = "right";
+            }
+        }
+        else if(self.spdX === -1){
+            if(self.spdY === 1){
+                self.animationDirection = "leftdown";
+            }
+            else if(self.spdY === -1){
+                self.animationDirection = "leftup";
+            }
+            else if(self.spdY === 0){
+                self.animationDirection = "left";
+            }
+        }
+        else if(self.spdX === 0){
+            if(self.spdY === 1){
+                self.animationDirection = "down";
+            }
+            else if(self.spdY === -1){
+                self.animationDirection = "up";
+            }
+            else if(self.spdY === 0){
+                self.animation = -1;
             }
         }
     }
     self.move = function(x,y){
-        self.moveArray.push([x,y]);
+        self.moveArray.push({x:x,y:y});
+    }
+    self.randomWalk = function(walking,x,y){
+        self.randomPos.walking = walking;
+        self.randomPos.x = x;
+        self.randomPos.y = y;
     }
     self.teleport = function(x,y,map){
-        if(!playerMap[map]){
+        if(playerMap[map] === undefined){
             return;
         }
         self.x = x;
@@ -203,11 +303,16 @@ Actor = function(param){
         self.spdY = 0;
         self.map = map;
         self.moveArray = [];
+        self.mapWidth = Maps[map].width;
+        self.mapHeight = Maps[map].height;
     }
-    self.shootProjectile = function(id,parentType,angle,direction,type,distance){
+    self.trackEntity = function(pt){
+        self.trackingEntity = pt;
+    }
+    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance){
 		var projectile = Projectile({
             id:id,
-            type:type,
+            projectileType:projectileType,
 			angle:angle,
 			direction:direction,
 			x:self.x + Math.cos(direction/180*Math.PI) * distance,
@@ -432,28 +537,20 @@ Actor = function(param){
                     self.y = self.lastY;
                 }
                 else{
-                    if(self.spdY > 0){
-                        self.y = self.lastY - 1;
-                    }
-                    else if(self.spdY < 0){
-                        self.y = self.lastY + 1;
-                    }
+                    
                 }
             }
             else{
-                if(self.spdX > 0){
-                    self.x = self.lastX - 1;
-                }
-                else if(self.spdX < 0){
-                    self.x = self.lastX + 1;
-                }
+                
             }
         }
     }
     self.doTransport = function(transporter){
         if(self.isColliding(transporter)){
             self.invincible = true;
-            self.mapChange = 0;
+            if(self.mapChange > 10){
+                self.mapChange = 0;
+            }
             self.transporter = transporter;
         }
     }
@@ -494,6 +591,9 @@ Player = function(param){
     playerMap[self.map] += 1;
     self.mapHeight = 640;
     self.mapWidth = 640;
+    self.textColor = '#000000';
+    self.quest = 'none';
+    self.questStage = 0;
     self.type = 'Player';
     self.username = param.username;
 	self.keyPress = {
@@ -522,6 +622,7 @@ Player = function(param){
     self.healTick = 160;
     self.attackDirection = 0;
     self.secondDirection = 0;
+    self.currentResponse = 0;
 	self.questInventory = new QuestInventory(socket,true);
 	self.inventory = new Inventory(socket,true);
     self.questInventory.addQuestItem("potion",10);
@@ -558,13 +659,21 @@ Player = function(param){
                 Player.spectate(socket);
                 console.error(self.username + ' died.');
                 for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',self.username + ' died.');
+                    SOCKET_LIST[i].emit('addToChat','style="color: #ff0000">' + self.username + ' died.');
                 }
                 self.state = 'dead';
             }
         }
         else{
             self.state = 'none';
+            if(self.hp > self.hpMax){
+                self.hp = self.hpMax;
+            }
+            else{
+                if(self.healReload % 10 === 0){
+                    self.hp += Math.round(10 + Math.random() * 15);
+                }
+            }
         }
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
@@ -573,14 +682,70 @@ Player = function(param){
             self.updateAttack();
         }
         self.updateMap();
+        self.updateQuest();
+    }
+    self.updateQuest = function(){
+        for(var i in Npc.list){
+            if(Npc.list[i].map === self.map && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
+                if(self.quest === 'none'){
+                    self.quest = 'test';
+                    self.questStage = 1;
+                }
+                if(self.questStage === 1){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Can you go to the Cave map?',
+                        response1:'Sure.',
+                        response2:'No.',
+                    });
+                }
+                if(self.questStage === 4){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thank you.',
+                        response1:'*End conversation*',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
+        }
+        if(self.currentResponse === 1 && self.questStage === 2){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.map === "Cave" && self.quest === 'test' && self.questStage === 3){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+        }
     }
     self.updateMap = function(){
         if(self.mapChange === 0){
             socket.emit('changeMap',self.transporter);
-            var beforeMap = self.map;
             self.canMove = false;
         }
         if(self.mapChange === 5){
+            playerMap[self.map] -= 1;
             self.map = self.transporter.teleport;
             if(self.transporter.teleportx !== -1){
                 self.x = self.transporter.teleportx;
@@ -590,7 +755,6 @@ Player = function(param){
             }
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
-            playerMap[beforeMap] -= 1;
             playerMap[self.map] += 1;
             for(var i in Spawner.list){
                 if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
@@ -599,34 +763,41 @@ Player = function(param){
                         x:Spawner.list[i].x,
                         y:Spawner.list[i].y,
                         map:Spawner.list[i].map,
-                        moveSpeed:5,
+                        moveSpeed:2,
                     });
                     Spawner.list[i].spawned = true;
                 }
             }
             console.error(self.username + " went to map " + self.map + ".");
             for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',self.username + " went to map " + self.map + ".");
+                SOCKET_LIST[i].emit('addToChat','style="color: #000000">' + self.username + " went to map " + self.map + ".");
             }
-            var pack = {player:[],projectile:[],monster:[]};
+            var pack = {player:[],projectile:[],monster:[],npc:[]};
             for(var i in Player.list){
-                if(Player.list[i].map === self.map){
+                if(Player.list[i] && Player.list[i].map === self.map){
                     pack.player.push(Player.list[i].getInitPack());
                 }
             }
             for(var i in Projectile.list){
-                if(Projectile.list[i].map === self.map){
+                if(Projectile.list[i] && Projectile.list[i].map === self.map){
                     pack.projectile.push(Projectile.list[i].getInitPack());
                 }
             }
             for(var i in Monster.list){
-                if(Monster.list[i].map === self.map){
+                if(Monster.list[i] && Monster.list[i].map === self.map){
                     pack.monster.push(Monster.list[i].getInitPack());
+                }
+            }
+            for(var i in Npc.list){
+                if(Npc.list[i] && Npc.list[i].map === self.map){
+                    pack.npc.push(Npc.list[i].getInitPack());
                 }
             }
             socket.emit('update',pack);
             for(var i in Player.list){
-                SOCKET_LIST[i].emit('update',self.getInitPack());
+                if(Player.list[i]){
+                    SOCKET_LIST[i].emit('initEntity',self.getInitPack());
+                }
             }
         }
         if(self.mapChange === 10){
@@ -742,29 +913,29 @@ Player = function(param){
             }
         }
         if(self.attackTick === 0){
-            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,0,0);
-            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,0,0);
-            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,0,0);
-            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,0,0);
+            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'W_Throw004',0);
+            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'W_Throw004',0);
+            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'W_Throw004',0);
+            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'W_Throw004',0);
         }
         if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
             }
         }
         if(self.secondTick === 20){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
             }
         }
         if(self.secondTick === 40){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
             }
         }
         if(self.secondTick === 60){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,0,0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
             }
         }
         if(self.healTick === 0){
@@ -873,6 +1044,7 @@ Player = function(param){
         pack.healReload = self.healReload;
         pack.mapWidth = self.mapWidth;
         pack.mapHeight = self.mapHeight;
+        pack.type = self.type;
         return pack;
     }
     Player.list[self.id] = self;
@@ -890,10 +1062,10 @@ Player.onConnect = function(socket,username){
 
     console.error(username + " just logged on.");
     for(var i in SOCKET_LIST){
-        SOCKET_LIST[i].emit('addToChat',username + " just logged on.");
+        SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + username + " just logged on.");
     }
 
-    socket.emit('selfId',{id:socket.id,time:TIME});
+    socket.emit('selfId',{id:socket.id});
 
 	socket.on('keyPress',function(data){
 		if(data.inputId === player.keyMap.left){
@@ -922,17 +1094,32 @@ Player.onConnect = function(socket,username){
             player.mouseX = data.state.x + player.x;
             player.mouseY = data.state.y + player.y;
 		}
+		if(data.inputId === 'releaseAll'){
+            player.keyPress = {
+                up:false,
+                down:false,
+                left:false,
+                right:false,
+                attack:false,
+                second:false,
+                heal:false,
+            };
+		}
+    });
+
+    socket.on('diolougeResponse',function(data){
+        player.currentResponse = data;
     });
 
     socket.on('respawn',function(data){
         player.hp = player.hpMax / 2;
         console.error(player.username + ' respawned.');
         for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('addToChat',player.username + ' respawned.');
+            SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + player.username + ' respawned.');
         }
     });
 
-    var pack = {player:[],projectile:[],monster:[]};
+    var pack = {player:[],projectile:[],monster:[],npc:[]};
     for(var i in Player.list){
         if(Player.list[i].map === player.map){
             pack.player.push(Player.list[i].getInitPack());
@@ -946,6 +1133,11 @@ Player.onConnect = function(socket,username){
     for(var i in Monster.list){
         if(Monster.list[i].map === player.map){
             pack.monster.push(Monster.list[i].getInitPack());
+        }
+    }
+    for(var i in Npc.list){
+        if(Npc.list[i].map === player.map){
+            pack.npc.push(Npc.list[i].getInitPack());
         }
     }
     socket.emit('update',pack);
@@ -983,7 +1175,7 @@ Player.onDisconnect = function(socket){
     if(Player.list[socket.id]){
         console.error(Player.list[socket.id].username + " logged off.");
         for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('addToChat',Player.list[socket.id].username + " logged off.");
+            SOCKET_LIST[i].emit('addToChat','style="color: #ffff00">' + Player.list[socket.id].username + " logged off.");
         }
         playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
@@ -995,12 +1187,75 @@ Player.onDisconnect = function(socket){
 Npc = function(param){
 	var self = Actor(param);
 	self.id = Math.random();
-    self.map = 'Village';
+    self.map = param.map;
     self.type = 'Npc';
+    self.name = param.name;
+    self.username = param.username;
     var lastSelf = {};
 	var super_update = self.update;
+    self.mapHeight = 3200;
+    self.mapWidth = 3200;
+    self.width = 24;
+    self.height = 28;
+    self.canMove = true;
+    self.randomWalk(true,self.x,self.y);
 	self.update = function(){
-        super_update();
+        self.mapChange += 1;
+        self.moveSpeed = self.maxSpeed;
+        for(var i = 0;i < self.moveSpeed;i++){
+            self.updateMove();
+            self.updateAnimation();
+            if(self.canMove){
+                self.x += self.spdX;
+                self.y += self.spdY;
+            }
+            self.updateCollisions();
+            if(self.randomPos.walking && self.x === self.lastX){
+                self.spdX = Math.round(Math.random() * 2 - 1);
+                self.randomPos.directionX = self.spdX;
+            }
+            if(self.randomPos.walking && self.y === self.lastY){
+                self.spdY = Math.round(Math.random() * 2 - 1);
+                self.randomPos.directionY = self.spdY;
+            }
+        }
+        if(self.mapChange === 5){
+            self.map = self.transporter.teleport;
+            if(self.transporter.teleportx !== -1){
+                self.x = self.transporter.teleportx;
+            }
+            if(self.transporter.teleporty !== -1){
+                self.y = self.transporter.teleporty;
+            }
+            self.mapWidth = self.transporter.mapx;
+            self.mapHeight = self.transporter.mapy;
+            self.canMove = false;
+        }
+        if(self.mapChange === 10){
+            self.canMove = true;
+            self.invincible = false;
+        }
+        if(self.x < self.width / 2){
+            self.x = self.width / 2;
+        }
+        if(self.x > self.mapWidth - self.width / 2){
+            self.x = self.mapWidth - self.width / 2;
+        }
+        if(self.y < self.height / 2){
+            self.y = self.height / 2;
+        }
+        if(self.y > self.mapHeight - self.height / 2){
+            self.y = self.mapHeight - self.height / 2;
+        }
+        if(self.animation === -1){
+            self.animation = 0;
+        }
+        else{
+            self.animation += 0.5;
+            if(self.animation > 5){
+                self.animation = 0;
+            }
+        }
     }
 	self.getUpdatePack = function(){
         var pack = {};
@@ -1021,6 +1276,14 @@ Npc = function(param){
             pack.spdY = self.spdY;
             lastSelf.spdY = self.spdY;
         }
+        if(lastSelf.animationDirection !== self.animationDirection){
+            pack.animationDirection = self.animationDirection;
+            lastSelf.animationDirection = self.animationDirection;
+        }
+        if(lastSelf.animation !== self.animation){
+            pack.animation = self.animation;
+            lastSelf.animation = self.animation;
+        }
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
@@ -1035,6 +1298,9 @@ Npc = function(param){
         pack.spdX = self.spdX;
         pack.spdY = self.spdY;
         pack.map = self.map;
+        pack.animationDirection = self.animationDirection;
+        pack.animation = self.animation;
+        pack.type = self.type;
         return pack;
     }
 	Npc.list[self.id] = self;
@@ -1048,8 +1314,8 @@ Monster = function(param){
     self.spawnId = param.spawnId;
     self.attackState = "passive";
     self.direction = 0;
-    self.hp = 500;
-    self.hpMax = 500;
+    self.hp = 200;
+    self.hpMax = 200;
     self.width = 24;
     self.height = 24;
     self.toRemove = false;
@@ -1094,79 +1360,18 @@ Monster = function(param){
                 }
                 break;
             case "move":
-                self.move(self.target.x + Math.random() * 128 - 64,self.target.y + Math.random() * 128 - 64);
+                self.trackEntity(self.target);
                 self.reload = 0;
-                setTimeout(function(){
-                    self.moveArray = [];
-                    self.spdX = 0;
-                    self.spdY = 0;
-                    self.move(self.target.x + Math.random() * 128 - 64,self.target.y + Math.random() * 128 - 64);
-                },5000);
                 self.attackState = "attack";
                 break;
             case "attack":
-                setTimeout(function(){
-                    if(self.toRemove === false){
-                        for(var i in Player.list){
-                            if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead"){
-                                self.attackState = "move";
-                                self.target = Player.list[i];
-                                return;
-                            }
-                        }
-                        self.attackState = "passive";
-                        self.target = {};
-                    }
-                },10000);
+                if(self.reload % 20 === 0){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0);
+                }
+                if(self.reload % 100 < 5){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0);
+                }
                 self.reload += 1;
-                if(self.reload === 0){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 20){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 40){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 60){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 80){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 82){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 84){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 86){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 500){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 520){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 540){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 560){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 580){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 582){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 584){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
-                if(self.reload === 586){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,0,0);
-                }
                 break;
         }
     }
@@ -1203,6 +1408,7 @@ Monster = function(param){
         pack.hp = self.hp;
         pack.hpMax = self.hpMax;
         pack.map = self.map;
+        pack.type = self.type;
         return pack;
     }
     Monster.list[self.id] = self;
@@ -1229,7 +1435,7 @@ Pet = function(param){
         if(self.reload > 10){
             self.reload = 0;
             var direction = (Math.atan2(Player.list[self.parent].mouseY - Player.list[self.parent].y + self.y,Player.list[self.parent].mouseX - Player.list[self.parent].x + self.x) / Math.PI * 180);
-            self.shootProjectile(self.parent,'Pet',direction,direction,0,35);
+            self.shootProjectile(self.parent,'Pet',direction,direction,'Bullet',35);
         }
     }
 	self.getUpdatePack = function(){
@@ -1265,6 +1471,7 @@ Pet = function(param){
         pack.hp = self.hp;
         pack.hpMax = self.hpMax;
         pack.map = self.map;
+        pack.type = self.type;
         return pack;
     }
 	Pet.list[self.id] = self;
@@ -1278,15 +1485,16 @@ Projectile = function(param){
 	var self = Entity(param);
 	self.id = Math.random();
 	self.parent = param.id;
-	self.spdX = Math.cos(param.angle/180 * Math.PI) * 20;
-    self.spdY = Math.sin(param.angle/180 * Math.PI) * 20;
-    self.width = 24;
-    self.height = 24;
+	self.spdX = Math.cos(param.angle/180 * Math.PI) * 50;
+    self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
+    self.width = 48;
+    self.height = 48;
 	self.direction = param.direction;
 	self.timer = 0;
 	self.toRemove = false;
     self.type = 'Projectile';
     self.parentType = param.parentType;
+    self.projectileType = param.projectileType;
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -1334,9 +1542,21 @@ Projectile = function(param){
             pack.y = self.y;
             lastSelf.y = self.y;
         }
+        if(lastSelf.spdX !== self.spdX){
+            pack.spdX = self.spdX;
+            lastSelf.spdX = self.spdX;
+        }
+        if(lastSelf.spdY !== self.spdY){
+            pack.spdY = self.spdY;
+            lastSelf.spdY = self.spdY;
+        }
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
+        }
+        if(lastSelf.projectileType !== self.projectileType){
+            pack.projectileType = self.projectileType;
+            lastSelf.projectileType = self.projectileType;
         }
         return pack;
 	}
@@ -1345,7 +1565,11 @@ Projectile = function(param){
         pack.id = self.id;
         pack.x = self.x;
         pack.y = self.y;
+        pack.spdX = self.spdX;
+        pack.spdY = self.spdY;
         pack.map = self.map;
+        pack.type = self.type;
+        pack.projectileType = self.projectileType;
         return pack;
     }
 	Projectile.list[self.id] = self;
@@ -1417,12 +1641,43 @@ var renderLayer = function(layer){
                 });
 			}
             if(tile_idx === 1950){
+                /*
                 var projectileCollision = new ProjectileCollision({
                     x:(i % layer.width) * size,
                     y:~~(i / layer.width) * size,
                     size:size,
                     map:map,
-                });
+                });*/
+				var type = "";
+				var typej = 0;
+				var id = "";
+				var idj = 0;
+                var name = "";
+				for(var j = 0;j < layer.name.length;j++){
+					if(layer.name[j] === ':'){
+						if(type === ""){
+							type = layer.name.substr(0,j);
+							typej = j;
+						}
+						else if(id === ""){
+							id = layer.name.substr(typej + 1,j - typej - 1);
+							idj = j;
+						}
+						else if(y === ""){
+							name = layer.name.substr(idj + 1,j - idj - 1);
+						}
+					}
+                }
+                if(type === 'Npc'){
+                    var npc = new Npc({
+                        x:(i % layer.width) * size + 32,
+                        y:~~(i / layer.width) * size + 32,
+                        name:name,
+                        username:id,
+                        map:map,
+                        moveSpeed:3,
+                    });
+                }
 			}
             if(tile_idx === 1864){
                 var slowDown = new SlowDown({
@@ -1549,14 +1804,15 @@ load("Secret Base");
 load("Lilypad Path Part 1");
 load("The Outskirts");
 load("Lower Deadlands");
+load("Forest");
 
 updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].state !== 'dead' && Projectile.list[j].parentType !== 'Player'){
+                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].state !== 'dead' && Projectile.list[j].parentType !== 'Player' && Projectile.list[j].map === Player.list[i].map){
                     Projectile.list[j].toRemove = true;
-                    Player.list[i].hp -= 100;
+                    Player.list[i].hp -= 50 + Math.round(Math.random() * 50);
                 }
             }
         }
@@ -1564,9 +1820,9 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster'){
+                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map){
                     Projectile.list[j].toRemove = true;
-                    Monster.list[i].hp -= 100;
+                    Monster.list[i].hp -= 50 + Math.round(Math.random() * 50);
                 }
             }
         }
@@ -1574,7 +1830,7 @@ updateCrashes = function(){
     for(var i in Npc.list){
         for(var j in Projectile.list){
             if(Npc.list[i] && Projectile.list[j]){
-                if(Npc.list[i].getDistance(Projectile.list[j]) < 30 && Projectile.list[j].parent != i){
+                if(Npc.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent != i && Projectile.list[j].map === Npc.list[i].map){
                     Projectile.list[j].toRemove = true;
                 }
             }
@@ -1599,10 +1855,144 @@ spawnEnemies = function(){
                     x:Spawner.list[i].x,
                     y:Spawner.list[i].y,
                     map:Spawner.list[i].map,
-                    moveSpeed:5,
+                    moveSpeed:2,
                 });
                 Spawner.list[i].spawned = true;
             }
         }
     }
 }
+
+
+s = {
+    findPlayers:function(param){
+        var acceptableEntities = Player.list;
+        if(param.username){
+            for(var i in Player.list){
+                if(Player.list[i].username !== param.username){
+                    delete acceptableEntities[i];
+                }
+            }
+        }
+        if(param.map){
+            for(var i in Player.list){
+                if(Player.list[i].map !== param.map){
+                    delete acceptableEntities[i];
+                }
+            }
+        }
+        if(param.id){
+            for(var i in Player.list){
+                if(Player.list[i].id !== param.id){
+                    delete acceptableEntities[i];
+                }
+            }
+        }
+        if(acceptableEntities === {}){
+            return 'None';
+        }
+        else{
+            if(param.return === 'username'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i].username);
+                }
+                return pack;
+            }
+            if(param.return === 'map'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i].map);
+                }
+                return pack;
+            }
+            if(param.return === 'entity'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i]);
+                }
+                return pack;
+            }
+            if(param.return === 'id'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i].id);
+                }
+                return pack;
+            }
+        }
+    },
+    findEntities:function(param){
+        var acceptableEntities = Entity.list;
+        if(param.id){
+            for(var i in Entity.list){
+                if(Entity.list[i].id !== param.id){
+                    delete acceptableEntities[i];
+                }
+            }
+        }
+        if(param.type){
+            for(var i in Entity.list){
+                if(Entity.list[i].type !== param.type){
+                    delete acceptableEntities[i];
+                }
+            }
+        }
+        if(param.map){
+            for(var i in Entity.list){
+                if(Entity.list[i].map !== param.map){
+                    delete acceptableEntities[i];
+                }
+            }
+        }
+        if(acceptableEntities === {}){
+            return 'None';
+        }
+        else{
+            if(param.return === 'map'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i].map);
+                }
+                return pack;
+            }
+            if(param.return === 'entity'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i]);
+                }
+                return pack;
+            }
+            if(param.return === 'id'){
+                var pack = [];
+                for(var i in acceptableEntities){
+                    pack.push(acceptableEntities[i].id);
+                }
+                return pack;
+            }
+        }
+    },
+    spawnEntity:function(param){
+        if(param.type){
+            if(param.type === 'Monster'){
+                var monster = new Monster({
+                    spawnId:0,
+                    x:param.x,
+                    y:param.y,
+                    map:param.map,
+                    moveSpeed:param.moveSpeed,
+                });
+            }
+            if(param.type === 'Npc'){
+                var npc = new Npc({
+                    x:param.x,
+                    y:param.y,
+                    name:param.name,
+                    username:param.id,
+                    map:param.map,
+                    moveSpeed:param.moveSpeed,
+                });
+            }
+        }
+    },
+};

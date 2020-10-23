@@ -100,7 +100,6 @@ QuestItem("potion","Potion",function(player){
 	player.questInventory.removeQuestItem("potion",1);
 	player.questInventory.addQuestItem("monsters",1);
 });
-
 QuestItem("monsters","OP Potion",function(player){
     for(var i = 0;i < 10;i++){
         var monster = new Monster({
@@ -108,10 +107,10 @@ QuestItem("monsters","OP Potion",function(player){
             x:player.x,
             y:player.y,
             map:player.map,
-            moveSpeed:100,
+            moveSpeed:2,
         });
     }
-	player.questInventory.removeQuestItem("monsters",1);
+	//player.questInventory.removeQuestItem("monsters",1);
 });
 
 Inventory = function(socket,server){
