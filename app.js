@@ -1,5 +1,5 @@
 
-SERVER = 'heroku';
+SERVER = 'localhost';
 
 var express = require('express');
 var app = express();
@@ -102,7 +102,7 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendDebugToServer',function(data){
 		if(Player.list[socket.id]){
-			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu'){
+			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'Suvanth'){
 				if(data === 'process.exit(0);' || data === 'process.exit(0)'){
 					if(Player.list[socket.id].username === 'sp'){
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
@@ -137,7 +137,8 @@ setInterval(function(){
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
 		if(Player.list[socket.id]){
-			socket.emit('update',packs[Player.list[socket.id].map]);
+			var map = Player.list[socket.id].map;
+			socket.emit('update',packs[map]);
 		}
 	}
 },1000/20);

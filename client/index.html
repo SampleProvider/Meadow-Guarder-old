@@ -131,7 +131,7 @@
 	<div id="disconnected" style="display:none;">
 		<button class="disconnected">Disconnected</button>
 	</div>
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>-->
 	<link href="/client/websiteAssets/MiniSet2.ttf@14d552ae72d147f7b96abae4220f32c0.woff" rel="stylesheet">
 
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
@@ -302,9 +302,25 @@
 		var maps = {};
 
 		var load = function(name){
-			return $.getJSON("/client/maps/" + name + ".json",function(json){
-				maps[name] = json.backgroundcolor;
-			});
+			var request = new XMLHttpRequest();
+			request.open('GET',"/client/maps/" + name + ".json",true);
+
+			request.onload = function(){
+				if(this.status >= 200 && this.status < 400){
+					// Success!
+					var data = JSON.parse(this.response);
+					maps[name] = data.backgroundcolor;
+				}
+				else{
+					// We reached our target server, but it returned an error
+				}
+			};
+
+			request.onerror = function(){
+				// There was a connection error of some sort
+			};
+
+			request.send();
 		}
 		load('Village');
 		load('Starter House');

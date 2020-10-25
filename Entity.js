@@ -764,6 +764,17 @@ Player = function(param){
                         y:Spawner.list[i].y,
                         map:Spawner.list[i].map,
                         moveSpeed:2,
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                        },
                     });
                     Spawner.list[i].spawned = true;
                 }
@@ -913,29 +924,29 @@ Player = function(param){
             }
         }
         if(self.attackTick === 0){
-            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'W_Throw004',0);
-            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'W_Throw004',0);
-            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'W_Throw004',0);
-            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'W_Throw004',0);
+            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0);
+            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0);
+            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0);
+            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0);
         }
         if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
             }
         }
         if(self.secondTick === 20){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
             }
         }
         if(self.secondTick === 40){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
             }
         }
         if(self.secondTick === 60){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'W_Throw004',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
             }
         }
         if(self.healTick === 0){
@@ -1332,15 +1343,7 @@ Monster = function(param){
             self.attackState = "passive";
         }
         if(self.hp < 1){
-            self.toRemove = true;
-            if(self.spawnId){
-                Spawner.list[self.spawnId].spawned = false;
-            }
-            for(var i in Projectile.list){
-                if(Projectile.list[i].parent === self.id){
-                    Projectile.list[i].toRemove = true;
-                }
-            }
+            param.onDeath(self);
         }
     }
     self.updateAttack = function(){
@@ -1856,6 +1859,17 @@ spawnEnemies = function(){
                     y:Spawner.list[i].y,
                     map:Spawner.list[i].map,
                     moveSpeed:2,
+                    onDeath:function(pt){
+                        pt.toRemove = true;
+                        if(pt.spawnId){
+                            Spawner.list[pt.spawnId].spawned = false;
+                        }
+                        for(var i in Projectile.list){
+                            if(Projectile.list[i].parent === pt.id){
+                                Projectile.list[i].toRemove = true;
+                            }
+                        }
+                    },
                 });
                 Spawner.list[i].spawned = true;
             }
@@ -1892,34 +1906,11 @@ s = {
             return 'None';
         }
         else{
-            if(param.return === 'username'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i].username);
-                }
-                return pack;
+            var pack = [];
+            for(var i in acceptableEntities){
+                pack.push(acceptableEntities[i]);
             }
-            if(param.return === 'map'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i].map);
-                }
-                return pack;
-            }
-            if(param.return === 'entity'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i]);
-                }
-                return pack;
-            }
-            if(param.return === 'id'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i].id);
-                }
-                return pack;
-            }
+            return pack;
         }
     },
     findEntities:function(param){
@@ -1949,27 +1940,11 @@ s = {
             return 'None';
         }
         else{
-            if(param.return === 'map'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i].map);
-                }
-                return pack;
+            var pack = [];
+            for(var i in acceptableEntities){
+                pack.push(acceptableEntities[i]);
             }
-            if(param.return === 'entity'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i]);
-                }
-                return pack;
-            }
-            if(param.return === 'id'){
-                var pack = [];
-                for(var i in acceptableEntities){
-                    pack.push(acceptableEntities[i].id);
-                }
-                return pack;
-            }
+            return pack;
         }
     },
     spawnEntity:function(param){
@@ -1981,6 +1956,17 @@ s = {
                     y:param.y,
                     map:param.map,
                     moveSpeed:param.moveSpeed,
+                    onDeath:function(pt){
+                        pt.toRemove = true;
+                        if(pt.spawnId){
+                            Spawner.list[pt.spawnId].spawned = false;
+                        }
+                        for(var i in Projectile.list){
+                            if(Projectile.list[i].parent === pt.id){
+                                Projectile.list[i].toRemove = true;
+                            }
+                        }
+                    },
                 });
             }
             if(param.type === 'Npc'){
