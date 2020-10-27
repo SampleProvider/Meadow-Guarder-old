@@ -1585,23 +1585,48 @@ Projectile.list = {};
 var data;
 var tileset;
 var layers;
-var map;
+var loadedMap;
+var mapLocations = [
+    ['Lower Deadlands',''],
+    ['The Outskirts','Forest'],
+    ['River','Village'],
+    ['Lilypad Path Part 1',''],
+];
 var renderLayer = function(layer){
     if(layer.type !== "tilelayer" && layer.visible === false){
         return;
     }
     size = data.tilewidth;
-    Maps[map] = {width:layer.width * size,height:layer.height * size};
+    if(data.backgroundcolor){
+        Maps[loadedMap] = {width:layer.width * size,height:layer.height * size};
+    }
+    else{
+        for(var i = 0;i < mapLocations.length;i++){
+            for(var j = 0;j < mapLocations[i].length;j++){
+                Maps[mapLocations[i][j]] = {width:3200,height:3200};
+            }
+        }
+    }
     if(layers.length < data.layers.length || 1){
         layer.data.forEach(function(tile_idx, i){
             if(!tile_idx){
                 return;
             }
+            if(data.backgroundcolor){
+                var x = (i % layer.width) * size;
+                var y = ~~(i / layer.width) * size;
+                var map = loadedMap;
+            }
+            else{
+                var x = ((i % layer.width) * size) % 3200;
+                var y = (~~(i / layer.width) * size) % 3200;
+                var map = mapLocations[~~(~~(i / layer.width) * size / 3200)][~~((i % layer.width) * size / 3200)];
+            }
             tile = data.tilesets[0];
             if(tile_idx === 2122){
                 var collision = new Collision({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 32,
+                    y:y + 32,
                     width:size,
                     height:size,
                     map:map,
@@ -1609,8 +1634,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 2123){
                 var collision = new Collision({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 48,
+                    x:x + 32,
+                    y:y + 48,
                     width:size,
                     height:size / 2,
                     map:map,
@@ -1618,8 +1643,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 2124){
                 var collision = new Collision({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 16,
+                    x:x + 32,
+                    y:y + 16,
                     width:size,
                     height:size / 2,
                     map:map,
@@ -1627,8 +1652,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 2125){
                 var collision = new Collision({
-                    x:(i % layer.width) * size + 16,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 16,
+                    y:y + 32,
                     width:size / 2,
                     height:size,
                     map:map,
@@ -1636,8 +1661,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 2126){
                 var collision = new Collision({
-                    x:(i % layer.width) * size + 48,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 48,
+                    y:y + 32,
                     width:size / 2,
                     height:size,
                     map:map,
@@ -1646,8 +1671,8 @@ var renderLayer = function(layer){
             if(tile_idx === 1950){
                 /*
                 var projectileCollision = new ProjectileCollision({
-                    x:(i % layer.width) * size,
-                    y:~~(i / layer.width) * size,
+                    x:x,
+                    y:y,
                     size:size,
                     map:map,
                 });*/
@@ -1673,8 +1698,8 @@ var renderLayer = function(layer){
                 }
                 if(type === 'Npc'){
                     var npc = new Npc({
-                        x:(i % layer.width) * size + 32,
-                        y:~~(i / layer.width) * size + 32,
+                        x:x + 32,
+                        y:y + 32,
                         name:name,
                         username:id,
                         map:map,
@@ -1684,8 +1709,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 1864){
                 var slowDown = new SlowDown({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 32,
+                    y:y + 32,
                     width:size,
                     height:size,
                     map:map,
@@ -1693,8 +1718,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 1865){
                 var slowDown = new SlowDown({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 48,
+                    x:x + 32,
+                    y:y + 48,
                     width:size,
                     height:size / 2,
                     map:map,
@@ -1702,8 +1727,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 1866){
                 var slowDown = new SlowDown({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 16,
+                    x:x + 32,
+                    y:y + 16,
                     width:size,
                     height:size / 2,
                     map:map,
@@ -1711,8 +1736,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 1867){
                 var slowDown = new SlowDown({
-                    x:(i % layer.width) * size + 16,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 16,
+                    y:y + 32,
                     width:size / 2,
                     height:size,
                     map:map,
@@ -1720,8 +1745,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 1868){
                 var slowDown = new SlowDown({
-                    x:(i % layer.width) * size + 48,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 48,
+                    y:y + 32,
                     width:size / 2,
                     height:size,
                     map:map,
@@ -1729,8 +1754,8 @@ var renderLayer = function(layer){
 			}
             if(tile_idx === 1778){
                 var spawner = new Spawner({
-                    x:(i % layer.width) * size + 32,
-                    y:~~(i / layer.width) * size + 32,
+                    x:x + 32,
+                    y:y + 32,
                     width:size,
                     height:size,
                     map:map,
@@ -1739,10 +1764,10 @@ var renderLayer = function(layer){
             if(tile_idx === 2036){
 				var teleport = "";
 				var teleportj = 0;
-				var x = "";
-				var xj = 0;
-                var y = "";
-                var yj = 0;
+				var teleportx = "";
+				var teleportxj = 0;
+                var teleporty = "";
+                var teleportyj = 0;
                 var direction = "";
 				for(var j = 0;j < layer.name.length;j++){
 					if(layer.name[j] === ':'){
@@ -1750,26 +1775,26 @@ var renderLayer = function(layer){
 							teleport = layer.name.substr(0,j);
 							teleportj = j;
 						}
-						else if(x === ""){
-							x = layer.name.substr(teleportj + 1,j - teleportj - 1);
-							xj = j;
+						else if(teleportx === ""){
+							teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
+							teleportxj = j;
 						}
-						else if(y === ""){
-							y = layer.name.substr(xj + 1,j - xj - 1);
-							yj = j;
+						else if(teleporty === ""){
+							teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
+							teleportyj = j;
 						}
 						else if(direction === ""){
-							direction = layer.name.substr(yj + 1,j - yj - 1);
+							direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
 						}
 					}
                 }
                 var transporter = new Transporter({
-                    x:(i % layer.width) * size,
-                    y:~~(i / layer.width) * size,
+                    x:x,
+                    y:y,
 					size:size,
 					teleport:teleport,
-					teleportx:x,
-                    teleporty:y,
+					teleportx:teleportx,
+                    teleporty:teleporty,
                     direction:direction,
                     map:map,
                 });
@@ -1790,7 +1815,7 @@ var loadTileset = function(json){
     tileset.onload = renderLayers();
 }
 var load = function(name){
-    map = name;
+    loadedMap = name;
     if(SERVER === 'localhost'){
         loadTileset(require("C:/Users/gu/Documents/game/client/maps/" + name + ".json"));
     }
@@ -1798,16 +1823,12 @@ var load = function(name){
         loadTileset(require("/app/client/maps/" + name + ".json"));
     }
 }
-load("Village");
+load("World");
 load("Starter House");
 load("Cave");
 load("House");
 load("River");
 load("Secret Base");
-load("Lilypad Path Part 1");
-load("The Outskirts");
-load("Lower Deadlands");
-load("Forest");
 
 updateCrashes = function(){
     for(var i in Player.list){

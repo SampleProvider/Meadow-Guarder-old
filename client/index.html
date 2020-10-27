@@ -29,6 +29,7 @@
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
 		<div id="questInventoryDiv" class="UI-text-light"></div>
+		<div id="fps" class="UI-text-light"></div>
 		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
 			<div>Welcome to Meadow Guarders Open 0.0.9!</div>
 		</div>
@@ -292,8 +293,8 @@
 		var worldMap = document.getElementById("worldMapCanvas").getContext("2d");
 		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
-		ctx.canvas.width = 1536 / 4;
-		ctx.canvas.height = 722 / 4;
+		ctx.canvas.width = 1536;
+		ctx.canvas.height = 722;
 		inventoryPlayerDisplay.canvas.width = 96;
 		inventoryPlayerDisplay.canvas.height = 152;
 		worldMap.canvas.width = 2000;
@@ -308,8 +309,8 @@
 			request.onload = function(){
 				if(this.status >= 200 && this.status < 400){
 					// Success!
-					var data = JSON.parse(this.response);
-					maps[name] = data.backgroundcolor;
+					var abcd = JSON.parse(this.response);
+					maps[name] = abcd.backgroundcolor;
 				}
 				else{
 					// We reached our target server, but it returned an error
@@ -322,6 +323,157 @@
 
 			request.send();
 		}
+		var data;
+		var tileset;
+		var layers;
+		var renderingMap;
+		var loaded = false;
+		var loadedMap = {};
+		var image = new Image();
+		var renderLayer = function(layeri,json,gl){
+			if(json.layers[layeri].type !== "tilelayer" || !json.layers[layeri].visible){
+				return;
+			}
+			
+			
+			var s = ctx.canvas.cloneNode(),
+			size = json.tilewidth;
+			s = s.getContext("2d");
+			if(layers.length < json.layers.length || 1){
+				/*var p_x = ~~(Player.list[selfId].x / 64);
+				var p_y = ~~(Player.list[selfId].y / 64);
+				var tile_idx;
+				var img_x;
+				var img_y;
+				var s_x;
+				var s_y;
+				var tile = data.tilesets[0];
+				for(var i = -RENDERDIST;i < RENDERDIST * 2 + 1;i++){
+					for(var j = -RENDERDIST;j < RENDERDIST * 2 + 1;j++){
+						tile_idx = layer.data[p_x + j + (p_y + i) * layer.width];
+						tile_idx -= 1;
+						img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+						img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+						//s_x = (i % layer.width) * size;
+						//s_y = ~~(i / layer.width) * size;
+						ctx.drawImage(tileset,img_x,img_y,size,size,p_x + j * size,p_y + i * size,size,size);
+					}
+				}*/
+				/*layer.data.forEach(function(tile_idx, i){
+					if(!tile_idx){
+						return;
+					}
+					var img_x, img_y, s_x, s_y,
+					tile = data.tilesets[0];
+					tile_idx -= 1;
+					img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+					s_x = (i % layer.width) * size;
+					s_y = ~~(i / layer.width) * size;
+					//if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
+					ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+					//}
+					//if(Player.list[selfId].x - RENDERDIST < s_x && Player.list[selfId].x + RENDERDIST > s_x && Player.list[selfId].y - RENDERDIST < s_y && Player.list[selfId].y + RENDERDIST > s_y){
+						//ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+					//}
+				});
+				for(var a = -5;a < 6;a++){
+					for(var b = -5;b < 6;b++){
+						var i = Math.floor(Player.list[selfId].x / 64) + Math.floor(Player.list[selfId].y / 64) * layer.width;
+						i = i + a + b * layer.width;
+						tile_idx = layer.data[i];
+						if(tile_idx !== 0){
+							var img_x, img_y, s_x, s_y,
+							tile = data.tilesets[0];
+							tile_idx -= 1;
+							img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+							img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+							s_x = (i % layer.width) * size;
+							s_y = ~~(i / layer.width) * size;
+							gl.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+						}
+					}
+				}*/
+				for(var i = 0;i < json.layers[layeri].data.length;i++){
+					tile_idx = json.layers[layeri].data[i];
+					if(tile_idx !== 0){
+						var img_x, img_y, s_x, s_y,
+						tile = json.tilesets[0];
+						tile_idx -= 1;
+						img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+						img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+						s_x = (i % json.layers[layeri].width) * size;
+						s_y = ~~(i / json.layers[layeri].width) * size;
+						gl.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+						//ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+					}
+				}
+				//layers.push(s.canvas.toDataURL());
+				//ctx.drawImage(s.canvas, 0, 0);
+			}
+		}
+		var renderLayers = function(json){
+			layers = json.layers;
+			if(!loadedMap[renderingMap]){
+				loadedMap[renderingMap] = new OffscreenCanvas(layers[0].width * 64,layers[0].height * 64);
+			}
+			else{
+				loadedMap[renderingMap].width = layers[0].width * 64;
+				loadedMap[renderingMap].height = layers[0].height * 64;
+			}
+			var gl = loadedMap[renderingMap].getContext('2d');
+			for(var i = 0;i < layers.length;i++){
+				renderLayer(i,json,gl);
+			}
+			//image.src = ctxRaw.toDataURL();
+		}
+		var loadTileset = function(json){
+			data = json;
+			//tileset = $("<img />",{Src:json.tilesets[0].image})[0];
+			tileset = new Image();
+			tileset.src = '/client/maps/rogueLikeSheet.png';
+			tileset.onload = renderLayers(json);
+		}
+		var loadMap = function(name){
+			var request = new XMLHttpRequest();
+			request.open('GET',"/client/maps/" + name + ".json",true);
+
+			request.onload = function(){
+				if(this.status >= 200 && this.status < 400){
+					// Success!
+					var abc = JSON.parse(this.response);
+					renderingMap = name;
+					maps[name] = abc.backgroundcolor;
+					loadTileset(abc);
+				}
+				else{
+					// We reached our target server, but it returned an error
+				}
+			};
+
+			request.onerror = function(){
+				// There was a connection error of some sort
+			};
+
+			request.send();
+		}
+		const times = [];
+		let fps;
+
+		function refreshLoop() {
+			window.requestAnimationFrame(() => {
+				const now = performance.now();
+				while (times.length > 0 && times[0] <= now - 1000) {
+				times.shift();
+				}
+				times.push(now);
+				fps = times.length;
+				document.getElementById('fps').innerHTML = fps;
+				refreshLoop();
+			});
+		}
+
+		refreshLoop();/*
 		load('Village');
 		load('Starter House');
 		load('Cave');
@@ -331,7 +483,7 @@
 		load('Lilypad Path Part 1');
 		load('The Outskirts');
 		load('Lower Deadlands');
-		load('Forest');
+		load('Forest');*/
 		var shadeSpeed = -0.01;
 		var shadeAmount = 1;
 		var mapShadeSpeed = 0;
@@ -357,7 +509,7 @@
 		Img.Village.src = '/client/img/Village.png';
 		Img.River = new Image();
 		Img.River.src = '/client/img/River.png';
-
+		ctx.webkitImageSmoothingEnabled = false;
 		var mouseX = 0;
 		var mouseY = 0;
 		var mapMouseX = mouseX + WIDTH / 2;
@@ -366,6 +518,20 @@
 		var mapY = -100;
 		var mapDrag = true;
 		var mapRatio = 2000;
+
+		var mapLocations = [
+			['Lower Deadlands',''],
+			['The Outskirts','Forest'],
+			['River','Village'],
+			['Lilypad Path Part 1',''],
+		];
+		var mapCropX = 0;
+		var mapCropY = 0;
+		loadMap('Starter House');
+		loadMap('World');
+		loadMap('House');
+		loadMap('Cave');
+		loadMap('Secret Base');
 
 		var mapChange = 0;
 		var mapDirection = 'up';
@@ -692,8 +858,8 @@
 			self.map = initPack.map;
 			self.updated = true;
 			self.update = function(){
-				self.x += self.spdX / 8;
-				self.y += self.spdY / 8;
+				self.x += self.spdX / 2;
+				self.y += self.spdY / 2;
 				/*if(self.realX - self.x >= 40){
 					self.x = self.realX;
 				}
@@ -853,7 +1019,6 @@
 		Npc.list = {};
 		socket.on('selfId',function(data){
 			selfId = data.id;
-			var playerHistory = [];
 		});
 		socket.on('update',function(data){
 			for(var i in Player.list){
@@ -877,20 +1042,20 @@
 							if(data.player[i].x){
 								Player.list[data.player[i].id].lastX = data.player[i].x;
 							}
-							if(Math.abs(Player.list[data.player[i].id].x - Player.list[data.player[i].id].lastX) < 10){
+							if(Math.abs(Player.list[data.player[i].id].x - Player.list[data.player[i].id].lastX) < 2){
 								Player.list[data.player[i].id].x = Player.list[data.player[i].id].lastX;
 							}
 							else{
-								Player.list[data.player[i].id].moveX = Player.list[data.player[i].id].lastX / 8 - Player.list[data.player[i].id].x / 8;
+								Player.list[data.player[i].id].moveX = Player.list[data.player[i].id].lastX / 2 - Player.list[data.player[i].id].x / 2;
 							}
 							if(data.player[i].y){
 								Player.list[data.player[i].id].lastY = data.player[i].y;
 							}
-							if(Math.abs(Player.list[data.player[i].id].y - Player.list[data.player[i].id].lastY) < 10){
+							if(Math.abs(Player.list[data.player[i].id].y - Player.list[data.player[i].id].lastY) < 2){
 								Player.list[data.player[i].id].y = Player.list[data.player[i].id].lastY;
 							}
 							else{
-								Player.list[data.player[i].id].moveY = Player.list[data.player[i].id].lastY / 8 - Player.list[data.player[i].id].y / 8;
+								Player.list[data.player[i].id].moveY = Player.list[data.player[i].id].lastY / 2 - Player.list[data.player[i].id].y / 2;
 							}
 							if(data.player[i].spdX){
 								Player.list[data.player[i].id].spdX = data.player[i].spdX;
@@ -1093,7 +1258,23 @@
 				currentMap = data.teleport;*/
 			}
 			lastMap = Player.list[selfId].map;
+			var isWorldMap = false;
 			currentMap = data.teleport;
+			for(var i = 0;i < mapLocations.length;i++){
+				for(var j = 0;j < mapLocations[i].length;j++){
+					if(data.teleport === mapLocations[i][j]){
+						mapCropX = j * 3200;
+						mapCropY = i * 3200;
+						isWorldMap = true;
+						currentMap = 'World';
+					}
+				}
+			}
+			if(!isWorldMap){
+				mapCropX = 0;
+				mapCropY = 0;
+			}
+			shadeSpeed = 0.12;
 		});
 		socket.on('dialougeLine',function(data){
 			if(data.state === 'remove'){
@@ -1141,6 +1322,7 @@
 		}
 
 		setInterval(function(){
+			console.log(loadedMap['Starter House']);
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
 				signDiv.style.display = 'inline-block';
@@ -1194,13 +1376,17 @@
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
 			//ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			if(DEBUG !== 2){
+			/*if(DEBUG !== 2){
 				ctx.fillStyle = maps[Player.list[selfId].map];
 			}
 			else{
 				ctx.fillStyle = "#ffffff";
 			}
+			ctx.fillRect(0,0,WIDTH,HEIGHT);*/
+			ctx.fillStyle = "#ffffff";
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
+			lastCameraX = cameraX;
+			lastCameraY = cameraY;
 			cameraX = WIDTH/2 - Player.list[selfId].x;
 			cameraY = HEIGHT/2 - Player.list[selfId].y;
 			if(!talking){
@@ -1219,8 +1405,8 @@
 			if(lastCameraY - mouseCameraY < -2){
 				mouseCameraY = lastCameraY + 2;
 			}
-			*/cameraX -= mouseCameraX;
-			cameraY -= mouseCameraY;
+			*///cameraX -= mouseCameraX;
+			//cameraY -= mouseCameraY;
 			if(Player.list[selfId].mapWidth > window.innerWidth){
 				if(cameraX > 0){
 					cameraX = 0;
@@ -1237,11 +1423,10 @@
 					cameraY = HEIGHT - Player.list[selfId].mapHeight;
 				}
 			}
-			lastCameraX = mouseCameraX;
-			lastCameraY = mouseCameraY;
+			
 			
 			ctx.save();
-			ctx.translate(cameraX,cameraY);
+			ctx.translate(Math.round(cameraX),Math.round(cameraY));
 			drewMap = false;
 			if(mapChange !== 0 && Player.list[selfId].map === lastMap){
 				if(mapDirection === 'up'){
@@ -1317,12 +1502,32 @@
 			else if(shadeSpeed === 0){
 				mapChange = 2;
 			}
-			if(DEBUG !== 2 && mapChange === 0){
-				var i = new Image();
-				i.src = '/client/maps/' + Player.list[selfId].map + '0.png';
-				ctx.drawImage(i,0,0);
+			//if(DEBUG !== 2 && mapChange === 0){
+				//var i = new Image();
+				//i.src = '/client/maps/' + Player.list[selfId].map + '0.png';
+				//ctx.drawImage(i,0,0);
+			//}
+			if(cameraX !== lastCameraX || cameraY !== lastCameraY){
+				//renderLayers();
 			}
-			
+			//loadMap('Starter House');
+			if(mapCropX === 0 && mapCropY === 0){
+				if(loadedMap[Player.list[selfId].map]){
+					ctx.drawImage(loadedMap[Player.list[selfId].map],0,0);
+				}
+				else{
+					loadMap(Player.list[selfId].map);
+				}
+			}
+			else{
+				if(loadedMap.World){
+					ctx.drawImage(loadedMap.World,mapCropX,mapCropY,3200,3200,0,0,3200,3200);
+				}
+				else{
+					loadMap("World");
+				}
+			}
+			//ctx.drawImage(loadedMap["Starter House"],0,0);
 			for(var i in Player.list){
 				Player.list[i].draw();
 			}
@@ -1410,7 +1615,7 @@
 					}
 				}
 			}
-			if(DEBUG !== 2 && mapChange === 0){
+			/*if(DEBUG !== 2 && mapChange === 0){
 				var i = new Image();
 				i.src = '/client/maps/' + Player.list[selfId].map + '1.png';
 				ctx.drawImage(i,0,0);
@@ -1419,7 +1624,7 @@
 				var i = new Image();
 				i.src = '/client/maps/' + Player.list[selfId].map + 'DEBUG.png';
 				ctx.drawImage(i,0,0);
-			}
+			}*/
 			
 
 			for(var i in Monster.list){
@@ -1443,15 +1648,15 @@
 			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
 
 			if(mapShadeAmount >= 2){
-				mapShadeSpeed = -0.03;
+				mapShadeSpeed = -0.12;
 			}
 			if(shadeAmount > 1.6){
-				shadeSpeed = -0.03;
+				shadeSpeed = -0.12;
 			}
 			if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
 				document.getElementById('mapName').innerHTML = Player.list[selfId].map;
 				mapShadeAmount = 0;
-				mapShadeSpeed = 0.02;
+				mapShadeSpeed = 0.08;
 			}
 			shadeAmount += shadeSpeed;
 			mapShadeAmount += mapShadeSpeed;
@@ -1466,7 +1671,7 @@
 				worldMap.drawImage(Img.River,-mapRatio / 2000 * 3200,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
 			}
 			worldMap.restore();
-		},1000/160);
+		},1000/40);
 		
 		function useMenuDropdown() {
 			var dropdowns = document.getElementsByClassName("UI-dropdown-light");
