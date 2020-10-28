@@ -98,19 +98,6 @@ QuestItem.list = {};
 QuestItem("potion","Potion",function(player){
 	player.hp += 500;
 	player.questInventory.removeQuestItem("potion",1);
-	player.questInventory.addQuestItem("monsters",1);
-});
-QuestItem("monsters","OP Potion",function(player){
-    for(var i = 0;i < 10;i++){
-        var monster = new Monster({
-            spawnId:0,
-            x:player.x,
-            y:player.y,
-            map:player.map,
-            moveSpeed:2,
-        });
-    }
-	//player.questInventory.removeQuestItem("monsters",1);
 });
 
 Inventory = function(socket,server){
@@ -124,11 +111,15 @@ Inventory = function(socket,server){
 		for(var i = 0;i < self.items.length;i++){
 			if(self.items[i].id === id){
 				self.items[i].amount += amount;
+                let item = Item.list[id];
+                item.event(Player.list[self.socket.id]);
 				self.refreshRender();
 				return;
 			}
 		}
-		self.items.push({id:id,amount:amount});
+        self.items.push({id:id,amount:amount});
+        let item = Item.list[id];
+        item.event(Player.list[self.socket.id]);
 		self.refreshRender();
     }
     self.removeItem = function(id,amount){
@@ -189,7 +180,7 @@ Inventory = function(socket,server){
             }
 
             let item = Item.list[itemId];
-            item.event(Player.list[self.socket.id]);
+            item.eventClick(Player.list[self.socket.id]);
         });
     }
 
@@ -198,11 +189,12 @@ Inventory = function(socket,server){
 }
 
 
-Item = function(id,name,event){
+Item = function(id,name,event,eventClick){
 	var self = {
 		id:id,
 		name:name,
         event:event,
+        eventClick:eventClick,
 	}
 	Item.list[self.id] = self;
 	return self;
@@ -210,9 +202,13 @@ Item = function(id,name,event){
 Item.list = {};
 
 Item("sword","Sword",function(player){
-    for(var i = 0;i < 36;i++){
-        player.shootProjectile(player.id,'Player',i * 10,i * 10,0,0);
-    }
+    player.stats.attack = player.stats.attack * 1.1;
+},function(player){
     player.questInventory.addQuestItem("potion",1);
     player.inventory.removeItem("sword",1);
+});
+Item("helmet","Helmet",function(player){
+    player.stats.defense = player.stats.defense * 1.1;
+},function(player){
+
 });

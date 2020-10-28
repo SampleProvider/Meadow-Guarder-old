@@ -83,6 +83,7 @@
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
+				<button id="statButton" class="UI-button-light menuButton">Stats</button>
 			</div>
 			<div id="debugScreen" style="display: none;">
 				<div id="debug-text" class="UI-text-light">
@@ -92,6 +93,13 @@
 				<form id="debug-form" autocomplete="off">
 					<input id="debug-input" class="UI-input-light" type="text"></input>
 				</form>
+			</div>
+			<div id="statScreen" style="display: none;">
+				<div id="stat-text" class="UI-text-light">
+					<div id="stat-attack">Attack Power:</div>
+					<div id="stat-defense">Defense Power:</div>
+				</div>
+
 			</div>
 		</div>
 		<button id="worldMapButton" class="UI-button-light" style="display:none;">World Map [M]</button>
@@ -302,137 +310,55 @@
 
 		var maps = {};
 
-		var load = function(name){
-			var request = new XMLHttpRequest();
-			request.open('GET',"/client/maps/" + name + ".json",true);
-
-			request.onload = function(){
-				if(this.status >= 200 && this.status < 400){
-					// Success!
-					var abcd = JSON.parse(this.response);
-					maps[name] = abcd.backgroundcolor;
-				}
-				else{
-					// We reached our target server, but it returned an error
-				}
-			};
-
-			request.onerror = function(){
-				// There was a connection error of some sort
-			};
-
-			request.send();
-		}
-		var data;
-		var tileset;
-		var layers;
-		var renderingMap;
-		var loaded = false;
+		var tileset = new Image();
+		tileset.src = '/client/maps/rogueLikeSheet.png';
+		var tilesetLoaded = false;
+		tileset.onload = function(){
+			tilesetLoaded = true;
+		};
 		var loadedMap = {};
-		var image = new Image();
-		var renderLayer = function(layeri,json,gl){
-			if(json.layers[layeri].type !== "tilelayer" || !json.layers[layeri].visible){
-				return;
-			}
-			
-			
-			var s = ctx.canvas.cloneNode(),
-			size = json.tilewidth;
-			s = s.getContext("2d");
-			if(layers.length < json.layers.length || 1){
-				/*var p_x = ~~(Player.list[selfId].x / 64);
-				var p_y = ~~(Player.list[selfId].y / 64);
-				var tile_idx;
-				var img_x;
-				var img_y;
-				var s_x;
-				var s_y;
-				var tile = data.tilesets[0];
-				for(var i = -RENDERDIST;i < RENDERDIST * 2 + 1;i++){
-					for(var j = -RENDERDIST;j < RENDERDIST * 2 + 1;j++){
-						tile_idx = layer.data[p_x + j + (p_y + i) * layer.width];
-						tile_idx -= 1;
-						img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-						img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-						//s_x = (i % layer.width) * size;
-						//s_y = ~~(i / layer.width) * size;
-						ctx.drawImage(tileset,img_x,img_y,size,size,p_x + j * size,p_y + i * size,size,size);
-					}
-				}*/
-				/*layer.data.forEach(function(tile_idx, i){
-					if(!tile_idx){
-						return;
-					}
-					var img_x, img_y, s_x, s_y,
-					tile = data.tilesets[0];
-					tile_idx -= 1;
-					img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-					img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-					s_x = (i % layer.width) * size;
-					s_y = ~~(i / layer.width) * size;
-					//if(Player.list[selfId].x - WIDTH < s_x && Player.list[selfId].x + WIDTH > s_x && Player.list[selfId].y - HEIGHT < s_y && Player.list[selfId].y + HEIGHT > s_y){
-					ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-					//}
-					//if(Player.list[selfId].x - RENDERDIST < s_x && Player.list[selfId].x + RENDERDIST > s_x && Player.list[selfId].y - RENDERDIST < s_y && Player.list[selfId].y + RENDERDIST > s_y){
-						//ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-					//}
-				});
-				for(var a = -5;a < 6;a++){
-					for(var b = -5;b < 6;b++){
-						var i = Math.floor(Player.list[selfId].x / 64) + Math.floor(Player.list[selfId].y / 64) * layer.width;
-						i = i + a + b * layer.width;
-						tile_idx = layer.data[i];
+		var renderLayers = function(json,name){
+			var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+			var tempUpper = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+			var glLower = tempLower.getContext('2d');
+			var glUpper = tempUpper.getContext('2d');
+			for(var i = 0;i < json.layers.length;i++){
+				if(json.layers[i].type === "tilelayer" && json.layers[i].visible){
+					var size = json.tilewidth;
+					for(var j = 0;j < json.layers[i].data.length;j++){
+						tile_idx = json.layers[i].data[j];
 						if(tile_idx !== 0){
-							var img_x, img_y, s_x, s_y,
-							tile = data.tilesets[0];
+							var img_x, img_y, s_x, s_y;
+							var tile = json.tilesets[0];
 							tile_idx -= 1;
 							img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
 							img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-							s_x = (i % layer.width) * size;
-							s_y = ~~(i / layer.width) * size;
-							gl.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+							s_x = (j % json.layers[i].width) * size;
+							s_y = ~~(j / json.layers[i].width) * size;
+							if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1'){
+								glUpper.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+							}
+							else{
+								glLower.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+							}
 						}
 					}
-				}*/
-				for(var i = 0;i < json.layers[layeri].data.length;i++){
-					tile_idx = json.layers[layeri].data[i];
-					if(tile_idx !== 0){
-						var img_x, img_y, s_x, s_y,
-						tile = json.tilesets[0];
-						tile_idx -= 1;
-						img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-						img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-						s_x = (i % json.layers[layeri].width) * size;
-						s_y = ~~(i / json.layers[layeri].width) * size;
-						gl.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-						//ctx.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
-					}
 				}
-				//layers.push(s.canvas.toDataURL());
-				//ctx.drawImage(s.canvas, 0, 0);
+			}
+			loadedMap[name] = {
+				lower:tempLower,
+				upper:tempUpper,
 			}
 		}
-		var renderLayers = function(json){
-			layers = json.layers;
-			if(!loadedMap[renderingMap]){
-				loadedMap[renderingMap] = new OffscreenCanvas(layers[0].width * 64,layers[0].height * 64);
+		var loadTileset = function(json,name){
+			if(tilesetLoaded){
+				renderLayers(json,name);
 			}
 			else{
-				loadedMap[renderingMap].width = layers[0].width * 64;
-				loadedMap[renderingMap].height = layers[0].height * 64;
+				setTimeout(function(){
+					loadTileset(json,name);
+				},10);
 			}
-			var gl = loadedMap[renderingMap].getContext('2d');
-			for(var i = 0;i < layers.length;i++){
-				renderLayer(i,json,gl);
-			}
-			//image.src = ctxRaw.toDataURL();
-		}
-		var loadTileset = function(json){
-			data = json;
-			//tileset = $("<img />",{Src:json.tilesets[0].image})[0];
-			tileset = new Image();
-			tileset.src = '/client/maps/rogueLikeSheet.png';
-			tileset.onload = renderLayers(json);
 		}
 		var loadMap = function(name){
 			var request = new XMLHttpRequest();
@@ -441,10 +367,9 @@
 			request.onload = function(){
 				if(this.status >= 200 && this.status < 400){
 					// Success!
-					var abc = JSON.parse(this.response);
-					renderingMap = name;
-					maps[name] = abc.backgroundcolor;
-					loadTileset(abc);
+					var json = JSON.parse(this.response);
+					maps[name] = json.backgroundcolor;
+					loadTileset(json,name);
 				}
 				else{
 					// We reached our target server, but it returned an error
@@ -463,27 +388,19 @@
 		function refreshLoop() {
 			window.requestAnimationFrame(() => {
 				const now = performance.now();
-				while (times.length > 0 && times[0] <= now - 1000) {
-				times.shift();
+				while(times.length > 0 && times[0] <= now - 1000){
+					times.shift();
 				}
 				times.push(now);
 				fps = times.length;
-				document.getElementById('fps').innerHTML = fps;
+				document.getElementById('fps').innerHTML = "FPS: " + fps;
+				updateAll();
 				refreshLoop();
 			});
 		}
 
-		refreshLoop();/*
-		load('Village');
-		load('Starter House');
-		load('Cave');
-		load('House');
-		load('River');
-		load('Secret Base');
-		load('Lilypad Path Part 1');
-		load('The Outskirts');
-		load('Lower Deadlands');
-		load('Forest');*/
+		refreshLoop();
+
 		var shadeSpeed = -0.01;
 		var shadeAmount = 1;
 		var mapShadeSpeed = 0;
@@ -532,13 +449,14 @@
 		loadMap('House');
 		loadMap('Cave');
 		loadMap('Secret Base');
-
+		
 		var mapChange = 0;
 		var mapDirection = 'up';
 		var mapSlide = 0;
 		var lastMap = '';
 		var currentMap = '';
 		var drewMap = false;
+		var isWorldMap = false;
 
 		var talking = false;
 		var selfId = null;
@@ -656,6 +574,7 @@
 			if(menu !== 'debug'){
 				menu = 'debug';
 				document.getElementById('inventory').style.display = 'none';
+				document.getElementById('statScreen').style.display = 'none';
 				document.getElementById('debugScreen').style.display = 'inline-block';
 			}
 			else{
@@ -667,11 +586,24 @@
 			if(menu !== 'inventory'){
 				menu = 'inventory';
 				document.getElementById('debugScreen').style.display = 'none';
+				document.getElementById('statScreen').style.display = 'none';
 				document.getElementById('inventory').style.display = 'inline-block';
 			}
 			else{
 				menu = 'none';
 				document.getElementById('inventory').style.display = 'none';
+			}
+		}
+		document.getElementById('statButton').onclick = function(){
+			if(menu !== 'stat'){
+				menu = 'stat';
+				document.getElementById('inventory').style.display = 'none';
+				document.getElementById('debugScreen').style.display = 'none';
+				document.getElementById('statScreen').style.display = 'inline-block';
+			}
+			else{
+				menu = 'none';
+				document.getElementById('statScreen').style.display = 'none';
 			}
 		}
 		document.getElementById('worldMapExit').onclick = function(){
@@ -703,6 +635,7 @@
 			self.updated = true;
 			self.animation = initPack.animation;
 			self.animationDirection = initPack.animationDirection;
+			self.stats = initPack.stats;
 			self.moveSpeed = 15;
 			self.update = function(){
 				if(talking && self.id === selfId){
@@ -820,10 +753,8 @@
 				healDiv.innerHTML = "Heal: " + self.healReload / 25;
 				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
 				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
-				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
-				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
-				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
-				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
+				document.getElementById('stat-attack').innerHTML = 'Attack Power: ' + Math.round(self.stats.attack * 75);
+				document.getElementById('stat-defense').innerHTML = 'Defense Power: ' + Math.round(self.stats.defense * 75);
 			}
 			self.drawLight = function(){
 				if(self.id !== selfId){
@@ -858,8 +789,8 @@
 			self.map = initPack.map;
 			self.updated = true;
 			self.update = function(){
-				self.x += self.spdX / 2;
-				self.y += self.spdY / 2;
+				self.x += self.spdX * 20 / fps;
+				self.y += self.spdY * 20 / fps;
 				/*if(self.realX - self.x >= 40){
 					self.x = self.realX;
 				}
@@ -1042,20 +973,20 @@
 							if(data.player[i].x){
 								Player.list[data.player[i].id].lastX = data.player[i].x;
 							}
-							if(Math.abs(Player.list[data.player[i].id].x - Player.list[data.player[i].id].lastX) < 2){
-								Player.list[data.player[i].id].x = Player.list[data.player[i].id].lastX;
+							if(Math.abs(Player.list[data.player[i].id].x - Player.list[data.player[i].id].lastX) < 10){
+								//Player.list[data.player[i].id].x = Player.list[data.player[i].id].lastX;
 							}
 							else{
-								Player.list[data.player[i].id].moveX = Player.list[data.player[i].id].lastX / 2 - Player.list[data.player[i].id].x / 2;
+								Player.list[data.player[i].id].moveX = (Player.list[data.player[i].id].lastX - Player.list[data.player[i].id].x) * 20 / fps;
 							}
 							if(data.player[i].y){
 								Player.list[data.player[i].id].lastY = data.player[i].y;
 							}
-							if(Math.abs(Player.list[data.player[i].id].y - Player.list[data.player[i].id].lastY) < 2){
-								Player.list[data.player[i].id].y = Player.list[data.player[i].id].lastY;
+							if(Math.abs(Player.list[data.player[i].id].y - Player.list[data.player[i].id].lastY) < 10){
+								//Player.list[data.player[i].id].y = Player.list[data.player[i].id].lastY;
 							}
 							else{
-								Player.list[data.player[i].id].moveY = Player.list[data.player[i].id].lastY / 2 - Player.list[data.player[i].id].y / 2;
+								Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].lastY - Player.list[data.player[i].id].y) * 20 / fps;
 							}
 							if(data.player[i].spdX){
 								Player.list[data.player[i].id].spdX = data.player[i].spdX;
@@ -1092,6 +1023,9 @@
 							}
 							if(data.player[i].mapHeight){
 								Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
+							}
+							if(data.player[i].stats){
+								Player.list[data.player[i].id].stats = data.player[i].stats;
 							}
 							if(data.player[i].animation){
 								Player.list[data.player[i].id].animation = data.player[i].animation;
@@ -1134,10 +1068,10 @@
 							Monster.list[data.monster[i].id].moveX = 0;
 							Monster.list[data.monster[i].id].moveY = 0;
 							if(data.monster[i].x){
-								Monster.list[data.monster[i].id].moveX = data.monster[i].x / 8 - Monster.list[data.monster[i].id].x / 8;
+								Monster.list[data.monster[i].id].moveX = (data.monster[i].x - Monster.list[data.monster[i].id].x) * 20 / fps;
 							}
 							if(data.monster[i].y){
-								Monster.list[data.monster[i].id].moveY = data.monster[i].y / 8 - Monster.list[data.monster[i].id].y / 8;
+								Monster.list[data.monster[i].id].moveY = (data.monster[i].y - Monster.list[data.monster[i].id].y) * 20 / fps;
 							}
 							if(data.monster[i].hp){
 								Monster.list[data.monster[i].id].hp = data.monster[i].hp;
@@ -1158,10 +1092,10 @@
 							Npc.list[data.npc[i].id].moveX = 0;
 							Npc.list[data.npc[i].id].moveY = 0;
 							if(data.npc[i].x){
-								Npc.list[data.npc[i].id].moveX = data.npc[i].x / 8 - Npc.list[data.npc[i].id].x / 8;
+								Npc.list[data.npc[i].id].moveX = (data.npc[i].x / 2 - Npc.list[data.npc[i].id].x / 2) * 20 / fps;
 							}
 							if(data.npc[i].y){
-								Npc.list[data.npc[i].id].moveY = data.npc[i].y / 8 - Npc.list[data.npc[i].id].y / 8;
+								Npc.list[data.npc[i].id].moveY = (data.npc[i].y / 2 - Npc.list[data.npc[i].id].y / 2) * 20 / fps;
 							}
 							if(data.npc[i].animationDirection){
 								Npc.list[data.npc[i].id].animationDirection = data.npc[i].animationDirection;
@@ -1258,23 +1192,9 @@
 				currentMap = data.teleport;*/
 			}
 			lastMap = Player.list[selfId].map;
-			var isWorldMap = false;
 			currentMap = data.teleport;
-			for(var i = 0;i < mapLocations.length;i++){
-				for(var j = 0;j < mapLocations[i].length;j++){
-					if(data.teleport === mapLocations[i][j]){
-						mapCropX = j * 3200;
-						mapCropY = i * 3200;
-						isWorldMap = true;
-						currentMap = 'World';
-					}
-				}
-			}
-			if(!isWorldMap){
-				mapCropX = 0;
-				mapCropY = 0;
-			}
-			shadeSpeed = 0.12;
+			shadeSpeed = 6 / fps;
+			
 		});
 		socket.on('dialougeLine',function(data){
 			if(data.state === 'remove'){
@@ -1320,9 +1240,8 @@
 		var response = function(data){
 			socket.emit('diolougeResponse',data);
 		}
-
-		setInterval(function(){
-			console.log(loadedMap['Starter House']);
+		
+		var updateAll = function(){
 			if(STATE === 'signIn'){
 				gameDiv.style.display = 'none';
 				signDiv.style.display = 'inline-block';
@@ -1361,6 +1280,7 @@
 				adDiv.style.display = 'inline-block';
 			}
 			
+
 			if(!selfId){
 				return;
 			}
@@ -1375,15 +1295,7 @@
 			ctx.canvas.height = window.innerHeight;
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
-			//ctx.scale(window.innerWidth / 1536,window.innerWidth / 1536);
-			/*if(DEBUG !== 2){
-				ctx.fillStyle = maps[Player.list[selfId].map];
-			}
-			else{
-				ctx.fillStyle = "#ffffff";
-			}
-			ctx.fillRect(0,0,WIDTH,HEIGHT);*/
-			ctx.fillStyle = "#ffffff";
+			ctx.fillStyle = maps[Player.list[selfId].map];
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			lastCameraX = cameraX;
 			lastCameraY = cameraY;
@@ -1427,93 +1339,10 @@
 			
 			ctx.save();
 			ctx.translate(Math.round(cameraX),Math.round(cameraY));
-			drewMap = false;
-			if(mapChange !== 0 && Player.list[selfId].map === lastMap){
-				if(mapDirection === 'up'){
-					mapSlide += window.innerHeight / 80;
-					if(mapSlide > window.innerHeight){
-						mapSlide = window.innerHeight;
-						mapChange = 1;
-					}
-					ctx.translate(0,mapSlide);
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '0.png';
-						ctx.drawImage(i,0,-3200);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '0.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-				if(mapDirection === 'down'){
-					mapSlide -= window.innerHeight / 80;
-					if(mapSlide < -window.innerHeight){
-						mapSlide = -window.innerHeight;
-						mapChange = 1;
-					}
-					ctx.translate(0,mapSlide);
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '0.png';
-						ctx.drawImage(i,0,3200);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '0.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-				if(mapDirection === 'left'){
-					mapSlide += window.innerWidth / 80;
-					if(mapSlide > window.innerWidth){
-						mapSlide = window.innerWidth;
-						mapChange = 1;
-					}
-					ctx.translate(mapSlide,0);
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '0.png';
-						ctx.drawImage(i,-3200,0);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '0.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-				if(mapDirection === 'right'){
-					mapSlide -= window.innerWidth / 80;
-					if(mapSlide < -window.innerWidth){
-						mapSlide = -window.innerWidth;
-						mapChange = 1;
-					}
-					ctx.translate(mapSlide,0);
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '0.png';
-						ctx.drawImage(i,3200,0);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '0.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-				drewMap = true;
-			}
-			if(Player.list[selfId].map !== lastMap){
-				mapChange = 0;
-				mapSlide = 0;
-			}
-			else if(shadeSpeed === 0){
-				mapChange = 2;
-			}
-			//if(DEBUG !== 2 && mapChange === 0){
-				//var i = new Image();
-				//i.src = '/client/maps/' + Player.list[selfId].map + '0.png';
-				//ctx.drawImage(i,0,0);
-			//}
-			if(cameraX !== lastCameraX || cameraY !== lastCameraY){
-				//renderLayers();
-			}
-			//loadMap('Starter House');
+			
 			if(mapCropX === 0 && mapCropY === 0){
 				if(loadedMap[Player.list[selfId].map]){
-					ctx.drawImage(loadedMap[Player.list[selfId].map],0,0);
+					ctx.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
 				}
 				else{
 					loadMap(Player.list[selfId].map);
@@ -1521,13 +1350,13 @@
 			}
 			else{
 				if(loadedMap.World){
-					ctx.drawImage(loadedMap.World,mapCropX,mapCropY,3200,3200,0,0,3200,3200);
+					ctx.drawImage(loadedMap.World.lower,mapCropX,mapCropY,3200,3200,0,0,3200,3200);
 				}
 				else{
 					loadMap("World");
 				}
 			}
-			//ctx.drawImage(loadedMap["Starter House"],0,0);
+			
 			for(var i in Player.list){
 				Player.list[i].draw();
 			}
@@ -1536,100 +1365,43 @@
 			}
 			for(var i in Monster.list){
 				Monster.list[i].draw();
+				Monster.list[i].drawHp();
 			}
 			for(var i in Npc.list){
 				Npc.list[i].draw();
 			}
 			
-			if(drewMap){
-				if(mapDirection === 'up'){
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '1.png';
-						ctx.drawImage(i,0,-3200);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '1.png';
-						ctx.drawImage(i,0,0);
-					}
-					if(DEBUG !== 0){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
-						ctx.drawImage(i,0,-3200);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
-						ctx.drawImage(i,0,0);
-					}
+			if(mapCropX === 0 && mapCropY === 0){
+				if(loadedMap[Player.list[selfId].map]){
+					ctx.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
 				}
-				if(mapDirection === 'down'){
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '1.png';
-						ctx.drawImage(i,0,3200);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '1.png';
-						ctx.drawImage(i,0,0);
+				else{
+					
+					var isWorldMap = false;
+					for(var i = 0;i < mapLocations.length;i++){
+						for(var j = 0;j < mapLocations[i].length;j++){
+							if(Player.list[selfId].map === mapLocations[i][j]){
+								isWorldMap = true;
+							}
+						}
 					}
-					if(DEBUG !== 0){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
-						ctx.drawImage(i,0,3200);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-				if(mapDirection === 'left'){
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '1.png';
-						ctx.drawImage(i,-3200,0);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '1.png';
-						ctx.drawImage(i,0,0);
-					}
-					if(DEBUG !== 0){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
-						ctx.drawImage(i,-3200,0);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-				if(mapDirection === 'right'){
-					if(DEBUG !== 2){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + '1.png';
-						ctx.drawImage(i,3200,0);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + '1.png';
-						ctx.drawImage(i,0,0);
-					}
-					if(DEBUG !== 0){
-						var i = new Image();
-						i.src = '/client/maps/' + currentMap + 'DEBUG.png';
-						ctx.drawImage(i,3200,0);
-						var i = new Image();
-						i.src = '/client/maps/' + lastMap + 'DEBUG.png';
-						ctx.drawImage(i,0,0);
-					}
-				}
-			}
-			/*if(DEBUG !== 2 && mapChange === 0){
-				var i = new Image();
-				i.src = '/client/maps/' + Player.list[selfId].map + '1.png';
-				ctx.drawImage(i,0,0);
-			}
-			if(DEBUG !== 0 && mapChange === 0){
-				var i = new Image();
-				i.src = '/client/maps/' + Player.list[selfId].map + 'DEBUG.png';
-				ctx.drawImage(i,0,0);
-			}*/
-			
+					if(isWorldMap){
 
-			for(var i in Monster.list){
-				Monster.list[i].drawHp();
+					}
+					else{
+						loadMap(Player.list[selfId].map);
+					}
+				}
 			}
+			else{
+				if(loadedMap.World){
+					ctx.drawImage(loadedMap.World.upper,mapCropX,mapCropY,3200,3200,0,0,3200,3200);
+				}
+				else{
+					loadMap("World");
+				}
+			}
+			
 			for(var i in Player.list){
 				Player.list[i].drawName();
 				Player.list[i].drawLight();
@@ -1644,14 +1416,28 @@
 			for(var i in Npc.list){
 				Npc.list[i].update();
 			}
+			
 			ctx.restore();
-			//ctx.scale(1536 / window.innerWidth,1536 / window.innerWidth);
-
 			if(mapShadeAmount >= 2){
 				mapShadeSpeed = -0.12;
 			}
-			if(shadeAmount > 1.6){
-				shadeSpeed = -0.12;
+			if(shadeAmount > 1.5){
+				shadeSpeed = -6 / fps;
+				var isWorldMap = false;
+				for(var i = 0;i < mapLocations.length;i++){
+					for(var j = 0;j < mapLocations[i].length;j++){
+						if(currentMap === mapLocations[i][j]){
+							mapCropX = j * 3200;
+							mapCropY = i * 3200;
+							isWorldMap = true;
+							currentMap = 'World';
+						}
+					}
+				}
+				if(!isWorldMap){
+					mapCropX = 0;
+					mapCropY = 0;
+				}
 			}
 			if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
 				document.getElementById('mapName').innerHTML = Player.list[selfId].map;
@@ -1671,7 +1457,7 @@
 				worldMap.drawImage(Img.River,-mapRatio / 2000 * 3200,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
 			}
 			worldMap.restore();
-		},1000/40);
+		};
 		
 		function useMenuDropdown() {
 			var dropdowns = document.getElementsByClassName("UI-dropdown-light");

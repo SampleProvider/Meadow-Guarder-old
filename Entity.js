@@ -309,7 +309,7 @@ Actor = function(param){
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
     }
-    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance){
+    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,stats){
 		var projectile = Projectile({
             id:id,
             projectileType:projectileType,
@@ -319,6 +319,7 @@ Actor = function(param){
 			y:self.y + Math.sin(direction/180*Math.PI) * distance,
             map:self.map,
             parentType:parentType,
+            stats:stats,
 		});
     }
     self.updateCollisions = function(){
@@ -626,6 +627,11 @@ Player = function(param){
 	self.questInventory = new QuestInventory(socket,true);
 	self.inventory = new Inventory(socket,true);
     self.questInventory.addQuestItem("potion",10);
+    self.stats = {
+        attack:1,
+        defense:1,
+        heal:1,
+    }
     var lastSelf = {};
     self.update = function(){
         self.mapChange += 1;
@@ -924,43 +930,42 @@ Player = function(param){
             }
         }
         if(self.attackTick === 0){
-            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0);
-            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0);
-            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0);
-            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0);
+            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
         if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.secondTick === 20){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.secondTick === 40){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.secondTick === 60){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.healTick === 0){
-            self.hp += 200;
+            self.hp += Math.round(self.stats.heal * 200);
         }
         if(self.healTick === 40){
-            self.hp += 200;
+            self.hp += Math.round(self.stats.heal * 200);
         }
         if(self.healTick === 80){
-            self.hp += 200;
+            self.hp += Math.round(self.stats.heal * 200);
         }
         if(self.healTick === 120){
-            self.hp += 200;
-            self.inventory.addItem("sword",10);
+            self.hp += Math.round(self.stats.heal * 200);
         }
     }
     self.getUpdatePack = function(){
@@ -1034,6 +1039,10 @@ Player = function(param){
             pack.moveSpeed = self.moveSpeed;
             lastSelf.moveSpeed = self.moveSpeed;
         }
+        if(lastSelf.stats !== self.stats){
+            pack.stats = self.stats;
+            lastSelf.stats = self.stats;
+        }
         return pack;
     }
     self.getInitPack = function(){
@@ -1056,6 +1065,7 @@ Player = function(param){
         pack.mapWidth = self.mapWidth;
         pack.mapHeight = self.mapHeight;
         pack.type = self.type;
+        pack.stats = self.stats;
         return pack;
     }
     Player.list[self.id] = self;
@@ -1333,6 +1343,11 @@ Monster = function(param){
     self.reload = 0;
     self.target = {};
     self.type = 'Monster';
+    self.stats = {
+        attack:1,
+        defense:1,
+        heal:1,
+    }
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -1369,10 +1384,10 @@ Monster = function(param){
                 break;
             case "attack":
                 if(self.reload % 20 === 0){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0,self.stats);
                 }
                 if(self.reload % 100 < 5){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0,self.stats);
                 }
                 self.reload += 1;
                 break;
@@ -1496,8 +1511,10 @@ Projectile = function(param){
 	self.timer = 0;
 	self.toRemove = false;
     self.type = 'Projectile';
+    self.stats = param.stats;
     self.parentType = param.parentType;
     self.projectileType = param.projectileType;
+    //self.onCollision = param.onCollision;
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -1827,7 +1844,6 @@ load("World");
 load("Starter House");
 load("Cave");
 load("House");
-load("River");
 load("Secret Base");
 
 updateCrashes = function(){
@@ -1836,7 +1852,7 @@ updateCrashes = function(){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].state !== 'dead' && Projectile.list[j].parentType !== 'Player' && Projectile.list[j].map === Player.list[i].map){
                     Projectile.list[j].toRemove = true;
-                    Player.list[i].hp -= 50 + Math.round(Math.random() * 50);
+                    Player.list[i].hp -= Math.round(Projectile.list[j].stats.attack * (50 + Math.random() * 50) / Player.list[i].stats.defense);
                 }
             }
         }
@@ -1846,7 +1862,11 @@ updateCrashes = function(){
             if(Monster.list[i] && Projectile.list[j]){
                 if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map){
                     Projectile.list[j].toRemove = true;
-                    Monster.list[i].hp -= 50 + Math.round(Math.random() * 50);
+                    Monster.list[i].hp -= Math.round(Projectile.list[j].stats.attack * (50 + Math.random() * 50) / Monster.list[i].stats.defense);
+                    if(Monster.list[i].hp < 1){
+                        Player.list[Projectile.list[j].parent].inventory.addItem('sword',1);
+                        Player.list[Projectile.list[j].parent].inventory.addItem('helmet',1);
+                    }
                 }
             }
         }
