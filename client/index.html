@@ -1345,7 +1345,21 @@
 					ctx.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
 				}
 				else{
-					loadMap(Player.list[selfId].map);
+					
+					var isWorldMap = false;
+					for(var i = 0;i < mapLocations.length;i++){
+						for(var j = 0;j < mapLocations[i].length;j++){
+							if(Player.list[selfId].map === mapLocations[i][j]){
+								isWorldMap = true;
+							}
+						}
+					}
+					if(isWorldMap){
+
+					}
+					else{
+						loadMap(Player.list[selfId].map);
+					}
 				}
 			}
 			else{
