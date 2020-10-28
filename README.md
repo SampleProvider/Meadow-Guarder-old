@@ -1,6 +1,6 @@
 # Guarded Meadow
 
-This is my game.
+Guarded Meadow is a free to play MMORPG. You can play at http://guarded-meadow-00030.herokuapp.com.
 
 What I used:
 
