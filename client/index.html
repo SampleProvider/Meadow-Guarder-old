@@ -362,7 +362,7 @@
 		}
 		var loadMap = function(name){
 			var request = new XMLHttpRequest();
-			request.open('GET',"/client/maps/" + name + ".json",true);
+			request.open('GET',"/app/client/maps/" + name + ".json",true);
 
 			request.onload = function(){
 				if(this.status >= 200 && this.status < 400){
