@@ -1,5 +1,5 @@
 
-SERVER = 'heroku';
+SERVER = 'localhost';
 
 var express = require('express');
 var app = express();
@@ -9,7 +9,7 @@ require('./client/Inventory');
 require('./collision');
 require('./Entity');
 
-app.get('/',function(req, res) {
+app.get('/',function(req,res){
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/client',express.static(__dirname + '/client'));

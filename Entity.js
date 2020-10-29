@@ -1039,7 +1039,13 @@ Player = function(param){
             pack.moveSpeed = self.moveSpeed;
             lastSelf.moveSpeed = self.moveSpeed;
         }
-        if(lastSelf.stats !== self.stats){
+        if(lastSelf.stats){
+            if(lastSelf.stats.attack !== self.stats.attack || lastSelf.stats.defense !== self.stats.defense){
+                pack.stats = self.stats;
+                //lastSelf.stats = self.stats;
+            }
+        }
+        else{
             pack.stats = self.stats;
             lastSelf.stats = self.stats;
         }

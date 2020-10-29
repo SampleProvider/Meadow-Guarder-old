@@ -971,21 +971,11 @@
 							if(data.player[i].x){
 								Player.list[data.player[i].id].lastX = data.player[i].x;
 							}
-							if(Math.abs(Player.list[data.player[i].id].x - Player.list[data.player[i].id].lastX) < 10){
-								//Player.list[data.player[i].id].x = Player.list[data.player[i].id].lastX;
-							}
-							else{
-								Player.list[data.player[i].id].moveX = (Player.list[data.player[i].id].lastX - Player.list[data.player[i].id].x) * 20 / fps;
-							}
+							Player.list[data.player[i].id].moveX = (Player.list[data.player[i].id].lastX - Player.list[data.player[i].id].x) * 15 / fps;
 							if(data.player[i].y){
 								Player.list[data.player[i].id].lastY = data.player[i].y;
 							}
-							if(Math.abs(Player.list[data.player[i].id].y - Player.list[data.player[i].id].lastY) < 10){
-								//Player.list[data.player[i].id].y = Player.list[data.player[i].id].lastY;
-							}
-							else{
-								Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].lastY - Player.list[data.player[i].id].y) * 20 / fps;
-							}
+							Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].lastY - Player.list[data.player[i].id].y) * 15 / fps;
 							if(data.player[i].spdX){
 								Player.list[data.player[i].id].spdX = data.player[i].spdX;
 							}
@@ -1066,10 +1056,10 @@
 							Monster.list[data.monster[i].id].moveX = 0;
 							Monster.list[data.monster[i].id].moveY = 0;
 							if(data.monster[i].x){
-								Monster.list[data.monster[i].id].moveX = (data.monster[i].x - Monster.list[data.monster[i].id].x) * 20 / fps;
+								Monster.list[data.monster[i].id].moveX = (data.monster[i].x - Monster.list[data.monster[i].id].x) * 15 / fps;
 							}
 							if(data.monster[i].y){
-								Monster.list[data.monster[i].id].moveY = (data.monster[i].y - Monster.list[data.monster[i].id].y) * 20 / fps;
+								Monster.list[data.monster[i].id].moveY = (data.monster[i].y - Monster.list[data.monster[i].id].y) * 15 / fps;
 							}
 							if(data.monster[i].hp){
 								Monster.list[data.monster[i].id].hp = data.monster[i].hp;
@@ -1090,10 +1080,10 @@
 							Npc.list[data.npc[i].id].moveX = 0;
 							Npc.list[data.npc[i].id].moveY = 0;
 							if(data.npc[i].x){
-								Npc.list[data.npc[i].id].moveX = (data.npc[i].x / 2 - Npc.list[data.npc[i].id].x / 2) * 20 / fps;
+								Npc.list[data.npc[i].id].moveX = (data.npc[i].x / 2 - Npc.list[data.npc[i].id].x / 2) * 15 / fps;
 							}
 							if(data.npc[i].y){
-								Npc.list[data.npc[i].id].moveY = (data.npc[i].y / 2 - Npc.list[data.npc[i].id].y / 2) * 20 / fps;
+								Npc.list[data.npc[i].id].moveY = (data.npc[i].y / 2 - Npc.list[data.npc[i].id].y / 2) * 15 / fps;
 							}
 							if(data.npc[i].animationDirection){
 								Npc.list[data.npc[i].id].animationDirection = data.npc[i].animationDirection;
@@ -1336,28 +1326,15 @@
 			
 			
 			ctx.save();
-			ctx.translate(Math.round(cameraX),Math.round(cameraY));
+			//ctx.translate(Math.round(cameraX),Math.round(cameraY));
+			ctx.translate(cameraX,cameraY);
 			
-			if(mapCropX === 0 && mapCropY === 0){
+			if(!isWorldMap){
 				if(loadedMap[Player.list[selfId].map]){
 					ctx.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
 				}
 				else{
-					
-					var isWorldMap = false;
-					for(var i = 0;i < mapLocations.length;i++){
-						for(var j = 0;j < mapLocations[i].length;j++){
-							if(Player.list[selfId].map === mapLocations[i][j]){
-								isWorldMap = true;
-							}
-						}
-					}
-					if(isWorldMap){
-
-					}
-					else{
-						loadMap(Player.list[selfId].map);
-					}
+					loadMap(Player.list[selfId].map);
 				}
 			}
 			else{
@@ -1383,26 +1360,12 @@
 				Npc.list[i].draw();
 			}
 			
-			if(mapCropX === 0 && mapCropY === 0){
+			if(!isWorldMap){
 				if(loadedMap[Player.list[selfId].map]){
 					ctx.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
 				}
 				else{
-					
-					var isWorldMap = false;
-					for(var i = 0;i < mapLocations.length;i++){
-						for(var j = 0;j < mapLocations[i].length;j++){
-							if(Player.list[selfId].map === mapLocations[i][j]){
-								isWorldMap = true;
-							}
-						}
-					}
-					if(isWorldMap){
-
-					}
-					else{
-						loadMap(Player.list[selfId].map);
-					}
+					loadMap(Player.list[selfId].map);
 				}
 			}
 			else{
@@ -1435,7 +1398,7 @@
 			}
 			if(shadeAmount > 1.5){
 				shadeSpeed = -6 / fps;
-				var isWorldMap = false;
+				isWorldMap = false;
 				for(var i = 0;i < mapLocations.length;i++){
 					for(var j = 0;j < mapLocations[i].length;j++){
 						if(currentMap === mapLocations[i][j]){
