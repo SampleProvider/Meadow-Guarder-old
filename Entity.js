@@ -1,15 +1,9 @@
 
 var playerMap = {
-    'Village':0,
     'Cave':0,
     'Starter House':0,
     'House':0,
-    'River':0,
     'Secret Base':0,
-    'Lilypad Path Part 1':0,
-    'The Outskirts':0,
-    'Lower Deadlands':0,
-    'Forest':0,
 };
 
 Maps = {};
@@ -83,6 +77,7 @@ Entity.getFrameUpdateData = function(){
         'The Outskirts':{player:[],projectile:[],monster:[],npc:[]},
         'Lower Deadlands':{player:[],projectile:[],monster:[],npc:[]},
         'Forest':{player:[],projectile:[],monster:[],npc:[]},
+        'Upper Mine Deposit':{player:[],projectile:[],monster:[],npc:[]},
     };
     for(var i in Player.list){
         if(Player.list[i]){
@@ -692,7 +687,7 @@ Player = function(param){
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
-            if(Npc.list[i].map === self.map && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
+            if(Npc.list[i].map === self.map && Npc.list[i].username === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
                 if(self.quest === 'none'){
                     self.quest = 'test';
                     self.questStage = 1;
@@ -716,22 +711,45 @@ Player = function(param){
                 }
                 self.keyPress.attack = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].username === 'mark' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
+                if(self.quest === 'none'){
+                    self.quest = 'fish';
+                    self.questStage = 1;
+                }
+                if(self.questStage === 1){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Hi!',
+                        response1:'Hey.',
+                    });
+                }
+                if(self.questStage === 4){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thank you.',
+                        response1:'*End conversation*',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
         }
-        if(self.currentResponse === 1 && self.questStage === 2){
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'test'){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 2){
+        if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'test'){
             self.quest = 'none';
             socket.emit('dialougeLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 5){
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'test'){
             self.quest = 'none';
             socket.emit('dialougeLine',{
                 state:'remove',
@@ -743,6 +761,48 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'fish'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I\'m so HAPPY!',
+                response1:'Good for you!',
+                response2:'Why?',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'fish'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 3 && self.quest === 'fish'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I don\'t know! My happiness value is stuck at 101!',
+                response1:'Coooool! I have to fix this bug.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'fish'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'No! You are not changing my happiness value!',
+                response1:'Ok fine.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'fish'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
         }
     }
     self.updateMap = function(){
@@ -1039,16 +1099,7 @@ Player = function(param){
             pack.moveSpeed = self.moveSpeed;
             lastSelf.moveSpeed = self.moveSpeed;
         }
-        if(lastSelf.stats){
-            if(lastSelf.stats.attack !== self.stats.attack || lastSelf.stats.defense !== self.stats.defense){
-                pack.stats = self.stats;
-                //lastSelf.stats = self.stats;
-            }
-        }
-        else{
-            pack.stats = self.stats;
-            lastSelf.stats = self.stats;
-        }
+        pack.stats = self.stats;
         return pack;
     }
     self.getInitPack = function(){
@@ -1327,6 +1378,7 @@ Npc = function(param){
         pack.map = self.map;
         pack.animationDirection = self.animationDirection;
         pack.animation = self.animation;
+        pack.name = self.name;
         pack.type = self.type;
         return pack;
     }
@@ -1605,36 +1657,32 @@ Projectile.list = {};
 
 
 
-var data;
-var tileset;
-var layers;
-var loadedMap;
 var mapLocations = [
     ['Lower Deadlands',''],
     ['The Outskirts','Forest'],
     ['River','Village'],
-    ['Lilypad Path Part 1',''],
+    ['Lilypad Path Part 1','Upper Mine Deposit'],
 ];
-var renderLayer = function(layer){
+var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" && layer.visible === false){
         return;
     }
-    size = data.tilewidth;
+    var size = data.tilewidth;
     if(data.backgroundcolor){
         Maps[loadedMap] = {width:layer.width * size,height:layer.height * size};
+        playerMap[loadedMap] = 0;
     }
     else{
         for(var i = 0;i < mapLocations.length;i++){
             for(var j = 0;j < mapLocations[i].length;j++){
                 Maps[mapLocations[i][j]] = {width:3200,height:3200};
+                playerMap[mapLocations[i][j]] = 0;
             }
         }
     }
-    if(layers.length < data.layers.length || 1){
-        layer.data.forEach(function(tile_idx, i){
-            if(!tile_idx){
-                return;
-            }
+    for(var i = 0;i < layer.data.length;i++){
+        var tile_idx = layer.data[i];
+        if(tile_idx){
             if(data.backgroundcolor){
                 var x = (i % layer.width) * size;
                 var y = ~~(i / layer.width) * size;
@@ -1654,7 +1702,7 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 2123){
                 var collision = new Collision({
                     x:x + 32,
@@ -1663,7 +1711,7 @@ var renderLayer = function(layer){
                     height:size / 2,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 2124){
                 var collision = new Collision({
                     x:x + 32,
@@ -1672,7 +1720,7 @@ var renderLayer = function(layer){
                     height:size / 2,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 2125){
                 var collision = new Collision({
                     x:x + 16,
@@ -1681,7 +1729,7 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 2126){
                 var collision = new Collision({
                     x:x + 48,
@@ -1690,7 +1738,7 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 1950){
                 /*
                 var projectileCollision = new ProjectileCollision({
@@ -1699,25 +1747,25 @@ var renderLayer = function(layer){
                     size:size,
                     map:map,
                 });*/
-				var type = "";
-				var typej = 0;
-				var id = "";
-				var idj = 0;
+                var type = "";
+                var typej = 0;
+                var id = "";
+                var idj = 0;
                 var name = "";
-				for(var j = 0;j < layer.name.length;j++){
-					if(layer.name[j] === ':'){
-						if(type === ""){
-							type = layer.name.substr(0,j);
-							typej = j;
-						}
-						else if(id === ""){
-							id = layer.name.substr(typej + 1,j - typej - 1);
-							idj = j;
-						}
-						else if(y === ""){
-							name = layer.name.substr(idj + 1,j - idj - 1);
-						}
-					}
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(type === ""){
+                            type = layer.name.substr(0,j);
+                            typej = j;
+                        }
+                        else if(id === ""){
+                            id = layer.name.substr(typej + 1,j - typej - 1);
+                            idj = j;
+                        }
+                        else if(name === ""){
+                            name = layer.name.substr(idj + 1,j - idj - 1);
+                        }
+                    }
                 }
                 if(type === 'Npc'){
                     var npc = new Npc({
@@ -1729,7 +1777,7 @@ var renderLayer = function(layer){
                         moveSpeed:3,
                     });
                 }
-			}
+            }
             if(tile_idx === 1864){
                 var slowDown = new SlowDown({
                     x:x + 32,
@@ -1738,7 +1786,7 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 1865){
                 var slowDown = new SlowDown({
                     x:x + 32,
@@ -1747,7 +1795,7 @@ var renderLayer = function(layer){
                     height:size / 2,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 1866){
                 var slowDown = new SlowDown({
                     x:x + 32,
@@ -1756,7 +1804,7 @@ var renderLayer = function(layer){
                     height:size / 2,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 1867){
                 var slowDown = new SlowDown({
                     x:x + 16,
@@ -1765,7 +1813,7 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 1868){
                 var slowDown = new SlowDown({
                     x:x + 48,
@@ -1774,7 +1822,7 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 1778){
                 var spawner = new Spawner({
                     x:x + 32,
@@ -1783,67 +1831,59 @@ var renderLayer = function(layer){
                     height:size,
                     map:map,
                 });
-			}
+            }
             if(tile_idx === 2036){
-				var teleport = "";
-				var teleportj = 0;
-				var teleportx = "";
-				var teleportxj = 0;
+                var teleport = "";
+                var teleportj = 0;
+                var teleportx = "";
+                var teleportxj = 0;
                 var teleporty = "";
                 var teleportyj = 0;
                 var direction = "";
-				for(var j = 0;j < layer.name.length;j++){
-					if(layer.name[j] === ':'){
-						if(teleport === ""){
-							teleport = layer.name.substr(0,j);
-							teleportj = j;
-						}
-						else if(teleportx === ""){
-							teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
-							teleportxj = j;
-						}
-						else if(teleporty === ""){
-							teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
-							teleportyj = j;
-						}
-						else if(direction === ""){
-							direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
-						}
-					}
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(teleport === ""){
+                            teleport = layer.name.substr(0,j);
+                            teleportj = j;
+                        }
+                        else if(teleportx === ""){
+                            teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
+                            teleportxj = j;
+                        }
+                        else if(teleporty === ""){
+                            teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
+                            teleportyj = j;
+                        }
+                        else if(direction === ""){
+                            direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
+                        }
+                    }
                 }
                 var transporter = new Transporter({
                     x:x,
                     y:y,
-					size:size,
-					teleport:teleport,
-					teleportx:teleportx,
+                    size:size,
+                    teleport:teleport,
+                    teleportx:teleportx,
                     teleporty:teleporty,
                     direction:direction,
                     map:map,
                 });
-			}
-        });
+            }
+        }
     }
 }
-var renderLayers = function(){
-    if(Array.isArray(layers) === false){
-        layers = data.layers;
+var renderLayers = function(data,loadedMap){
+    for(var i = 0;i < data.layers.length;i++){
+        renderLayer(data.layers[i],data,loadedMap);
     }
-    layers.forEach(renderLayer);
-}
-var loadTileset = function(json){
-    data = json;
-    layers = undefined;
-    tileset = json.tilesets[0].image;
-    tileset.onload = renderLayers();
 }
 var load = function(name){
-    loadedMap = name;
     if(SERVER === 'localhost'){
-        loadTileset(require("C:/Users/gu/Documents/game/client/maps/" + name + ".json"));
+        renderLayers(require("C:/Users/gu/Documents/game/client/maps/" + name + ".json"),name);
     }
     else{
-        loadTileset(require("/app/client/maps/" + name + ".json"));
+        renderLayers(require("/app/client/maps/" + name + ".json"),name);
     }
 }
 load("World");

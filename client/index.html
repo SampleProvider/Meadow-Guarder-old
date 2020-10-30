@@ -385,7 +385,7 @@
 		const times = [];
 		let fps;
 
-		function refreshLoop() {
+		function refreshLoop(){
 			window.requestAnimationFrame(() => {
 				const now = performance.now();
 				while(times.length > 0 && times[0] <= now - 1000){
@@ -437,7 +437,7 @@
 			['Lower Deadlands',''],
 			['The Outskirts','Forest'],
 			['River','Village'],
-			['Lilypad Path Part 1',''],
+			['Lilypad Path Part 1','Upper Mine Deposit'],
 		];
 		var mapCropX = 0;
 		var mapCropY = 0;
@@ -892,6 +892,7 @@
 			self.animationDirection = initPack.animationDirection;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
+			self.name = initPack.name;
 			self.updated = true;
 			self.update = function(){
 				self.x += self.moveX;
@@ -939,7 +940,7 @@
 				ctx.font = "15px pixel";
 				ctx.fillStyle = '#ff7700';
 				ctx.textAlign = "center";
-				ctx.fillText('Bob',self.x,self.y - 58);
+				ctx.fillText(self.name,self.x,self.y - 58);
 			}
 			Npc.list[self.id] = self;
 			return self;
