@@ -141,14 +141,9 @@ Inventory = function(socket,server){
     }
 	self.refreshRender = function(){
         if(self.server){
-            Player.list[socket.id].stats = {
-                attack:1,
-                defense:1,
-                heal:1,
-            }
+            self.refresh = true;
             for(var i = 0;i < self.items.length;i++){
                 self.items[i].index = i;
-                self.items[i].event(Player.list[socket.id]);
             }
             self.socket.emit('updateInventory',self.items);
             return;
@@ -156,7 +151,7 @@ Inventory = function(socket,server){
         var inventory = document.getElementById("inventoryItem");
         inventory.innerHTML = "";
         var addButton = function(data,index){
-            let item = Item.list[data.id]
+            let item = Item.list[data.id];
             let button = document.createElement('button');
             let image = document.createElement('img');
             image.src = "/client/img/" + data.id + ".png";
@@ -210,19 +205,23 @@ Item("sword","Sword",function(player){
     player.questInventory.addQuestItem("potion",1);
     player.inventory.removeItem("sword",1);
 });
-Item("bow and arrows","Bow and arrows",function(player){
-    player.stats.attack = player.stats.attack * 1.5;
-},function(player){
-    player.questInventory.addQuestItem("potion",1);
-    player.inventory.removeItem("sword",1);
-});
 Item("helmet","Helmet",function(player){
     player.stats.defense = player.stats.defense * 1.1;
 },function(player){
 
 });
-Item("armor","Armor",function(player){
-    player.stats.defense = player.stats.defense * 1.4;
+Item("bow","Bow",function(player){
+    player.stats.attack = player.stats.attack * 1.5;
+},function(player){
+
+});
+Item("amulet","Magic Amulet",function(player){
+    player.stats.heal = player.stats.heal * 1.5;
+},function(player){
+
+});
+Item("fish","Red Fish",function(player){
+    player.hpMax = player.hpMax * 1.5;
 },function(player){
 
 });

@@ -23,15 +23,23 @@ storeDatabase = function(players){
 	for(var i in players){
 		data[players[i].username] = {inventory:players[i].inventory.items};
 	}
-	client.query('DELETE FROM progress WHERE id=1;', (err, res) => {
-		if(err){
-			throw err;
+	client.query('SELECT * FROM progress WHERE id=1;', (err, res) => {
+		var row = JSON.parse(JSON.stringify(res.rows[0]));
+		for(var i in JSON.parse(row.qprogress)){
+			if(!data[i]){
+				data[i] = JSON.parse(row.qprogress)[i];
+			}
 		}
-		client.query('INSERT INTO progress(id, qprogress) VALUES (1, \'' + JSON.stringify(data) + '\');', (err, res) => {
+		client.query('DELETE FROM progress WHERE id=1;', (err, res) => {
 			if(err){
 				throw err;
 			}
-			//client.end();
+			client.query('INSERT INTO progress(id, qprogress) VALUES (1, \'' + JSON.stringify(data) + '\');', (err, res) => {
+				if(err){
+					throw err;
+				}
+				//client.end();
+			});
 		});
 	});
 }

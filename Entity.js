@@ -731,6 +731,7 @@ Player = function(param){
             self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
         }
     }
+    self.inventory.refreshRender();
     self.questInventory.addQuestItem("potion",10);
     self.stats = {
         attack:1,
@@ -794,6 +795,7 @@ Player = function(param){
         }
         self.updateMap();
         self.updateQuest();
+        self.updateStats();
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
@@ -953,7 +955,7 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.inventory.addItem('sword',1);
+            self.inventory.addItem('bow',1);
         }
         if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'monsters'){
             self.quest = 'none';
@@ -962,6 +964,23 @@ Player = function(param){
             });
             self.currentResponse = 0;
 
+        }
+    }
+    self.updateStats = function(){
+        if(self.inventory.refresh){
+            self.inventory.refresh = false;
+            self.stats = {
+                attack:1,
+                defense:1,
+                heal:1,
+            }
+            self.hp = self.hpMax;
+            self.hpMax = 1000;
+            for(var i in self.inventory.items){
+                for(var j = 0;j < self.inventory.items[i].amount;j++){
+                    Item.list[self.inventory.items[i].id].event(self);
+                }
+            }
         }
     }
     self.updateMap = function(){
@@ -1610,10 +1629,10 @@ Monster = function(param){
                 break;
             case "attack":
                 if(self.reload % 20 === 0){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 if(self.reload % 100 < 5){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'Bullet',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 self.reload += 1;
                 break;
@@ -1749,6 +1768,7 @@ Projectile = function(param){
         if(self.timer > 30){
             self.toRemove = true;
         }
+        self.direction += 25;
         self.updateCollisions();
     }
     self.updateCollisions = function(){
@@ -1804,6 +1824,10 @@ Projectile = function(param){
             pack.projectileType = self.projectileType;
             lastSelf.projectileType = self.projectileType;
         }
+        if(lastSelf.direction !== self.direction){
+            pack.direction = self.direction;
+            lastSelf.direction = self.direction;
+        }
         return pack;
 	}
     self.getInitPack = function(){
@@ -1816,6 +1840,7 @@ Projectile = function(param){
         pack.map = self.map;
         pack.type = self.type;
         pack.projectileType = self.projectileType;
+        pack.direction = self.direction;
         return pack;
     }
 	Projectile.list[self.id] = self;
@@ -2078,8 +2103,18 @@ updateCrashes = function(){
                     Projectile.list[j].toRemove = true;
                     Monster.list[i].hp -= Math.round(Projectile.list[j].stats.attack * (50 + Math.random() * 50) / Monster.list[i].stats.defense);
                     if(Monster.list[i].hp < 1){
-                        Player.list[Projectile.list[j].parent].inventory.addItem('sword',1);
-                        Player.list[Projectile.list[j].parent].inventory.addItem('helmet',1);
+                        if(Math.random() < 0.5){   
+                            Player.list[Projectile.list[j].parent].inventory.addItem('sword',1);
+                        }
+                        if(Math.random() < 0.5){   
+                            Player.list[Projectile.list[j].parent].inventory.addItem('helmet',1);
+                        }
+                        if(Math.random() < 0.2){   
+                            Player.list[Projectile.list[j].parent].inventory.addItem('amulet',1);
+                        }
+                        if(Math.random() < 0.1){   
+                            Player.list[Projectile.list[j].parent].inventory.addItem('fish',1);
+                        }
                     }
                 }
             }
