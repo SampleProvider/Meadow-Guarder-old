@@ -203,12 +203,15 @@
 			socket.emit('deleteAccount',{username:signDivUsername.value});
 		}
 		socket.on('signInResponse',function(data){
-			if(data.success == 2){
+			if(data.success === 3){
 				document.getElementById('inventoryPlayerName').innerHTML = data.username;
 				STATE = 'game';
 			}
-			else if(data.success == 1){
+			else if(data.success === 2){
 				alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. The other account will be disconnected shortly. Please try to sign again.");
+			}
+			else if(data.success === 1){
+				alert("Incorrect Password.");
 			}
 			else{
 				alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
@@ -750,8 +753,8 @@
 				healDiv.innerHTML = "Heal: " + self.healReload / 25;
 				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
 				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
-				document.getElementById('stat-attack').innerHTML = 'Attack Power: ' + Math.round(self.stats.attack * 75);
-				document.getElementById('stat-defense').innerHTML = 'Defense Power: ' + Math.round(self.stats.defense * 75);
+				document.getElementById('stat-attack').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.'
+				document.getElementById('stat-defense').innerHTML = 'Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.'
 			}
 			self.drawLight = function(){
 				if(self.id !== selfId){
@@ -1138,6 +1141,9 @@
 			}
 			if(data.type === "Monster"){
 				new Monster(data);
+			}
+			if(data.type === "Npc"){
+				new Npc(data);
 			}
 		});
 		socket.on('disconnected',function(data){

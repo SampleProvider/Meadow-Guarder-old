@@ -1308,6 +1308,11 @@ Npc = function(param){
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
             self.canMove = false;
+            for(var i in Player.list){
+                if(Player.list[i]){
+                    SOCKET_LIST[i].emit('initEntity',self.getInitPack());
+                }
+            }
         }
         if(self.mapChange === 10){
             self.canMove = true;
@@ -1393,8 +1398,8 @@ Monster = function(param){
     self.spawnId = param.spawnId;
     self.attackState = "passive";
     self.direction = 0;
-    self.hp = 200;
-    self.hpMax = 200;
+    self.hp = 10000;
+    self.hpMax = 10000;
     self.width = 24;
     self.height = 24;
     self.toRemove = false;

@@ -30,10 +30,11 @@ io.sockets.on('connection',function(socket){
 	SOCKET_LIST[socket.id] = socket;
 	socket.on('signIn',function(data){
 		Database.isValidPassword(data,function(res){
-			if(res === 2){
+			if(res === 3){
 				Player.onConnect(socket,data.username);
+				storeDatabase();
 			}
-			if(res === 1){
+			if(res === 2){
 				for(var i in Player.list){
 					if(Player.list[i].username === data.username){
 						if(SOCKET_LIST[i]){
