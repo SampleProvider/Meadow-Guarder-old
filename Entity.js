@@ -738,6 +738,32 @@ Player = function(param){
                 }
                 self.keyPress.attack = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].username === 'bread' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
+                if(self.quest === 'none'){
+                    self.quest = 'bread';
+                    self.questStage = 1;
+                }
+                if(self.questStage === 1){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Hi!',
+                        response1:'Hey.',
+                        response2:'Hey.',
+                        response3:'Hey.',
+                        response4:'Hey.',
+                    });
+                }
+                if(self.questStage === 4){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thank you.',
+                        response1:'*End conversation*',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'test'){
             self.questStage += 1;
