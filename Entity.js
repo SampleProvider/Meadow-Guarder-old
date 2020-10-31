@@ -748,10 +748,10 @@ Player = function(param){
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Hi!',
-                        response1:'Hey.',
-                        response2:'Hey.',
-                        response3:'Hey.',
-                        response4:'Hey.',
+                        response1:'Hello!',
+                        response2:'Hey!',
+                        response3:'Hi!',
+                        response4:'I\'m here!',
                     });
                 }
                 if(self.questStage === 4){
