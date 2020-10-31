@@ -974,14 +974,14 @@ Player = function(param){
                 defense:1,
                 heal:1,
             }
-            self.hp = self.hpMax;
             self.hpMax = 1000;
             for(var i in self.inventory.items){
                 for(var j = 0;j < self.inventory.items[i].amount;j++){
                     Item.list[self.inventory.items[i].id].event(self);
                 }
             }
-            self.hpMax = self.round(self.hpMax);
+            self.hpMax = Math.round(self.hpMax);
+            self.hp = self.hpMax;
         }
     }
     self.updateMap = function(){
@@ -1155,11 +1155,11 @@ Player = function(param){
     }
     self.updateAttack = function(){
         if(self.state !== 'dead'){
-            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village"){
+            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
                 self.attackReload = 1;
                 self.attackTick = 0;
             }
-            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village"){
+            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
                 self.secondReload = 1;
                 self.secondTick = 0;
             }
