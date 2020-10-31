@@ -3,7 +3,6 @@
 const { Client } = require('pg');
 
 var connectionString;
-var idNum = 1;
 if(SERVER === 'localhost'){
 	connectionString = 'postgres://osonqhwewiurod:d63dd1bbb1d7d873e072deb5428138534c07cc2dd86e6925a9c2d159c2c91d0a@ec2-52-207-124-89.compute-1.amazonaws.com:5432/deptf3pe77lr9f';
 }
@@ -19,19 +18,6 @@ const client = new Client({
 
 client.connect();
 
-var updateDatabase = function(){
-	client.query('SELECT * FROM account;', (err, res) => {
-		if(err){
-			throw err;
-		}
-		for(let row of res.rows){
-			if(JSON.parse(JSON.stringify(row)).id >= idNum){
-				idNum = JSON.parse(JSON.stringify(row)).id + 1;
-			}
-		}
-		//client.end();
-	});
-}
 storeDatabase = function(){
 	var data = {};
 	for(var i in Player.list){
@@ -49,8 +35,6 @@ storeDatabase = function(){
 		});
 	});
 }
-
-updateDatabase();
 
 var USE_DB = true;
 
@@ -100,11 +84,10 @@ Database.isUsernameTaken = function(data,cb){
 Database.addUser = function(data,cb){
     if(!USE_DB)
 	    return cb();
-	client.query('INSERT INTO account(id, qusername, qpassword) VALUES (' + idNum + ', \'' + data.username + '\', \'' + data.password + '\');', (err, res) => {
+	client.query('INSERT INTO account(qusername, qpassword) VALUES (\'' + data.username + '\', \'' + data.password + '\');', (err, res) => {
 		if(err){
 			throw err;
 		}
-		updateDatabase();
 		return cb();
 	});
 }
@@ -115,7 +98,6 @@ Database.removeUser = function(data,cb){
 		if(err){
 			throw err;
 		}
-		updateDatabase();
 		return cb();
 	});
 }

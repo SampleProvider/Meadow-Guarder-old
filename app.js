@@ -76,7 +76,7 @@ io.sockets.on('connection',function(socket){
 				});
 			}
 			else{
-				socket.emit('deleteAccountResponse',{success:2});
+				socket.emit('deleteAccountResponse',{success:0});
 			}
 		});
 	});
