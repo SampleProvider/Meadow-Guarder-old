@@ -1360,12 +1360,13 @@
 			}
 			for(var i in Monster.list){
 				Monster.list[i].draw();
-				Monster.list[i].drawHp();
 			}
 			for(var i in Npc.list){
 				Npc.list[i].draw();
 			}
-			
+			for(var i in Monster.list){
+				Monster.list[i].drawHp();
+			}
 			if(!isWorldMap){
 				if(loadedMap[Player.list[selfId].map]){
 					ctx.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
