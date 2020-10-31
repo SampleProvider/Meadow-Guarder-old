@@ -70,7 +70,7 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('deleteAccount',function(data){
 		Database.isUsernameTaken(data,function(res){
-			if(res){
+			if(res === 0){
 				Database.removeUser(data,function(){
 					socket.emit('deleteAccountResponse',{success:1});
 				});
