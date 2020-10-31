@@ -207,8 +207,19 @@ Item("sword","Sword",function(player){
     player.questInventory.addQuestItem("potion",1);
     player.inventory.removeItem("sword",1);
 });
+Item("bow and arrows","Bow and arrows",function(player){
+    player.stats.attack = player.stats.attack * 1.5;
+},function(player){
+    player.questInventory.addQuestItem("potion",1);
+    player.inventory.removeItem("sword",1);
+});
 Item("helmet","Helmet",function(player){
     player.stats.defense = player.stats.defense * 1.1;
+},function(player){
+
+});
+Item("armor","Armor",function(player){
+    player.stats.defense = player.stats.defense * 1.4;
 },function(player){
 
 });
