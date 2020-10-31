@@ -981,6 +981,7 @@ Player = function(param){
                     Item.list[self.inventory.items[i].id].event(self);
                 }
             }
+            self.hpMax = self.round(self.hpMax);
         }
     }
     self.updateMap = function(){
