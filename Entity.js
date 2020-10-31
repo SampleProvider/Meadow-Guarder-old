@@ -304,7 +304,7 @@ Actor = function(param){
                 self.spdY = -1;
             }
             if(self.x === self.trackingEntity.x && self.y === self.trackingEntity.y){
-                self.trackingEntity = undefined;
+                //self.trackingEntity = undefined;
             }
         }
         else if(self.randomPos.walking){
@@ -963,29 +963,29 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            s.spawnEnemies({
-                type:'monster',
+            s.spawnEntity({
+                type:'Monster',
                 x:1152,
                 y:1472,
                 map:"Lower Deadlands",
                 moveSpeed:15,
             });
-            s.spawnEnemies({
-                type:'monster',
+            s.spawnEntity({
+                type:'Monster',
                 x:1152,
                 y:1536,
                 map:"Lower Deadlands",
                 moveSpeed:15,
             });
-            s.spawnEnemies({
-                type:'monster',
+            s.spawnEntity({
+                type:'Monster',
                 x:1216,
                 y:1472,
                 map:"Lower Deadlands",
                 moveSpeed:15,
             });
-            s.spawnEnemies({
-                type:'monster',
+            s.spawnEntity({
+                type:'Monster',
                 x:1216,
                 y:1536,
                 map:"Lower Deadlands",
