@@ -963,7 +963,34 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-
+            s.spawnEnemies({
+                type:'monster',
+                x:1152,
+                y:1472,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+            s.spawnEnemies({
+                type:'monster',
+                x:1152,
+                y:1536,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+            s.spawnEnemies({
+                type:'monster',
+                x:1216,
+                y:1472,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+            s.spawnEnemies({
+                type:'monster',
+                x:1216,
+                y:1536,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
         }
     }
     self.updateStats = function(){
@@ -1613,7 +1640,6 @@ Monster = function(param){
         }
         switch(self.attackState){
             case "passive":
-                self.moveArray = [];
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
@@ -1636,6 +1662,10 @@ Monster = function(param){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 self.reload += 1;
+                if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
+                    self.target = undefined;
+                    self.attackState = 'passive';
+                }
                 break;
         }
     }
