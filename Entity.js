@@ -754,14 +754,6 @@ Player = function(param){
                         response4:'I\'m here!',
                     });
                 }
-                if(self.questStage === 4){
-                    self.questStage += 1;
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Thank you.',
-                        response1:'*End conversation*',
-                    });
-                }
                 self.keyPress.attack = false;
             }
         }
@@ -833,6 +825,14 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
+        }
+        if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'bread'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.inventory.addItem('sword',1);
         }
     }
     self.updateMap = function(){
