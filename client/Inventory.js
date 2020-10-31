@@ -210,7 +210,7 @@ Item("sword","Sword",function(player){
     player.questInventory.addQuestItem("potion",1);
     player.inventory.removeItem("sword",1);
 });
-Item("bow and arrows","Bow and Arrows",function(player){
+Item("arrows","Arrows",function(player){
     player.stats.attack = player.stats.attack * 1.5;
 },function(player){
     player.questInventory.addQuestItem("potion",1);
