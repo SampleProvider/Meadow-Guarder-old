@@ -2112,6 +2112,9 @@ updateCrashes = function(){
                         if(Math.random() < 0.2){   
                             Player.list[Projectile.list[j].parent].inventory.addItem('amulet',1);
                         }
+                        if(Math.random() < 0.2){   
+                            Player.list[Projectile.list[j].parent].inventory.addItem('shield',1);
+                        }
                         if(Math.random() < 0.1){   
                             Player.list[Projectile.list[j].parent].inventory.addItem('fish',1);
                         }
