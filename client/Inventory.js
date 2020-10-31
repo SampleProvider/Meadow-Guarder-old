@@ -106,20 +106,17 @@ Inventory = function(socket,server){
         server:server,
         items:[], //{id:"itemId",amount:1}
         materials:[],
+        refresh:true,
     };
     self.addItem = function(id,amount){
 		for(var i = 0;i < self.items.length;i++){
 			if(self.items[i].id === id){
 				self.items[i].amount += amount;
-                let item = Item.list[id];
-                item.event(Player.list[self.socket.id]);
 				self.refreshRender();
 				return;
 			}
 		}
         self.items.push({id:id,amount:amount});
-        let item = Item.list[id];
-        item.event(Player.list[self.socket.id]);
 		self.refreshRender();
     }
     self.removeItem = function(id,amount){
@@ -144,8 +141,14 @@ Inventory = function(socket,server){
     }
 	self.refreshRender = function(){
         if(self.server){
+            Player.list[socket.id].stats = {
+                attack:1,
+                defense:1,
+                heal:1,
+            }
             for(var i = 0;i < self.items.length;i++){
                 self.items[i].index = i;
+                self.items[i].event(Player.list[socket.id]);
             }
             self.socket.emit('updateInventory',self.items);
             return;
