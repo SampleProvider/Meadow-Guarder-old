@@ -1046,6 +1046,9 @@
 							if(data.projectile[i].projectileType){
 								Projectile.list[data.projectile[i].id].projectileType = data.projectile[i].projectileType;
 							}
+							if(data.projectile[i].direction){
+								Projectile.list[data.projectile[i].id].direction = data.projectile[i].direction;
+							}
 							Projectile.list[data.projectile[i].id].updated = true;
 						}
 						else{
