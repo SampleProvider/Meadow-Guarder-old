@@ -620,7 +620,11 @@ Player = function(param){
     self.secondDirection = 0;
     self.currentResponse = 0;
 	self.questInventory = new QuestInventory(socket,true);
-	self.inventory = new Inventory(socket,true);
+    self.inventory = new Inventory(socket,true);
+    if(param.inventory){
+        self.inventory.items = param.inventory;
+    }
+    self.inventory.refreshRender();
     self.questInventory.addQuestItem("potion",10);
     self.stats = {
         attack:1,
@@ -1132,93 +1136,100 @@ Player = function(param){
 Player.list = {};
 
 Player.onConnect = function(socket,username){
-    var player = Player({
-		id:socket.id,
-        username:username,
-        moveSpeed:0,
-	});
+    getDatabase(username,function(param){
+        var inventory;
+        if(param.inventory){
+            inventory = param.inventory;
+        }
+        var player = Player({
+            id:socket.id,
+            username:username,
+            moveSpeed:0,
+            inventory:inventory,
+        });
+        socket.emit('selfId',{id:socket.id});
+
+        socket.on('keyPress',function(data){
+            if(data.inputId === player.keyMap.left){
+                player.keyPress.left = data.state;
+            }
+            if(data.inputId === player.keyMap.right){
+                player.keyPress.right = data.state;
+            }
+            if(data.inputId === player.keyMap.up){
+                player.keyPress.up = data.state;
+            }
+            if(data.inputId === player.keyMap.down){
+                player.keyPress.down = data.state;
+            }
+            if(data.inputId === player.keyMap.attack){
+                player.keyPress.attack = data.state;
+            }
+            if(data.inputId === player.keyMap.second){
+                player.keyPress.second = data.state;
+            }
+            if(data.inputId === player.keyMap.heal){
+                player.keyPress.heal = data.state;
+            }
+            if(data.inputId === 'direction'){
+                player.direction = (Math.atan2(data.state.y,data.state.x) / Math.PI * 180);
+                player.mouseX = data.state.x + player.x;
+                player.mouseY = data.state.y + player.y;
+            }
+            if(data.inputId === 'releaseAll'){
+                player.keyPress = {
+                    up:false,
+                    down:false,
+                    left:false,
+                    right:false,
+                    attack:false,
+                    second:false,
+                    heal:false,
+                };
+            }
+        });
+
+        socket.on('diolougeResponse',function(data){
+            player.currentResponse = data;
+        });
+
+        socket.on('respawn',function(data){
+            player.hp = player.hpMax / 2;
+            console.error(player.username + ' respawned.');
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + player.username + ' respawned.');
+            }
+        });
+
+        var pack = {player:[],projectile:[],monster:[],npc:[]};
+        for(var i in Player.list){
+            if(Player.list[i].map === player.map){
+                pack.player.push(Player.list[i].getInitPack());
+            }
+        }
+        for(var i in Projectile.list){
+            if(Projectile.list[i].map === player.map){
+                pack.projectile.push(Projectile.list[i].getInitPack());
+            }
+        }
+        for(var i in Monster.list){
+            if(Monster.list[i].map === player.map){
+                pack.monster.push(Monster.list[i].getInitPack());
+            }
+        }
+        for(var i in Npc.list){
+            if(Npc.list[i].map === player.map){
+                pack.npc.push(Npc.list[i].getInitPack());
+            }
+        }
+        socket.emit('update',pack);
+    });
 
     console.error(username + " just logged on.");
     for(var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + username + " just logged on.");
     }
 
-    socket.emit('selfId',{id:socket.id});
-
-	socket.on('keyPress',function(data){
-		if(data.inputId === player.keyMap.left){
-			player.keyPress.left = data.state;
-		}
-		if(data.inputId === player.keyMap.right){
-			player.keyPress.right = data.state;
-		}
-		if(data.inputId === player.keyMap.up){
-			player.keyPress.up = data.state;
-		}
-		if(data.inputId === player.keyMap.down){
-			player.keyPress.down = data.state;
-		}
-		if(data.inputId === player.keyMap.attack){
-			player.keyPress.attack = data.state;
-		}
-		if(data.inputId === player.keyMap.second){
-			player.keyPress.second = data.state;
-		}
-		if(data.inputId === player.keyMap.heal){
-			player.keyPress.heal = data.state;
-		}
-		if(data.inputId === 'direction'){
-            player.direction = (Math.atan2(data.state.y,data.state.x) / Math.PI * 180);
-            player.mouseX = data.state.x + player.x;
-            player.mouseY = data.state.y + player.y;
-		}
-		if(data.inputId === 'releaseAll'){
-            player.keyPress = {
-                up:false,
-                down:false,
-                left:false,
-                right:false,
-                attack:false,
-                second:false,
-                heal:false,
-            };
-		}
-    });
-
-    socket.on('diolougeResponse',function(data){
-        player.currentResponse = data;
-    });
-
-    socket.on('respawn',function(data){
-        player.hp = player.hpMax / 2;
-        console.error(player.username + ' respawned.');
-        for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + player.username + ' respawned.');
-        }
-    });
-
-    var pack = {player:[],projectile:[],monster:[],npc:[]};
-    for(var i in Player.list){
-        if(Player.list[i].map === player.map){
-            pack.player.push(Player.list[i].getInitPack());
-        }
-    }
-    for(var i in Projectile.list){
-        if(Projectile.list[i].map === player.map){
-            pack.projectile.push(Projectile.list[i].getInitPack());
-        }
-    }
-    for(var i in Monster.list){
-        if(Monster.list[i].map === player.map){
-            pack.monster.push(Monster.list[i].getInitPack());
-        }
-    }
-    for(var i in Npc.list){
-        if(Npc.list[i].map === player.map){
-            pack.npc.push(Npc.list[i].getInitPack());
-        }
-    }
-    socket.emit('update',pack);
 }
 
 Player.spectate = function(socket){
@@ -1251,6 +1262,7 @@ Player.onDisconnect = function(socket){
     }
 	socket.emit("disconnected");
     if(Player.list[socket.id]){
+        storeDatabase(Player.list);
         console.error(Player.list[socket.id].username + " logged off.");
         for(var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('addToChat','style="color: #ffff00">' + Player.list[socket.id].username + " logged off.");

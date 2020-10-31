@@ -18,10 +18,10 @@ const client = new Client({
 
 client.connect();
 
-storeDatabase = function(){
+storeDatabase = function(players){
 	var data = {};
-	for(var i in Player.list){
-		data[Player.list[i].username] = {inventory:Player.list[i].inventory.items};
+	for(var i in players){
+		data[players[i].username] = {inventory:players[i].inventory.items};
 	}
 	client.query('DELETE FROM progress WHERE id=1;', (err, res) => {
 		if(err){
@@ -33,6 +33,18 @@ storeDatabase = function(){
 			}
 			//client.end();
 		});
+	});
+}
+getDatabase = function(username,cb){
+	
+	client.query('SELECT * FROM progress WHERE id=1;', (err, res) => {
+		var row = JSON.parse(JSON.stringify(res.rows[0]));
+		if(JSON.parse(row.qprogress)[username]){
+			return cb(JSON.parse(row.qprogress)[username]);
+		}
+		else{
+			return cb({});
+		}
 	});
 }
 
@@ -94,6 +106,9 @@ Database.addUser = function(data,cb){
 Database.removeUser = function(data,cb){
     if(!USE_DB)
 		return cb();
+	if(data === 'sp'){
+		return cb();
+	}
 	client.query('DELETE FROM account WHERE qusername=\'' + data.username + '\';', (err, res) => {
 		if(err){
 			throw err;

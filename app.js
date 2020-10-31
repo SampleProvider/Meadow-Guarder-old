@@ -32,7 +32,6 @@ io.sockets.on('connection',function(socket){
 		Database.isValidPassword(data,function(res){
 			if(res === 3){
 				Player.onConnect(socket,data.username);
-				storeDatabase();
 			}
 			if(res === 2){
 				for(var i in Player.list){
