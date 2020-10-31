@@ -28,9 +28,6 @@ var updateDatabase = function(){
 			if(JSON.parse(JSON.stringify(row)).id >= idNum){
 				idNum = JSON.parse(JSON.stringify(row)).id + 1;
 			}
-			else{
-				return;
-			}
 		}
 		//client.end();
 	});
