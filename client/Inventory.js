@@ -215,13 +215,18 @@ Item("bow","Bow",function(player){
 },function(player){
 
 });
-Item("amulet","Magic Amulet",function(player){
-    player.stats.heal = player.stats.heal * 1.5;
+Item("fish","Red Fish",function(player){
+    player.hpMax = player.hpMax * 1.5;
 },function(player){
 
 });
-Item("fish","Red Fish",function(player){
-    player.hpMax = player.hpMax * 1.5;
+Item("shield","Shield",function(player){
+    player.stats.defense = player.stats.defense * 2;
+},function(player){
+
+});
+Item("amulet","Amulet",function(player){
+    player.stats.heal = player.stats.heal * 2;
 },function(player){
 
 });
