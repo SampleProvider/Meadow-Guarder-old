@@ -724,6 +724,7 @@ Player = function(param){
     self.textColor = '#000000';
     self.quest = 'none';
     self.questStage = 0;
+    self.questInfo = {};
     self.type = 'Player';
     self.username = param.username;
 	self.keyPress = {
@@ -1004,37 +1005,26 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            var monster1 = s.spawnEntity({
-                type:'Monster',
+            self.questInfo.monsterKilled = false;
+            var monster = new Monster({
+                spawnId:0,
                 x:1152,
                 y:1472,
                 map:"Lower Deadlands",
                 moveSpeed:15,
-            });
-            var monster2 = s.spawnEntity({
-                type:'Monster',
-                x:1152,
-                y:1536,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-            });
-            var monster3 = s.spawnEntity({
-                type:'Monster',
-                x:1216,
-                y:1472,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-            });
-            var monster4 = s.spawnEntity({
-                type:'Monster',
-                x:1216,
-                y:1536,
-                map:"Lower Deadlands",
-                moveSpeed:15,
+                onDeath:function(pt){
+                    pt.toRemove = true;
+                    for(var i in Projectile.list){
+                        if(Projectile.list[i].parent === pt.id){
+                            Projectile.list[i].toRemove = true;
+                        }
+                    }
+                    self.questInfo.monsterKilled = true;
+                },
             });
         }
         if(self.questStage === 3 && self.quest === 'monsters'){
-            if(!monster1){
+            if(self.questInfo.monsterKilled){
                 self.questStage += 1;
             }
         }
