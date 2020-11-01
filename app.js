@@ -91,9 +91,10 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
-			console.error(Player.list[socket.id].username + ': ' + data);
+			var d = new Date();
+			console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + ': ' + data);
 			for(var i in SOCKET_LIST){
-				SOCKET_LIST[i].emit('addToChat','style="color: ' + Player.list[socket.id].textColor + '">' + Player.list[socket.id].username + ': ' + data);
+				SOCKET_LIST[i].emit('addToChat','style="color: ' + Player.list[socket.id].textColor + '">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + ': ' + data);
 			}
 		}
 		else{
