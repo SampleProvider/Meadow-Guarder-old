@@ -221,6 +221,11 @@ Item("fish","Red Fish",function(player){
 },function(player){
 
 });
+Item("orangefish","Orange Fish",function(player){
+    player.textColor = "ff9000";
+},function(player){
+
+});
 Item("shield","Shield",function(player){
     player.stats.defense = player.stats.defense * 2;
 },function(player){

@@ -413,6 +413,8 @@
 		Img.playerDisplay.src = '/client/img/Untitled.png';
 		Img.monster = new Image();
 		Img.monster.src = '/client/img/Pet.png';
+		Img.monsterGreen = new Image();
+		Img.monsterGreen.src = '/client/img/Monster Green.png';
 		Img.npc = new Image();
 		Img.npc.src = '/client/img/Player Map Npc 2.png';
 		Img.bullet = new Image();
@@ -855,6 +857,7 @@
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
+			self.monsterType = initPack.monsterType;
 			self.updated = true;
 			self.update = function(){
 				self.x += self.moveX;
@@ -867,7 +870,12 @@
 					ctx.strokeRect(self.x - 10,self.y - 4,20,20);
 					return;
 				}
-				ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
+				if(self.monsterType === 'purple'){
+					ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
+				}
+				if(self.monsterType === 'green'){
+					ctx.drawImage(Img.monsterGreen,self.x - 12,self.y - 18);
+				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
@@ -1384,8 +1392,6 @@
 			}
 			
 			for(var i in Player.list){
-				Player.list[i].drawName();
-				Player.list[i].drawLight();
 				Player.list[i].update();
 			}
 			for(var i in Projectile.list){
@@ -1397,6 +1403,10 @@
 			}
 			for(var i in Npc.list){
 				Npc.list[i].update();
+			}
+			for(var i in Player.list){
+				Player.list[i].drawName();
+				Player.list[i].drawLight();
 			}
 			
 			ctx.restore();

@@ -1,5 +1,10 @@
 
-SERVER = 'heroku';
+if(process.env.PORT){
+	SERVER = 'heroku';
+}
+else{
+	SERVER = 'localhost';
+}
 
 var express = require('express');
 var app = express();

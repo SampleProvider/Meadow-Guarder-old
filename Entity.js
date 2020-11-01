@@ -445,6 +445,9 @@ Actor = function(param){
                         if(Math.random() < 0.1){   
                             Player.list[self.parent].inventory.addItem('fish',1);
                         }
+                        if(pt.monsterType === 'green'){
+                            Player.list[self.parent].inventory.addItem('orangefish',1);
+                        }
                     }
                 }
                 self.toRemove = true;
@@ -1079,12 +1082,17 @@ Player = function(param){
             playerMap[self.map] += 1;
             for(var i in Spawner.list){
                 if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
+                    var monsterType = 'purple';
+                    if(Math.random() < 0.1){
+                        monsterType = 'green';
+                    }
                     var monster = new Monster({
                         spawnId:i,
                         x:Spawner.list[i].x,
                         y:Spawner.list[i].y,
                         map:Spawner.list[i].map,
                         moveSpeed:2,
+                        monsterType:monsterType,
                         onDeath:function(pt){
                             pt.toRemove = true;
                             if(pt.spawnId){
@@ -1676,8 +1684,6 @@ Monster = function(param){
     self.spawnId = param.spawnId;
     self.attackState = "passive";
     self.direction = 0;
-    self.hp = 10000;
-    self.hpMax = 10000;
     self.width = 24;
     self.height = 24;
     self.toRemove = false;
@@ -1688,6 +1694,18 @@ Monster = function(param){
         attack:1,
         defense:1,
         heal:1,
+    }
+    self.hp = 1000;
+    self.hpMax = 1000;
+    self.monsterType = param.monsterType;
+    if(self.monsterType === 'green'){
+        self.hp = 1000000;
+        self.hpMax = 1000000;
+        self.stats = {
+            attack:100,
+            defense:100,
+            heal:1,
+        }
     }
     var lastSelf = {};
     var super_update = self.update;
@@ -1770,6 +1788,7 @@ Monster = function(param){
         pack.hp = self.hp;
         pack.hpMax = self.hpMax;
         pack.map = self.map;
+        pack.monsterType = self.monsterType;
         pack.type = self.type;
         return pack;
     }
@@ -2226,12 +2245,17 @@ spawnEnemies = function(){
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
+                var monsterType = 'purple';
+                if(Math.random() < 0.1){
+                    monsterType = 'green';
+                }
                 var monster = new Monster({
                     spawnId:i,
                     x:Spawner.list[i].x,
                     y:Spawner.list[i].y,
                     map:Spawner.list[i].map,
                     moveSpeed:2,
+                    monsterType:monsterType,
                     onDeath:function(pt){
                         pt.toRemove = true;
                         if(pt.spawnId){
