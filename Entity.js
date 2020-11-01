@@ -2207,7 +2207,7 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
+                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                 }
             }
