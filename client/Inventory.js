@@ -107,6 +107,7 @@ Inventory = function(socket,server){
         items:[], //{id:"itemId",amount:1}
         materials:[],
         refresh:true,
+        spawn:true,
     };
     self.addItem = function(id,amount){
 		for(var i = 0;i < self.items.length;i++){

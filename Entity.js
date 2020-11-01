@@ -1008,7 +1008,10 @@ Player = function(param){
                 }
             }
             self.hpMax = Math.round(self.hpMax);
-            self.hp = self.hpMax;
+            if(self.inventory.spawn === true){
+                self.inventory.spawn = false;
+                self.hp = self.hpMax;
+            }
         }
     }
     self.updateMap = function(){

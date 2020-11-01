@@ -1527,6 +1527,12 @@
 			//mapX = mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600;
 			//mapY = mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600;
 		}
+		document.addEventListener("visibilitychange",function(){
+		var hidden = document.hidden;
+			if(hidden = true){
+				socket.emit('keyPress',{inputId:"releaseAll",state:true});
+			}
+		});
 		document.onmouseup = function(event){
 			if(mapDrag){
 				mapDrag = false;
