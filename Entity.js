@@ -817,7 +817,7 @@ Player = function(param){
             }
             else{
                 if(self.healReload % 10 === 0){
-                    self.hp += Math.round(10 + Math.random() * 15);
+                    self.hp += Math.round(self.stats.heal * (10 + Math.random() * 15));
                 }
             }
         }
@@ -830,6 +830,9 @@ Player = function(param){
         self.updateMap();
         self.updateQuest();
         self.updateStats();
+        if(self.hp > self.hpMax){
+            self.hp = self.hpMax;
+        }
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
