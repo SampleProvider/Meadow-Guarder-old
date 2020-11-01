@@ -19,36 +19,18 @@ const client = new Client({
 client.connect();
 
 storeDatabase = function(players){
-	var data = {};
 	for(var i in players){
-		data[players[i].username] = {inventory:players[i].inventory.items};
-	}
-	client.query('SELECT * FROM progress WHERE id=1;', (err, res) => {
-		var row = JSON.parse(JSON.stringify(res.rows[0]));
-		for(var i in JSON.parse(row.qprogress)){
-			if(!data[i]){
-				data[i] = JSON.parse(row.qprogress)[i];
-			}
-		}
-		client.query('DELETE FROM progress WHERE id=1;', (err, res) => {
+		client.query('UPDATE progress SET qusername=\'' + players[i].username + '\', qprogress=\'' + JSON.stringify({inventory:players[i].inventory.items}) + '\' WHERE qusername=\'' + players[i].username + '\';', (err, res) => {
 			if(err){
 				throw err;
 			}
-			client.query('INSERT INTO progress(id, qprogress) VALUES (1, \'' + JSON.stringify(data) + '\');', (err, res) => {
-				if(err){
-					throw err;
-				}
-				//client.end();
-			});
 		});
-	});
+	}
 }
 getDatabase = function(username,cb){
-	
-	client.query('SELECT * FROM progress WHERE id=1;', (err, res) => {
-		var row = JSON.parse(JSON.stringify(res.rows[0]));
-		if(JSON.parse(row.qprogress)[username]){
-			return cb(JSON.parse(row.qprogress)[username]);
+	client.query('SELECT * FROM progress WHERE qusername=\'' + username + '\';', (err, res) => {
+		if(res.rows[0]){
+			return cb(JSON.parse(res.rows[0].qprogress));
 		}
 		else{
 			return cb({});
@@ -109,6 +91,11 @@ Database.addUser = function(data,cb){
 			throw err;
 		}
 		return cb();
+	});
+	client.query('INSERT INTO progress(qusername, qprogress) VALUES (\'' + data.username + '\', \'{}\');', (err, res) => {
+		if(err){
+			throw err;
+		}
 	});
 }
 Database.removeUser = function(data,cb){

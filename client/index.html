@@ -2,13 +2,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
 	<title>Meadow Guarders</title>
-	<link href="client/style.css" rel="stylesheet" type="text/css" >
-	<style>
-	</style>
+	<link href="client/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
 	<div id="sign" style="display:inline-block;">
 		<button id = "signIn" class="UI-button-light">Sign In</button>
 		<label id="username-label" class="UI-text-light" for="username">Username:</label>
@@ -150,7 +148,7 @@
 	<script src="/client/Inventory.js"></script>
 	<!--<script src="/socket.io/socket.io.js"></script>-->
 
-	<script>
+	<script nonce="EDNnf03nceIOfn39fn3e9h3sdfa">
 		var WIDTH = window.innerWidth;
 		var HEIGHT = window.innerHeight;
 

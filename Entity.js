@@ -89,6 +89,7 @@ s = {
                         }
                     },
                 });
+                return monster;
             }
             if(param.type === 'Npc'){
                 var npc = new Npc({
@@ -291,17 +292,22 @@ Actor = function(param){
         else if(self.trackingEntity){
             self.spdX = 0;
             self.spdY = 0;
-            if(self.x < self.trackingEntity.x){
-                self.spdX = 1;
+            if(self.trackingEntity.hp < 1){
+
             }
-            if(self.x > self.trackingEntity.x){
-                self.spdX = -1;
-            }
-            if(self.y < self.trackingEntity.y){
-                self.spdY = 1;
-            }
-            if(self.y > self.trackingEntity.y){
-                self.spdY = -1;
+            else{
+                if(self.x < self.trackingEntity.x){
+                    self.spdX = 1;
+                }
+                if(self.x > self.trackingEntity.x){
+                    self.spdX = -1;
+                }
+                if(self.y < self.trackingEntity.y){
+                    self.spdY = 1;
+                }
+                if(self.y > self.trackingEntity.y){
+                    self.spdY = -1;
+                }
             }
             if(self.x === self.trackingEntity.x && self.y === self.trackingEntity.y){
                 //self.trackingEntity = undefined;
@@ -420,6 +426,29 @@ Actor = function(param){
             map:self.map,
             parentType:parentType,
             stats:stats,
+            onCollision:function(self,pt){
+                pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
+                if(parentType === 'Player'){
+                    if(pt.hp < 1 && self.toRemove === false){
+                        if(Math.random() < 0.5){   
+                            Player.list[self.parent].inventory.addItem('sword',1);
+                        }
+                        if(Math.random() < 0.5){   
+                            Player.list[self.parent].inventory.addItem('helmet',1);
+                        }
+                        if(Math.random() < 0.2){   
+                            Player.list[self.parent].inventory.addItem('amulet',1);
+                        }
+                        if(Math.random() < 0.2){   
+                            Player.list[self.parent].inventory.addItem('shield',1);
+                        }
+                        if(Math.random() < 0.1){   
+                            Player.list[self.parent].inventory.addItem('fish',1);
+                        }
+                    }
+                }
+                self.toRemove = true;
+            }
 		});
     }
     self.updateCollisions = function(){
@@ -881,6 +910,14 @@ Player = function(param){
                         response1:'...',
                     });
                 }
+                if(self.questStage === 4){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thanks.',
+                        response1:'*End conversation*',
+                    });
+                }
                 self.keyPress.attack = false;
             }
         }
@@ -962,39 +999,51 @@ Player = function(param){
             self.inventory.addItem('bow',1);
         }
         if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'monsters'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            var monster1 = s.spawnEntity({
+                type:'Monster',
+                x:1152,
+                y:1472,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+            var monster2 = s.spawnEntity({
+                type:'Monster',
+                x:1152,
+                y:1536,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+            var monster3 = s.spawnEntity({
+                type:'Monster',
+                x:1216,
+                y:1472,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+            var monster4 = s.spawnEntity({
+                type:'Monster',
+                x:1216,
+                y:1536,
+                map:"Lower Deadlands",
+                moveSpeed:15,
+            });
+        }
+        if(self.questStage === 3 && self.quest === 'monsters'){
+            if(!monster1){
+                self.questStage += 1;
+            }
+        }
+        if(self.currentResponse !== 0 && self.questStage === 5 && self.quest === 'monsters'){
             self.quest = 'none';
             socket.emit('dialougeLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
-            s.spawnEntity({
-                type:'Monster',
-                x:1152,
-                y:1472,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-            });
-            s.spawnEntity({
-                type:'Monster',
-                x:1152,
-                y:1536,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-            });
-            s.spawnEntity({
-                type:'Monster',
-                x:1216,
-                y:1472,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-            });
-            s.spawnEntity({
-                type:'Monster',
-                x:1216,
-                y:1536,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-            });
         }
     }
     self.updateStats = function(){
@@ -1115,6 +1164,10 @@ Player = function(param){
         }
         if(self.keyPress.right){
             self.spdX = 1;
+        }
+        if(self.state === 'dead'){
+            self.spdX = 0;
+            self.spdY = 0;
         }
         if(self.spdX === 1){
             if(self.spdY === 1){
@@ -1812,7 +1865,7 @@ Projectile = function(param){
     self.stats = param.stats;
     self.parentType = param.parentType;
     self.projectileType = param.projectileType;
-    //self.onCollision = param.onCollision;
+    self.onCollision = param.onCollision;
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -2143,8 +2196,7 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
-                    Projectile.list[j].toRemove = true;
-                    Player.list[i].hp -= Math.round(Projectile.list[j].stats.attack * (50 + Math.random() * 50) / Player.list[i].stats.defense);
+                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                 }
             }
         }
@@ -2153,25 +2205,7 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
                 if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map){
-                    Projectile.list[j].toRemove = true;
-                    Monster.list[i].hp -= Math.round(Projectile.list[j].stats.attack * (50 + Math.random() * 50) / Monster.list[i].stats.defense);
-                    if(Monster.list[i].hp < 1){
-                        if(Math.random() < 0.5){   
-                            Player.list[Projectile.list[j].parent].inventory.addItem('sword',1);
-                        }
-                        if(Math.random() < 0.5){   
-                            Player.list[Projectile.list[j].parent].inventory.addItem('helmet',1);
-                        }
-                        if(Math.random() < 0.2){   
-                            Player.list[Projectile.list[j].parent].inventory.addItem('amulet',1);
-                        }
-                        if(Math.random() < 0.2){   
-                            Player.list[Projectile.list[j].parent].inventory.addItem('shield',1);
-                        }
-                        if(Math.random() < 0.1){   
-                            Player.list[Projectile.list[j].parent].inventory.addItem('fish',1);
-                        }
-                    }
+                    Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                 }
             }
         }
