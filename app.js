@@ -94,7 +94,10 @@ io.sockets.on('connection',function(socket){
 			var d = new Date();
 			console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + ': ' + data);
 			for(var i in SOCKET_LIST){
-				SOCKET_LIST[i].emit('addToChat','style="color: ' + Player.list[socket.id].textColor + '">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + ': ' + data);
+				SOCKET_LIST[i].emit('addToChat',{
+					style:'style="color: ' + Player.list[socket.id].textColor + '">',
+					message:Player.list[socket.id].username + ': ' + data
+				});
 			}
 		}
 		else{

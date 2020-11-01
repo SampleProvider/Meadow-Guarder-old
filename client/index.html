@@ -256,7 +256,8 @@
 			if(chatText.scrollTop + chatText.clientHeight >= chatText.scrollHeight - 5){
 				scroll = true;
 			}
-			chat += '<div class="text"' + data + '</div>';
+			var d = new Date();
+			chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + d.getMinutes() + "] " + data.message + '</div>';
 			chatText.innerHTML = chat + '<br>';
 			if(scroll){
 				chatText.scrollTop = chatText.scrollHeight;

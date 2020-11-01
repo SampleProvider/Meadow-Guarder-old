@@ -772,7 +772,10 @@ Player = function(param){
                 var d = new Date();
                 console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + self.username + ' died.');
                 for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat','style="color: #ff0000">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + self.username + ' died.');
+                    SOCKET_LIST[i].emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:self.username + ' died.'
+                    });
                 }
                 self.state = 'dead';
             }
@@ -1058,7 +1061,10 @@ Player = function(param){
             var d = new Date();
             console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + self.username + " went to map " + self.map + ".");
             for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat','style="color: #000000">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + self.username + " went to map " + self.map + ".");
+                SOCKET_LIST[i].emit('addToChat',{
+                    style:'style="color: #000000">',
+                    message:self.username + " went to map " + self.map + "."
+                });
             }
             var pack = {player:[],projectile:[],monster:[],npc:[]};
             for(var i in Player.list){
@@ -1401,7 +1407,10 @@ Player.onConnect = function(socket,username){
             var d = new Date();
             console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + player.username + ' respawned.');
             for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + player.username + ' respawned.');
+                SOCKET_LIST[i].emit('addToChat',{
+                    style:'style="color: #00ff00">',
+                    message:player.username + ' respawned.'
+                });
             }
         });
 
@@ -1431,7 +1440,10 @@ Player.onConnect = function(socket,username){
     var d = new Date();
     console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + username + " just logged on.");
     for(var i in SOCKET_LIST){
-        SOCKET_LIST[i].emit('addToChat','style="color: #00ff00">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + username + " just logged on.");
+        SOCKET_LIST[i].emit('addToChat',{
+            style:'style="color: #00ff00">',
+            message:username + " just logged on."
+        });
     }
 
 }
@@ -1470,7 +1482,10 @@ Player.onDisconnect = function(socket){
         var d = new Date();
         console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + " logged off.");
         for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('addToChat','style="color: #ffff00">' + "[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + " logged off.");
+            SOCKET_LIST[i].emit('addToChat',{
+                style:'style="color: #ffff00">',
+                message:Player.list[socket.id].username + " logged off."
+            });
         }
         playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
