@@ -881,11 +881,14 @@
 				if(self.monsterType === 'purple'){
 					ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
 				}
-				if(self.monsterType === 'green'){
+				else if(self.monsterType === 'green'){
 					ctx.drawImage(Img.monsterGreen,self.x - 12,self.y - 18);
 				}
-				if(self.monsterType === 'blue'){
+				else if(self.monsterType === 'blue'){
 					ctx.drawImage(Img.monsterBlue,self.x - 12,self.y - 18);
+				}
+				else{
+					ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
 				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';

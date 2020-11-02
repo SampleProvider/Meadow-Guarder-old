@@ -243,6 +243,12 @@ Item("bluecandy","Blue Candy",function(player){
             player.inventory.removeItem(player.inventory.items[i].id,player.inventory.items[i].amount);
         }
     }
+    player.inventory.addItem("bluecandyc",1);
+    player.inventory.removeItem("bluecandy",1);
+},function(player){
+
+});
+Item("bluecandyc","Blue Candy",function(player){
 },function(player){
 
 });
