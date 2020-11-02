@@ -1537,7 +1537,7 @@
 				if(event.keyCode === 9){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
-				if(event.keyCode === 18){
+				if(event.keyCode > 15 && event.keyCode < 19){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				if(event.keyCode > 90){

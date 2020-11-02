@@ -727,7 +727,7 @@ Player = function(param){
     playerMap[self.map] += 1;
     self.mapHeight = 640;
     self.mapWidth = 640;
-    self.textColor = '#000000';
+    self.textColor = '#ffff00';
     self.quest = 'none';
     self.questStage = 0;
     self.questInfo = {};
@@ -1134,7 +1134,7 @@ Player = function(param){
             console.error("[" + d.getHours() + ":" + m + "] " + self.username + " went to map " + self.map + ".");
             for(var i in SOCKET_LIST){
                 SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: #000000">',
+                    style:'style="color: ' + self.textColor + '">',
                     message:self.username + " went to map " + self.map + "."
                 });
             }
@@ -1571,7 +1571,7 @@ Player.onDisconnect = function(socket){
         console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " logged off.");
         for(var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('addToChat',{
-                style:'style="color: #ffff00">',
+                style:'style="color: #ff0000">',
                 message:Player.list[socket.id].username + " logged off."
             });
         }
