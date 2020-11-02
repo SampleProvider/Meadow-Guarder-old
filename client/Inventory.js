@@ -57,6 +57,9 @@ QuestInventory = function(socket,server){
             button.onclick = function(){
                 self.socket.emit("useQuestItem",questItem.id);
             }
+            button.onmouseover = function(event){
+                mouseUp(event);
+            }
             button.innerHTML = questItem.name + " x" + data.amount + " ";
             button.style.top = index * 30 + 5;
             button.style.textAlign = "center";
