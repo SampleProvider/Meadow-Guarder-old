@@ -239,7 +239,7 @@ Item("amulet","Amulet",function(player){
 Item("bluecandy","Blue Candy",function(player){
     player.textColor = "0090ff";
     for(var i in player.inventory.items){
-        if(player.inventory.items[i].id !== 'bluecandy'){
+        if(player.inventory.items[i].id !== 'bluecandyc'){
             player.inventory.removeItem(player.inventory.items[i].id,player.inventory.items[i].amount);
         }
     }

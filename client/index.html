@@ -1537,6 +1537,12 @@
 				if(event.keyCode === 91){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
+				if(event.keyCode === 9){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
+				if(event.keyCode === 18){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
 				if(!talking){
 					socket.emit('keyPress',{inputId:event.keyCode,state:true});
 				}
