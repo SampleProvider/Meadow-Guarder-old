@@ -258,6 +258,9 @@
 			if(m.length === 1){
 				m = '' + 0 + m;
 			}
+			if(m === '0'){
+				m = '00';
+			}
 			chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
 			chatText.innerHTML = chat + '<br>';
 			if(scroll){
@@ -886,9 +889,6 @@
 				}
 				else if(self.monsterType === 'blue'){
 					ctx.drawImage(Img.monsterBlue,self.x - 12,self.y - 18);
-				}
-				else{
-					console.log(self.monsterType);
 				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';

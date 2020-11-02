@@ -1732,7 +1732,6 @@ Monster = function(param){
     self.hp = 1000;
     self.hpMax = 1000;
     self.monsterType = param.monsterType;
-    console.log(self.monsterType);
     if(self.monsterType === 'green'){
         self.hp = 1000000;
         self.hpMax = 1000000;
@@ -1821,6 +1820,10 @@ Monster = function(param){
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
+        }
+        if(lastSelf.monsterType !== self.monsterType){
+            pack.monsterType = self.monsterType;
+            lastSelf.monsterType = self.monsterType;
         }
         return pack;
     }
