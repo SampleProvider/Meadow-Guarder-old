@@ -31,14 +31,14 @@
 			<div>Welcome to Meadow Guarders Open 0.0.9!</div>
 		</div>
 
-		<form id="chat-form" autocomplete="off">
+		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event)">
 			<input id="chat-input" class="UI-input-light" type="text"></input>
 		</form>
 		<div id="worldMapDiv" style="display:none;">
 			<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
 			<button id="worldMapExit">x</button>
 		</div>
-		<div id="window" class="window">
+		<div id="window" class="window" onmouseover="mouseUp(event)">
 			<div class="window-bar">
 				<div>Window Title</div>
 				<span class="window-close">
@@ -100,7 +100,7 @@
 			</div>
 		</div>
 		<button id="worldMapButton" class="UI-button-light" style="display:none;">World Map [M]</button>
-		<div id="selfDisplay">
+		<div id="selfDisplay" onmouseover="mouseUp(event)">
 			<div id="healthBar">
 				<div id="healthBarValue"></div>
 				<div id="healthBarText"></div>
@@ -108,7 +108,7 @@
 			<div id="magicBar"></div>
 			<div id="xpBar"></div>
 		</div>
-		<div id="menu">
+		<div id="menu" onmouseover="mouseUp(event)">
 			<button id="menuDropdown" class="UI-button-light" onclick="useMenuDropdown()">Menu &#x25BC;</button>
 			<div id="menuDropdownItem" class="UI-dropdown-light">
 				<button id="windowtoggle" class="UI-button-light">Inventory</button>
@@ -642,6 +642,7 @@
 			self.animation = initPack.animation;
 			self.animationDirection = initPack.animationDirection;
 			self.stats = initPack.stats;
+			self.type = initPack.type;
 			self.moveSpeed = 15;
 			self.update = function(){
 				if(talking && self.id === selfId){
@@ -790,6 +791,7 @@
 			self.spdY = initPack.spdY;
 			self.direction = initPack.direction;
 			self.projectileType = initPack.projectileType;
+			self.type = initPack.type;
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
@@ -863,6 +865,7 @@
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
 			self.monsterType = initPack.monsterType;
+			self.type = initPack.type;
 			self.updated = true;
 			self.update = function(){
 				self.x += self.moveX;
@@ -911,6 +914,7 @@
 			self.hpMax = initPack.hpMax;
 			self.map = initPack.map;
 			self.name = initPack.name;
+			self.type = initPack.type;
 			self.updated = true;
 			self.update = function(){
 				self.x += self.moveX;
@@ -1370,18 +1374,42 @@
 				}
 			}
 			
+			var entities = [];
 			for(var i in Player.list){
-				Player.list[i].draw();
+				entities.push(Player.list[i]);
 			}
 			for(var i in Projectile.list){
-				Projectile.list[i].draw();
+				entities.push(Projectile.list[i]);
 			}
 			for(var i in Monster.list){
-				Monster.list[i].draw();
+				entities.push(Monster.list[i]);
 			}
 			for(var i in Npc.list){
-				Npc.list[i].draw();
+				entities.push(Npc.list[i]);
 			}
+			function compare(a,b){
+				var ay = a.y;
+				var by = b.y;
+				console.log(a.type);
+				if(a.type === 'Player' || a.type === 'Npc'){
+					ay -= 12;
+				}
+				if(b.type === 'Player' || b.type === 'Npc'){
+					by -= 12;
+				}
+				if(ay < by){
+					return -1;
+				}
+				if(ay > by){
+					return 1;
+				}
+				return 0;
+			}
+			entities.sort(compare);
+			for(var i = 0;i < entities.length;i++){
+				entities[i].draw();
+			}
+
 			if(!isWorldMap){
 				if(loadedMap[Player.list[selfId].map]){
 					ctx.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);

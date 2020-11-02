@@ -1025,6 +1025,7 @@ Player = function(param){
                 y:1472,
                 map:"Lower Deadlands",
                 moveSpeed:15,
+                monsterType:'green',
                 onDeath:function(pt){
                     pt.toRemove = true;
                     for(var i in Projectile.list){
@@ -1731,6 +1732,7 @@ Monster = function(param){
     self.hp = 1000;
     self.hpMax = 1000;
     self.monsterType = param.monsterType;
+    console.log(self.monsterType);
     if(self.monsterType === 'green'){
         self.hp = 1000000;
         self.hpMax = 1000000;
