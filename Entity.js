@@ -1732,6 +1732,7 @@ Monster = function(param){
     self.hp = 1000;
     self.hpMax = 1000;
     self.monsterType = param.monsterType;
+    console.log(self.monsterType);
     if(self.monsterType === 'green'){
         self.hp = 1000000;
         self.hpMax = 1000000;

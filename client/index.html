@@ -888,7 +888,7 @@
 					ctx.drawImage(Img.monsterBlue,self.x - 12,self.y - 18);
 				}
 				else{
-					ctx.drawImage(Img.monster,self.x - 12,self.y - 18);
+					console.log(self.monsterType);
 				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
@@ -1534,13 +1534,13 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
-				if(event.keyCode === 91){
-					socket.emit('keyPress',{inputId:'releaseAll'});
-				}
 				if(event.keyCode === 9){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				if(event.keyCode === 18){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
+				if(event.keyCode > 90){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				if(!talking){
