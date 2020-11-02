@@ -133,7 +133,7 @@ Inventory = function(socket,server){
 		}    
     }
     self.hasItem = function(id,amount){
-		for(var i = 0 ; i < self.items.length; i++){
+		for(var i = 0;i < self.items.length;i++){
 			if(self.items[i].id === id){
 				return self.items[i].amount >= amount;
 			}
@@ -233,6 +233,16 @@ Item("shield","Shield",function(player){
 });
 Item("amulet","Amulet",function(player){
     player.stats.heal = player.stats.heal * 2;
+},function(player){
+
+});
+Item("bluecandy","Blue Candy",function(player){
+    player.textColor = "0090ff";
+    for(var i in player.inventory.items){
+        if(player.inventory.items[i].id !== 'bluecandy'){
+            player.inventory.removeItem(player.inventory.items[i].id,player.inventory.items[i].amount);
+        }
+    }
 },function(player){
 
 });

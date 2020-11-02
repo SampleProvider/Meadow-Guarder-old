@@ -448,6 +448,9 @@ Actor = function(param){
                         if(pt.monsterType === 'green'){
                             Player.list[self.parent].inventory.addItem('orangefish',1);
                         }
+                        if(pt.monsterType === 'blue'){
+                            Player.list[self.parent].inventory.addItem('bluecandy',1);
+                        }
                     }
                 }
                 self.toRemove = true;
@@ -1056,8 +1059,15 @@ Player = function(param){
             }
             self.hpMax = 1000;
             for(var i in self.inventory.items){
-                for(var j = 0;j < self.inventory.items[i].amount;j++){
-                    Item.list[self.inventory.items[i].id].event(self);
+                if(self.inventory.items[i]){
+                    try{
+                        for(var j = 0;j < self.inventory.items[i].amount;j++){
+                            Item.list[self.inventory.items[i].id].event(self);
+                        }
+                    }
+                    catch(err){
+                        console.log(err);
+                    }
                 }
             }
             self.hpMax = Math.round(self.hpMax);
@@ -1090,6 +1100,9 @@ Player = function(param){
                     if(Math.random() < 0.1){
                         monsterType = 'green';
                     }
+                    //if(Math.random() < 0.01){
+                    monsterType = 'blue';
+                    //}
                     var monster = new Monster({
                         spawnId:i,
                         x:Spawner.list[i].x,
@@ -1727,6 +1740,15 @@ Monster = function(param){
             heal:1,
         }
     }
+    if(self.monsterType === 'blue'){
+        self.hp = 1000000000;
+        self.hpMax = 1000000000;
+        self.stats = {
+            attack:1000000,
+            defense:1000000,
+            heal:1,
+        }
+    }
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -2269,6 +2291,9 @@ spawnEnemies = function(){
                 if(Math.random() < 0.1){
                     monsterType = 'green';
                 }
+                //if(Math.random() < 0.01){
+                monsterType = 'blue';
+                //}
                 var monster = new Monster({
                     spawnId:i,
                     x:Spawner.list[i].x,

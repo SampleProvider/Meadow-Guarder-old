@@ -97,7 +97,7 @@ io.sockets.on('connection',function(socket){
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
 			var d = new Date();
-			var m = d.getMinutes();
+			var m = '' + d.getMinutes();
 			if(m.length === 1){
 				m = '' + 0 + m;
 			}

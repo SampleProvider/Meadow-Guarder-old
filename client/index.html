@@ -2,17 +2,16 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://guarded-meadow-00030.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://bajie:3000 http://localhost:3000 http://guarded-meadow-00030.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
 	<title>Meadow Guarders</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="sign" style="display:inline-block;">
 		<button id = "signIn" class="UI-button-light">Sign In</button>
-		<label id="username-label" class="UI-text-light" for="username">Username:</label>
-		<input class="UI-input-light" type="text" id="username" name="username" autocomplete="off"><br><br>
+		<label id="username-label" class="UI-text-light" for="username">Username:</label><br><br>
 		<label id="password-label" class="UI-text-light" for="password">Password:</label>
-		<input class="UI-input-light" type="password" id="password" name="password" autocomplete="off"><br><br>
+		<form><input class="UI-input-light" type="text" id="username" name="username" autocomplete="off"><input class="UI-input-light" type="password" id="password" name="password" autocomplete="off"></form><br><br>
 		<button id ="createAccount" class="UI-button-light">Create Account</button>
 		<button id ="deleteAccount" class="UI-button-light">Delete Account</button>
 		<div id="signError"></div>
@@ -255,7 +254,7 @@
 				scroll = true;
 			}
 			var d = new Date();
-			var m = d.getMinutes();
+			var m = '' + d.getMinutes();
 			if(m.length === 1){
 				m = '' + 0 + m;
 			}
@@ -419,6 +418,8 @@
 		Img.monster.src = '/client/img/Pet.png';
 		Img.monsterGreen = new Image();
 		Img.monsterGreen.src = '/client/img/Monster Green.png';
+		Img.monsterBlue = new Image();
+		Img.monsterBlue.src = '/client/img/Monster Blue.png';
 		Img.npc = new Image();
 		Img.npc.src = '/client/img/Player Map Npc 2.png';
 		Img.bullet = new Image();
@@ -879,6 +880,9 @@
 				}
 				if(self.monsterType === 'green'){
 					ctx.drawImage(Img.monsterGreen,self.x - 12,self.y - 18);
+				}
+				if(self.monsterType === 'blue'){
+					ctx.drawImage(Img.monsterBlue,self.x - 12,self.y - 18);
 				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';

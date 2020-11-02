@@ -46,7 +46,7 @@
 0,0,0,2559,2560,0,0,0
 </data>
  </layer>
- <layer id="4" name="Walls" width="8" height="10">
+ <layer id="4" name="Above0" width="8" height="10">
   <data encoding="csv">
 1063,1061,1061,1061,1061,1061,1061,1064,
 1148,0,0,0,0,0,0,1148,
