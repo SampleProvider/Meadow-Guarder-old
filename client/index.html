@@ -1604,6 +1604,9 @@
 			if(Player.list[selfId]){
 				var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
 				var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
+				if(event.clientY < 0){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
 				mouseX = event.clientX - WIDTH / 2;
 				mouseY = event.clientY - HEIGHT / 2;
 				if(!talking){
