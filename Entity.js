@@ -803,7 +803,11 @@ Player = function(param){
             if(self.state !== 'dead'){
                 Player.spectate(socket);
                 var d = new Date();
-                console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + self.username + ' died.');
+                var m = d.getMinutes();
+                if(m.length === 1){
+                    m = '' + 0 + m;
+                }
+                console.error("[" + d.getHours() + ":" + m + "] " + self.username + ' died.');
                 for(var i in SOCKET_LIST){
                     SOCKET_LIST[i].emit('addToChat',{
                         style:'style="color: #ff0000">',
@@ -1109,7 +1113,11 @@ Player = function(param){
                 }
             }
             var d = new Date();
-            console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + self.username + " went to map " + self.map + ".");
+			var m = d.getMinutes();
+			if(m.length === 1){
+				m = '' + 0 + m;
+			}
+            console.error("[" + d.getHours() + ":" + m + "] " + self.username + " went to map " + self.map + ".");
             for(var i in SOCKET_LIST){
                 SOCKET_LIST[i].emit('addToChat',{
                     style:'style="color: #000000">',
@@ -1459,7 +1467,11 @@ Player.onConnect = function(socket,username){
         socket.on('respawn',function(data){
             player.hp = player.hpMax / 2;
             var d = new Date();
-            console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + player.username + ' respawned.');
+			var m = d.getMinutes();
+			if(m.length === 1){
+				m = '' + 0 + m;
+			}
+            console.error("[" + d.getHours() + ":" + m + "] " + player.username + ' respawned.');
             for(var i in SOCKET_LIST){
                 SOCKET_LIST[i].emit('addToChat',{
                     style:'style="color: #00ff00">',
@@ -1492,7 +1504,11 @@ Player.onConnect = function(socket,username){
         socket.emit('update',pack);
     });
     var d = new Date();
-    console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + username + " just logged on.");
+    var m = d.getMinutes();
+    if(m.length === 1){
+        m = '' + 0 + m;
+    }
+    console.error("[" + d.getHours() + ":" + m + "] " + username + " just logged on.");
     for(var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('addToChat',{
             style:'style="color: #00ff00">',
@@ -1534,7 +1550,11 @@ Player.onDisconnect = function(socket){
     if(Player.list[socket.id]){
         storeDatabase(Player.list);
         var d = new Date();
-        console.error("[" + d.getHours() + ":" + d.getMinutes() + "] " + Player.list[socket.id].username + " logged off.");
+        var m = d.getMinutes();
+        if(m.length === 1){
+            m = '' + 0 + m;
+        }
+        console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " logged off.");
         for(var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('addToChat',{
                 style:'style="color: #ffff00">',

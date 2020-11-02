@@ -255,7 +255,11 @@
 				scroll = true;
 			}
 			var d = new Date();
-			chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + d.getMinutes() + "] " + data.message + '</div>';
+			var m = d.getMinutes();
+			if(m.length === 1){
+				m = '' + 0 + m;
+			}
+			chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
 			chatText.innerHTML = chat + '<br>';
 			if(scroll){
 				chatText.scrollTop = chatText.scrollHeight;
