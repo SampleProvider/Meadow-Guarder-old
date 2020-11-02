@@ -1534,6 +1534,9 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
+				if(event.keyCode === 91){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
 				if(!talking){
 					socket.emit('keyPress',{inputId:event.keyCode,state:true});
 				}

@@ -249,6 +249,7 @@ Item("bluecandy","Blue Candy",function(player){
 
 });
 Item("bluecandyc","Blue Candy",function(player){
+    player.textColor = "0090ff";
 },function(player){
 
 });
