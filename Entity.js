@@ -1100,9 +1100,9 @@ Player = function(param){
                     if(Math.random() < 0.1){
                         monsterType = 'green';
                     }
-                    //if(Math.random() < 0.01){
-                    monsterType = 'blue';
-                    //}
+                    if(Math.random() < 0.01){
+                        monsterType = 'blue';
+                    }
                     var monster = new Monster({
                         spawnId:i,
                         x:Spawner.list[i].x,
@@ -2291,9 +2291,9 @@ spawnEnemies = function(){
                 if(Math.random() < 0.1){
                     monsterType = 'green';
                 }
-                //if(Math.random() < 0.01){
-                monsterType = 'blue';
-                //}
+                if(Math.random() < 0.01){
+                    monsterType = 'blue';
+                }
                 var monster = new Monster({
                     spawnId:i,
                     x:Spawner.list[i].x,
