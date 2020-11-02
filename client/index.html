@@ -25,7 +25,7 @@
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
-		<div id="questInventoryDiv" class="UI-text-light"></div>
+		<div id="questInventoryDiv" class="UI-text-light" onmouseover="mouseUp(event)"></div>
 		<div id="fps" class="UI-text-light"></div>
 		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
 			<div>Welcome to Meadow Guarders Open 0.0.9!</div>
@@ -124,17 +124,17 @@
 			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)">NO IM NOT!</button>
 		</div>
 	</div>
-	<div id="spectator" style="display:none;">
+	<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
 		<div class="death-screen"></div>
 		<button class="spectator">You're a spectator!</button>
 		<button class="respawn" onclick="respawn()">Respawn</button>
 	</div>
-	<div id="ads" style="display:none">
+	<div id="ads" style="display:none" onmouseover="mouseUp(event)">
 		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
 		<button id="ad2" class="UI-button-light" onclick="disconnect()">Do YOU want YOUR ad featured here? Then click <a href="https://forms.gle/stnavsadkja7r7b96">THIS LINK</a> to write a application!</button>
 		<button id="ad3" class="UI-button-light" onclick="history.go(0)">Go to <a href="https://docs.google.com/forms/d/e/1FAIpQLSfyp_-6rxw0Kh-e4dru1Lpb6VRwoN2f_L_rawko3Hbm6n9KvQ/viewform">Tianmu's Lego center</a>! Get a free discount if your the first 100 People to get there!</button>
 	</div>
-	<div id="disconnected" style="display:none;">
+	<div id="disconnected" style="display:none;" onmouseover="mouseUp(event)">
 		<button class="disconnected">Disconnected</button>
 	</div>
 	<!--<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>-->
