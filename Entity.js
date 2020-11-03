@@ -512,7 +512,7 @@ Actor = function(param){
                             Player.list[self.parent].inventory.addItem('orangefish',1);
                         }
                         if(pt.monsterType === 'blue'){
-                            Player.list[self.parent].inventory.addItem('bluecandy',1);
+                            //Player.list[self.parent].inventory.addItem('bluecandy',1);
                         }
                         Player.list[self.parent].xp += Math.round(10 * Player.list[self.parent].stats.xp);
                     }
