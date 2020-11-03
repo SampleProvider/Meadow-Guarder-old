@@ -837,7 +837,7 @@ Player = function(param){
     }
     if(param.param.level){
         self.level = param.param.level;
-        self.xpMax = xpLevels[self.level];
+        self.xpMax = xpLevels[self.level].xp;
     }
     self.inventory.refreshRender();
     self.questInventory.addQuestItem("potion",10);
