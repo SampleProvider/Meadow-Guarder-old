@@ -1,56 +1,56 @@
 var xpLevels = [
-    100,
-    500,
-    1000,
-    1500,
-    2000,
-    2500,
-    3000,
-    3500,
-    4000,
-    4500,
-    5000,
-    6000,
-    7000,
-    8000,
-    9000,
-    10000,
-    11000,
-    12000,
-    13000,
-    14000,
-    15000,
-    17500,
-    20000,
-    22500,
-    25000,
-    27500,
-    30000,
-    32500,
-    35000,
-    37500,
-    40000,
-    45000,
-    50000,
-    55000,
-    60000,
-    65000,
-    70000,
-    75000,
-    80000,
-    85000,
-    100000,
-    110000,
-    120000,
-    130000,
-    140000,
-    150000,
-    160000,
-    170000,
-    180000,
-    190000,
-    200000,
-    1000000,
+    {xp:100,gems:0},
+    {xp:500,gems:0},
+    {xp:1000,gems:0},
+    {xp:1500,gems:0},
+    {xp:2000,gems:0},
+    {xp:2500,gems:0},
+    {xp:3000,gems:0},
+    {xp:3500,gems:0},
+    {xp:4000,gems:0},
+    {xp:4500,gems:0},
+    {xp:5000,gems:1},
+    {xp:6000,gems:1},
+    {xp:7000,gems:1},
+    {xp:8000,gems:1},
+    {xp:9000,gems:1},
+    {xp:10000,gems:1},
+    {xp:11000,gems:1},
+    {xp:12000,gems:1},
+    {xp:13000,gems:1},
+    {xp:14000,gems:1},
+    {xp:15000,gems:2},
+    {xp:17500,gems:2},
+    {xp:20000,gems:2},
+    {xp:22500,gems:2},
+    {xp:25000,gems:2},
+    {xp:27500,gems:2},
+    {xp:30000,gems:2},
+    {xp:32500,gems:2},
+    {xp:35000,gems:2},
+    {xp:37500,gems:2},
+    {xp:40000,gems:3},
+    {xp:45000,gems:3},
+    {xp:50000,gems:3},
+    {xp:55000,gems:3},
+    {xp:60000,gems:3},
+    {xp:65000,gems:3},
+    {xp:70000,gems:3},
+    {xp:75000,gems:3},
+    {xp:8000,gems:3},
+    {xp:85000,gems:3},
+    {xp:100000,gems:4},
+    {xp:150000,gems:4},
+    {xp:200000,gems:4},
+    {xp:250000,gems:4},
+    {xp:300000,gems:4},
+    {xp:350000,gems:4},
+    {xp:400000,gems:4},
+    {xp:450000,gems:4},
+    {xp:500000,gems:4},
+    {xp:550000,gems:4},
+    {xp:600000,gems:4},
+    {xp:1000000,gems:4},
 ];
 
 s = {
@@ -505,7 +505,7 @@ Actor = function(param){
                         if(Math.random() < 0.1){   
                             Player.list[self.parent].inventory.addItem('fish',1);
                         }
-                        if(Math.random() < 0.1){   
+                        if(Math.random() < 0.005){   
                             Player.list[self.parent].inventory.addItem('xpgem',1);
                         }
                         if(pt.monsterType === 'green'){
@@ -1089,8 +1089,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
-            self.xp += Math.round(10 * self.stats.xp);
-            self.inventory.addItem('xpgem',10);
+            self.xp += Math.round(2000 * self.stats.xp);
             self.currentResponse = 0;
         }
     }
@@ -1319,7 +1318,8 @@ Player = function(param){
         if(self.xp >= self.xpMax){
             self.xp = self.xp - self.xpMax;
             self.level += 1;
-            self.xpMax = xpLevels[self.level];
+            self.xpMax = xpLevels[self.level].xp;
+            self.inventory.addItem('xpgem',xpLevels[self.level].gems);
             var d = new Date();
             var m = '' + d.getMinutes();
             if(m.length === 1){
