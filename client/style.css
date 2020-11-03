@@ -386,7 +386,7 @@ button {
     position: absolute;
     left: 120px;
     top: 40px;
-    width: 300px;
+    width: 345px;
 }
 #inventoryExit {
     position: absolute;
@@ -770,4 +770,30 @@ button {
     padding: 0px;
     width: 465px;
     height: 372.6px;
+}
+.itemEquip {
+    position: relative;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #00ff00;
+    border: 1px solid #00aa00;
+    margin-left: 2px;
+}
+.itemDismantle {
+    position: relative;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #ff0000;
+    border: 1px solid #aa0000;
+    margin-left: 2px;
+}
+.itemEquip:hover {
+    background-color: #009900;
+}
+.itemDismantle:hover {
+    background-color: #990000;
 }

@@ -992,6 +992,11 @@ Player = function(param){
                 map:'Secret Base Basement',
                 moveSpeed:0,
                 monsterType:'red',
+                stats:{
+                    attack:100,
+                    defense:100,
+                    heal:1,
+                },
                 attackState:'none',
                 onDeath:function(pt){
                     pt.toRemove = true;
@@ -1003,6 +1008,7 @@ Player = function(param){
                     self.questInfo.monsterKilled = true;
                 },
             });
+            self.questInfo.monster.invincible = true;
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'What are you doing here!',
@@ -1071,6 +1077,7 @@ Player = function(param){
                 state:'remove',
             });
             self.questInfo.monster.attackState = 'passive';
+            self.questInfo.monster.invincible = false;
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'qWeirdHouse'){
@@ -2368,7 +2375,7 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map){
+                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
                     Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                 }
             }

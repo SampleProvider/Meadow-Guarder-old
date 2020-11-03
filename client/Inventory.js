@@ -157,17 +157,44 @@ Inventory = function(socket,server){
         var addButton = function(data,index){
             let item = Item.list[data.id];
             let button = document.createElement('button');
+            let equip = document.createElement('button');
+            let dismantle = document.createElement('button');
+            let div = document.createElement('div');
             let image = document.createElement('img');
             image.src = "/client/img/" + data.id + ".png";
             button.className = "UI-button-light";
+            div.className = "UI-display-light";
+            equip.className = "itemEquip";
+            dismantle.className = "itemDismantle";
             image.className = "item";
+            equip.innerHTML = "Equip";
+            dismantle.innerHTML = "Dismantle";
             button.onclick = function(){
-                self.socket.emit("useItem",item.id);
+                if(equip.style.display === 'none'){
+                    equip.style.display = 'inline-block';
+                    dismantle.style.display = 'inline-block';
+                }
+                else{
+                    equip.style.display = 'none';
+                    dismantle.style.display = 'none';
+                }
+                //self.socket.emit("useItem",item.id);
+            }
+            dismantle.onclick = function(){
+                self.socket.emit("dismantleItem",item.id);
+                dismantle.style.display = 'inline-block';
             }
             button.innerHTML = item.name + " x" + data.amount + " ";
-            button.style.top = index * 30 + 5;
+            button.style.display = 'inline-block';
+            button.style.position = 'relative';
+            div.style.display = 'inline-block';
+            div.style.position = 'relative';
+            div.style.margin = '0px';
             button.style.textAlign = "center";
-            inventory.appendChild(button);
+            inventory.appendChild(div);
+            div.appendChild(button);
+            div.appendChild(equip);
+            div.appendChild(dismantle);
             button.appendChild(image);
         }
 		for(var i = 0;i < self.items.length;i++){
@@ -183,6 +210,15 @@ Inventory = function(socket,server){
 
             let item = Item.list[itemId];
             item.eventClick(Player.list[self.socket.id]);
+        });
+        self.socket.on("dismantleItem",function(itemId){
+            if(!self.hasItem(itemId,1)){
+                console.log('cheater');
+                return;
+            }
+
+            self.removeItem(itemId,1);
+            Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 2000);
         });
     }
 

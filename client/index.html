@@ -219,9 +219,15 @@
 		var signDivCreateAccount = document.getElementById('createAccount');
 		var signDivDeleteAccount = document.getElementById('deleteAccount');
 		
-
+		var canSignIn = true;
 		signDivSignIn.onclick = function(){
-			socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+			if(canSignIn){
+				socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+				canSignIn = false;
+				setTimeout(() => {
+					canSignIn = true;
+				},2000);
+			}
 		}
 		signDivCreateAccount.onclick = function(){
 			socket.emit('createAccount',{username:signDivUsername.value,password:signDivPassword.value});
