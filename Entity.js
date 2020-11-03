@@ -51,6 +51,7 @@ var xpLevels = [
     {xp:550000,gems:4},
     {xp:600000,gems:4},
     {xp:1000000000000,gems:4},
+    {xp:Infinity,gems:4},
 ];
 
 s = {
