@@ -50,7 +50,7 @@ var xpLevels = [
     {xp:500000,gems:4},
     {xp:550000,gems:4},
     {xp:600000,gems:4},
-    {xp:1000000,gems:4},
+    {xp:1000000000000,gems:4},
 ];
 
 s = {
@@ -1319,7 +1319,9 @@ Player = function(param){
             self.xp = self.xp - self.xpMax;
             self.level += 1;
             self.xpMax = xpLevels[self.level].xp;
-            self.inventory.addItem('xpgem',xpLevels[self.level].gems);
+            if(xpLevels[self.level].gems > 0){
+                self.inventory.addItem('xpgem',xpLevels[self.level].gems);
+            }
             var d = new Date();
             var m = '' + d.getMinutes();
             if(m.length === 1){
