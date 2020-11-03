@@ -40,6 +40,16 @@ var xpLevels = [
     80000,
     85000,
     100000,
+    110000,
+    120000,
+    130000,
+    140000,
+    150000,
+    160000,
+    170000,
+    180000,
+    190000,
+    200000,
 ];
 
 s = {
@@ -774,7 +784,7 @@ Player = function(param){
     self.mg = 1000;
     self.mgMax = 1000;
     self.xp = 0;
-    self.xpMax = 500;
+    self.xpMax = 100;
     self.level = 0;
     self.direction = 0;
     self.map = 'Starter House';
@@ -1078,6 +1088,8 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.xp += Math.round(10 * self.stats.xp);
+            self.inventory.addItem('xpgem',10);
             self.currentResponse = 0;
         }
     }
