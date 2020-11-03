@@ -1,3 +1,46 @@
+var xpLevels = [
+    100,
+    500,
+    1000,
+    1500,
+    2000,
+    2500,
+    3000,
+    3500,
+    4000,
+    4500,
+    5000,
+    6000,
+    7000,
+    8000,
+    9000,
+    10000,
+    11000,
+    12000,
+    13000,
+    14000,
+    15000,
+    17500,
+    20000,
+    22500,
+    25000,
+    27500,
+    30000,
+    32500,
+    35000,
+    37500,
+    40000,
+    45000,
+    50000,
+    55000,
+    60000,
+    65000,
+    70000,
+    75000,
+    80000,
+    85000,
+    100000,
+];
 
 s = {
     findPlayers:function(param){
@@ -104,6 +147,8 @@ s = {
         }
     },
 };
+
+
 
 var playerMap = {
     'Cave':0,
@@ -449,12 +494,16 @@ Actor = function(param){
                         if(Math.random() < 0.1){   
                             Player.list[self.parent].inventory.addItem('fish',1);
                         }
+                        if(Math.random() < 0.1){   
+                            Player.list[self.parent].inventory.addItem('xpgem',1);
+                        }
                         if(pt.monsterType === 'green'){
                             Player.list[self.parent].inventory.addItem('orangefish',1);
                         }
                         if(pt.monsterType === 'blue'){
                             Player.list[self.parent].inventory.addItem('bluecandy',1);
                         }
+                        Player.list[self.parent].xp += Math.round(10 * Player.list[self.parent].stats.xp);
                     }
                 }
                 self.toRemove = true;
@@ -725,7 +774,8 @@ Player = function(param){
     self.mg = 1000;
     self.mgMax = 1000;
     self.xp = 0;
-    self.xpMax = 1000;
+    self.xpMax = 500;
+    self.level = 0;
     self.direction = 0;
     self.map = 'Starter House';
     playerMap[self.map] += 1;
@@ -771,12 +821,20 @@ Player = function(param){
             self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
         }
     }
+    if(param.param.xp){
+        self.xp = param.param.xp;
+    }
+    if(param.param.level){
+        self.level = param.param.level;
+        self.xpMax = xpLevels[self.level];
+    }
     self.inventory.refreshRender();
     self.questInventory.addQuestItem("potion",10);
     self.stats = {
         attack:1,
         defense:1,
         heal:1,
+        xp:1,
     }
     var lastSelf = {};
     self.update = function(){
@@ -821,7 +879,7 @@ Player = function(param){
                 for(var i in SOCKET_LIST){
                     SOCKET_LIST[i].emit('addToChat',{
                         style:'style="color: #ff0000">',
-                        message:self.username + ' died.'
+                        message:self.username + ' died.',
                     });
                 }
                 self.state = 'dead';
@@ -847,6 +905,7 @@ Player = function(param){
         self.updateQuest();
         self.updateMap();
         self.updateStats();
+        self.updateXp();
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
         }
@@ -1029,6 +1088,7 @@ Player = function(param){
                 attack:1,
                 defense:1,
                 heal:1,
+                xp:1,
             }
             self.hpMax = 1000;
             for(var i in self.inventory.items){
@@ -1242,6 +1302,28 @@ Player = function(param){
             self.y = self.mapHeight - self.height / 2;
         }
     }
+    self.updateXp = function(){
+        if(self.xp >= self.xpMax){
+            self.xp = self.xp - self.xpMax;
+            self.level += 1;
+            self.xpMax = xpLevels[self.level];
+            var d = new Date();
+            var m = '' + d.getMinutes();
+            if(m.length === 1){
+                m = '' + 0 + m;
+            }
+            if(m === '0'){
+                m = '00';
+            }
+            console.error("[" + d.getHours() + ":" + m + "] " + self.username + ' is now level ' + self.level + '.');
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('addToChat',{
+                    style:'style="color: #00ff00">',
+                    message:self.username + ' is now level ' + self.level + '.',
+                });
+            }
+        }
+    }
     self.updateAttack = function(){
         if(self.state !== 'dead'){
             if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
@@ -1323,6 +1405,18 @@ Player = function(param){
             pack.hpMax = self.hpMax;
             lastSelf.hpMax = self.hpMax;
         }
+        if(lastSelf.xp !== self.xp){
+            pack.xp = self.xp;
+            lastSelf.xp = self.xp;
+        }
+        if(lastSelf.xpMax !== self.xpMax){
+            pack.xpMax = self.xpMax;
+            lastSelf.xpMax = self.xpMax;
+        }
+        if(lastSelf.level !== self.level){
+            pack.level = self.level;
+            lastSelf.level = self.level;
+        }
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
@@ -1379,6 +1473,9 @@ Player = function(param){
         pack.spdY = self.spdY;
         pack.hp = self.hp;
         pack.hpMax = self.hpMax;
+        pack.xp = self.xp;
+        pack.xpMax = self.xpMax;
+        pack.level = self.level;
         pack.map = self.map;
         pack.username = self.username;
         pack.img = self.img;
@@ -1389,8 +1486,8 @@ Player = function(param){
         pack.healReload = self.healReload;
         pack.mapWidth = self.mapWidth;
         pack.mapHeight = self.mapHeight;
-        pack.type = self.type;
         pack.stats = self.stats;
+        pack.type = self.type;
         return pack;
     }
     Player.list[self.id] = self;
@@ -1717,35 +1814,17 @@ Monster = function(param){
         defense:1,
         heal:1,
     }
+    if(param.stats){
+        self.stats = param.stats;
+    }
     self.hp = 1000;
     self.hpMax = 1000;
+    if(param.hpMax){
+        self.hp = param.hpMax;
+        self.hpMax = param.hpMax;
+    }
     self.monsterType = param.monsterType;
-    if(self.monsterType === 'green'){
-        self.hp = 1000000;
-        self.hpMax = 1000000;
-        self.stats = {
-            attack:100,
-            defense:100,
-            heal:1,
-        }
-    }
-    if(self.monsterType === 'blue'){
-        self.hp = 1000000000;
-        self.hpMax = 1000000000;
-        self.stats = {
-            attack:1000000,
-            defense:1000000,
-            heal:1,
-        }
-    }
     if(self.monsterType === 'red'){
-        self.hp = 1000000;
-        self.hpMax = 1000000;
-        self.stats = {
-            attack:1000000000000000,
-            defense:1000000,
-            heal:1,
-        }
         self.width = 48;
         self.height = 48;
     }

@@ -215,12 +215,12 @@ Item("helmet","Helmet",function(player){
 
 });
 Item("bow","Bow",function(player){
-    player.stats.attack = player.stats.attack * 1.5;
+    player.stats.attack = player.stats.attack * 1.1;
 },function(player){
 
 });
 Item("fish","Red Fish",function(player){
-    player.hpMax = player.hpMax * 1.5;
+    player.hpMax = player.hpMax * 1.1;
 },function(player){
 
 });
@@ -230,12 +230,12 @@ Item("orangefish","Orange Fish",function(player){
 
 });
 Item("shield","Shield",function(player){
-    player.stats.defense = player.stats.defense * 2;
+    player.stats.defense = player.stats.defense * 1.5;
 },function(player){
 
 });
 Item("amulet","Amulet",function(player){
-    player.stats.heal = player.stats.heal * 2;
+    player.stats.heal = player.stats.heal * 1.1;
 },function(player){
 
 });
@@ -254,6 +254,11 @@ Item("bluecandy","Blue Candy",function(player){
 Item("bluecandyc","Blue Candy",function(player){
     player.textColor = "0090ff";
     player.inventory.removeItem("bluecandyc",1);
+},function(player){
+
+});
+Item("xpgem","XP Gem",function(player){
+    player.stats.xp = player.stats.xp * 1.1;
 },function(player){
 
 });

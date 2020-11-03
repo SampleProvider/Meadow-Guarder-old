@@ -114,8 +114,14 @@
 				<div id="healthBarValue"></div>
 				<div id="healthBarText"></div>
 			</div>
-			<div id="magicBar"></div>
-			<div id="xpBar"></div>
+			<div id="xpBar">
+				<div id="xpBarValue"></div>
+				<div id="xpBarText"></div>
+			</div>
+			<div id="magicBar">
+				<div id="magicBarValue"></div>
+				<div id="magicBarText"></div>
+			</div>
 		</div>
 		<div id="menu" onmouseover="mouseUp(event)">
 			<button id="menuDropdown" class="UI-button-light" onclick="useMenuDropdown()">Menu &#x25BC;</button>
@@ -175,7 +181,19 @@
 
 		var DEBUG = 0;
 		
-		var socket = io();
+		var socket = io({
+			reconnection:false,
+		});
+		socket.on('connect_error',function(){
+			setTimeout(function(){
+				socket.connect();
+			},1000);
+		});
+		socket.on('disconnect',function(){
+			setTimeout(function(){
+				socket.connect();
+			},1000);
+		});
 
 		var gameDiv = document.getElementById('gameDiv');
 		var mainAttackDiv = document.getElementById('mainAttack');
@@ -192,6 +210,8 @@
 		var blackShade = document.getElementById('blackShade');
 		var healthBarText = document.getElementById('healthBarText');
 		var healthBarValue = document.getElementById('healthBarValue');
+		var xpBarText = document.getElementById('xpBarText');
+		var xpBarValue = document.getElementById('xpBarValue');
 		var interactMenu = document.getElementById('interactMenu');
 		var signDivUsername = document.getElementById('username');
 		var signDivPassword = document.getElementById('password');
@@ -664,6 +684,9 @@
 			self.direction = initPack.direction;
 			self.hp = initPack.hp;
 			self.hpMax = initPack.hpMax;
+			self.xp = initPack.xp;
+			self.xpMax = initPack.xpMax;
+			self.level = initPack.level;
 			self.map = initPack.map;
 			self.attackReload = initPack.attackReload;
 			self.secondReload = initPack.secondReload;
@@ -792,8 +815,10 @@
 				healDiv.innerHTML = "Heal: " + self.healReload / 25;
 				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
 				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
-				document.getElementById('stat-attack').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.'
-				document.getElementById('stat-defense').innerHTML = 'Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.'
+				xpBarText.innerHTML = self.xp + " / " + self.xpMax;
+				xpBarValue.style.width = "" + 150 * self.xp / self.xpMax;
+				document.getElementById('stat-attack').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.';
+				document.getElementById('stat-defense').innerHTML = 'Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.<br>You are level ' + self.level + '.<br>You will get ' + Math.round(self.stats.xp * 10) + ' xp per monster killed.';
 			}
 			self.drawLight = function(){
 				if(self.id !== selfId){
@@ -1056,6 +1081,15 @@
 							}
 							if(data.player[i].hpMax){
 								Player.list[data.player[i].id].hpMax = data.player[i].hpMax;
+							}
+							if(data.player[i].xp){
+								Player.list[data.player[i].id].xp = data.player[i].xp;
+							}
+							if(data.player[i].xpMax){
+								Player.list[data.player[i].id].xpMax = data.player[i].xpMax;
+							}
+							if(data.player[i].level){
+								Player.list[data.player[i].id].level = data.player[i].level;
 							}
 							if(data.player[i].map){
 								Player.list[data.player[i].id].map = data.player[i].map;

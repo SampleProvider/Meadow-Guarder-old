@@ -420,7 +420,7 @@ button {
     left: 0px;
     top: 0px;
     width: 160px;
-    height: 75px;
+    height: 80px;
     background-color: #362a1e;
     border: 1px solid #000000;
 }
@@ -444,6 +444,64 @@ button {
     background-color: #ff0000;
 }
 #healthBarText {
+    position: absolute;
+    left: 0px;
+    top: -2px;
+    width: 150px;
+    height: 20px;
+    font-family: "pixel";
+    text-align: center;
+    color: #ffffff;
+}
+#xpBar {
+    position: absolute;
+    left: 5px;
+    top: 30px;
+    width: 150px;
+    height: 20px;
+    font-family: "pixel";
+    text-align: center;
+    color: #ffffff;
+    background-color: #000000;
+}
+#xpBarValue {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 150px;
+    height: 20px;
+    background-color: #cccc00;
+}
+#xpBarText {
+    position: absolute;
+    left: 0px;
+    top: -2px;
+    width: 150px;
+    height: 20px;
+    font-family: "pixel";
+    text-align: center;
+    color: #ffffff;
+}
+#magicBar {
+    position: absolute;
+    left: 5px;
+    top: 55px;
+    width: 150px;
+    height: 20px;
+    font-family: "pixel";
+    text-align: center;
+    color: #ffffff;
+    background-color: #000000;
+}
+#magicBarValue {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 150px;
+    height: 20px;
+    background-color: #cc00cc;
+}
+#magicBarText {
     position: absolute;
     left: 0px;
     top: -2px;
