@@ -101,6 +101,9 @@ io.sockets.on('connection',function(socket){
 			if(m.length === 1){
 				m = '' + 0 + m;
 			}
+			if(m === '0'){
+				m = '00';
+			}
 			console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data);
 			for(var i in SOCKET_LIST){
 				SOCKET_LIST[i].emit('addToChat',{

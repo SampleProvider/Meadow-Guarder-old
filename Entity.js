@@ -806,9 +806,12 @@ Player = function(param){
             if(self.state !== 'dead'){
                 Player.spectate(socket);
                 var d = new Date();
-                var m = d.getMinutes();
+                var m = '' + d.getMinutes();
                 if(m.length === 1){
                     m = '' + 0 + m;
+                }
+                if(m === '0'){
+                    m = '00';
                 }
                 console.error("[" + d.getHours() + ":" + m + "] " + self.username + ' died.');
                 for(var i in SOCKET_LIST){
@@ -853,6 +856,10 @@ Player = function(param){
                 }
                 if(self.questStage === 1){
                     self.questStage += 1;
+                    socket.emit('notification',{state:'add',message:'You started the quest qtest'});
+                    setTimeout(function(){
+                        socket.emit('notification',{state:'remove'});
+                    },3000);
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Can you go to the Cave map?',
@@ -877,18 +884,14 @@ Player = function(param){
                 }
                 if(self.questStage === 1){
                     self.questStage += 1;
+                    socket.emit('notification',{state:'add',message:'You started the quest qfish'});
+                    setTimeout(function(){
+                        socket.emit('notification',{state:'remove'});
+                    },3000);
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Hi!',
                         response1:'Hey.',
-                    });
-                }
-                if(self.questStage === 4){
-                    self.questStage += 1;
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Thank you.',
-                        response1:'*End conversation*',
                     });
                 }
                 self.keyPress.attack = false;
@@ -900,6 +903,10 @@ Player = function(param){
                 }
                 if(self.questStage === 1){
                     self.questStage += 1;
+                    socket.emit('notification',{state:'add',message:'You started the quest qbread'});
+                    setTimeout(function(){
+                        socket.emit('notification',{state:'remove'});
+                    },3000);
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Hi!',
@@ -918,6 +925,10 @@ Player = function(param){
                 }
                 if(self.questStage === 1){
                     self.questStage += 1;
+                    socket.emit('notification',{state:'add',message:'You started the quest qmonsters'});
+                    setTimeout(function(){
+                        socket.emit('notification',{state:'remove'});
+                    },3000);
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'WHY DID YOU CLICK ON ME!!!',
@@ -926,6 +937,10 @@ Player = function(param){
                 }
                 if(self.questStage === 4){
                     self.questStage += 1;
+                    socket.emit('notification',{state:'add',message:'You completed the quest qmonsters'});
+                    setTimeout(function(){
+                        socket.emit('notification',{state:'remove'});
+                    },3000);
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Thanks.',
@@ -944,6 +959,10 @@ Player = function(param){
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'test'){
             self.quest = 'none';
+            socket.emit('notification',{state:'add',message:'You failed the quest qfish'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -951,6 +970,10 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'test'){
             self.quest = 'none';
+            socket.emit('notification',{state:'add',message:'You completed the quest qtest'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -958,9 +981,10 @@ Player = function(param){
         }
         if(self.map === "Cave" && self.quest === 'test' && self.questStage === 3){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
-                state:'remove',
-            });
+            socket.emit('notification',{state:'add',message:'Now go back to Bob.'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'fish'){
             self.questStage += 1;
@@ -974,6 +998,10 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'fish'){
             self.quest = 'none';
+            socket.emit('notification',{state:'add',message:'You failed the quest qfish'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -999,6 +1027,10 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'fish'){
             self.quest = 'none';
+            socket.emit('notification',{state:'add',message:'You completed the quest qfish'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1006,6 +1038,10 @@ Player = function(param){
         }
         if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'bread'){
             self.quest = 'none';
+            socket.emit('notification',{state:'add',message:'You completed the quest qbread'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1014,6 +1050,10 @@ Player = function(param){
         }
         if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'monsters'){
             self.questStage += 1;
+            socket.emit('notification',{state:'add',message:'Kill the Monster!'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1044,6 +1084,10 @@ Player = function(param){
         }
         if(self.currentResponse !== 0 && self.questStage === 5 && self.quest === 'monsters'){
             self.quest = 'none';
+            socket.emit('notification',{state:'add',message:'You completed the quest qmonsters'});
+            setTimeout(function(){
+                socket.emit('notification',{state:'remove'});
+            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1127,9 +1171,12 @@ Player = function(param){
                 }
             }
             var d = new Date();
-			var m = d.getMinutes();
+			var m = '' + d.getMinutes();
 			if(m.length === 1){
 				m = '' + 0 + m;
+			}
+			if(m === '0'){
+				m = '00';
 			}
             console.error("[" + d.getHours() + ":" + m + "] " + self.username + " went to map " + self.map + ".");
             for(var i in SOCKET_LIST){
@@ -1479,11 +1526,14 @@ Player.onConnect = function(socket,username){
         });
 
         socket.on('respawn',function(data){
-            player.hp = player.hpMax / 2;
+            player.hp = Math.round(player.hpMax / 2);
             var d = new Date();
-			var m = d.getMinutes();
+			var m = '' + d.getMinutes();
 			if(m.length === 1){
 				m = '' + 0 + m;
+			}
+			if(m === '0'){
+				m = '00';
 			}
             console.error("[" + d.getHours() + ":" + m + "] " + player.username + ' respawned.');
             for(var i in SOCKET_LIST){
@@ -1518,9 +1568,12 @@ Player.onConnect = function(socket,username){
         socket.emit('update',pack);
     });
     var d = new Date();
-    var m = d.getMinutes();
+    var m = '' + d.getMinutes();
     if(m.length === 1){
         m = '' + 0 + m;
+    }
+    if(m === '0'){
+        m = '00';
     }
     console.error("[" + d.getHours() + ":" + m + "] " + username + " just logged on.");
     for(var i in SOCKET_LIST){
@@ -1564,9 +1617,12 @@ Player.onDisconnect = function(socket){
     if(Player.list[socket.id]){
         storeDatabase(Player.list);
         var d = new Date();
-        var m = d.getMinutes();
+        var m = '' + d.getMinutes();
         if(m.length === 1){
             m = '' + 0 + m;
+        }
+        if(m === '0'){
+            m = '00';
         }
         console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " logged off.");
         for(var i in SOCKET_LIST){

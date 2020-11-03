@@ -660,3 +660,26 @@ button {
     color: #ffffff;
     user-select: none;
 }
+#notifications {
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+    width: 440px;
+    height: 320px;
+    user-select: none;
+    cursor: crosshair;
+}
+.notificationMessage {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    font-family: 'pixel';
+    font-size: 15px;
+    padding: 8px;
+    text-align: center;
+    color: #ffffff;
+    vertical-align: bottom;
+    background-color: #362a1e;
+    border: 1px solid #000000;
+    user-select: none;
+}

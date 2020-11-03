@@ -123,6 +123,8 @@
 			<button id="interactMenuButton3" class="interactMenuButton UI-button-light" onclick="response(3)">HAHAHAHA!</button>
 			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)">NO IM NOT!</button>
 		</div>
+
+		<div id="notifications" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
 	</div>
 	<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
 		<div class="death-screen"></div>
@@ -1256,6 +1258,15 @@
 				talking = true;
 			}
 		});
+		socket.on('notification',function(data){
+			if(data.state === 'add'){
+				document.getElementById('notifications').innerHTML += '<div class="notificationMessage">' + data.message + '</div>';
+			}
+			else if(data.state === 'remove'){
+				document.getElementById('notifications').innerHTML = "";
+			}
+		});
+		
 		var response = function(data){
 			socket.emit('diolougeResponse',data);
 		}
@@ -1534,10 +1545,13 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
-				if(event.keyCode === 9){
+				if(event.keyCode < 30){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
-				if(event.keyCode > 15 && event.keyCode < 19){
+				if(event.keyCode > 32 && event.keyCode < 48){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
+				if(event.keyCode > 57 && event.keyCode < 65){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				if(event.keyCode > 90){
@@ -1616,7 +1630,16 @@
 			if(Player.list[selfId]){
 				var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
 				var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
-				if(event.clientY < 0){
+				if(event.clientY <= 0){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
+				if(event.clientY >= window.innerHeight){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
+				if(event.clientX <= 0){
+					socket.emit('keyPress',{inputId:'releaseAll'});
+				}
+				if(event.clientX >= window.innerWidth){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				mouseX = event.clientX - WIDTH / 2;
@@ -1625,6 +1648,9 @@
 					socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
 				}
 			}
+		}
+		document.documentElement.onclick = function(){
+			socket.emit('keyPress',{inputId:"releaseAll",state:true});
 		}
 		document.querySelectorAll("button").forEach(function(item){
 			item.addEventListener('focus',function(){
