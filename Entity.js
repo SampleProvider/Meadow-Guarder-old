@@ -179,6 +179,7 @@ Entity.getFrameUpdateData = function(){
         'House':{player:[],projectile:[],monster:[],npc:[]},
         'River':{player:[],projectile:[],monster:[],npc:[]},
         'Secret Base':{player:[],projectile:[],monster:[],npc:[]},
+        'Secret Base Basement':{player:[],projectile:[],monster:[],npc:[]},
         'Lilypad Path Part 1':{player:[],projectile:[],monster:[],npc:[]},
         'The Outskirts':{player:[],projectile:[],monster:[],npc:[]},
         'Lower Deadlands':{player:[],projectile:[],monster:[],npc:[]},
@@ -403,14 +404,17 @@ Actor = function(param){
         if(playerMap[map] === undefined){
             return;
         }
-        self.x = x;
-        self.y = y;
-        self.spdX = 0;
-        self.spdY = 0;
-        self.map = map;
-        self.moveArray = [];
-        self.mapWidth = Maps[map].width;
-        self.mapHeight = Maps[map].height;
+        self.invincible = true;
+        if(self.mapChange > 10){
+            self.mapChange = 0;
+        }
+        self.transporter = {
+            teleport:map,
+            teleportx:x,
+            teleporty:y,
+            mapx:Maps[map].width,
+            mapy:Maps[map].height,
+        };
     }
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
@@ -840,8 +844,8 @@ Player = function(param){
         if(!self.invincible){
             self.updateAttack();
         }
-        self.updateMap();
         self.updateQuest();
+        self.updateMap();
         self.updateStats();
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
@@ -851,96 +855,21 @@ Player = function(param){
         for(var i in Npc.list){
             if(Npc.list[i].map === self.map && Npc.list[i].username === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
                 if(self.quest === 'none'){
-                    self.quest = 'test';
+                    self.quest = 'qWeirdHouse';
                     self.questStage = 1;
                 }
                 if(self.questStage === 1){
                     self.questStage += 1;
-                    socket.emit('notification',{state:'add',message:'You started the quest qtest'});
-                    setTimeout(function(){
-                        socket.emit('notification',{state:'remove'});
-                    },3000);
+                    self.questInfo.started = false;
                     socket.emit('dialougeLine',{
                         state:'ask',
-                        message:'Can you go to the Cave map?',
+                        message:'Can you inventigate a weird house?',
                         response1:'Sure.',
                         response2:'No.',
                     });
                 }
-                if(self.questStage === 4){
+                if(self.questStage === 12){
                     self.questStage += 1;
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Thank you.',
-                        response1:'*End conversation*',
-                    });
-                }
-                self.keyPress.attack = false;
-            }
-            if(Npc.list[i].map === self.map && Npc.list[i].username === 'mark' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
-                if(self.quest === 'none'){
-                    self.quest = 'fish';
-                    self.questStage = 1;
-                }
-                if(self.questStage === 1){
-                    self.questStage += 1;
-                    socket.emit('notification',{state:'add',message:'You started the quest qfish'});
-                    setTimeout(function(){
-                        socket.emit('notification',{state:'remove'});
-                    },3000);
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Hi!',
-                        response1:'Hey.',
-                    });
-                }
-                self.keyPress.attack = false;
-            }
-            if(Npc.list[i].map === self.map && Npc.list[i].username === 'bread' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
-                if(self.quest === 'none'){
-                    self.quest = 'bread';
-                    self.questStage = 1;
-                }
-                if(self.questStage === 1){
-                    self.questStage += 1;
-                    socket.emit('notification',{state:'add',message:'You started the quest qbread'});
-                    setTimeout(function(){
-                        socket.emit('notification',{state:'remove'});
-                    },3000);
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Hi!',
-                        response1:'Hello!',
-                        response2:'Hey!',
-                        response3:'Hi!',
-                        response4:'I\'m here!',
-                    });
-                }
-                self.keyPress.attack = false;
-            }
-            if(Npc.list[i].map === self.map && Npc.list[i].username === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
-                if(self.quest === 'none'){
-                    self.quest = 'monsters';
-                    self.questStage = 1;
-                }
-                if(self.questStage === 1){
-                    self.questStage += 1;
-                    socket.emit('notification',{state:'add',message:'You started the quest qmonsters'});
-                    setTimeout(function(){
-                        socket.emit('notification',{state:'remove'});
-                    },3000);
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'WHY DID YOU CLICK ON ME!!!',
-                        response1:'...',
-                    });
-                }
-                if(self.questStage === 4){
-                    self.questStage += 1;
-                    socket.emit('notification',{state:'add',message:'You completed the quest qmonsters'});
-                    setTimeout(function(){
-                        socket.emit('notification',{state:'remove'});
-                    },3000);
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Thanks.',
@@ -950,122 +879,50 @@ Player = function(param){
                 self.keyPress.attack = false;
             }
         }
-        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'test'){
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            socket.emit('questInfo',{
+                questName:'Weird House',
+                questDescription:'Invenstigate a weird house in the map Forest. Go on a big boss battle against the Monster Boss.',
+            });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'test'){
+        if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'qWeirdHouse'){
             self.quest = 'none';
-            socket.emit('notification',{state:'add',message:'You failed the quest qfish'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'test'){
-            self.quest = 'none';
-            socket.emit('notification',{state:'add',message:'You completed the quest qtest'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
-            socket.emit('dialougeLine',{
-                state:'remove',
-            });
-            self.currentResponse = 0;
-        }
-        if(self.map === "Cave" && self.quest === 'test' && self.questStage === 3){
-            self.questStage += 1;
-            socket.emit('notification',{state:'add',message:'Now go back to Bob.'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
-        }
-        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'fish'){
+        if(self.questInfo.started === true && self.questStage === 3 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'ask',
-                message:'I\'m so HAPPY!',
-                response1:'Good for you!',
-                response2:'Why?',
+                message:'There is an old house in the map Forest. Go in and inventigate.',
+                response1:'*End conversation*',
             });
-            self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'fish'){
-            self.quest = 'none';
-            socket.emit('notification',{state:'add',message:'You failed the quest qfish'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
-            socket.emit('dialougeLine',{
-                state:'remove',
-            });
-            self.currentResponse = 0;
-        }
-        if(self.currentResponse === 2 && self.questStage === 3 && self.quest === 'fish'){
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
             socket.emit('dialougeLine',{
-                state:'ask',
-                message:'I don\'t know! My happiness value is stuck at 101!',
-                response1:'Coooool! I have to fix this bug.',
+                state:'remove',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'fish'){
+        if(self.x < 896 && self.map === 'Secret Base Basement' && self.quest === 'qWeirdHouse' && self.questStage === 5 && self.mapChange > 10){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
-                state:'ask',
-                message:'No! You are not changing my happiness value!',
-                response1:'Ok fine.',
-            });
-            self.currentResponse = 0;
-        }
-        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'fish'){
-            self.quest = 'none';
-            socket.emit('notification',{state:'add',message:'You completed the quest qfish'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
-            socket.emit('dialougeLine',{
-                state:'remove',
-            });
-            self.currentResponse = 0;
-        }
-        if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'bread'){
-            self.quest = 'none';
-            socket.emit('notification',{state:'add',message:'You completed the quest qbread'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
-            socket.emit('dialougeLine',{
-                state:'remove',
-            });
-            self.currentResponse = 0;
-            self.inventory.addItem('bow',1);
-        }
-        if(self.currentResponse !== 0 && self.questStage === 2 && self.quest === 'monsters'){
-            self.questStage += 1;
-            socket.emit('notification',{state:'add',message:'Kill the Monster!'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
-            socket.emit('dialougeLine',{
-                state:'remove',
-            });
-            self.currentResponse = 0;
             self.questInfo.monsterKilled = false;
-            var monster = new Monster({
+            self.questInfo.monster = new Monster({
                 spawnId:0,
-                x:1152,
-                y:1472,
-                map:"Lower Deadlands",
-                moveSpeed:15,
-                monsterType:'green',
+                x:512,
+                y:320,
+                map:'Secret Base Basement',
+                moveSpeed:0,
+                monsterType:'red',
+                attackState:'none',
                 onDeath:function(pt){
                     pt.toRemove = true;
                     for(var i in Projectile.list){
@@ -1076,18 +933,89 @@ Player = function(param){
                     self.questInfo.monsterKilled = true;
                 },
             });
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'What are you doing here!',
+                response1:'Uhh, nothing.',
+                response2:'A guy called Bob told be to come here.',
+                response3:'I am going to kill you.',
+                response4:'I want the gold behind you.',
+            });
         }
-        if(self.questStage === 3 && self.quest === 'monsters'){
-            if(self.questInfo.monsterKilled){
-                self.questStage += 1;
-            }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'qWeirdHouse'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Then get out of my den!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
         }
-        if(self.currentResponse !== 0 && self.questStage === 5 && self.quest === 'monsters'){
+        if(self.currentResponse === 2 && self.questStage === 6 && self.quest === 'qWeirdHouse'){
+            self.questStage += 2;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Bob? Oh, do you mean that person in the Village?',
+                response1:'Yes. He said go invenstigate the weird house in the Forest.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 3 && self.questStage === 6 && self.quest === 'qWeirdHouse'){
+            self.questStage += 3;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'You want to kill me? Then go ahead and try!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 4 && self.questStage === 6 && self.quest === 'qWeirdHouse'){
+            self.questStage += 3;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'You want the gold behind me? Then go ahead and try!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'qWeirdHouse'){
+            self.questStage = 5;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.teleport(2816,1920,'River');
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'qWeirdHouse'){
+            self.questStage += 2;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Bob is crazy. You shouldn\'t believe him.',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'qWeirdHouse'){
+            self.questStage += 2;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.questInfo.monster.attackState = 'passive';
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'qWeirdHouse'){
+            self.questStage = 5;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.teleport(2816,1920,'River');
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.monsterKilled === true && self.questStage === 11 && self.quest === 'qWeirdHouse'){
+            self.questStage += 1;
+        }
+        if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'qWeirdHouse'){
             self.quest = 'none';
-            socket.emit('notification',{state:'add',message:'You completed the quest qmonsters'});
-            setTimeout(function(){
-                socket.emit('notification',{state:'remove'});
-            },3000);
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1125,7 +1053,6 @@ Player = function(param){
     self.updateMap = function(){
         if(self.mapChange === 0){
             socket.emit('changeMap',self.transporter);
-            self.canMove = false;
         }
         if(self.mapChange === 5){
             playerMap[self.map] -= 1;
@@ -1207,6 +1134,7 @@ Player = function(param){
                 }
             }
             socket.emit('update',pack);
+            self.canMove = false;
             for(var i in Player.list){
                 if(Player.list[i]){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
@@ -1544,6 +1472,10 @@ Player.onConnect = function(socket,username){
             }
         });
 
+        socket.on('startQuest',function(data){
+            player.questInfo.started = true;
+        });
+
         var pack = {player:[],projectile:[],monster:[],npc:[]};
         for(var i in Player.list){
             if(Player.list[i].map === player.map){
@@ -1806,6 +1738,20 @@ Monster = function(param){
             heal:1,
         }
     }
+    if(self.monsterType === 'red'){
+        self.hp = 1000000;
+        self.hpMax = 1000000;
+        self.stats = {
+            attack:1000000000000000,
+            defense:1000000,
+            heal:1,
+        }
+        self.width = 48;
+        self.height = 48;
+    }
+    if(param.attackState){
+        self.attackState = param.attackState;
+    }
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -1896,6 +1842,7 @@ Monster = function(param){
         return pack;
     }
     Monster.list[self.id] = self;
+    return self;
 }
 Monster.list = {};
 
@@ -2254,6 +2201,8 @@ var renderLayer = function(layer,data,loadedMap){
                 var teleporty = "";
                 var teleportyj = 0;
                 var direction = "";
+                var directionj = "";
+                var requirements = "none";
                 for(var j = 0;j < layer.name.length;j++){
                     if(layer.name[j] === ':'){
                         if(teleport === ""){
@@ -2270,6 +2219,10 @@ var renderLayer = function(layer,data,loadedMap){
                         }
                         else if(direction === ""){
                             direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
+                            directionj = j;
+                        }
+                        else if(direction === ""){
+                            requirements = layer.name.substr(directionj + 1,j - directionj - 1);
                         }
                     }
                 }
@@ -2282,6 +2235,7 @@ var renderLayer = function(layer,data,loadedMap){
                     teleporty:teleporty,
                     direction:direction,
                     map:map,
+                    requirements:requirements,
                 });
             }
         }
@@ -2305,6 +2259,7 @@ load("Starter House");
 load("Cave");
 load("House");
 load("Secret Base");
+load("Secret Base Basement");
 
 updateCrashes = function(){
     for(var i in Player.list){

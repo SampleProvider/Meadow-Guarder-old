@@ -57,46 +57,55 @@
 			<div class="window-body">
 				Window body
 			</div>
-			<div id="inventory">
-				<div id="inventoryPlayer" class="UI-text-light">
-					<div id="inventoryPlayerName"></div>
-					<canvas id="inventoryPlayerDisplay"></canvas>
+			<div id="windowMain">
+
+				<div id="inventory">
+					<div id="inventoryPlayer" class="UI-text-light">
+						<div id="inventoryPlayerName"></div>
+						<canvas id="inventoryPlayerDisplay"></canvas>
+					</div>
+					<div id="inventoryItem"></div>
 				</div>
-				<div id="inventoryItem"></div>
+				<div id="debugScreen" style="display: none;">
+					<div id="debug-text" class="UI-text-light">
+						<div>Debug info will show up here.</div>
+					</div>
+
+					<form id="debug-form" autocomplete="off">
+						<input id="debug-input" class="UI-input-light" type="text"></input>
+					</form>
+				</div>
+				<div id="statScreen" style="display: none;">
+					<div id="stat-text" class="UI-text-light">
+						<div id="stat-attack">Attack Power:</div>
+						<div id="stat-defense">Defense Power:</div>
+					</div>
+
+				</div>
+				<div id="questScreen" style="display: none;">
+					<div id="questName">Weird House</div>
+					<div id="questDescription">Invenstigate a weird house in the map Forest. Go on a big boss battle against the Monster Boss.</div>
+					<button id="questStart" onclick="startQuest()">Start Quest</button>
+				</div>
 			</div>
 			
 			<div id="menu-text" class="UI-text-light">
 				<button id="inventoryButton" class="UI-button-light menuButton">Inventory</button>
 				<button id="debugButton" class="UI-button-light menuButton">Debug</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
-			</div>
-			<div id="debugScreen" style="display: none;">
-				<div id="debug-text" class="UI-text-light">
-					<div>Debug info will show up here.</div>
-				</div>
-
-				<form id="debug-form" autocomplete="off">
-					<input id="debug-input" class="UI-input-light" type="text"></input>
-				</form>
-			</div>
-			<div id="statScreen" style="display: none;">
-				<div id="stat-text" class="UI-text-light">
-					<div id="stat-attack">Attack Power:</div>
-					<div id="stat-defense">Defense Power:</div>
-				</div>
-
+				<button id="questButton" class="UI-button-light menuButton">Quests</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
+				<button class="UI-button-light menuButton">Useless</button>
 			</div>
 		</div>
 		<button id="worldMapButton" class="UI-button-light" style="display:none;">World Map [M]</button>
@@ -124,7 +133,6 @@
 			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)">NO IM NOT!</button>
 		</div>
 
-		<div id="notifications" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
 	</div>
 	<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
 		<div class="death-screen"></div>
@@ -425,6 +433,8 @@
 		Img.monsterGreen.src = '/client/img/Monster Green.png';
 		Img.monsterBlue = new Image();
 		Img.monsterBlue.src = '/client/img/Monster Blue.png';
+		Img.monsterBoss = new Image();
+		Img.monsterBoss.src = '/client/img/Monster Boss.png';
 		Img.npc = new Image();
 		Img.npc.src = '/client/img/Player Map Npc 2.png';
 		Img.bullet = new Image();
@@ -460,6 +470,7 @@
 		loadMap('House');
 		loadMap('Cave');
 		loadMap('Secret Base');
+		loadMap('Secret Base Basement');
 		
 		var mapChange = 0;
 		var mapDirection = 'up';
@@ -586,6 +597,7 @@
 				menu = 'debug';
 				document.getElementById('inventory').style.display = 'none';
 				document.getElementById('statScreen').style.display = 'none';
+				document.getElementById('questScreen').style.display = 'none';
 				document.getElementById('debugScreen').style.display = 'inline-block';
 			}
 			else{
@@ -598,6 +610,7 @@
 				menu = 'inventory';
 				document.getElementById('debugScreen').style.display = 'none';
 				document.getElementById('statScreen').style.display = 'none';
+				document.getElementById('questScreen').style.display = 'none';
 				document.getElementById('inventory').style.display = 'inline-block';
 			}
 			else{
@@ -610,11 +623,25 @@
 				menu = 'stat';
 				document.getElementById('inventory').style.display = 'none';
 				document.getElementById('debugScreen').style.display = 'none';
+				document.getElementById('questScreen').style.display = 'none';
 				document.getElementById('statScreen').style.display = 'inline-block';
 			}
 			else{
 				menu = 'none';
 				document.getElementById('statScreen').style.display = 'none';
+			}
+		}
+		document.getElementById('questButton').onclick = function(){
+			if(menu !== 'quest'){
+				menu = 'quest';
+				document.getElementById('inventory').style.display = 'none';
+				document.getElementById('debugScreen').style.display = 'none';
+				document.getElementById('statScreen').style.display = 'none';
+				document.getElementById('questScreen').style.display = 'inline-block';
+			}
+			else{
+				menu = 'none';
+				document.getElementById('questScreen').style.display = 'none';
 			}
 		}
 		document.getElementById('worldMapExit').onclick = function(){
@@ -892,6 +919,9 @@
 				else if(self.monsterType === 'blue'){
 					ctx.drawImage(Img.monsterBlue,self.x - 12,self.y - 18);
 				}
+				else if(self.monsterType === 'red'){
+					ctx.drawImage(Img.monsterBoss,self.x - 24,self.y - 36);
+				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
@@ -899,8 +929,14 @@
 				}
 			}
 			self.drawHp = function(){
-				ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 45,126,15);
-				ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 45,126 * self.hp / self.hpMax,15);
+				if(self.monsterType === 'red'){
+					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 65,126,15);
+					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 65,126 * self.hp / self.hpMax,15);
+				}
+				else{
+					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 45,126,15);
+					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 45,126 * self.hp / self.hpMax,15);
+				}
 			}
 			Monster.list[self.id] = self;
 			return self;
@@ -1258,15 +1294,23 @@
 				talking = true;
 			}
 		});
-		socket.on('notification',function(data){
-			if(data.state === 'add'){
-				document.getElementById('notifications').innerHTML += '<div class="notificationMessage">' + data.message + '</div>';
-			}
-			else if(data.state === 'remove'){
-				document.getElementById('notifications').innerHTML = "";
-			}
+		socket.on('questInfo',function(data){
+			document.getElementById('questName').innerHTML = data.questName;
+			document.getElementById('questDescription').innerHTML = data.questDescription;
+			menu = 'quest';
+			document.getElementById('inventory').style.display = 'none';
+			document.getElementById('debugScreen').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'inline-block';
+			document.getElementById('window').style.display = 'inline-block';
+			state.isHidden = false;
 		});
-		
+		startQuest = function(){
+			socket.emit('startQuest');
+			document.getElementById('window').style.display = 'none';
+			state.isHidden = true;
+		};
+
 		var response = function(data){
 			socket.emit('diolougeResponse',data);
 		}
@@ -1545,7 +1589,7 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
-				if(event.keyCode < 30){
+				/*if(event.keyCode < 30){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				if(event.keyCode > 32 && event.keyCode < 48){
@@ -1556,7 +1600,7 @@
 				}
 				if(event.keyCode > 90){
 					socket.emit('keyPress',{inputId:'releaseAll'});
-				}
+				}*/
 				if(!talking){
 					socket.emit('keyPress',{inputId:event.keyCode,state:true});
 				}

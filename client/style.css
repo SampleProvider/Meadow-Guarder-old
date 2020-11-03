@@ -349,7 +349,7 @@ button {
 #inventoryPlayer {
     position: relative;
     left: 4px;
-    top: 4px;
+    top: 40px;
     width: 88px;
     height: 164px;
     background-color: #1d1100;
@@ -385,7 +385,7 @@ button {
 #inventoryItem {
     position: absolute;
     left: 120px;
-    top: 80px;
+    top: 40px;
     width: 300px;
 }
 #inventoryExit {
@@ -596,6 +596,7 @@ button {
 }
 
 .window-body {
+    position: absolute;
     margin: 1em;
     color: #ffffff;
 }
@@ -660,26 +661,52 @@ button {
     color: #ffffff;
     user-select: none;
 }
-#notifications {
+
+#questName {
     position: absolute;
-    right: 10px;
-    bottom: 5px;
-    width: 440px;
-    height: 320px;
-    user-select: none;
-    cursor: crosshair;
-}
-.notificationMessage {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
     font-family: 'pixel';
-    font-size: 15px;
-    padding: 8px;
-    text-align: center;
+    font-size: 30px;
     color: #ffffff;
-    vertical-align: bottom;
+    padding: 5px;
     background-color: #362a1e;
     border: 1px solid #000000;
-    user-select: none;
+    cursor: default;
+    left: 50%;
+    top: 15%;
+    transform: translate(-50%, 0%);
+}
+#questDescription {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    left: 50%;
+    top: 45%;
+    text-align: center;
+    transform: translate(-50%, 0%);
+}
+#questStart {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 20px;
+    color: #ffffff;
+    background-color: #007700;
+    border: 1px solid #00aa00;
+    cursor: pointer;
+    left: 50%;
+    bottom: 5%;
+    transform: translate(-50%, 0%);
+}
+#questStart:hover {
+    background-color: #005500;
+    border: 1px solid #00aa00;
+}
+#windowMain {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 465px;
+    height: 372.6px;
 }
