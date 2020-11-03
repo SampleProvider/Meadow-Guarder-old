@@ -271,7 +271,7 @@
 			if(m === '0'){
 				m = '00';
 			}
-			chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
+			chat += '<div class="textNone"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
 			chatText.innerHTML = chat + '<br>';
 			if(scroll){
 				chatText.scrollTop = chatText.scrollHeight;

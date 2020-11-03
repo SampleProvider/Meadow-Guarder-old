@@ -886,7 +886,7 @@ Player = function(param){
             });
             socket.emit('questInfo',{
                 questName:'Weird House',
-                questDescription:'Invenstigate a weird house in the map Forest. Go on a big boss battle against the Monster Boss.',
+                questDescription:'Investigate a weird house in the map River. Go on a big boss battle against the Monster Boss.',
             });
             self.currentResponse = 0;
         }
@@ -901,7 +901,7 @@ Player = function(param){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'ask',
-                message:'There is an old house in the map Forest. Go in and inventigate.',
+                message:'There is an old house in the map River. Go in and inventigate.',
                 response1:'*End conversation*',
             });
         }
@@ -956,7 +956,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'Bob? Oh, do you mean that person in the Village?',
-                response1:'Yes. He said go invenstigate the weird house in the Forest.',
+                response1:'Yes. He said go investigate the weird house in the Forest.',
             });
             self.currentResponse = 0;
         }
