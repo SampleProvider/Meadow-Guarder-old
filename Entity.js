@@ -1257,42 +1257,42 @@ Player = function(param){
                 self.healTick = 0;
             }
         }
-        if(self.attackTick === 0){
+        if(self.attackTick === 0 && self.state !== 'dead'){
             self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
-        if(self.secondTick === 0){
+        if(self.secondTick === 0 && self.state !== 'dead'){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 20){
+        if(self.secondTick === 20 && self.state !== 'dead'){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 40){
+        if(self.secondTick === 40 && self.state !== 'dead'){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 60){
+        if(self.secondTick === 60 && self.state !== 'dead'){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.healTick === 0){
+        if(self.healTick === 0 && self.state !== 'dead'){
             self.hp += Math.round(self.stats.heal * 200);
         }
-        if(self.healTick === 40){
+        if(self.healTick === 40 && self.state !== 'dead'){
             self.hp += Math.round(self.stats.heal * 200);
         }
-        if(self.healTick === 80){
+        if(self.healTick === 80 && self.state !== 'dead'){
             self.hp += Math.round(self.stats.heal * 200);
         }
-        if(self.healTick === 120){
+        if(self.healTick === 120 && self.state !== 'dead'){
             self.hp += Math.round(self.stats.heal * 200);
         }
     }

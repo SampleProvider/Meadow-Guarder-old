@@ -1305,6 +1305,7 @@
 			document.getElementById('window').style.display = 'inline-block';
 			state.isHidden = false;
 		});
+		
 		startQuest = function(){
 			socket.emit('startQuest');
 			document.getElementById('window').style.display = 'none';
@@ -1642,9 +1643,9 @@
 			//mapY = mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600;
 		}
 		document.addEventListener("visibilitychange",function(){
-		var hidden = document.hidden;
+			var hidden = document.hidden;
 			if(hidden = true){
-				socket.emit('keyPress',{inputId:"releaseAll",state:true});
+				//socket.emit('keyPress',{inputId:"releaseAll",state:true});
 			}
 		});
 		document.onmouseup = function(event){
