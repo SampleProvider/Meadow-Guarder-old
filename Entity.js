@@ -1326,6 +1326,7 @@ Player = function(param){
     }
     self.updateXp = function(){
         if(self.level === 52){
+            self.xpMax = self.xp;
             return;
         }
         if(self.xp >= self.xpMax){
