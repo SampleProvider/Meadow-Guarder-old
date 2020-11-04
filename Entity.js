@@ -1053,7 +1053,7 @@ Player = function(param){
             self.questStage += 3;
             socket.emit('dialougeLine',{
                 state:'ask',
-                message:'You want the gold behind me? Then go ahead and try!',
+                message:'You want the gold behind me? You\'ll have to kill me to get it!',
                 response1:'*End conversation*',
             });
             self.currentResponse = 0;

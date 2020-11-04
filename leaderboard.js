@@ -13,6 +13,9 @@ client.connect();
 
 var leaderboardXP = [];
 var compare = function(currentRow){
+    if(currentRow.xp === undefined){
+        return;
+    }
     for(var i in leaderboardXP){
         if(leaderboardXP[i].level > currentRow.level){
             leaderboardXP.splice(i,0,currentRow);
