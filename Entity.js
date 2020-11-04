@@ -270,6 +270,7 @@ Entity.getFrameUpdateData = function(){
         Npc.list[i].update();
         pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
     }
+	updateCrashes();
     for(var i in Projectile.list){
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];

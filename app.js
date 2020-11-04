@@ -149,7 +149,6 @@ io.sockets.on('connection',function(socket){
 
 setInterval(function(){
 	spawnEnemies();
-	updateCrashes();
 	var packs = Entity.getFrameUpdateData();
 	for(var i in SOCKET_LIST){
 		var socket = SOCKET_LIST[i];
