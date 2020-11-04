@@ -1136,6 +1136,8 @@ Player = function(param){
     self.updateMap = function(){
         if(self.mapChange === 0){
             self.canMove = false;
+            self.x = self.lastX;
+            self.y = self.lastY;
             socket.emit('changeMap',self.transporter);
         }
         if(self.mapChange === 5){
