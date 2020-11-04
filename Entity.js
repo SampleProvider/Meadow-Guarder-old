@@ -161,7 +161,7 @@ s = {
     kick:function(username){
         for(var i in Player.list){
             if(Player.list[i].username === username){
-                Player.onDisconnect(i);
+                Player.onDisconnect(SOCKET_LIST[i]);
             }
         }
     },
