@@ -770,8 +770,6 @@ Player = function(param){
     self.y = 320;
     self.lastX = 0;
     self.lastY = 0;
-    self.startX = 0;
-    self.startY = 0;
     self.spdX = 0;
     self.spdY = 0;
     self.mouseX = 0;
@@ -855,8 +853,6 @@ Player = function(param){
     }
     var lastSelf = {};
     self.update = function(){
-        self.startX = self.x;
-        self.startY = self.y;
         self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
@@ -1140,8 +1136,6 @@ Player = function(param){
     self.updateMap = function(){
         if(self.mapChange === 0){
             self.canMove = false;
-            self.x = self.startX;
-            self.y = self.startY;
             socket.emit('changeMap',self.transporter);
         }
         if(self.mapChange === 5){
@@ -2345,9 +2339,195 @@ var renderLayer = function(layer,data,loadedMap){
                     }
                 }
                 var transporter = new Transporter({
-                    x:x,
-                    y:y,
+                    x:x + 32,
+                    y:y + 32,
+                    width:size,
+                    height:size,
                     size:size,
+                    teleport:teleport,
+                    teleportx:teleportx,
+                    teleporty:teleporty,
+                    direction:direction,
+                    map:map,
+                    requirements:requirements,
+                });
+            }
+            if(tile_idx === 2037){
+                var teleport = "";
+                var teleportj = 0;
+                var teleportx = "";
+                var teleportxj = 0;
+                var teleporty = "";
+                var teleportyj = 0;
+                var direction = "";
+                var directionj = "";
+                var requirements = "none";
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(teleport === ""){
+                            teleport = layer.name.substr(0,j);
+                            teleportj = j;
+                        }
+                        else if(teleportx === ""){
+                            teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
+                            teleportxj = j;
+                        }
+                        else if(teleporty === ""){
+                            teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
+                            teleportyj = j;
+                        }
+                        else if(direction === ""){
+                            direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
+                            directionj = j;
+                        }
+                        else if(direction === ""){
+                            requirements = layer.name.substr(directionj + 1,j - directionj - 1);
+                        }
+                    }
+                }
+                var transporter = new Transporter({
+                    x:x + 32,
+                    y:y + 48,
+                    width:size,
+                    height:size / 2,
+                    teleport:teleport,
+                    teleportx:teleportx,
+                    teleporty:teleporty,
+                    direction:direction,
+                    map:map,
+                    requirements:requirements,
+                });
+            }
+            if(tile_idx === 2038){
+                var teleport = "";
+                var teleportj = 0;
+                var teleportx = "";
+                var teleportxj = 0;
+                var teleporty = "";
+                var teleportyj = 0;
+                var direction = "";
+                var directionj = "";
+                var requirements = "none";
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(teleport === ""){
+                            teleport = layer.name.substr(0,j);
+                            teleportj = j;
+                        }
+                        else if(teleportx === ""){
+                            teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
+                            teleportxj = j;
+                        }
+                        else if(teleporty === ""){
+                            teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
+                            teleportyj = j;
+                        }
+                        else if(direction === ""){
+                            direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
+                            directionj = j;
+                        }
+                        else if(direction === ""){
+                            requirements = layer.name.substr(directionj + 1,j - directionj - 1);
+                        }
+                    }
+                }
+                var transporter = new Transporter({
+                    x:x + 32,
+                    y:y + 16,
+                    width:size,
+                    height:size / 2,
+                    teleport:teleport,
+                    teleportx:teleportx,
+                    teleporty:teleporty,
+                    direction:direction,
+                    map:map,
+                    requirements:requirements,
+                });
+            }
+            if(tile_idx === 2039){
+                var teleport = "";
+                var teleportj = 0;
+                var teleportx = "";
+                var teleportxj = 0;
+                var teleporty = "";
+                var teleportyj = 0;
+                var direction = "";
+                var directionj = "";
+                var requirements = "none";
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(teleport === ""){
+                            teleport = layer.name.substr(0,j);
+                            teleportj = j;
+                        }
+                        else if(teleportx === ""){
+                            teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
+                            teleportxj = j;
+                        }
+                        else if(teleporty === ""){
+                            teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
+                            teleportyj = j;
+                        }
+                        else if(direction === ""){
+                            direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
+                            directionj = j;
+                        }
+                        else if(direction === ""){
+                            requirements = layer.name.substr(directionj + 1,j - directionj - 1);
+                        }
+                    }
+                }
+                var transporter = new Transporter({
+                    x:x + 16,
+                    y:y + 32,
+                    width:size / 2,
+                    height:size,
+                    teleport:teleport,
+                    teleportx:teleportx,
+                    teleporty:teleporty,
+                    direction:direction,
+                    map:map,
+                    requirements:requirements,
+                });
+            }
+            if(tile_idx === 2040){
+                var teleport = "";
+                var teleportj = 0;
+                var teleportx = "";
+                var teleportxj = 0;
+                var teleporty = "";
+                var teleportyj = 0;
+                var direction = "";
+                var directionj = "";
+                var requirements = "none";
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(teleport === ""){
+                            teleport = layer.name.substr(0,j);
+                            teleportj = j;
+                        }
+                        else if(teleportx === ""){
+                            teleportx = layer.name.substr(teleportj + 1,j - teleportj - 1);
+                            teleportxj = j;
+                        }
+                        else if(teleporty === ""){
+                            teleporty = layer.name.substr(teleportxj + 1,j - teleportxj - 1);
+                            teleportyj = j;
+                        }
+                        else if(direction === ""){
+                            direction = layer.name.substr(teleportyj + 1,j - teleportyj - 1);
+                            directionj = j;
+                        }
+                        else if(direction === ""){
+                            requirements = layer.name.substr(directionj + 1,j - directionj - 1);
+                        }
+                    }
+                }
+                var transporter = new Transporter({
+                    x:x + 48,
+                    y:y + 32,
+                    width:size / 2,
+                    height:size,
                     teleport:teleport,
                     teleportx:teleportx,
                     teleporty:teleporty,

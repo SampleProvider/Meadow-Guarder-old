@@ -64,9 +64,7 @@ Spawner.list = {};
 
 Transporter = function(param){
     var self = Entity(param);
-    self.id = "" + self.map + ":" + self.x + ":" + self.y + ":";
-    self.x = self.x + 32;
-    self.y = self.y + 32;
+    self.id = "" + self.map + ":" + Math.floor(self.x / 64) * 64 + ":" + Math.floor(self.y / 64) * 64 + ":";
     self.teleport = param.teleport;
     self.teleportx = parseInt(param.teleportx,10);
     self.teleporty = parseInt(param.teleporty,10);
@@ -82,8 +80,8 @@ Transporter = function(param){
             self.mapy = Maps[self.teleport].height;
         }
     },2000);
-    self.width = param.size;
-    self.height = param.size;
+    self.width = param.width;
+    self.height = param.height;
     var super_update = self.update;
     self.update = function(){
         super_update();
