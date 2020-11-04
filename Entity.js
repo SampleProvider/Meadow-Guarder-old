@@ -1369,28 +1369,28 @@ Player = function(param){
                 self.healTick = 0;
             }
         }
-        if(self.attackTick === 0 && self.state !== 'dead'){
+        if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
             self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
-        if(self.secondTick === 0 && self.state !== 'dead'){
+        if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 20 && self.state !== 'dead'){
+        if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 40 && self.state !== 'dead'){
+        if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 60 && self.state !== 'dead'){
+        if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
