@@ -51,7 +51,7 @@ var xpLevels = [
     {xp:550000,gems:4},
     {xp:600000,gems:4},
     {xp:1000000000000,gems:4},
-    {xp:Infinity,gems:4},
+    {xp:0,gems:4},
 ];
 
 s = {
@@ -1323,6 +1323,9 @@ Player = function(param){
         }
     }
     self.updateXp = function(){
+        if(self.level === 52){
+            return;
+        }
         if(self.xp >= self.xpMax){
             self.xp = self.xp - self.xpMax;
             self.level += 1;
