@@ -57,7 +57,7 @@ io.sockets.on('connection',function(socket){
 		if(data.username.includes(' ')){
 			socket.emit('createAccountResponse',{success:3});
 		}
-		else if(data.username.length > 3){
+		else if(data.username.length > 3 && data.username.length < 41){
 			Database.isUsernameTaken(data,function(res){
 				if(res === 0){
 					socket.emit('createAccountResponse',{success:0});
@@ -70,7 +70,7 @@ io.sockets.on('connection',function(socket){
 			});
 		}
 		else if(data.username.length > 40){
-			socket.emit('createAccountResponse',{success:3});
+			socket.emit('createAccountResponse',{success:4});
 		}
 		else{
 			socket.emit('createAccountResponse',{success:2});
