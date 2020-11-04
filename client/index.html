@@ -263,6 +263,9 @@
 			else if(data.success == 3){
 				alert("Invalid characters.");
 			}
+			else if(data.success == 4){
+				alert("Please use a shorter username.");
+			}
 		});
 		socket.on('deleteAccountResponse',function(data){
 			if(data.success == 1){

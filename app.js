@@ -69,6 +69,9 @@ io.sockets.on('connection',function(socket){
 				}
 			});
 		}
+		else if(data.username.length > 40){
+			socket.emit('createAccountResponse',{success:3});
+		}
 		else{
 			socket.emit('createAccountResponse',{success:2});
 		}
