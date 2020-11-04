@@ -1135,6 +1135,7 @@ Player = function(param){
     }
     self.updateMap = function(){
         if(self.mapChange === 0){
+            self.canMove = false;
             socket.emit('changeMap',self.transporter);
         }
         if(self.mapChange === 5){
@@ -1217,7 +1218,6 @@ Player = function(param){
                 }
             }
             socket.emit('update',pack);
-            self.canMove = false;
             for(var i in Player.list){
                 if(Player.list[i]){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
