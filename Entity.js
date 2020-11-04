@@ -797,6 +797,7 @@ Player = function(param){
     self.quest = 'none';
     self.questStage = 0;
     self.questInfo = {};
+    self.questDependent = {};
     self.type = 'Player';
     self.username = param.username;
 	self.keyPress = {
@@ -838,7 +839,7 @@ Player = function(param){
     }
     if(param.param.level){
         self.level = param.param.level;
-        if(self.level !== 52){
+        if(self.level < 52){
             self.xpMax = xpLevels[self.level].xp;
         }
     }
@@ -988,7 +989,7 @@ Player = function(param){
         if(self.x < 896 && self.map === 'Secret Base Basement' && self.quest === 'qWeirdHouse' && self.questStage === 5 && self.mapChange > 10){
             self.questStage += 1;
             self.questInfo.monsterKilled = false;
-            self.questInfo.monster = new Monster({
+            self.questDependent.monster = new Monster({
                 spawnId:0,
                 x:512,
                 y:320,
@@ -1011,7 +1012,7 @@ Player = function(param){
                     self.questInfo.monsterKilled = true;
                 },
             });
-            self.questInfo.monster.invincible = true;
+            self.questDependent.monster.invincible = true;
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'What are you doing here!',
@@ -1079,8 +1080,8 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
-            self.questInfo.monster.attackState = 'passive';
-            self.questInfo.monster.invincible = false;
+            self.questDependent.monster.attackState = 'passive';
+            self.questDependent.monster.invincible = false;
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'qWeirdHouse'){
@@ -1325,7 +1326,7 @@ Player = function(param){
         }
     }
     self.updateXp = function(){
-        if(self.level === 52){
+        if(self.level > 51){
             self.xpMax = self.xp;
             return;
         }
@@ -1674,6 +1675,9 @@ Player.onDisconnect = function(socket){
 	socket.emit("disconnected");
     if(Player.list[socket.id]){
         storeDatabase(Player.list);
+        for(var i in Player.list[socket.id].questDependent){
+            delete Player.list[socket.id].questDependent[i];
+        }
         var d = new Date();
         var m = '' + d.getMinutes();
         if(m.length === 1){

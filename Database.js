@@ -110,4 +110,10 @@ Database.removeUser = function(data,cb){
 		}
 		return cb();
 	});
+	client.query('DELETE FROM progress WHERE qusername=\'' + data.username + '\';', (err, res) => {
+		if(err){
+			throw err;
+		}
+		return cb();
+	});
 }

@@ -7,6 +7,7 @@ else{
 }
 
 var express = require('express');
+const { setInterval } = require('timers');
 var app = express();
 var serv = require('http').Server(app);
 require('./Database');
@@ -158,3 +159,7 @@ setInterval(function(){
 		}
 	}
 },1000/20);
+
+setInterval(function(){
+	storeDatabase(Player.list);
+},600000);
