@@ -1198,11 +1198,11 @@
 							if(data.npc[i].x){
 								Npc.list[data.npc[i].id].nextX = data.npc[i].x;
 							}
-							Npc.list[data.npc[i].id].moveX = (data.npc[i].x - Npc.list[data.npc[i].id].x) / 4;
+							Npc.list[data.npc[i].id].moveX = (Npc.list[data.npc[i].id].nextX - Npc.list[data.npc[i].id].x) / 4;
 							if(data.npc[i].y){
 								Npc.list[data.npc[i].id].nextY = data.npc[i].y;
 							}
-							Npc.list[data.npc[i].id].moveY = (data.npc[i].y - Npc.list[data.npc[i].id].y) / 4;
+							Npc.list[data.npc[i].id].moveY = (Npc.list[data.npc[i].id].nextY - Npc.list[data.npc[i].id].y) / 4;
 							if(data.npc[i].animationDirection){
 								Npc.list[data.npc[i].id].animationDirection = data.npc[i].animationDirection;
 							}
