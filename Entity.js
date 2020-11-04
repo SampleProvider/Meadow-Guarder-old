@@ -770,6 +770,8 @@ Player = function(param){
     self.y = 320;
     self.lastX = 0;
     self.lastY = 0;
+    self.startX = 0;
+    self.startY = 0;
     self.spdX = 0;
     self.spdY = 0;
     self.mouseX = 0;
@@ -853,6 +855,8 @@ Player = function(param){
     }
     var lastSelf = {};
     self.update = function(){
+        self.startX = self.x;
+        self.startY = self.y;
         self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
@@ -1136,8 +1140,8 @@ Player = function(param){
     self.updateMap = function(){
         if(self.mapChange === 0){
             self.canMove = false;
-            self.x = self.lastX;
-            self.y = self.lastY;
+            self.x = self.startX;
+            self.y = self.startY;
             socket.emit('changeMap',self.transporter);
         }
         if(self.mapChange === 5){
