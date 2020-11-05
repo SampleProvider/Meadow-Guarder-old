@@ -296,7 +296,9 @@ var doCmd = function(text){
 
 var questionCmd = function(){
     rl.question('$:',function(answer){
-        doCmd(answer);
+        //doCmd(answer);
+        console.log(eval(answer) + ''.warn);
+        questionCmd();
     });
 }
 

@@ -729,11 +729,10 @@ button {
     font-size: 30px;
     color: #ffffff;
     padding: 5px;
-    background-color: #362a1e;
-    border: 1px solid #000000;
     cursor: default;
     left: 50%;
     top: 15%;
+    width: 300px;
     transform: translate(-50%, 0%);
 }
 #questDescription {

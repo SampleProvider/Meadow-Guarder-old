@@ -89,6 +89,32 @@ s = {
             return pack;
         }
     },
+    findPlayer:function(param){
+        for(var i in Player.list){
+            if(Player.list[i].username === param){
+                return Player.list[i];
+            }
+        }
+    },
+    spawnMonster:function(param,pt){
+        var monster = new Monster({
+            spawnId:0,
+            x:pt.x,
+            y:pt.y,
+            map:pt.map,
+            moveSpeed:2,
+            monsterType:param,
+            onDeath:function(pt){
+                pt.toRemove = true;
+                for(var i in Projectile.list){
+                    if(Projectile.list[i].parent === pt.id){
+                        Projectile.list[i].toRemove = true;
+                    }
+                }
+            },
+        });
+        return monster;
+    },
     findEntities:function(param){
         var acceptableEntities = Entity.list;
         if(param.id){
@@ -174,6 +200,7 @@ var playerMap = {
     'Starter House':0,
     'House':0,
     'Secret Base':0,
+    'Secret Base Basement':0,
 };
 
 Maps = {};
@@ -245,6 +272,7 @@ Entity.getFrameUpdateData = function(){
         'Secret Base':{player:[],projectile:[],monster:[],npc:[]},
         'Secret Base Basement':{player:[],projectile:[],monster:[],npc:[]},
         'Lilypad Path Part 1':{player:[],projectile:[],monster:[],npc:[]},
+        'Lilypad Path Part 2':{player:[],projectile:[],monster:[],npc:[]},
         'The Outskirts':{player:[],projectile:[],monster:[],npc:[]},
         'Lower Deadlands':{player:[],projectile:[],monster:[],npc:[]},
         'Forest':{player:[],projectile:[],monster:[],npc:[]},
@@ -496,7 +524,9 @@ Actor = function(param){
             parentType:parentType,
             stats:stats,
             onCollision:function(self,pt){
-                pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
+                if(!pt.invincible){
+                    pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
+                }
                 if(parentType === 'Player'){
                     if(pt.hp < 1 && self.toRemove === false){
                         if(Math.random() < 0.5){   
@@ -960,6 +990,31 @@ Player = function(param){
                 }
                 self.keyPress.attack = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].username === 'mark' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
+                if(self.quest === 'none'){
+                    self.quest = 'qMinecartMonsters';
+                    self.questStage = 1;
+                }
+                if(self.questStage === 1){
+                    self.questStage += 1;
+                    self.questInfo.started = false;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'I am in charge of storing valuable gems that come from the mine, but today, instead of gems the minecarts contained monsters! Can you kill them for me?',
+                        response1:'Sure.',
+                        response2:'No.',
+                    });
+                }
+                if(self.questStage === 7){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thanks. Now I can get back to work.',
+                        response1:'*End conversation*',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
@@ -1044,7 +1099,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'Bob? Oh, do you mean that person in the Village?',
-                response1:'Yes. He said go investigate the weird house in the Forest.',
+                response1:'Yes. He said go investigate the weird house in the River.',
             });
             self.currentResponse = 0;
         }
@@ -1104,6 +1159,98 @@ Player = function(param){
             self.questStage += 1;
         }
         if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'qWeirdHouse'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.xp += Math.round(2000 * self.stats.xp);
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'qMinecartMonsters'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Minecart Monsters',
+                questDescription:'Defeat monsters that escaped the Mine.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'qMinecartMonsters'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 3 && self.quest === 'qMinecartMonsters'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Good. The monsters will come soon.',
+                response1:'*End conversation*',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'qMinecartMonsters'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.y > 1472 && self.map === 'Upper Mine Deposit' && self.quest === 'qMinecartMonsters' && self.questStage === 5 && self.mapChange > 10){
+            self.questStage += 1;
+            self.questInfo.monstersKilled = 0;
+            self.questDependent.monster1 = new Monster({
+                spawnId:0,
+                x:2176,
+                y:1664,
+                map:'Upper Mine Deposit',
+                moveSpeed:0,
+                monsterType:'blue',
+                stats:{
+                    attack:10,
+                    defense:10,
+                    heal:1,
+                },
+                onDeath:function(pt){
+                    pt.toRemove = true;
+                    for(var i in Projectile.list){
+                        if(Projectile.list[i].parent === pt.id){
+                            Projectile.list[i].toRemove = true;
+                        }
+                    }
+                    self.questInfo.monstersKilled += 1;
+                },
+            });
+            self.questDependent.monster2 = new Monster({
+                spawnId:0,
+                x:1792,
+                y:1792,
+                map:'Upper Mine Deposit',
+                moveSpeed:0,
+                monsterType:'blue',
+                stats:{
+                    attack:10,
+                    defense:10,
+                    heal:1,
+                },
+                onDeath:function(pt){
+                    pt.toRemove = true;
+                    for(var i in Projectile.list){
+                        if(Projectile.list[i].parent === pt.id){
+                            Projectile.list[i].toRemove = true;
+                        }
+                    }
+                    self.questInfo.monstersKilled += 1;
+                },
+            });
+        }
+        if(self.questInfo.monstersKilled === 2 && self.questStage === 6 && self.quest === 'qMinecartMonsters'){
+            self.questStage += 1;
+        }
+        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'qMinecartMonsters'){
             self.quest = 'none';
             socket.emit('dialougeLine',{
                 state:'remove',
@@ -2143,6 +2290,7 @@ var mapLocations = [
     ['The Outskirts','Forest'],
     ['River','Village'],
     ['Lilypad Path Part 1','Upper Mine Deposit'],
+    ['Lilypad Path Part 2',''],
 ];
 var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" && layer.visible === false){

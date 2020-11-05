@@ -93,7 +93,6 @@
 				<button id="inventoryButton" class="UI-button-light menuButton">Inventory</button>
 				<button id="debugButton" class="UI-button-light menuButton">Debug</button>
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
-				<button id="questButton" class="UI-button-light menuButton">Quests</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
@@ -491,6 +490,7 @@
 			['The Outskirts','Forest'],
 			['River','Village'],
 			['Lilypad Path Part 1','Upper Mine Deposit'],
+			['Lilypad Path Part 2',''],
 		];
 		var mapCropX = 0;
 		var mapCropY = 0;
@@ -660,19 +660,7 @@
 				document.getElementById('statScreen').style.display = 'none';
 			}
 		}
-		document.getElementById('questButton').onclick = function(){
-			if(menu !== 'quest'){
-				menu = 'quest';
-				document.getElementById('inventory').style.display = 'none';
-				document.getElementById('debugScreen').style.display = 'none';
-				document.getElementById('statScreen').style.display = 'none';
-				document.getElementById('questScreen').style.display = 'inline-block';
-			}
-			else{
-				menu = 'none';
-				document.getElementById('questScreen').style.display = 'none';
-			}
-		}
+		
 		document.getElementById('worldMapExit').onclick = function(){
 			menu = 'none';
 			worldMapDiv.style.display = 'none';

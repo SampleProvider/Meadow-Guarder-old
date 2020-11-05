@@ -54,6 +54,10 @@ client.query('SELECT * FROM progress;', (err, res) => {
     leaderboardXP = leaderboardXP.reverse();
     for(var i in leaderboardXP){
         var j = parseInt(i,10) + 1;
-        console.log(j + '. ' + leaderboardXP[i].username + '\nLevel ' + leaderboardXP[i].level + ' ' + leaderboardXP[i].xp + ' XP');
+        var tag = '';
+        if(leaderboardXP[i].username === 'Suvanth'){
+            tag = ' (Exploited)'
+        }
+        console.log(j + '. ' + leaderboardXP[i].username + tag + '\nLevel ' + leaderboardXP[i].level + ' ' + leaderboardXP[i].xp + ' XP');
     }
 });
