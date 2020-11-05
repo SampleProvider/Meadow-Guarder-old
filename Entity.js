@@ -2021,6 +2021,10 @@ Monster = function(param){
         self.width = 48;
         self.height = 48;
     }
+    if(self.monsterType === 'orange'){
+        self.width = 96;
+        self.height = 96;
+    }
     if(param.attackState){
         self.attackState = param.attackState;
     }

@@ -461,6 +461,8 @@
 		Img.monsterGreen.src = '/client/img/Monster Green.png';
 		Img.monsterBlue = new Image();
 		Img.monsterBlue.src = '/client/img/Monster Blue.png';
+		Img.monsterOrange = new Image();
+		Img.monsterOrange.src = '/client/img/Monster Orange.png';
 		Img.monsterBoss = new Image();
 		Img.monsterBoss.src = '/client/img/Monster Boss.png';
 		Img.npc = new Image();
@@ -947,6 +949,9 @@
 				}
 				else if(self.monsterType === 'red'){
 					ctx.drawImage(Img.monsterBoss,self.x - 24,self.y - 36);
+				}
+				else if(self.monsterType === 'orange'){
+					ctx.drawImage(Img.monsterOrange,self.x - 48,self.y - 72);
 				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
