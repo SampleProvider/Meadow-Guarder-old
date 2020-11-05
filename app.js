@@ -151,12 +151,17 @@ io.sockets.on('connection',function(socket){
 					}
 				}
 				else{
-					try{
-						var self = Player.list[socket.id];
-						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+					if(data.includes('setInterval')){
+						socket.emit('addToDebug','style="color: #ffff00">Why are you trying to crash the server?');
 					}
-					catch(e){
-						socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
+					else{
+						try{
+							var self = Player.list[socket.id];
+							socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+						}
+						catch(e){
+							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
+						}
 					}
 				}
 			}
