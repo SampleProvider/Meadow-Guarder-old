@@ -191,6 +191,11 @@ s = {
             }
         }
     },
+    kickAll:function(){
+        for(var i in Player.list){
+            Player.onDisconnect(SOCKET_LIST[i]);
+        }
+    },
 };
 
 
