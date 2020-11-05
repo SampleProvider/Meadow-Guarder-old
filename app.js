@@ -54,10 +54,23 @@ io.sockets.on('connection',function(socket){
 		});
 	});
 	socket.on('createAccount',function(data){
-		if(data.username.includes(' ')){
+		if(data.username.includes(' ') || data.password.includes(' ')){
 			socket.emit('createAccountResponse',{success:3});
+			return;
 		}
-		else if(data.username.length > 3 && data.username.length < 41){
+		if(data.username.includes('--') || data.password.includes('--')){
+			socket.emit('createAccountResponse',{success:3});
+			return;
+		}
+		if(data.username.includes(';') || data.password.includes(';')){
+			socket.emit('createAccountResponse',{success:3});
+			return;
+		}
+		if(data.username.includes('\'') || data.password.includes('\'')){
+			socket.emit('createAccountResponse',{success:3});
+			return;
+		}
+		if(data.username.length > 3 && data.username.length < 41 && data.password.length < 41){
 			Database.isUsernameTaken(data,function(res){
 				if(res === 0){
 					socket.emit('createAccountResponse',{success:0});
@@ -69,14 +82,20 @@ io.sockets.on('connection',function(socket){
 				}
 			});
 		}
-		else if(data.username.length > 40){
+		else if(data.username.length > 40 || data.password.length > 40){
 			socket.emit('createAccountResponse',{success:4});
+			return;
 		}
 		else{
 			socket.emit('createAccountResponse',{success:2});
+			return;
 		}
 	});
 	socket.on('deleteAccount',function(data){
+		if(data.username === 'sp' || data.username === 'Suvanth' || data.username === 'the-real-tianmu'){
+			socket.emit('deleteAccountResponse',{success:0});
+			return;
+		}
 		Database.isUsernameTaken(data,function(res){
 			if(res === 0){
 				Database.removeUser(data,function(){
