@@ -964,6 +964,10 @@
 					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 65,126,15);
 					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 65,126 * self.hp / self.hpMax,15);
 				}
+				else if(self.monsterType === 'orange'){
+					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 95,126,15);
+					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 95,126 * self.hp / self.hpMax,15);
+				}
 				else{
 					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 45,126,15);
 					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 45,126 * self.hp / self.hpMax,15);
