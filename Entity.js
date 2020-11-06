@@ -1301,7 +1301,7 @@ Player = function(param){
         }
         if(self.map === 'The Bridge' && self.quest === 'qBridge' && self.questStage === 4 && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i]) && self.questStage === 4){
                     self.questStage += 1;
                 }
             }
@@ -1355,7 +1355,7 @@ Player = function(param){
         }
         if(self.map === 'The Bridge' && self.quest === 'qBridge' && self.questStage === 8 && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'complete' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'complete' && self.isColliding(QuestInfo.list[i]) && self.questStage === 8){
                     self.questStage += 1;
                     socket.emit('dialougeLine',{
                         state:'ask',
