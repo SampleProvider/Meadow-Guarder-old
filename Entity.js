@@ -268,25 +268,13 @@ Entity = function(param){
 }
 
 Entity.getFrameUpdateData = function(){
-    var pack = {
-        'Village':{player:[],projectile:[],monster:[],npc:[]},
-        'Starter House':{player:[],projectile:[],monster:[],npc:[]},
-        'Cave':{player:[],projectile:[],monster:[],npc:[]},
-        'House':{player:[],projectile:[],monster:[],npc:[]},
-        'River':{player:[],projectile:[],monster:[],npc:[]},
-        'Secret Base':{player:[],projectile:[],monster:[],npc:[]},
-        'Secret Base Basement':{player:[],projectile:[],monster:[],npc:[]},
-        'Lilypad Path Part 1':{player:[],projectile:[],monster:[],npc:[]},
-        'Lilypad Path Part 2':{player:[],projectile:[],monster:[],npc:[]},
-        'The Outskirts':{player:[],projectile:[],monster:[],npc:[]},
-        'Lower Deadlands':{player:[],projectile:[],monster:[],npc:[]},
-        'Forest':{player:[],projectile:[],monster:[],npc:[]},
-        'Upper Mine Deposit':{player:[],projectile:[],monster:[],npc:[]},
-        'The Bridge':{player:[],projectile:[],monster:[],npc:[]},
-    };
+    var pack = {};
     for(var i in Player.list){
         if(Player.list[i]){
             Player.list[i].update();
+            if(!pack[Player.list[i].map]){
+                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+            }
             pack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
         }
     }
@@ -300,6 +288,9 @@ Entity.getFrameUpdateData = function(){
                 delete Monster.list[i];
             }
             else{
+                if(!pack[Monster.list[i].map]){
+                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+                }
                 pack[Monster.list[i].map].monster.push(Monster.list[i].getUpdatePack());
             }
         }
@@ -309,6 +300,9 @@ Entity.getFrameUpdateData = function(){
     }
     for(var i in Npc.list){
         Npc.list[i].update();
+        if(!pack[Npc.list[i].map]){
+            pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+        }
         pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
     }
 	updateCrashes();
@@ -317,6 +311,9 @@ Entity.getFrameUpdateData = function(){
             delete Projectile.list[i];
         }
         else{
+            if(!pack[Projectile.list[i].map]){
+                pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+            }
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
     }
