@@ -2041,6 +2041,9 @@ Monster = function(param){
             param.onDeath(self);
         }
     }
+    self.doTransport = function(transporter){
+
+    }
     self.updateAttack = function(){
         if(self.target){
             self.direction = Math.atan2(self.target.y - self.y,self.target.x - self.x) / Math.PI * 180;
