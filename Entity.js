@@ -1034,14 +1034,6 @@ Player = function(param){
                         response2:'I can\'t.',
                     });
                 }
-                if(self.questStage === 8){
-                    self.questStage += 1;
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Thanks. Now I can get back to work.',
-                        response1:'*End conversation*',
-                    });
-                }
                 self.keyPress.attack = false;
             }
         }
@@ -1308,6 +1300,25 @@ Player = function(param){
         }
         if(self.quest === 'qBridge' && self.questStage === 5){
             for(var i in QuestInfo.list){
+                
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'teleport'){
+                    self.teleport(QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map);
+                }
+            }
+            self.questStage += 1;
+        }
+        if(self.questStage === 6 && self.quest === 'qBridge'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'See! I knew you couldn\'t make it!',
+                response1:'I\'ll try again.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'qBridge'){
+            self.questStage += 1;
+            for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'spawner'){
                     self.questDependent[i] = new Monster({
                         spawnId:0,
@@ -1331,23 +1342,7 @@ Player = function(param){
                         },
                     });
                 }
-                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'teleport'){
-                    self.teleport(QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map);
-                }
             }
-            self.questStage += 1;
-        }
-        if(self.questStage === 6 && self.quest === 'qBridge'){
-            self.questStage += 1;
-            socket.emit('dialougeLine',{
-                state:'ask',
-                message:'See! I knew you couldn\'t make it!',
-                response1:'I\'ll try again.',
-            });
-            self.currentResponse = 0;
-        }
-        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'qBridge'){
-            self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1626,11 +1621,11 @@ Player = function(param){
     }
     self.updateAttack = function(){
         if(self.state !== 'dead'){
-            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
                 self.attackReload = 1;
                 self.attackTick = 0;
             }
-            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
                 self.secondReload = 1;
                 self.secondTick = 0;
             }
@@ -1639,28 +1634,28 @@ Player = function(param){
                 self.healTick = 0;
             }
         }
-        if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+        if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
             self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
-        if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+        if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+        if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+        if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base"){
+        if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
@@ -2862,6 +2857,7 @@ load("Cave");
 load("House");
 load("Secret Base");
 load("Secret Base Basement");
+load("Cacti Farm");
 
 updateCrashes = function(){
     for(var i in Player.list){
