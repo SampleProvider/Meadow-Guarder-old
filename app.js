@@ -152,7 +152,13 @@ io.sockets.on('connection',function(socket){
 				}
 				else{
 					if(Player.list[socket.id].username === 'sp'){
-						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+						try{
+							var self = Player.list[socket.id];
+							socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+						}
+						catch(e){
+							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
+						}
 					}
 					else if(data.includes('setInterval') || data.includes('function')){
 						socket.emit('addToDebug','style="color: #ffff00">Why are you trying to crash the server?');
