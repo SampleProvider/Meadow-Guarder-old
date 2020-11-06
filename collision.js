@@ -90,3 +90,19 @@ Transporter = function(param){
 }
 
 Transporter.list = {};
+
+QuestInfo = function(param){
+    var self = Entity(param);
+    self.id = "" + self.map + ":" + Math.floor(self.x / 64) * 64 + ":" + Math.floor(self.y / 64) * 64 + ":";
+    self.info = param.info;
+    self.quest = param.quest;
+    self.width = param.width;
+    self.height = param.height;
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+    }
+    QuestInfo.list[self.id] = self;
+}
+
+QuestInfo.list = {};

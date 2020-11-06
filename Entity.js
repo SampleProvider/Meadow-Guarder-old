@@ -1009,7 +1009,32 @@ Player = function(param){
                         response2:'No.',
                     });
                 }
-                if(self.questStage === 7){
+                if(self.questStage === 8){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thanks. Now I can get back to work.',
+                        response1:'*End conversation*',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].username === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack){
+                if(self.quest === 'none'){
+                    self.quest = 'qBridge';
+                    self.questStage = 1;
+                }
+                if(self.questStage === 1){
+                    self.questStage += 1;
+                    self.questInfo.started = false;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Bet you can\'t make it across that bridge.',
+                        response1:'I can.',
+                        response2:'I can\'t.',
+                    });
+                }
+                if(self.questStage === 8){
                     self.questStage += 1;
                     socket.emit('dialougeLine',{
                         state:'ask',
@@ -1203,58 +1228,144 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.y > 1472 && self.map === 'Upper Mine Deposit' && self.quest === 'qMinecartMonsters' && self.questStage === 5 && self.mapChange > 10){
-            self.questStage += 1;
-            self.questInfo.monstersKilled = 0;
-            self.questDependent.monster1 = new Monster({
-                spawnId:0,
-                x:2176,
-                y:1664,
-                map:'Upper Mine Deposit',
-                moveSpeed:0,
-                monsterType:'blue',
-                stats:{
-                    attack:10,
-                    defense:10,
-                    heal:1,
-                },
-                onDeath:function(pt){
-                    pt.toRemove = true;
-                    for(var i in Projectile.list){
-                        if(Projectile.list[i].parent === pt.id){
-                            Projectile.list[i].toRemove = true;
-                        }
-                    }
-                    self.questInfo.monstersKilled += 1;
-                },
-            });
-            self.questDependent.monster2 = new Monster({
-                spawnId:0,
-                x:1792,
-                y:1792,
-                map:'Upper Mine Deposit',
-                moveSpeed:0,
-                monsterType:'blue',
-                stats:{
-                    attack:10,
-                    defense:10,
-                    heal:1,
-                },
-                onDeath:function(pt){
-                    pt.toRemove = true;
-                    for(var i in Projectile.list){
-                        if(Projectile.list[i].parent === pt.id){
-                            Projectile.list[i].toRemove = true;
-                        }
-                    }
-                    self.questInfo.monstersKilled += 1;
-                },
-            });
+        if(self.map === 'Upper Mine Deposit' && self.quest === 'qMinecartMonsters' && self.questStage === 5 && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qMinecartMonsters' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage += 1;
+                    self.questInfo.monstersKilled = 0;
+                    self.questInfo.monsters = 0;
+                }
+            }
         }
-        if(self.questInfo.monstersKilled === 2 && self.questStage === 6 && self.quest === 'qMinecartMonsters'){
+        if(self.quest === 'qMinecartMonsters' && self.questStage === 6){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qMinecartMonsters' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent[i] = new Monster({
+                        spawnId:0,
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:'Upper Mine Deposit',
+                        moveSpeed:15,
+                        monsterType:'blue',
+                        stats:{
+                            attack:10,
+                            defense:10,
+                            heal:1,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    self.questInfo.monsters += 1;
+                }
+            }
             self.questStage += 1;
         }
-        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'qMinecartMonsters'){
+        if(self.questInfo.monstersKilled === self.questInfo.monsters && self.questStage === 7 && self.quest === 'qMinecartMonsters'){
+            self.questStage += 1;
+        }
+        if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'qMinecartMonsters'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.xp += Math.round(2000 * self.stats.xp);
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'qBridge'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Bridge',
+                questDescription:'Make it across a bridge.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 3 && self.quest === 'qBridge'){
+            self.questStage += 1;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'qBridge'){
+            self.quest = 'none';
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.map === 'The Bridge' && self.quest === 'qBridge' && self.questStage === 4 && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage += 1;
+                }
+            }
+        }
+        if(self.quest === 'qBridge' && self.questStage === 5){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent[i] = new Monster({
+                        spawnId:0,
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:'The Bridge',
+                        moveSpeed:0,
+                        monsterType:'orange',
+                        stats:{
+                            attack:30,
+                            defense:30,
+                            heal:1,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                        },
+                    });
+                }
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'teleport'){
+                    self.teleport(QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map);
+                }
+            }
+            self.questStage += 1;
+        }
+        if(self.questStage === 6 && self.quest === 'qBridge'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'See! I knew you couldn\'t make it!',
+                response1:'I\'ll try again.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'qBridge'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.map === 'The Bridge' && self.quest === 'qBridge' && self.questStage === 8 && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'complete' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage += 1;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Wow! I can\'t believe you made it!',
+                        response1:'*End conversation*',
+                    });
+                }
+            }
+        }
+        if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'qBridge'){
             self.quest = 'none';
             socket.emit('dialougeLine',{
                 state:'remove',
@@ -2471,6 +2582,31 @@ var renderLayer = function(layer,data,loadedMap){
                     width:size,
                     height:size,
                     map:map,
+                });
+            }
+            if(tile_idx === 1692){
+                var quest = "";
+                var questj = 0;
+                var info = "";
+                for(var j = 0;j < layer.name.length;j++){
+                    if(layer.name[j] === ':'){
+                        if(quest === ""){
+                            quest = layer.name.substr(0,j);
+                            questj = j;
+                        }
+                        else if(info === ""){
+                            info = layer.name.substr(questj + 1,j - questj - 1);
+                        }
+                    }
+                }
+                var questInfo = new QuestInfo({
+                    x:x + 32,
+                    y:y + 32,
+                    width:size,
+                    height:size,
+                    map:map,
+                    info:info,
+                    quest:quest,
                 });
             }
             if(tile_idx === 2036){
