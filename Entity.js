@@ -282,6 +282,7 @@ Entity.getFrameUpdateData = function(){
         'Lower Deadlands':{player:[],projectile:[],monster:[],npc:[]},
         'Forest':{player:[],projectile:[],monster:[],npc:[]},
         'Upper Mine Deposit':{player:[],projectile:[],monster:[],npc:[]},
+        'The Bridge':{player:[],projectile:[],monster:[],npc:[]},
     };
     for(var i in Player.list){
         if(Player.list[i]){
@@ -2295,11 +2296,11 @@ Projectile.list = {};
 
 
 var mapLocations = [
-    ['Lower Deadlands',''],
-    ['The Outskirts','Forest'],
-    ['River','Village'],
-    ['Lilypad Path Part 1','Upper Mine Deposit'],
-    ['Lilypad Path Part 2',''],
+    ['','Lower Deadlands',''],
+    ['','The Outskirts','Forest'],
+    ['The Bridge','River','Village'],
+    ['Lilypad Kingdom','Lilypad Path Part 1','Upper Mine Deposit'],
+    ['Lilypad Path Part 3','Lilypad Path Part 2',''],
 ];
 var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" && layer.visible === false){

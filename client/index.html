@@ -463,6 +463,8 @@
 		Img.monsterBlue.src = '/client/img/Monster Blue.png';
 		Img.monsterOrange = new Image();
 		Img.monsterOrange.src = '/client/img/Monster Orange.png';
+		Img.monsterWhite = new Image();
+		Img.monsterWhite.src = '/client/img/Monster White.png';
 		Img.monsterBoss = new Image();
 		Img.monsterBoss.src = '/client/img/Monster Boss.png';
 		Img.npc = new Image();
@@ -486,13 +488,12 @@
 		var mapY = -100;
 		var mapDrag = true;
 		var mapRatio = 2000;
-
 		var mapLocations = [
-			['Lower Deadlands',''],
-			['The Outskirts','Forest'],
-			['River','Village'],
-			['Lilypad Path Part 1','Upper Mine Deposit'],
-			['Lilypad Path Part 2',''],
+			['','Lower Deadlands',''],
+			['','The Outskirts','Forest'],
+			['The Bridge','River','Village'],
+			['Lilypad Kingdom','Lilypad Path Part 1','Upper Mine Deposit'],
+			['Lilypad Path Part 3','Lilypad Path Part 2',''],
 		];
 		var mapCropX = 0;
 		var mapCropY = 0;
@@ -953,6 +954,9 @@
 				else if(self.monsterType === 'orange'){
 					ctx.drawImage(Img.monsterOrange,self.x - 48,self.y - 72);
 				}
+				else if(self.monsterType === 'white'){
+					ctx.drawImage(Img.monsterWhite,self.x - 6,self.y - 9);
+				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
@@ -967,6 +971,10 @@
 				else if(self.monsterType === 'orange'){
 					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 95,126,15);
 					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 95,126 * self.hp / self.hpMax,15);
+				}
+				else if(self.monsterType === 'white'){
+					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 35,126,15);
+					ctx.drawImage(Img.healthBarEnemy,0,24,168 * self.hp / self.hpMax,20,self.x - 63,self.y - 35,126 * self.hp / self.hpMax,15);
 				}
 				else{
 					ctx.drawImage(Img.healthBarEnemy,0,0,168,20,self.x - 63,self.y - 45,126,15);
@@ -1303,7 +1311,6 @@
 			lastMap = Player.list[selfId].map;
 			currentMap = data.teleport;
 			shadeSpeed = 3 / 40;
-			
 		});
 		socket.on('dialougeLine',function(data){
 			if(data.state === 'remove'){
