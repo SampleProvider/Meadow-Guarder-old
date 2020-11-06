@@ -527,11 +527,11 @@ Actor = function(param){
             parentType:parentType,
             stats:stats,
             onCollision:function(self,pt){
-                if(!pt.invincible){
+                if(!pt.invincible && self.toRemove === false){
                     pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
                 }
-                if(parentType === 'Player'){
-                    if(pt.hp < 1 && self.toRemove === false){
+                if(pt.hp < 1 && pt.isDead === false && self.toRemove === false){
+                    if(parentType === 'Player'){
                         if(Math.random() < 0.5){   
                             Player.list[self.parent].inventory.addItem('sword',1);
                         }
@@ -558,6 +558,7 @@ Actor = function(param){
                         }
                         Player.list[self.parent].xp += Math.round(10 * Player.list[self.parent].stats.xp);
                     }
+                    pt.isDead = true;
                 }
                 self.toRemove = true;
             }
@@ -2000,6 +2001,7 @@ Monster = function(param){
     self.reload = 0;
     self.target = {};
     self.type = 'Monster';
+    self.isDead = false;
     self.stats = {
         attack:1,
         defense:1,

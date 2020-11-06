@@ -147,11 +147,11 @@ io.sockets.on('connection',function(socket){
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
 					}
 					else{
-						socket.emit('addToDebug','style="color: #ff0000">YOU DO NOT HAVE PERMISSION TO USE THE EXIT FUNCTION!!!');
+						socket.emit('addToDebug','style="color: #ff0000">Why are you trying to crash the server?');
 					}
 				}
 				else{
-					if(data.includes('setInterval')){
+					if(data.includes('setInterval') || data.includes('function')){
 						socket.emit('addToDebug','style="color: #ffff00">Why are you trying to crash the server?');
 					}
 					else{
