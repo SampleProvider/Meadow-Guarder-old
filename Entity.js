@@ -1473,32 +1473,32 @@ Player = function(param){
                         message:self.username + " went to map " + self.map + "."
                     });
                 }
-                var pack = {player:[],projectile:[],monster:[],npc:[]};
-                for(var i in Player.list){
-                    if(Player.list[i] && Player.list[i].map === self.map){
-                        pack.player.push(Player.list[i].getInitPack());
-                    }
+            }
+            var pack = {player:[],projectile:[],monster:[],npc:[]};
+            for(var i in Player.list){
+                if(Player.list[i] && Player.list[i].map === self.map){
+                    pack.player.push(Player.list[i].getInitPack());
                 }
-                for(var i in Projectile.list){
-                    if(Projectile.list[i] && Projectile.list[i].map === self.map){
-                        pack.projectile.push(Projectile.list[i].getInitPack());
-                    }
+            }
+            for(var i in Projectile.list){
+                if(Projectile.list[i] && Projectile.list[i].map === self.map){
+                    pack.projectile.push(Projectile.list[i].getInitPack());
                 }
-                for(var i in Monster.list){
-                    if(Monster.list[i] && Monster.list[i].map === self.map){
-                        pack.monster.push(Monster.list[i].getInitPack());
-                    }
+            }
+            for(var i in Monster.list){
+                if(Monster.list[i] && Monster.list[i].map === self.map){
+                    pack.monster.push(Monster.list[i].getInitPack());
                 }
-                for(var i in Npc.list){
-                    if(Npc.list[i] && Npc.list[i].map === self.map){
-                        pack.npc.push(Npc.list[i].getInitPack());
-                    }
+            }
+            for(var i in Npc.list){
+                if(Npc.list[i] && Npc.list[i].map === self.map){
+                    pack.npc.push(Npc.list[i].getInitPack());
                 }
-                socket.emit('update',pack);
-                for(var i in Player.list){
-                    if(Player.list[i]){
-                        SOCKET_LIST[i].emit('initEntity',self.getInitPack());
-                    }
+            }
+            socket.emit('update',pack);
+            for(var i in Player.list){
+                if(Player.list[i]){
+                    SOCKET_LIST[i].emit('initEntity',self.getInitPack());
                 }
             }
         }
