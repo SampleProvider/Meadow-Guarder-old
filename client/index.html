@@ -1652,7 +1652,7 @@
 						inventoryDiv.style.display = 'none';
 					}
 				}
-				/*if(event.keyCode < 30){
+				if(event.keyCode < 30){
 					socket.emit('keyPress',{inputId:'releaseAll'});
 				}
 				if(event.keyCode > 32 && event.keyCode < 48){
@@ -1663,7 +1663,7 @@
 				}
 				if(event.keyCode > 90){
 					socket.emit('keyPress',{inputId:'releaseAll'});
-				}*/
+				}
 				if(!talking){
 					socket.emit('keyPress',{inputId:event.keyCode,state:true});
 				}
@@ -1706,8 +1706,8 @@
 		}
 		document.addEventListener("visibilitychange",function(){
 			var hidden = document.hidden;
-			if(hidden = true){
-				//socket.emit('keyPress',{inputId:"releaseAll",state:true});
+			if(hidden === true){
+				socket.emit('keyPress',{inputId:"releaseAll",state:true});
 			}
 		});
 		document.onmouseup = function(event){

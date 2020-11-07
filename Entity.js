@@ -842,6 +842,16 @@ Player = function(param){
     self.questDependent = {};
     self.type = 'Player';
     self.username = param.username;
+    self.tag = '';
+    if(self.username === 'sp'){
+        self.textColor = '00ff90';
+    }
+    if(self.username === 'Suvanth'){
+        self.textColor = '0090ff';
+    }
+    if(self.username === 'the-real-tianmu'){
+        self.textColor = '0090ff';
+    }
 	self.keyPress = {
         up:false,
         down:false,
@@ -1790,6 +1800,7 @@ Player = function(param){
 }
 
 Player.list = {};
+console.log(Player.list);
 
 Player.onConnect = function(socket,username){
     getDatabase(username,function(param){

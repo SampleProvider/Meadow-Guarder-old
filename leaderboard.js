@@ -11,6 +11,8 @@ const client = new Client({
 
 client.connect();
 
+var CLEAN = false;
+
 var leaderboardXP = [];
 var compare = function(currentRow){
     if(currentRow.xp === undefined){
@@ -53,11 +55,24 @@ client.query('SELECT * FROM progress;', (err, res) => {
     }
     leaderboardXP = leaderboardXP.reverse();
     for(var i in leaderboardXP){
-        var j = parseInt(i,10) + 1;
-        var tag = '';
-        if(leaderboardXP[i].username === 'Suvanth'){
-            tag = ' (Exploited)'
+        if(leaderboardXP[i].level === 0 && leaderboardXP[i].xp === 0 && CLEAN === true){
+            client.query('DELETE FROM progress WHERE qusername=\'' + leaderboardXP[i].username + '\';', (err, res) => {
+
+            });
         }
-        console.log(j + '. ' + leaderboardXP[i].username + tag + '\nLevel ' + leaderboardXP[i].level + ' ' + leaderboardXP[i].xp + ' XP');
+        else{
+            var j = parseInt(i,10) + 1;
+            var tag = '';
+            if(leaderboardXP[i].username === 'Suvanth'){
+                tag = ' (Exploited)'
+            }
+            if(leaderboardXP[i].username === 'speedrunSP'){
+                tag = ' (Speed Run)'
+            }
+            if(leaderboardXP[i].username === 'Fast_run_1'){
+                tag = ' (Speed Run)'
+            }
+            console.log(j + '. ' + leaderboardXP[i].username + tag + '\nLevel ' + leaderboardXP[i].level + ' ' + leaderboardXP[i].xp + ' XP');
+        }
     }
 });

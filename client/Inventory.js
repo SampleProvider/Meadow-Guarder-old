@@ -261,7 +261,10 @@ Item("fish","Red Fish",function(player){
 
 });
 Item("orangefish","Orange Fish",function(player){
-    player.textColor = "ff9000";
+    player.stats.attack = player.stats.attack * 1.1;
+    player.stats.defense = player.stats.defense * 1.1;
+    player.stats.heal = player.stats.heal * 1.1;
+    player.hpMax = player.hpMax * 1.1;
 },function(player){
 
 });
@@ -272,24 +275,6 @@ Item("shield","Shield",function(player){
 });
 Item("amulet","Amulet",function(player){
     player.stats.heal = player.stats.heal * 1.1;
-},function(player){
-
-});
-Item("bluecandy","Blue Candy",function(player){
-    player.textColor = "0090ff";
-    for(var i in player.inventory.items){
-        if(player.inventory.items[i].id !== 'bluecandyc'){
-            player.inventory.removeItem(player.inventory.items[i].id,player.inventory.items[i].amount);
-        }
-    }
-    player.inventory.addItem("bluecandyc",1);
-    player.inventory.removeItem("bluecandy",1);
-},function(player){
-
-});
-Item("bluecandyc","Blue Candy",function(player){
-    player.textColor = "0090ff";
-    player.inventory.removeItem("bluecandyc",1);
 },function(player){
 
 });

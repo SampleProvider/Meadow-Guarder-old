@@ -136,7 +136,12 @@ io.sockets.on('connection',function(socket){
 			}
 		}
 		else{
-
+			for(var i in SOCKET_LIST){
+				SOCKET_LIST[i].emit('addToChat',{
+					style:'style="color: #000000">',
+					message:'Unknown: ' + data
+				});
+			}
 		}
 	});
 	socket.on('sendDebugToServer',function(data){
@@ -179,10 +184,16 @@ io.sockets.on('connection',function(socket){
 			}
 		}
 		else{
-
+			try{
+				socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+			}
+			catch(e){
+				socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
+			}
 		}
 	});
 });
+
 
 setInterval(function(){
 	spawnEnemies();
