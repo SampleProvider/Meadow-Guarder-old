@@ -1414,6 +1414,7 @@ Player = function(param){
             socket.emit('changeMap',self.transporter);
         }
         if(self.mapChange === 5){
+            var map = self.map;
             playerMap[self.map] -= 1;
             self.map = self.transporter.teleport;
             if(self.transporter.teleportx !== -1){
@@ -1425,77 +1426,79 @@ Player = function(param){
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
             playerMap[self.map] += 1;
-            for(var i in Spawner.list){
-                if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
-                    var monsterType = 'purple';
-                    if(Math.random() < 0.1){
-                        monsterType = 'green';
-                    }
-                    if(Math.random() < 0.01){
-                        monsterType = 'blue';
-                    }
-                    var monster = new Monster({
-                        spawnId:i,
-                        x:Spawner.list[i].x,
-                        y:Spawner.list[i].y,
-                        map:Spawner.list[i].map,
-                        moveSpeed:2,
-                        monsterType:monsterType,
-                        onDeath:function(pt){
-                            pt.toRemove = true;
-                            if(pt.spawnId){
-                                Spawner.list[pt.spawnId].spawned = false;
-                            }
-                            for(var i in Projectile.list){
-                                if(Projectile.list[i].parent === pt.id){
-                                    Projectile.list[i].toRemove = true;
+            if(map !== self.map){
+                for(var i in Spawner.list){
+                    if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
+                        var monsterType = 'purple';
+                        if(Math.random() < 0.1){
+                            monsterType = 'green';
+                        }
+                        if(Math.random() < 0.01){
+                            monsterType = 'blue';
+                        }
+                        var monster = new Monster({
+                            spawnId:i,
+                            x:Spawner.list[i].x,
+                            y:Spawner.list[i].y,
+                            map:Spawner.list[i].map,
+                            moveSpeed:2,
+                            monsterType:monsterType,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                if(pt.spawnId){
+                                    Spawner.list[pt.spawnId].spawned = false;
                                 }
-                            }
-                        },
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                            },
+                        });
+                        Spawner.list[i].spawned = true;
+                    }
+                }
+                var d = new Date();
+                var m = '' + d.getMinutes();
+                if(m.length === 1){
+                    m = '' + 0 + m;
+                }
+                if(m === '0'){
+                    m = '00';
+                }
+                console.error("[" + d.getHours() + ":" + m + "] " + self.username + " went to map " + self.map + ".");
+                for(var i in SOCKET_LIST){
+                    SOCKET_LIST[i].emit('addToChat',{
+                        style:'style="color: ' + self.textColor + '">',
+                        message:self.username + " went to map " + self.map + "."
                     });
-                    Spawner.list[i].spawned = true;
                 }
-            }
-            var d = new Date();
-			var m = '' + d.getMinutes();
-			if(m.length === 1){
-				m = '' + 0 + m;
-			}
-			if(m === '0'){
-				m = '00';
-			}
-            console.error("[" + d.getHours() + ":" + m + "] " + self.username + " went to map " + self.map + ".");
-            for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: ' + self.textColor + '">',
-                    message:self.username + " went to map " + self.map + "."
-                });
-            }
-            var pack = {player:[],projectile:[],monster:[],npc:[]};
-            for(var i in Player.list){
-                if(Player.list[i] && Player.list[i].map === self.map){
-                    pack.player.push(Player.list[i].getInitPack());
+                var pack = {player:[],projectile:[],monster:[],npc:[]};
+                for(var i in Player.list){
+                    if(Player.list[i] && Player.list[i].map === self.map){
+                        pack.player.push(Player.list[i].getInitPack());
+                    }
                 }
-            }
-            for(var i in Projectile.list){
-                if(Projectile.list[i] && Projectile.list[i].map === self.map){
-                    pack.projectile.push(Projectile.list[i].getInitPack());
+                for(var i in Projectile.list){
+                    if(Projectile.list[i] && Projectile.list[i].map === self.map){
+                        pack.projectile.push(Projectile.list[i].getInitPack());
+                    }
                 }
-            }
-            for(var i in Monster.list){
-                if(Monster.list[i] && Monster.list[i].map === self.map){
-                    pack.monster.push(Monster.list[i].getInitPack());
+                for(var i in Monster.list){
+                    if(Monster.list[i] && Monster.list[i].map === self.map){
+                        pack.monster.push(Monster.list[i].getInitPack());
+                    }
                 }
-            }
-            for(var i in Npc.list){
-                if(Npc.list[i] && Npc.list[i].map === self.map){
-                    pack.npc.push(Npc.list[i].getInitPack());
+                for(var i in Npc.list){
+                    if(Npc.list[i] && Npc.list[i].map === self.map){
+                        pack.npc.push(Npc.list[i].getInitPack());
+                    }
                 }
-            }
-            socket.emit('update',pack);
-            for(var i in Player.list){
-                if(Player.list[i]){
-                    SOCKET_LIST[i].emit('initEntity',self.getInitPack());
+                socket.emit('update',pack);
+                for(var i in Player.list){
+                    if(Player.list[i]){
+                        SOCKET_LIST[i].emit('initEntity',self.getInitPack());
+                    }
                 }
             }
         }

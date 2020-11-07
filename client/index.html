@@ -1569,7 +1569,7 @@
 			if(mapShadeAmount >= 2){
 				mapShadeSpeed = -0.12;
 			}
-			if(Player.list[selfId].map === currentMap){
+			if(Player.list[selfId].map === currentMap && shadeAmount > 1.5){
 				shadeSpeed = -3 / 40;
 				isWorldMap = false;
 				for(var i = 0;i < mapLocations.length;i++){
