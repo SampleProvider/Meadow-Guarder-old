@@ -30,7 +30,7 @@ console.log('Server Started on port ' + port.address().port);
 require('./command');
 
 SOCKET_LIST = {};
-io = require('socket.io')(serv,{upgradeTimeout:50000});
+io = require('socket.io')(serv,{upgradeTimeout:3600000});
 io.sockets.on('connection',function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
