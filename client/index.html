@@ -1606,7 +1606,7 @@
 			worldMap.restore();
 		},1000/80);
 		
-		function useMenuDropdown() {
+		function useMenuDropdown(){
 			var dropdowns = document.getElementsByClassName("UI-dropdown-light");
 			for(var i = 0;i < dropdowns.length;i++){
 				var openDropdown = dropdowns[i];
@@ -1754,9 +1754,6 @@
 					socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
 				}
 			}
-		}
-		document.documentElement.onclick = function(){
-			socket.emit('keyPress',{inputId:"releaseAll",state:true});
 		}
 		document.querySelectorAll("button").forEach(function(item){
 			item.addEventListener('focus',function(){
