@@ -559,8 +559,8 @@ Actor = function(param){
                         Player.list[self.parent].xp += Math.round(10 * Player.list[self.parent].stats.xp);
                     }
                     pt.isDead = true;
+                    self.toRemove = true;
                 }
-                self.toRemove = true;
             }
 		});
     }
@@ -2404,11 +2404,11 @@ Projectile.list = {};
 
 
 var mapLocations = [
-    ['','Lower Deadlands',''],
-    ['','The Outskirts','Forest'],
-    ['The Bridge','River','Village'],
-    ['Lilypad Kingdom','Lilypad Path Part 1','Upper Mine Deposit'],
-    ['Lilypad Path Part 3','Lilypad Path Part 2',''],
+    ['','Lower Deadlands','',''],
+    ['','The Outskirts','Forest',''],
+    ['The Bridge','River','Village','The Pathway'],
+    ['Lilypad Kingdom','Lilypad Path Part 1','Upper Mine Deposit',''],
+    ['Lilypad Path Part 3','Lilypad Path Part 2','',''],
 ];
 var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" && layer.visible === false){

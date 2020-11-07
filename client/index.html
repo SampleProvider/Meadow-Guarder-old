@@ -15,7 +15,7 @@
 		<button id ="createAccount" class="UI-button-light">Create Account</button>
 		<button id ="deleteAccount" class="UI-button-light">Delete Account</button>
 		<div id="signError"></div>
-		<div class="UI-text-light" style="top: 180px;left: 5px;font-size: 50px;">OVER 4500 LINES OF CODE!</div>
+		<div class="UI-text-light" style="top: 180px;left: 5px;font-size: 50px;">OVER 6500 LINES OF CODE!<br>WARNING: ACCOUNTS WITH 0 XP WILL BE DELETED SOON TO CLEAN THE DATABASE!</div>
 		<div class="UI-text-light" style="bottom: 5px;right: 5px;font-size: 5px;">Disclaimer: We do not take responsibility for your house being blown up by a nuke.</div>
 	</div>
 	<div id="gameDiv" style="display:none;">
@@ -28,7 +28,7 @@
 		<div id="questInventoryDiv" class="UI-text-light" onmouseover="mouseUp(event)"></div>
 		<div id="fps" class="UI-text-light"></div>
 		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
-			<div>Welcome to Meadow Guarders Open 0.0.9!</div>
+			<div>Welcome to Meadow Guarders Open 009f10a!</div>
 		</div>
 
 		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event)">
@@ -178,6 +178,7 @@
 
 		var RENDERDIST = 5;
 		var STATE = 'signIn';
+		var VERSION = '009f10a';
 
 		var DEBUG = 0;
 		
@@ -282,7 +283,7 @@
 		var debugText = document.getElementById('debug-text');
 		var debugInput = document.getElementById('debug-input');
 		var debugForm = document.getElementById('debug-form');
-		var chat = '<div>Welcome to Meadow Guarders Open 0.0.9!</div>';
+		var chat = '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
 		var debug = '<div>Debug info will show up here.</div>'
 		var chatPress = false;
 		var inChat = false;
@@ -490,11 +491,11 @@
 		var mapDrag = true;
 		var mapRatio = 2000;
 		var mapLocations = [
-			['','Lower Deadlands',''],
-			['','The Outskirts','Forest'],
-			['The Bridge','River','Village'],
-			['Lilypad Kingdom','Lilypad Path Part 1','Upper Mine Deposit'],
-			['Lilypad Path Part 3','Lilypad Path Part 2',''],
+			['','Lower Deadlands','',''],
+			['','The Outskirts','Forest',''],
+			['The Bridge','River','Village','The Pathway'],
+			['Lilypad Kingdom','Lilypad Path Part 1','Upper Mine Deposit',''],
+			['Lilypad Path Part 3','Lilypad Path Part 2','',''],
 		];
 		var mapCropX = 0;
 		var mapCropY = 0;
@@ -509,8 +510,7 @@
 		var mapChange = 0;
 		var mapDirection = 'up';
 		var mapSlide = 0;
-		var lastMap = '';
-		var currentMap = '';
+		var currentMap = 'Starter House';
 		var drewMap = false;
 		var isWorldMap = false;
 
@@ -1310,8 +1310,7 @@
 				lastMap = Player.list[selfId].map;
 				currentMap = data.teleport;*/
 			}
-			lastMap = Player.list[selfId].map;
-			currentMap = data.teleport;
+			//currentMap = data.teleport;
 			shadeSpeed = 3 / 40;
 		});
 		socket.on('dialougeLine',function(data){
@@ -1431,7 +1430,7 @@
 			ctx.canvas.height = window.innerHeight;
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
-			ctx.fillStyle = maps[Player.list[selfId].map];
+			ctx.fillStyle = maps[currentMap];
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			lastCameraX = cameraX;
 			lastCameraY = cameraY;
@@ -1478,11 +1477,11 @@
 			ctx.translate(cameraX,cameraY);
 			
 			if(!isWorldMap){
-				if(loadedMap[Player.list[selfId].map]){
-					ctx.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
+				if(loadedMap[currentMap]){
+					ctx.drawImage(loadedMap[currentMap].lower,0,0);
 				}
 				else{
-					loadMap(Player.list[selfId].map);
+					loadMap(currentMap);
 				}
 			}
 			else{
@@ -1530,11 +1529,11 @@
 			}
 
 			if(!isWorldMap){
-				if(loadedMap[Player.list[selfId].map]){
-					ctx.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
+				if(loadedMap[currentMap]){
+					ctx.drawImage(loadedMap[currentMap].upper,0,0);
 				}
 				else{
-					loadMap(Player.list[selfId].map);
+					loadMap(currentMap);
 				}
 			}
 			else{
@@ -1571,6 +1570,7 @@
 			if(shadeAmount > 1.5){
 				shadeSpeed = -3 / 40;
 				isWorldMap = false;
+				currentMap = Player.list[selfId].map;
 				for(var i = 0;i < mapLocations.length;i++){
 					for(var j = 0;j < mapLocations[i].length;j++){
 						if(currentMap === mapLocations[i][j]){
