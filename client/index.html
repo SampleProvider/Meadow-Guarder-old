@@ -510,7 +510,8 @@
 		var mapChange = 0;
 		var mapDirection = 'up';
 		var mapSlide = 0;
-		var currentMap = 'Starter House';
+		var lastMap = '';
+		var currentMap = '';
 		var drewMap = false;
 		var isWorldMap = false;
 
@@ -1310,7 +1311,8 @@
 				lastMap = Player.list[selfId].map;
 				currentMap = data.teleport;*/
 			}
-			//currentMap = data.teleport;
+			lastMap = Player.list[selfId].map;
+			currentMap = data.teleport;
 			shadeSpeed = 3 / 40;
 		});
 		socket.on('dialougeLine',function(data){
@@ -1430,7 +1432,7 @@
 			ctx.canvas.height = window.innerHeight;
 			WIDTH = window.innerWidth;
 			HEIGHT = window.innerHeight;
-			ctx.fillStyle = maps[currentMap];
+			ctx.fillStyle = maps[Player.list[selfId].map];
 			ctx.fillRect(0,0,WIDTH,HEIGHT);
 			lastCameraX = cameraX;
 			lastCameraY = cameraY;
@@ -1477,11 +1479,11 @@
 			ctx.translate(cameraX,cameraY);
 			
 			if(!isWorldMap){
-				if(loadedMap[currentMap]){
-					ctx.drawImage(loadedMap[currentMap].lower,0,0);
+				if(loadedMap[Player.list[selfId].map]){
+					ctx.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
 				}
 				else{
-					loadMap(currentMap);
+					loadMap(Player.list[selfId].map);
 				}
 			}
 			else{
@@ -1529,11 +1531,11 @@
 			}
 
 			if(!isWorldMap){
-				if(loadedMap[currentMap]){
-					ctx.drawImage(loadedMap[currentMap].upper,0,0);
+				if(loadedMap[Player.list[selfId].map]){
+					ctx.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
 				}
 				else{
-					loadMap(currentMap);
+					loadMap(Player.list[selfId].map);
 				}
 			}
 			else{
@@ -1567,10 +1569,9 @@
 			if(mapShadeAmount >= 2){
 				mapShadeSpeed = -0.12;
 			}
-			if(shadeAmount > 1.5){
+			if(Player.list[selfId].map === currentMap){
 				shadeSpeed = -3 / 40;
 				isWorldMap = false;
-				currentMap = Player.list[selfId].map;
 				for(var i = 0;i < mapLocations.length;i++){
 					for(var j = 0;j < mapLocations[i].length;j++){
 						if(currentMap === mapLocations[i][j]){
