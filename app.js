@@ -6,6 +6,15 @@ else{
 	SERVER = 'localhost';
 }
 
+var colors = require('colors');
+
+colors.setTheme({
+    info: 'white',
+    help: 'cyan',
+    warn: 'yellow',
+    success: 'magenta',
+    error: 'red'
+});
 var express = require('express');
 const { setInterval } = require('timers');
 var app = express();
@@ -27,7 +36,7 @@ else{
 }
 
 console.log('Server Started on port ' + port.address().port);
-require('./command');
+//require('./command');
 
 SOCKET_LIST = {};
 io = require('socket.io')(serv,{upgradeTimeout:3600000});
@@ -136,6 +145,15 @@ io.sockets.on('connection',function(socket){
 			}
 		}
 		else{
+			var d = new Date();
+			var m = '' + d.getMinutes();
+			if(m.length === 1){
+				m = '' + 0 + m;
+			}
+			if(m === '0'){
+				m = '00';
+			}
+			console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data.error);
 			for(var i in SOCKET_LIST){
 				SOCKET_LIST[i].emit('addToChat',{
 					style:'style="color: #000000">',

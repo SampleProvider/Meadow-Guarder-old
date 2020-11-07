@@ -2173,7 +2173,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead"){
+                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].mapChange > 10){
                         self.attackState = "move";
                         self.target = Player.list[i];
                     }
