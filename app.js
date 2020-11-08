@@ -153,7 +153,7 @@ io.sockets.on('connection',function(socket){
 			if(m === '0'){
 				m = '00';
 			}
-			console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data.error);
+			console.error("[" + d.getHours() + ":" + m + "] Unkonwn: " + data.error);
 			for(var i in SOCKET_LIST){
 				SOCKET_LIST[i].emit('addToChat',{
 					style:'style="color: #000000">',
