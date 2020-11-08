@@ -55,40 +55,6 @@ var xpLevels = [
 ];
 
 s = {
-    findPlayers:function(param){
-        var acceptableEntities = Player.list;
-        if(param.username){
-            for(var i in Player.list){
-                if(Player.list[i].username !== param.username){
-                    delete acceptableEntities[i];
-                }
-            }
-        }
-        if(param.map){
-            for(var i in Player.list){
-                if(Player.list[i].map !== param.map){
-                    delete acceptableEntities[i];
-                }
-            }
-        }
-        if(param.id){
-            for(var i in Player.list){
-                if(Player.list[i].id !== param.id){
-                    delete acceptableEntities[i];
-                }
-            }
-        }
-        if(acceptableEntities === {}){
-            return 'None';
-        }
-        else{
-            var pack = [];
-            for(var i in acceptableEntities){
-                pack.push(acceptableEntities[i]);
-            }
-            return pack;
-        }
-    },
     findPlayer:function(param){
         for(var i in Player.list){
             if(Player.list[i].username === param){
@@ -114,75 +80,6 @@ s = {
             },
         });
         return monster;
-    },
-    findEntities:function(param){
-        var acceptableEntities = Entity.list;
-        if(param.id){
-            for(var i in Entity.list){
-                if(Entity.list[i].id !== param.id){
-                    delete acceptableEntities[i];
-                }
-            }
-        }
-        if(param.type){
-            for(var i in Entity.list){
-                if(Entity.list[i].type !== param.type){
-                    delete acceptableEntities[i];
-                }
-            }
-        }
-        if(param.map){
-            for(var i in Entity.list){
-                if(Entity.list[i].map !== param.map){
-                    delete acceptableEntities[i];
-                }
-            }
-        }
-        if(acceptableEntities === {}){
-            return 'None';
-        }
-        else{
-            var pack = [];
-            for(var i in acceptableEntities){
-                pack.push(acceptableEntities[i]);
-            }
-            return pack;
-        }
-    },
-    spawnEntity:function(param){
-        if(param.type){
-            if(param.type === 'Monster'){
-                var monster = new Monster({
-                    spawnId:0,
-                    x:param.x,
-                    y:param.y,
-                    map:param.map,
-                    moveSpeed:param.moveSpeed,
-                    onDeath:function(pt){
-                        pt.toRemove = true;
-                        if(pt.spawnId){
-                            Spawner.list[pt.spawnId].spawned = false;
-                        }
-                        for(var i in Projectile.list){
-                            if(Projectile.list[i].parent === pt.id){
-                                Projectile.list[i].toRemove = true;
-                            }
-                        }
-                    },
-                });
-                return monster;
-            }
-            if(param.type === 'Npc'){
-                var npc = new Npc({
-                    x:param.x,
-                    y:param.y,
-                    name:param.name,
-                    username:param.id,
-                    map:param.map,
-                    moveSpeed:param.moveSpeed,
-                });
-            }
-        }
     },
     kick:function(username){
         for(var i in Player.list){
@@ -844,7 +741,7 @@ Player = function(param){
     self.username = param.username;
     self.tag = '';
     if(self.username === 'sp'){
-        self.textColor = '00ff90';
+        self.textColor = 'ff0090';
     }
     if(self.username === 'Suvanth'){
         self.textColor = '0090ff';
@@ -1973,6 +1870,7 @@ Player.onDisconnect = function(socket){
             });
         }
         playerMap[Player.list[socket.id].map] -= 1;
+        console.log('Player deleted');
         delete Player.list[socket.id];
     }
 }
