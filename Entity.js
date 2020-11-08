@@ -786,7 +786,9 @@ Player = function(param){
     self.inventory = new Inventory(socket,true);
     if(param.param.inventory){
         for(var i in param.param.inventory){
-            self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
+            if(param.param.inventory[i].id[0] === 'w' || param.param.inventory[i].id[0] === 'x'){
+                self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
+            }
         }
     }
     if(param.param.equip){
