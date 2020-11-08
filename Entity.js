@@ -1310,7 +1310,7 @@ Player = function(param){
             for(var i in self.inventory.items){
                 if(self.inventory.items[i].id === 'xpgem'){
                     try{
-                        for(var i = 0;i < self.inventory.items[i].amount;i++){
+                        for(var j = 0;j < self.inventory.items[i].amount;j++){
                             Item.list[self.inventory.items[i].id].event(self);
                         }
                     }
