@@ -384,6 +384,12 @@ button {
 }
 #inventoryItem {
     position: absolute;
+    left: 8px;
+    top: 230px;
+    width: 425px;
+}
+#currentEquip {
+    position: absolute;
     left: 120px;
     top: 40px;
     width: 345px;
@@ -794,5 +800,18 @@ button {
     background-color: #009900;
 }
 .itemDismantle:hover {
+    background-color: #990000;
+}
+.itemUnequip {
+    position: relative;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #ff0000;
+    border: 1px solid #aa0000;
+    margin-left: 2px;
+}
+.itemUnequip:hover {
     background-color: #990000;
 }

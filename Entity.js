@@ -429,29 +429,35 @@ Actor = function(param){
                 }
                 if(pt.hp < 1 && pt.isDead === false && self.toRemove === false){
                     if(parentType === 'Player'){
-                        if(Math.random() < 0.5){   
-                            Player.list[self.parent].inventory.addItem('sword',1);
+                        if(Math.random() < 0.1){
+                            Player.list[self.parent].inventory.addItem('woodensword',1);
                         }
-                        if(Math.random() < 0.5){   
-                            Player.list[self.parent].inventory.addItem('helmet',1);
+                        if(Math.random() < 0.01){
+                            Player.list[self.parent].inventory.addItem('ironsword',1);
                         }
-                        if(Math.random() < 0.2){   
-                            Player.list[self.parent].inventory.addItem('amulet',1);
+                        if(Math.random() < 0.001){
+                            Player.list[self.parent].inventory.addItem('goldensword',1);
                         }
-                        if(Math.random() < 0.2){   
-                            Player.list[self.parent].inventory.addItem('shield',1);
+                        if(Math.random() < 0.1){
+                            Player.list[self.parent].inventory.addItem('woodenhelmet',1);
                         }
-                        if(Math.random() < 0.1){   
-                            Player.list[self.parent].inventory.addItem('fish',1);
+                        if(Math.random() < 0.01){
+                            Player.list[self.parent].inventory.addItem('ironhelmet',1);
+                        }
+                        if(Math.random() < 0.001){
+                            Player.list[self.parent].inventory.addItem('goldenhelmet',1);
+                        }
+                        if(Math.random() < 0.1){
+                            Player.list[self.parent].inventory.addItem('woodenamulet',1);
+                        }
+                        if(Math.random() < 0.01){
+                            Player.list[self.parent].inventory.addItem('ironamulet',1);
+                        }
+                        if(Math.random() < 0.001){
+                            Player.list[self.parent].inventory.addItem('goldenamulet',1);
                         }
                         if(Math.random() < 0.005){   
                             Player.list[self.parent].inventory.addItem('xpgem',1);
-                        }
-                        if(pt.monsterType === 'green'){
-                            Player.list[self.parent].inventory.addItem('orangefish',1);
-                        }
-                        if(pt.monsterType === 'blue'){
-                            //Player.list[self.parent].inventory.addItem('bluecandy',1);
                         }
                         Player.list[self.parent].xp += Math.round(10 * Player.list[self.parent].stats.xp);
                     }
@@ -782,6 +788,9 @@ Player = function(param){
         for(var i in param.param.inventory){
             self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
         }
+    }
+    if(param.param.equip){
+        self.inventory.currentEquip = param.param.equip;
     }
     if(param.param.xp){
         self.xp = param.param.xp;
@@ -1286,12 +1295,10 @@ Player = function(param){
                 xp:1,
             }
             self.hpMax = 1000;
-            for(var i in self.inventory.items){
-                if(self.inventory.items[i]){
+            for(var i in self.inventory.currentEquip){
+                if(self.inventory.currentEquip[i] !== ''){
                     try{
-                        for(var j = 0;j < self.inventory.items[i].amount;j++){
-                            Item.list[self.inventory.items[i].id].event(self);
-                        }
+                        Item.list[self.inventory.currentEquip[i]].event(self);
                     }
                     catch(err){
                         console.log(err);

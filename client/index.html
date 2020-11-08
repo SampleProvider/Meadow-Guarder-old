@@ -15,7 +15,7 @@
 		<button id ="createAccount" class="UI-button-light">Create Account</button>
 		<button id ="deleteAccount" class="UI-button-light">Delete Account</button>
 		<div id="signError"></div>
-		<div class="UI-text-light" style="top: 180px;left: 5px;font-size: 50px;">OVER 6500 LINES OF CODE!<br>WARNING: ACCOUNTS WITH 0 XP WILL BE DELETED SOON TO CLEAN THE DATABASE!</div>
+		<div class="UI-text-light" style="top: 180px;left: 5px;font-size: 50px;">OVER 6500 LINES OF CODE!<br>WARNING: ACCOUNTS WITH 0 XP WILL BE DELETED SOON TO CLEAN THE DATABASE!<br>WARNING: ALL ITEMS WILL BE DISMANTLED SOON!</div>
 		<div class="UI-text-light" style="bottom: 5px;right: 5px;font-size: 5px;">Disclaimer: We do not take responsibility for your house being blown up by a nuke.</div>
 	</div>
 	<div id="gameDiv" style="display:none;">
@@ -64,6 +64,7 @@
 						<div id="inventoryPlayerName"></div>
 						<canvas id="inventoryPlayerDisplay"></canvas>
 					</div>
+					<div id="currentEquip"></div>
 					<div id="inventoryItem"></div>
 				</div>
 				<div id="debugScreen" style="display: none;">
@@ -623,8 +624,9 @@
 			questInventory.refreshRender();
 		});
 		var inventory = new Inventory(socket,false);
-		socket.on('updateInventory',function(items){
-			inventory.items = items;
+		socket.on('updateInventory',function(pack){
+			inventory.items = pack.items;
+			inventory.currentEquip = pack.currentEquip;
 			inventory.refreshRender();
 		});
 		document.getElementById('debugButton').onclick = function(){

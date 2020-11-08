@@ -108,6 +108,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",amount:1}
+        currentEquip:{helmet:'',boost:'',weapon:'',},
         materials:[],
         refresh:true,
         spawn:true,
@@ -149,12 +150,15 @@ Inventory = function(socket,server){
             for(var i = 0;i < self.items.length;i++){
                 self.items[i].index = i;
             }
-            self.socket.emit('updateInventory',self.items);
+            self.socket.emit('updateInventory',{items:self.items,currentEquip:self.currentEquip});
             return;
         }
         var inventory = document.getElementById("inventoryItem");
         inventory.innerHTML = "";
+        var currentEquip = document.getElementById("currentEquip");
+        currentEquip.innerHTML = "";
         var addButton = function(data,index){
+            console.log(data);
             let item = Item.list[data.id];
             let button = document.createElement('button');
             let equip = document.createElement('button');
@@ -184,6 +188,12 @@ Inventory = function(socket,server){
                 self.socket.emit("dismantleItem",item.id);
                 dismantle.style.display = 'inline-block';
             }
+            equip.onclick = function(){
+                if(item.id !== 'xpgem'){
+                    self.socket.emit("equipItem",item.id);
+                    equip.style.display = 'inline-block';
+                }
+            }
             button.innerHTML = item.name + " x" + data.amount + " ";
             button.style.display = 'inline-block';
             button.style.position = 'relative';
@@ -197,8 +207,43 @@ Inventory = function(socket,server){
             div.appendChild(dismantle);
             button.appendChild(image);
         }
+        var addEquip = function(data,index){
+            console.log(data);
+            if(data === ''){
+                return;
+            }
+            let item = Item.list[data];
+            let button = document.createElement('button');
+            let unequip = document.createElement('button');
+            let div = document.createElement('div');
+            let image = document.createElement('img');
+            image.src = "/client/img/" + data + ".png";
+            button.className = "UI-button-light";
+            div.className = "UI-display-light";
+            unequip.className = "itemUnequip";
+            image.className = "item";
+            unequip.innerHTML = "Unequip";
+            unequip.onclick = function(){
+                self.socket.emit("unequipItem",item.id);
+                unequip.style.display = 'inline-block';
+            }
+            button.innerHTML = item.name;
+            button.style.display = 'inline-block';
+            button.style.position = 'relative';
+            div.style.display = 'inline-block';
+            div.style.position = 'relative';
+            div.style.margin = '0px';
+            button.style.textAlign = "center";
+            currentEquip.appendChild(div);
+            div.appendChild(button);
+            div.appendChild(unequip);
+            button.appendChild(image);
+        }
 		for(var i = 0;i < self.items.length;i++){
 			addButton(self.items[i],i);
+		}
+		for(var i in self.currentEquip){
+			addEquip(self.currentEquip[i],i);
 		}
     }
     if(self.server && self.socket){
@@ -220,6 +265,28 @@ Inventory = function(socket,server){
             self.removeItem(itemId,1);
             Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 2000);
         });
+        self.socket.on("equipItem",function(itemId){
+            if(!self.hasItem(itemId,1)){
+                console.log('cheater');
+                return;
+            }
+
+            self.removeItem(itemId,1);
+            if(self.currentEquip[Item.list[itemId].type] !== ''){
+                self.addItem(self.currentEquip[Item.list[itemId].type],1);
+            }
+            self.currentEquip[Item.list[itemId].type] = itemId;
+            self.refreshRender();
+        });
+        self.socket.on("unequipItem",function(itemId){
+            if(self.currentEquip[Item.list[itemId].type] !== itemId){
+                console.log('cheater');
+                return;
+            }
+            self.addItem(self.currentEquip[Item.list[itemId].type],1);
+            self.currentEquip[Item.list[itemId].type] = '';
+            self.refreshRender();
+        });
     }
 
 
@@ -227,59 +294,89 @@ Inventory = function(socket,server){
 }
 
 
-Item = function(id,name,event,eventClick){
+Item = function(id,name,type,event){
 	var self = {
 		id:id,
-		name:name,
+        name:name,
+        type:type,
         event:event,
-        eventClick:eventClick,
 	}
 	Item.list[self.id] = self;
 	return self;
 }
 Item.list = {};
 
-Item("sword","Sword",function(player){
+Item("sword","Sword","weapon",function(player){
     player.stats.attack = player.stats.attack * 1.1;
-},function(player){
-    player.questInventory.addQuestItem("potion",1);
     player.inventory.removeItem("sword",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("helmet","Helmet",function(player){
+Item("helmet","Helmet","helmet",function(player){
     player.stats.defense = player.stats.defense * 1.1;
-},function(player){
-
+    player.inventory.removeItem("helmet",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("bow","Bow",function(player){
+Item("bow","Bow","weapon",function(player){
     player.stats.attack = player.stats.attack * 1.1;
-},function(player){
-
+    player.inventory.removeItem("bow",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("fish","Red Fish",function(player){
+Item("fish","Red Fish","boost",function(player){
     player.hpMax = player.hpMax * 1.1;
-},function(player){
-
+    player.inventory.removeItem("fish",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("orangefish","Orange Fish",function(player){
+Item("orangefish","Orange Fish","boost",function(player){
     player.stats.attack = player.stats.attack * 1.1;
     player.stats.defense = player.stats.defense * 1.1;
     player.stats.heal = player.stats.heal * 1.1;
     player.hpMax = player.hpMax * 1.1;
-},function(player){
-
+    player.inventory.removeItem("orangefish",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("shield","Shield",function(player){
+Item("shield","Shield","weapon",function(player){
     player.stats.defense = player.stats.defense * 1.5;
-},function(player){
-
+    player.inventory.removeItem("shield",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("amulet","Amulet",function(player){
+Item("amulet","Amulet","boost",function(player){
     player.stats.heal = player.stats.heal * 1.1;
-},function(player){
-
+    player.inventory.removeItem("amulet",1);
+    player.xp += Math.round(player.stats.xp * 2000);
 });
-Item("xpgem","XP Gem",function(player){
+Item("xpgem","XP Gem","boost",function(player){
     player.stats.xp = player.stats.xp * 1.1;
-},function(player){
+});
 
+
+
+Item("woodensword","Wooden Sword","weapon",function(player){
+    player.stats.attack = player.stats.attack * 3;
+});
+Item("ironsword","Iron Sword","weapon",function(player){
+    player.stats.attack = player.stats.attack * 10;
+});
+Item("goldensword","Golden Sword","weapon",function(player){
+    player.stats.attack = player.stats.attack * 121;
+});
+
+Item("woodenhelmet","Wooden Helmet","helmet",function(player){
+    player.stats.defense = player.stats.defense * 1.2;
+});
+Item("ironhelmet","Iron Helmet","helmet",function(player){
+    player.stats.defense = player.stats.defense * 2;
+});
+Item("goldenhelmet","Golden Helmet","helmet",function(player){
+    player.stats.defense = player.stats.defense * 11;
+});
+
+Item("woodenamulet","Wooden Amulet","boost",function(player){
+    player.stats.heal = player.stats.heal * 1.2;
+});
+Item("ironamulet","Iron Amulet","boost",function(player){
+    player.stats.heal = player.stats.heal * 2;
+});
+Item("goldenamulet","Golden Amulet","boost",function(player){
+    player.stats.heal = player.stats.heal * 11;
+    player.hpMax = player.hpMax * 2;
 });

@@ -20,7 +20,7 @@ client.connect();
 
 storeDatabase = function(players){
 	for(var i in players){
-		client.query('UPDATE progress SET qusername=\'' + players[i].username + '\', qprogress=\'' + JSON.stringify({inventory:players[i].inventory.items,xp:players[i].xp,level:players[i].level}) + '\' WHERE qusername=\'' + players[i].username + '\';', (err, res) => {
+		client.query('UPDATE progress SET qusername=\'' + players[i].username + '\', qprogress=\'' + JSON.stringify({inventory:players[i].inventory.items,equip:players[i].inventory.currentEquip,xp:players[i].xp,level:players[i].level}) + '\' WHERE qusername=\'' + players[i].username + '\';', (err, res) => {
 			if(err){
 				throw err;
 			}
