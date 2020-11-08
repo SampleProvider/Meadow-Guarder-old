@@ -1307,6 +1307,18 @@ Player = function(param){
                     }
                 }
             }
+            for(var i in self.inventory.items){
+                if(self.inventory.items[i].id === 'xpgem'){
+                    try{
+                        for(var i = 0;i < self.inventory.items[i].amount;i++){
+                            Item.list[self.inventory.items[i].id].event(self);
+                        }
+                    }
+                    catch(err){
+                        console.log(err);
+                    }
+                }
+            }
             self.hpMax = Math.round(self.hpMax);
             if(self.inventory.spawn === true){
                 self.inventory.spawn = false;
