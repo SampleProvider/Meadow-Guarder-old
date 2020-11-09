@@ -201,14 +201,6 @@ io.sockets.on('connection',function(socket){
 				socket.emit('addToDebug','style="color: #ff0000">YOU DO NOT HAVE PERMISSION TO USE THE EVAL FUNCTION!!!');
 			}
 		}
-		else{
-			try{
-				socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
-			}
-			catch(e){
-				socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
-			}
-		}
 	});
 });
 
