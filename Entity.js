@@ -1746,7 +1746,6 @@ Player = function(param){
 }
 
 Player.list = {};
-console.log(Player.list);
 
 Player.onConnect = function(socket,username){
     getDatabase(username,function(param){
@@ -1825,6 +1824,31 @@ Player.onConnect = function(socket,username){
             player.questInfo.started = true;
         });
 
+
+        socket.on('init',function(data){
+            var pack = {player:[],projectile:[],monster:[],npc:[]};
+            for(var i in Player.list){
+                if(Player.list[i].map === player.map){
+                    pack.player.push(Player.list[i].getInitPack());
+                }
+            }
+            for(var i in Projectile.list){
+                if(Projectile.list[i].map === player.map){
+                    pack.projectile.push(Projectile.list[i].getInitPack());
+                }
+            }
+            for(var i in Monster.list){
+                if(Monster.list[i].map === player.map){
+                    pack.monster.push(Monster.list[i].getInitPack());
+                }
+            }
+            for(var i in Npc.list){
+                if(Npc.list[i].map === player.map){
+                    pack.npc.push(Npc.list[i].getInitPack());
+                }
+            }
+            socket.emit('update',pack);
+        });
         var pack = {player:[],projectile:[],monster:[],npc:[]};
         for(var i in Player.list){
             if(Player.list[i].map === player.map){
@@ -1860,7 +1884,8 @@ Player.onConnect = function(socket,username){
     for(var i in SOCKET_LIST){
         SOCKET_LIST[i].emit('addToChat',{
             style:'style="color: #00ff00">',
-            message:username + " just logged on."
+            message:username + " just logged on.",
+            logOnMessage:true,
         });
     }
 
@@ -1916,7 +1941,6 @@ Player.onDisconnect = function(socket){
             });
         }
         playerMap[Player.list[socket.id].map] -= 1;
-        console.log('Player deleted');
         delete Player.list[socket.id];
     }
 }
