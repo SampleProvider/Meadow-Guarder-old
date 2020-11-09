@@ -93,6 +93,13 @@ s = {
             Player.onDisconnect(SOCKET_LIST[i]);
         }
     },
+    findAll:function(){
+        var pack = '';
+        for(var i in Player.list){
+            pack = pack + ' ' + Player.list[i].username;
+        }
+        return pack;
+    },
 };
 
 
@@ -227,6 +234,8 @@ Actor = function(param){
     self.canMove = true;
     self.transporter = {};
     self.invincible = false;
+    self.mapWidth = Maps[self.map].width;
+    self.mapHeight = Maps[self.map].height;
     self.type = 'Actor';
     self.animationDirection = 'up';
     self.animation = 0;
@@ -422,6 +431,8 @@ Actor = function(param){
 			y:self.y + Math.sin(direction/180*Math.PI) * distance,
             map:self.map,
             parentType:parentType,
+            mapWidth:self.mapWidth,
+            mapHeight:self.mapHeight,
             stats:stats,
             onCollision:function(self,pt){
                 if(!pt.invincible && self.toRemove === false){
@@ -2285,6 +2296,8 @@ Projectile = function(param){
 	self.parent = param.id;
 	self.spdX = Math.cos(param.angle/180 * Math.PI) * 50;
     self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
+    self.mapWidth = param.mapWidth;
+    self.mapHeight = param.mapHeight;
     self.width = 48;
     self.height = 48;
 	self.direction = param.direction;
@@ -2301,6 +2314,18 @@ Projectile = function(param){
         super_update();
         self.timer += 1;
         if(self.timer > 30){
+            self.toRemove = true;
+        }
+        if(self.x < - self.width / 2){
+            self.toRemove = true;
+        }
+        if(self.x > self.mapWidth + self.width / 2){
+            self.toRemove = true;
+        }
+        if(self.y < - self.height / 2){
+            self.toRemove = true;
+        }
+        if(self.y > self.mapHeight + self.height / 2){
             self.toRemove = true;
         }
         self.direction += 25;
