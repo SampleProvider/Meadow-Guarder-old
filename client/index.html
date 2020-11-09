@@ -1283,6 +1283,7 @@
 			},5000);
 		});
 		socket.on('spectator',function(data){
+			Player.list[selfId].hp = 0;
 			if(STATE !== 'respawn'){
 				STATE = 'spectator';
 			}

@@ -895,6 +895,7 @@ Player = function(param){
                 if(self.questStage === 1){
                     self.questStage += 1;
                     self.questInfo.started = false;
+                    self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Can you inventigate a weird house?',
@@ -904,6 +905,7 @@ Player = function(param){
                 }
                 if(self.questStage === 12){
                     self.questStage += 1;
+                    self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Thanks.',
@@ -920,6 +922,7 @@ Player = function(param){
                 if(self.questStage === 1){
                     self.questStage += 1;
                     self.questInfo.started = false;
+                    self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'I am in charge of storing valuable gems that come from the mine, but today, instead of gems the minecarts contained monsters! Can you kill them for me?',
@@ -929,6 +932,7 @@ Player = function(param){
                 }
                 if(self.questStage === 8){
                     self.questStage += 1;
+                    self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Thanks. Now I can get back to work.',
@@ -945,6 +949,7 @@ Player = function(param){
                 if(self.questStage === 1){
                     self.questStage += 1;
                     self.questInfo.started = false;
+                    self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Bet you can\'t make it across that bridge.',
@@ -957,6 +962,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -971,10 +977,12 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.invincible = false;
             self.currentResponse = 0;
         }
         if(self.questInfo.started === true && self.questStage === 3 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
+            self.invincible = true;
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'There is an old house in the map River. Go in and inventigate.',
@@ -983,6 +991,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'qWeirdHouse'){
             self.questStage += 1;
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1015,6 +1024,7 @@ Player = function(param){
                 },
             });
             self.questDependent.monster.invincible = true;
+            self.invincible = true;
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'What are you doing here!',
@@ -1065,6 +1075,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.invincible = false;
             self.teleport(2816,1920,'River');
             self.currentResponse = 0;
         }
@@ -1082,6 +1093,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.invincible = false;
             self.questDependent.monster.attackState = 'passive';
             self.questDependent.monster.invincible = false;
             self.currentResponse = 0;
@@ -1091,6 +1103,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.invincible = false;
             self.teleport(2816,1920,'River');
             self.currentResponse = 0;
         }
@@ -1102,6 +1115,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.invincible = false;
             self.xp += Math.round(2000 * self.stats.xp);
             self.currentResponse = 0;
         }
@@ -1110,6 +1124,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.invincible = false;
             socket.emit('questInfo',{
                 questName:'Minecart Monsters',
                 questDescription:'Defeat monsters that escaped the Mine.',
@@ -1118,6 +1133,7 @@ Player = function(param){
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'qMinecartMonsters'){
             self.quest = 'none';
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1125,6 +1141,7 @@ Player = function(param){
         }
         if(self.questInfo.started === true && self.questStage === 3 && self.quest === 'qMinecartMonsters'){
             self.questStage += 1;
+            self.invincible = true;
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'Good. The monsters will come soon.',
@@ -1133,6 +1150,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'qMinecartMonsters'){
             self.questStage += 1;
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1182,6 +1200,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'qMinecartMonsters'){
             self.quest = 'none';
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1190,6 +1209,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'qBridge'){
             self.questStage += 1;
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1204,6 +1224,7 @@ Player = function(param){
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.quest === 'qBridge'){
             self.quest = 'none';
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1227,6 +1248,7 @@ Player = function(param){
         }
         if(self.questStage === 6 && self.quest === 'qBridge'){
             self.questStage += 1;
+            self.invincible = true;
             socket.emit('dialougeLine',{
                 state:'ask',
                 message:'See! I knew you couldn\'t make it!',
@@ -1261,6 +1283,7 @@ Player = function(param){
                     });
                 }
             }
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1270,6 +1293,7 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'qBridge' && QuestInfo.list[i].info === 'complete' && self.isColliding(QuestInfo.list[i]) && self.questStage === 8){
                     self.questStage += 1;
+                    self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Wow! I can\'t believe you made it!',
@@ -1280,6 +1304,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'qBridge'){
             self.quest = 'none';
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -2092,7 +2117,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "move";
                         self.target = Player.list[i];
                     }
@@ -2104,10 +2129,10 @@ Monster = function(param){
                 self.attackState = "attack";
                 break;
             case "attack":
-                if(self.reload % 20 === 0){
+                if(self.reload % 20 === 0 && self.reload > 40 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
-                if(self.reload % 100 < 5){
+                if(self.reload % 100 < 5 && self.reload > 40 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 self.reload += 1;

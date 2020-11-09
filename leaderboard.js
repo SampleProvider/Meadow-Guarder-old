@@ -11,11 +11,12 @@ const client = new Client({
 
 client.connect();
 
-var CLEAN = false;
+var CLEAN = true;
 
 var leaderboardXP = [];
 var compare = function(currentRow){
     if(currentRow.xp === undefined){
+        leaderboardXP.splice(i,0,currentRow);
         return;
     }
     for(var i in leaderboardXP){
@@ -55,10 +56,17 @@ client.query('SELECT * FROM progress;', (err, res) => {
     }
     leaderboardXP = leaderboardXP.reverse();
     for(var i in leaderboardXP){
-        if(leaderboardXP[i].level === 0 && leaderboardXP[i].xp === 0 && CLEAN === true){
-            client.query('DELETE FROM progress WHERE qusername=\'' + leaderboardXP[i].username + '\';', (err, res) => {
+        if(leaderboardXP[i].level === 0 || leaderboardXP[i].level === undefined){
+            if(leaderboardXP[i].xp === 0 || leaderboardXP[i].xp === undefined){
+                if(CLEAN === true){
+                    client.query('DELETE FROM progress WHERE qusername=\'' + leaderboardXP[i].username + '\';', (err, res) => {
 
-            });
+                    });
+                    client.query('DELETE FROM account WHERE qusername=\'' + leaderboardXP[i].username + '\';', (err, res) => {
+
+                    });
+                }
+            }
         }
         else{
             var j = parseInt(i,10) + 1;

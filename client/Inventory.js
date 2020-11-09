@@ -208,7 +208,6 @@ Inventory = function(socket,server){
             button.appendChild(image);
         }
         var addEquip = function(data,index){
-            console.log(data);
             if(data === ''){
                 return;
             }
@@ -227,7 +226,7 @@ Inventory = function(socket,server){
                 self.socket.emit("unequipItem",item.id);
                 unequip.style.display = 'inline-block';
             }
-            button.innerHTML = item.name;
+            button.innerHTML = item.name + " ";
             button.style.display = 'inline-block';
             button.style.position = 'relative';
             div.style.display = 'inline-block';
