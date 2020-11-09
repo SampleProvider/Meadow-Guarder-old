@@ -211,14 +211,12 @@ Entity.getFrameUpdateData = function(){
     }
 	updateCrashes();
     for(var i in Projectile.list){
+        if(!pack[Projectile.list[i].map]){
+            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+        }
+        pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
-        }
-        else{
-            if(!pack[Projectile.list[i].map]){
-                pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
-            }
-            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
     }
     return pack;
@@ -2316,16 +2314,20 @@ Projectile = function(param){
         if(self.timer > 30){
             self.toRemove = true;
         }
-        if(self.x < - self.width / 2){
+        if(self.x < self.width / 2){
+            self.x = self.width / 2;
             self.toRemove = true;
         }
-        if(self.x > self.mapWidth + self.width / 2){
+        if(self.x > self.mapWidth - self.width / 2){
+            self.x = self.mapWidth - self.width / 2;
             self.toRemove = true;
         }
-        if(self.y < - self.height / 2){
+        if(self.y < self.height / 2){
+            self.y = self.height / 2;
             self.toRemove = true;
         }
-        if(self.y > self.mapHeight + self.height / 2){
+        if(self.y > self.mapHeight - self.height / 2){
+            self.y = self.mapHeight - self.height / 2;
             self.toRemove = true;
         }
         self.direction += 25;
