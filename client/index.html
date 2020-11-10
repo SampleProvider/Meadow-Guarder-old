@@ -1,7 +1,10 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
+	<!--<meta name="viewport" content="width=device-width">-->
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://bajie:3000 http://localhost:3000 http://guarded-meadow-00030.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
 	<title>Meadow Guarders</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css">
@@ -34,10 +37,6 @@
 		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event)">
 			<input id="chat-input" class="UI-input-light" type="text"></input>
 		</form>
-		<div id="worldMapDiv" style="display:none;">
-			<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
-			<button id="worldMapExit">x</button>
-		</div>
 		<div id="window" class="window" onmouseover="mouseUp(event)">
 			<div class="window-bar">
 				<div>Window Title</div>
@@ -88,12 +87,16 @@
 					<div id="questDescription">Invenstigate a weird house in the map Forest. Go on a big boss battle against the Monster Boss.</div>
 					<button id="questStart" onclick="startQuest()">Start Quest</button>
 				</div>
+				<div id="worldMap" style="display: none;">
+					<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
+				</div>
 			</div>
 			
 			<div id="menu-text" class="UI-text-light">
 				<button id="inventoryButton" class="UI-button-light menuButton">Inventory</button>
 				<button id="debugButton" class="UI-button-light menuButton">Debug</button>
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
+				<button id="worldMapButton" class="UI-button-light menuButton">World Map</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
@@ -108,7 +111,6 @@
 				<button class="UI-button-light menuButton">Useless</button>
 			</div>
 		</div>
-		<button id="worldMapButton" class="UI-button-light" style="display:none;">World Map [M]</button>
 		<div id="selfDisplay" onmouseover="mouseUp(event)">
 			<div id="healthBar">
 				<div id="healthBarValue"></div>
@@ -357,8 +359,8 @@
 		ctx.canvas.height = 722;
 		inventoryPlayerDisplay.canvas.width = 96;
 		inventoryPlayerDisplay.canvas.height = 152;
-		worldMap.canvas.width = 2000;
-		worldMap.canvas.height = 2000;
+		worldMap.canvas.width = 910;
+		worldMap.canvas.height = 730;
 
 		var maps = {};
 
@@ -388,10 +390,10 @@
 							s_x = (j % json.layers[i].width) * size;
 							s_y = ~~(j / json.layers[i].width) * size;
 							if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1'){
-								glUpper.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+								glUpper.drawImage(tileset,img_x,img_y,size,size,Math.floor(s_x),Math.floor(s_y),size,size);
 							}
 							else{
-								glLower.drawImage(tileset,img_x,img_y,size,size,s_x,s_y,size,size);
+								glLower.drawImage(tileset,img_x,img_y,size,size,Math.floor(s_x),Math.floor(s_y),size,size);
 							}
 						}
 					}
@@ -477,8 +479,6 @@
 		Img.monsterBoss.src = '/client/img/Monster Boss.png';
 		Img.npc = new Image();
 		Img.npc.src = '/client/img/Player Map Npc 2.png';
-		Img.gold = new Image();
-		Img.gold.src = '/client/img/Gold.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.healthBar = new Image();
@@ -494,8 +494,10 @@
 		var mouseY = 0;
 		var mapMouseX = mouseX + WIDTH / 2;
 		var mapMouseY = mouseY + HEIGHT / 2;
-		var mapX = -100;
-		var mapY = -100;
+		var mapDragX = mouseX + WIDTH / 2;
+		var mapDragY = mouseY + HEIGHT / 2;
+		var mapX = -19200;
+		var mapY = -12800;
 		var mapDrag = true;
 		var mapRatio = 2000;
 		var mapLocations = [
@@ -638,49 +640,38 @@
 			inventory.refreshRender();
 		});
 		document.getElementById('debugButton').onclick = function(){
-			if(menu !== 'debug'){
-				menu = 'debug';
-				document.getElementById('inventory').style.display = 'none';
-				document.getElementById('statScreen').style.display = 'none';
-				document.getElementById('questScreen').style.display = 'none';
-				document.getElementById('debugScreen').style.display = 'inline-block';
-			}
-			else{
-				menu = 'none';
-				document.getElementById('debugScreen').style.display = 'none';
-			}
+			menu = 'debug';
+			document.getElementById('inventory').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'none';
+			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('debugScreen').style.display = 'inline-block';
 		}
 		document.getElementById('inventoryButton').onclick = function(){
-			if(menu !== 'inventory'){
-				menu = 'inventory';
-				document.getElementById('debugScreen').style.display = 'none';
-				document.getElementById('statScreen').style.display = 'none';
-				document.getElementById('questScreen').style.display = 'none';
-				document.getElementById('inventory').style.display = 'inline-block';
-			}
-			else{
-				menu = 'none';
-				document.getElementById('inventory').style.display = 'none';
-			}
+			menu = 'inventory';
+			document.getElementById('debugScreen').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'none';
+			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('inventory').style.display = 'inline-block';
 		}
 		document.getElementById('statButton').onclick = function(){
-			if(menu !== 'stat'){
-				menu = 'stat';
-				document.getElementById('inventory').style.display = 'none';
-				document.getElementById('debugScreen').style.display = 'none';
-				document.getElementById('questScreen').style.display = 'none';
-				document.getElementById('statScreen').style.display = 'inline-block';
-			}
-			else{
-				menu = 'none';
-				document.getElementById('statScreen').style.display = 'none';
-			}
+			menu = 'stat';
+			document.getElementById('inventory').style.display = 'none';
+			document.getElementById('debugScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'none';
+			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'inline-block';
+		}
+		document.getElementById('worldMapButton').onclick = function(){
+			menu = 'worldMap';
+			document.getElementById('inventory').style.display = 'none';
+			document.getElementById('debugScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('worldMap').style.display = 'inline-block';
 		}
 		
-		document.getElementById('worldMapExit').onclick = function(){
-			menu = 'none';
-			worldMapDiv.style.display = 'none';
-		}
 		var Player = function(initPack){
 			var self = {};
 			self.id = initPack.id;
@@ -1627,10 +1618,11 @@
 
 			worldMap.save();
 			if(mapDrag){
-				worldMap.clearRect(0,0,2000,2000);
-				worldMap.translate(mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600,mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600);
-				worldMap.drawImage(Img.Village,0,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
-				worldMap.drawImage(Img.River,-mapRatio / 2000 * 3200,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
+				worldMap.fillStyle = '#000000';
+				worldMap.fillRect(0,0,910,730);
+				worldMap.translate(mapX - 910 * (mapDragX - mapMouseX) / 600,mapY - 910 * (mapDragY - mapMouseY) / 600);
+			worldMap.drawImage(loadedMap.World.lower,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
+			worldMap.drawImage(loadedMap.World.upper,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
 			}
 			worldMap.restore();
 		},1000/80);
@@ -1723,8 +1715,8 @@
 			}
 		}
 		mapMouseDown = function(event){
-			mapMouseX = mouseX + WIDTH / 2;
-			mapMouseY = mouseY + HEIGHT / 2;
+			mapDragX = mapMouseX;
+			mapDragY = mapMouseY;
 			mapDrag = true;
 		}
 		mapMouseUp = function(event){
@@ -1745,26 +1737,42 @@
 		document.onmouseup = function(event){
 			if(mapDrag){
 				mapDrag = false;
-				mapX = mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600;
-				mapY = mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600;
+				mapX = mapX - 910 * (mapDragX - mapMouseX) / 600;
+				mapY = mapY - 910 * (mapDragY - mapMouseY) / 600;
 			}
 		}
 		window.addEventListener('wheel',function(event){
-			mapMouseX = mouseX + WIDTH / 2;
-			mapMouseY = mouseY + HEIGHT / 2;
 			if(event.deltaY < 0){
-				mapRatio += 100;
+				mapRatio *= 1.1;
+				mapX -= mapMouseX * 2;
+				mapY -= mapMouseY * 2;
+				mapX *= 1.1;
+				mapY *= 1.1;
+				mapX += mapMouseX * 2;
+				mapY += mapMouseY * 2;
 			}
 			else if(event.deltaY > 0){
-				mapRatio -= 100;
+				mapRatio /= 1.1;
+				mapX -= mapMouseX * 2;
+				mapY -= mapMouseY * 2;
+				mapX /= 1.1;
+				mapY /= 1.1;
+				mapX += mapMouseX * 2;
+				mapY += mapMouseY * 2;
 			}
 			worldMap.save();
-			worldMap.clearRect(0,0,2000,2000);
-			worldMap.translate(mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600,mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600);
-			worldMap.drawImage(Img.Village,0,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
-			worldMap.drawImage(Img.River,-mapRatio / 2000 * 3200,0,mapRatio / 2000 * 3200,mapRatio / 2000 * 3200);
+			worldMap.fillStyle = '#000000';
+			worldMap.fillRect(0,0,910,730);
+			worldMap.translate(mapX,mapY);
+			worldMap.drawImage(loadedMap.World.lower,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
+			worldMap.drawImage(loadedMap.World.upper,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
 			worldMap.restore();
 		});
+		document.getElementById('worldMapCanvas').onmousemove = function clickEvent(e){
+			var rect = e.target.getBoundingClientRect();
+			mapMouseX = e.clientX - rect.left;
+			mapMouseY = e.clientY - rect.top;
+		}
 		document.onmousemove = function(event){
 			if(Player.list[selfId]){
 				var x = -1 * cameraX - Player.list[selfId].x + event.clientX;

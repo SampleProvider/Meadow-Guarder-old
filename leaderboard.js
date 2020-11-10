@@ -119,6 +119,9 @@ client.query('SELECT * FROM progress;', (err, res) => {
     }
     leaderboardXP = leaderboardXP.reverse();
     leaderboardGem = leaderboardGem.reverse();
+
+    console.log('## XP\n```');
+
     for(var i in leaderboardXP){
         if(leaderboardXP[i].level === 0 || leaderboardXP[i].level === undefined){
             if(leaderboardXP[i].xp === 0 || leaderboardXP[i].xp === undefined){
@@ -130,9 +133,6 @@ client.query('SELECT * FROM progress;', (err, res) => {
 
                     });
                 }
-                else{
-                    displayXP(leaderboardXP[i],i);
-                }
             }
             else{
                 displayXP(leaderboardXP[i],i);
@@ -142,8 +142,11 @@ client.query('SELECT * FROM progress;', (err, res) => {
             displayXP(leaderboardXP[i],i);
         }
     }
-    console.log('\n\n');
+    console.log('```\n## XP Gems\n```');
     for(var i in leaderboardGem){
-        displayGem(leaderboardGem[i],i);
+        if(leaderboardGem[i].xpGems !== 0){
+            displayGem(leaderboardGem[i],i);
+        }
     }
+    console.log('```');
 });

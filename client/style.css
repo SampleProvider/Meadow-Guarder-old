@@ -590,33 +590,12 @@ button {
 }
 #worldMapCanvas {
     position: absolute;
-    right: 5px;
-    top: 5px;
-    width: 600px;
-    height: 600px;
-}
-#worldMapButton {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-    padding: 5px;
-}
-#worldMapExit {
-    position: absolute;
-    font-family: 'pixel';
-    font-size: 18;
-    text-align: center;
-    vertical-align: middle;
-    background-color: #ff0000;
+    left: 50%;
+    top: 50%;
+    width: 455px;
+    height: 365px;
     border: 1px solid #000000;
-    padding: 0px;
-    width: 30px;
-    height: 30px;
-    right: -15px;
-    top: -15px;
-}
-#worldMapExit:hover {
-    background-color: #aa0000;
+    transform: translate(-50%, -50%);
 }
 .window {
     z-index: 2;
