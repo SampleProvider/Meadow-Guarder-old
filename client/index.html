@@ -477,6 +477,8 @@
 		Img.monsterBoss.src = '/client/img/Monster Boss.png';
 		Img.npc = new Image();
 		Img.npc.src = '/client/img/Player Map Npc 2.png';
+		Img.gold = new Image();
+		Img.gold.src = '/client/img/Gold.png';
 		Img.bullet = new Image();
 		Img.bullet.src = '/client/img/Bullet.png';
 		Img.healthBar = new Image();
@@ -512,6 +514,7 @@
 		loadMap('Secret Base');
 		loadMap('Secret Base Basement');
 		loadMap('Cacti Farm');
+		loadMap('The Guarded Citadel');
 		
 		var mapChange = 0;
 		var mapDirection = 'up';
@@ -1008,6 +1011,7 @@
 			self.nextY = initPack.y;
 			self.moveX = 0;
 			self.moveY = 0;
+			self.img = initPack.img;
 			self.hp = initPack.hp;
 			self.animation = initPack.animation;
 			self.animationDirection = initPack.animationDirection;
@@ -1032,6 +1036,10 @@
 					return;
 				}
 				self.animation = Math.round(self.animation);
+				var image;
+				if(self.img === 'Npc'){
+					image = Img.npc;
+				}
 				switch(self.animationDirection){
 					case "down":
 						ctx.drawImage(Img.npc,96 * self.animation,152 * 0,96,152,self.x - 24,self.y - 58,48,76);

@@ -214,9 +214,11 @@ Entity.getFrameUpdateData = function(){
         if(!pack[Projectile.list[i].map]){
             pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
         }
-        pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
+        }
+        else{
+            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
     }
     return pack;
@@ -406,7 +408,7 @@ Actor = function(param){
         }
         self.invincible = true;
         if(self.mapChange > 10){
-            self.mapChange = 0;
+            self.mapChange = -1;
         }
         self.transporter = {
             teleport:map,
@@ -419,7 +421,7 @@ Actor = function(param){
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
     }
-    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,stats){
+    self.shootProjectile = function(id,angle,direction,projectileType,distance,stats){
 		var projectile = Projectile({
             id:id,
             projectileType:projectileType,
@@ -428,7 +430,7 @@ Actor = function(param){
 			x:self.x + Math.cos(direction/180*Math.PI) * distance,
 			y:self.y + Math.sin(direction/180*Math.PI) * distance,
             map:self.map,
-            parentType:parentType,
+            parentType:self.type,
             mapWidth:self.mapWidth,
             mapHeight:self.mapHeight,
             stats:stats,
@@ -437,7 +439,7 @@ Actor = function(param){
                     pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
                 }
                 if(pt.hp < 1 && pt.isDead === false && self.toRemove === false){
-                    if(parentType === 'Player'){
+                    if(self.type === 'Player'){
                         if(Math.random() < 0.1){
                             Player.list[self.parent].inventory.addItem('woodensword',1);
                         }
@@ -1586,11 +1588,11 @@ Player = function(param){
     }
     self.updateAttack = function(){
         if(self.state !== 'dead'){
-            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
+            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
                 self.attackReload = 1;
                 self.attackTick = 0;
             }
-            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
+            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
                 self.secondReload = 1;
                 self.secondTick = 0;
             }
@@ -1599,30 +1601,30 @@ Player = function(param){
                 self.healTick = 0;
             }
         }
-        if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
-            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
+        if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
+            self.shootProjectile(self.id,self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
-        if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
+        if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
+        if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
+        if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm"){
+        if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.healTick === 0 && self.state !== 'dead'){
@@ -1961,6 +1963,7 @@ Npc = function(param){
 	self.id = Math.random();
     self.map = param.map;
     self.type = 'Npc';
+    self.img = 'Npc';
     self.name = param.name;
     self.username = param.username;
     var lastSelf = {};
@@ -2075,6 +2078,7 @@ Npc = function(param){
         pack.spdX = self.spdX;
         pack.spdY = self.spdY;
         pack.map = self.map;
+        pack.img = self.img;
         pack.animationDirection = self.animationDirection;
         pack.animation = self.animation;
         pack.name = self.name;
@@ -2085,6 +2089,78 @@ Npc = function(param){
 	return self;
 }
 Npc.list = {};
+
+QuestNpc = function(param){
+    var self = Npc(param);
+	self.id = Math.random();
+    self.map = param.map;
+    self.type = 'QuestNpc';
+    self.img = param.img;
+    self.name = param.name;
+    self.username = param.username;
+    var lastSelf = {};
+	var super_update = self.update;
+    self.mapHeight = Maps[self.map].height;
+    self.mapWidth = Maps[self.map].width;
+    self.width = 24;
+    self.height = 28;
+    self.canMove = true;
+	self.update = function(){
+        super_update();
+    }
+	self.getUpdatePack = function(){
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
+        }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.spdX !== self.spdX){
+            pack.spdX = self.spdX;
+            lastSelf.spdX = self.spdX;
+        }
+        if(lastSelf.spdY !== self.spdY){
+            pack.spdY = self.spdY;
+            lastSelf.spdY = self.spdY;
+        }
+        if(lastSelf.animationDirection !== self.animationDirection){
+            pack.animationDirection = self.animationDirection;
+            lastSelf.animationDirection = self.animationDirection;
+        }
+        if(lastSelf.animation !== self.animation){
+            pack.animation = self.animation;
+            lastSelf.animation = self.animation;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        return pack;
+	}
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.spdX = self.spdX;
+        pack.spdY = self.spdY;
+        pack.map = self.map;
+        pack.img = self.img;
+        pack.animationDirection = self.animationDirection;
+        pack.animation = self.animation;
+        pack.name = self.name;
+        pack.type = self.type;
+        return pack;
+    }
+	QuestNpc.list[self.id] = self;
+	return self;
+}
+
+QuestNpc.list = [];
 
 
 Monster = function(param){
@@ -2162,11 +2238,11 @@ Monster = function(param){
                 self.attackState = "attack";
                 break;
             case "attack":
-                if(self.reload % 20 === 0 && self.reload > 40 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
-                if(self.reload % 100 < 5 && self.reload > 40 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 self.reload += 1;
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
@@ -2242,7 +2318,7 @@ Pet = function(param){
         if(self.reload > 10){
             self.reload = 0;
             var direction = (Math.atan2(Player.list[self.parent].mouseY - Player.list[self.parent].y + self.y,Player.list[self.parent].mouseX - Player.list[self.parent].x + self.x) / Math.PI * 180);
-            self.shootProjectile(self.parent,'Pet',direction,direction,'Bullet',35);
+            self.shootProjectile(self.parent,direction,direction,'Bullet',35);
         }
     }
 	self.getUpdatePack = function(){
@@ -2867,6 +2943,7 @@ load("House");
 load("Secret Base");
 load("Secret Base Basement");
 load("Cacti Farm");
+load("The Guarded Citadel");
 
 updateCrashes = function(){
     for(var i in Player.list){
