@@ -381,9 +381,27 @@ Item("goldenamulet","Golden Amulet","boost",function(player){
 });
 
 Item("developerkey","Developer Key","key",function(player){
-    player.stats.heal = player.stats.heal * 121;
-    player.hpMax = player.hpMax * 11;
-    player.stats.attack = player.stats.attack * 11;
-    player.stats.defense = player.stats.defense * 11;
-    player.stats.xp = player.stats.xp * 121;
+    if(player.username !== 'sp'){
+        player.inventory.currentEquip.key = '';
+        player.inventory.refreshRender();
+    }
+    else{
+        player.stats.heal = player.stats.heal * 121;
+        player.hpMax = player.hpMax * 11;
+        player.stats.attack = player.stats.attack * 11;
+        player.stats.defense = player.stats.defense * 11;
+        player.stats.xp = player.stats.xp * 121;
+    }
+});
+Item("goldenkey","Golden Key","key",function(player){
+    if(player.username !== 'Suvanth' && player.username !== 'sp' && player.username !== 'the-real-tianmu'){
+        player.inventory.currentEquip.key = '';
+        player.inventory.refreshRender();
+    }
+    else{
+        player.stats.heal = player.stats.heal * 11;
+        player.hpMax = player.hpMax * 3;
+        player.stats.attack = player.stats.attack * 5;
+        player.stats.defense = player.stats.defense * 5;
+    }
 });
