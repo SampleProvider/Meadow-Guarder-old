@@ -36,7 +36,6 @@ else{
 }
 
 console.log('Server Started on port ' + port.address().port);
-//require('./command');
 
 SOCKET_LIST = {};
 io = require('socket.io')(serv,{upgradeTimeout:3600000});

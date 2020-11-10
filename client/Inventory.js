@@ -108,7 +108,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",amount:1}
-        currentEquip:{helmet:'',boost:'',weapon:'',},
+        currentEquip:{helmet:'',boost:'',weapon:'',key:'',},
         materials:[],
         refresh:true,
         spawn:true,
@@ -378,4 +378,12 @@ Item("ironamulet","Iron Amulet","boost",function(player){
 Item("goldenamulet","Golden Amulet","boost",function(player){
     player.stats.heal = player.stats.heal * 11;
     player.hpMax = player.hpMax * 2;
+});
+
+Item("developerkey","Developer Key","key",function(player){
+    player.stats.heal = player.stats.heal * 121;
+    player.hpMax = player.hpMax * 11;
+    player.stats.attack = player.stats.attack * 11;
+    player.stats.defense = player.stats.defense * 11;
+    player.stats.xp = player.stats.xp * 121;
 });

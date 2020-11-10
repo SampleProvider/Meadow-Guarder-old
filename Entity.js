@@ -803,7 +803,9 @@ Player = function(param){
         }
     }
     if(param.param.equip){
-        self.inventory.currentEquip = param.param.equip;
+        for(var i in param.param.equip){
+            self.inventory.currentEquip[i] = param.param.equip[i];
+        }
     }
     if(param.param.xp){
         self.xp = param.param.xp;
