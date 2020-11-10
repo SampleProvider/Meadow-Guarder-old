@@ -421,7 +421,7 @@ Actor = function(param){
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
     }
-    self.shootProjectile = function(id,angle,direction,projectileType,distance,stats){
+    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,stats){
 		var projectile = Projectile({
             id:id,
             projectileType:projectileType,
@@ -430,7 +430,7 @@ Actor = function(param){
 			x:self.x + Math.cos(direction/180*Math.PI) * distance,
 			y:self.y + Math.sin(direction/180*Math.PI) * distance,
             map:self.map,
-            parentType:self.type,
+            parentType:parentType,
             mapWidth:self.mapWidth,
             mapHeight:self.mapHeight,
             stats:stats,
@@ -439,7 +439,7 @@ Actor = function(param){
                     pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
                 }
                 if(pt.hp < 1 && pt.isDead === false && self.toRemove === false){
-                    if(self.type === 'Player'){
+                    if(parentType === 'Player'){
                         if(Math.random() < 0.1){
                             Player.list[self.parent].inventory.addItem('woodensword',1);
                         }
@@ -1602,29 +1602,29 @@ Player = function(param){
             }
         }
         if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
-            self.shootProjectile(self.id,self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
         if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
         if(self.healTick === 0 && self.state !== 'dead'){
@@ -2239,10 +2239,10 @@ Monster = function(param){
                 break;
             case "attack":
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 self.reload += 1;
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
@@ -2318,7 +2318,7 @@ Pet = function(param){
         if(self.reload > 10){
             self.reload = 0;
             var direction = (Math.atan2(Player.list[self.parent].mouseY - Player.list[self.parent].y + self.y,Player.list[self.parent].mouseX - Player.list[self.parent].x + self.x) / Math.PI * 180);
-            self.shootProjectile(self.parent,direction,direction,'Bullet',35);
+            self.shootProjectile(self.parent,'Pet',direction,direction,'Bullet',35);
         }
     }
 	self.getUpdatePack = function(){
