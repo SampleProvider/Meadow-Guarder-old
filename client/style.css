@@ -11,6 +11,15 @@ button {
     outline: none;
     cursor: pointer;
 }
+canvas {
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: -o-crisp-edges;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: pixelated;
+}
 
 #gameDiv {
     top: 100%;
@@ -36,6 +45,18 @@ button {
     image-rendering: optimize-contrast;
     -ms-interpolation-mode: nearest-neighbor;
     cursor: crosshair;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+#worldMapCanvas {
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: -o-crisp-edges;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
 }
 
 ::-webkit-scrollbar {
