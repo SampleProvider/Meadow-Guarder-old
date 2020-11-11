@@ -162,6 +162,7 @@ io.sockets.on('connection',function(socket){
 		}
 	});
 	socket.on('sendDebugToServer',function(data){
+		console.log(data);
 		if(Player.list[socket.id]){
 			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'Suvanth'){
 				if(data === 'process.exit(0);' || data === 'process.exit(0)'){

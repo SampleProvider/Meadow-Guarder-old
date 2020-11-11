@@ -71,7 +71,23 @@ var displayXP = function(row,i){
     if(row.username === 'Fast_run_1'){
         tag = ' (Speed Run)'
     }
-    console.log(j + '. ' + row.username + tag + '\nLevel ' + row.level + ' ' + row.xp + ' XP');
+    var xpText = row.xp + " ";
+    if(row.xp > 999999999999999){
+        xpText = Math.round(row.xp / 1000000000000000) + "Q ";
+    }
+    else if(row.xp > 999999999999){
+        xpText = Math.round(row.xp / 1000000000000) + "T ";
+    }
+    else if(row.xp > 999999999){
+        xpText = Math.round(row.xp / 1000000000) + "B ";
+    }
+    else if(row.xp > 9999999){
+        xpText = Math.round(row.xp / 1000000) + "M ";
+    }
+    else if(row.xp > 9999){
+        xpText = Math.round(row.xp / 1000) + "K ";
+    }
+    console.log(j + '. ' + row.username + tag + '\nLevel ' + row.level + ' ' + xpText + 'XP');
 }
 var displayGem = function(row,i){
     var j = parseInt(i,10) + 1;
