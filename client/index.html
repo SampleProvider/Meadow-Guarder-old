@@ -842,7 +842,39 @@
 				healDiv.innerHTML = "Heal: " + self.healReload / 25;
 				healthBarText.innerHTML = self.hp + " / " + self.hpMax;
 				healthBarValue.style.width = "" + 150 * self.hp / self.hpMax;
-				xpBarText.innerHTML = self.xp + " / " + self.xpMax;
+				var xpText = self.xp + " ";
+				var xpMaxText = "/ " + self.xpMax;
+				if(self.xp > 999999999999999){
+					xpText = Math.round(self.xp / 1000000000000000) + "Q ";
+				}
+				else if(self.xp > 999999999999){
+					xpText = Math.round(self.xp / 1000000000000) + "T ";
+				}
+				else if(self.xp > 999999999){
+					xpText = Math.round(self.xp / 1000000000) + "B ";
+				}
+				else if(self.xp > 9999999){
+					xpText = Math.round(self.xp / 1000000) + "M ";
+				}
+				else if(self.xp > 9999){
+					xpText = Math.round(self.xp / 1000) + "K ";
+				}
+				if(self.xpMax > 999999999999999){
+					xpMaxText = "/ " + Math.round(self.xpMax / 1000000000000000) + "Q";
+				}
+				else if(self.xpMax > 999999999999){
+					xpMaxText = "/ " + Math.round(self.xpMax / 1000000000000) + "T";
+				}
+				else if(self.xpMax > 999999999){
+					xpMaxText = "/ " + Math.round(self.xpMax / 1000000000) + "B";
+				}
+				else if(self.xpMax > 9999999){
+					xpMaxText = "/ " + Math.round(self.xpMax / 1000000) + "M";
+				}
+				else if(self.xpMax > 9999){
+					xpMaxText = "/ " + Math.round(self.xpMax / 1000) + "K";
+				}
+				xpBarText.innerHTML = xpText + xpMaxText;
 				xpBarValue.style.width = "" + 150 * self.xp / self.xpMax;
 				document.getElementById('stat-attack').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.';
 				document.getElementById('stat-defense').innerHTML = 'Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.<br>You are level ' + self.level + '.<br>You will get ' + Math.round(self.stats.xp * 10) + ' xp per monster killed.';
