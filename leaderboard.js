@@ -62,9 +62,6 @@ var compareGem = function(currentRow){
 var displayXP = function(row,i){
     var j = parseInt(i,10) + 1;
     var tag = '';
-    if(row.username === 'Suvanth'){
-        tag = ' (Exploited)'
-    }
     if(row.username === 'speedrunSP'){
         tag = ' (Speed Run)'
     }
@@ -73,16 +70,16 @@ var displayXP = function(row,i){
     }
     var xpText = row.xp + " ";
     if(row.xp > 999999999999999){
-        xpText = Math.round(row.xp / 1000000000000000) + "Q ";
+        xpText = Math.round(row.xp / 100000000000000) / 10 + "Q ";
     }
     else if(row.xp > 999999999999){
-        xpText = Math.round(row.xp / 1000000000000) + "T ";
+        xpText = Math.round(row.xp / 100000000000) / 10 + "T ";
     }
     else if(row.xp > 999999999){
-        xpText = Math.round(row.xp / 1000000000) + "B ";
+        xpText = Math.round(row.xp / 100000000) / 10 + "B ";
     }
-    else if(row.xp > 9999999){
-        xpText = Math.round(row.xp / 1000000) + "M ";
+    else if(row.xp > 999999){
+        xpText = Math.round(row.xp / 100000) / 10 + "M ";
     }
     else if(row.xp > 9999){
         xpText = Math.round(row.xp / 1000) + "K ";
@@ -92,9 +89,6 @@ var displayXP = function(row,i){
 var displayGem = function(row,i){
     var j = parseInt(i,10) + 1;
     var tag = '';
-    if(row.username === 'Suvanth'){
-        tag = ' (Exploited)'
-    }
     if(row.username === 'speedrunSP'){
         tag = ' (Speed Run)'
     }

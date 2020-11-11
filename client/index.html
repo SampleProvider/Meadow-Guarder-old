@@ -845,31 +845,31 @@
 				var xpText = self.xp + " ";
 				var xpMaxText = "/ " + self.xpMax;
 				if(self.xp > 999999999999999){
-					xpText = Math.round(self.xp / 1000000000000000) + "Q ";
+					xpText = Math.round(self.xp / 100000000000000) / 10 + "Q ";
 				}
 				else if(self.xp > 999999999999){
-					xpText = Math.round(self.xp / 1000000000000) + "T ";
+					xpText = Math.round(self.xp / 100000000000) / 10 + "T ";
 				}
 				else if(self.xp > 999999999){
-					xpText = Math.round(self.xp / 1000000000) + "B ";
+					xpText = Math.round(self.xp / 100000000) / 10 + "B ";
 				}
-				else if(self.xp > 9999999){
-					xpText = Math.round(self.xp / 1000000) + "M ";
+				else if(self.xp > 999999){
+					xpText = Math.round(self.xp / 100000) / 10 + "M ";
 				}
 				else if(self.xp > 9999){
 					xpText = Math.round(self.xp / 1000) + "K ";
 				}
 				if(self.xpMax > 999999999999999){
-					xpMaxText = "/ " + Math.round(self.xpMax / 1000000000000000) + "Q";
+					xpMaxText = "/ " + Math.round(self.xpMax / 100000000000000) / 10 + "Q";
 				}
 				else if(self.xpMax > 999999999999){
-					xpMaxText = "/ " + Math.round(self.xpMax / 1000000000000) + "T";
+					xpMaxText = "/ " + Math.round(self.xpMax / 100000000000) / 10 + "T";
 				}
 				else if(self.xpMax > 999999999){
-					xpMaxText = "/ " + Math.round(self.xpMax / 1000000000) + "B";
+					xpMaxText = "/ " + Math.round(self.xpMax / 100000000) / 10 + "B";
 				}
-				else if(self.xpMax > 9999999){
-					xpMaxText = "/ " + Math.round(self.xpMax / 1000000) + "M";
+				else if(self.xpMax > 999999){
+					xpMaxText = "/ " + Math.round(self.xpMax / 100000) / 10 + "M";
 				}
 				else if(self.xpMax > 9999){
 					xpMaxText = "/ " + Math.round(self.xpMax / 1000) + "K";
