@@ -1725,6 +1725,10 @@ Player = function(param){
             pack.moveSpeed = self.moveSpeed;
             lastSelf.moveSpeed = self.moveSpeed;
         }
+        if(lastSelf.direction !== self.direction){
+            pack.direction = self.direction;
+            lastSelf.direction = self.direction;
+        }
         pack.stats = self.stats;
         return pack;
     }
@@ -1743,6 +1747,7 @@ Player = function(param){
         pack.map = self.map;
         pack.username = self.username;
         pack.img = self.img;
+        pack.direction = self.direction;
         pack.animationDirection = self.animationDirection;
         pack.animation = self.animation;
         pack.attackReload = self.attackReload;

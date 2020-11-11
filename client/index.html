@@ -89,6 +89,7 @@
 				</div>
 				<div id="worldMap" style="display: none;">
 					<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
+					<canvas id="worldMapEntityCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
 				</div>
 			</div>
 			
@@ -353,6 +354,7 @@
 		var ctx = document.getElementById("ctx").getContext("2d");
 		var inventoryPlayerDisplay = document.getElementById("inventoryPlayerDisplay").getContext("2d");
 		var worldMap = document.getElementById("worldMapCanvas").getContext("2d");
+		var worldMapEntity = document.getElementById("worldMapEntityCanvas").getContext("2d");
 		ctx.canvas.width = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
 		ctx.canvas.width = 1536;
@@ -362,8 +364,11 @@
 		//ctx.setTransform(1, 0, 0, 1, 120, 0);
 		worldMap.canvas.width = 910;
 		worldMap.canvas.height = 730;
+		worldMapEntity.canvas.width = 910;
+		worldMapEntity.canvas.height = 730;
 		ctx.filter = 'url(#remove-alpha)';
 		worldMap.filter = 'url(#remove-alpha)';
+		worldMapEntity.filter = 'url(#remove-alpha)';
 		inventoryPlayerDisplay.canvas.width = 96;
 		inventoryPlayerDisplay.canvas.height = 152;
 
@@ -501,6 +506,8 @@
 		Img.Village.src = '/client/img/Village.png';
 		Img.River = new Image();
 		Img.River.src = '/client/img/River.png';
+		Img.playericon = new Image();
+		Img.playericon.src = '/client/img/playericon.png';
 		ctx.webkitImageSmoothingEnabled = false;
 		var mouseX = 0;
 		var mouseY = 0;
@@ -1125,6 +1132,9 @@
 							if(data.player[i].animationDirection){
 								Player.list[data.player[i].id].animationDirection = data.player[i].animationDirection;
 							}
+							if(data.player[i].direction){
+								Player.list[data.player[i].id].direction = data.player[i].direction;
+							}
 							if(data.player[i].hp){
 								Player.list[data.player[i].id].hp = data.player[i].hp;
 							}
@@ -1638,6 +1648,7 @@
 			document.getElementById('mapName').style.opacity = mapShadeAmount;
 
 			worldMap.save();
+			worldMapEntity.save();
 			if(mapDrag){
 				worldMap.fillStyle = '#000000';
 				worldMap.fillRect(0,0,910,730);
@@ -1645,7 +1656,24 @@
 				worldMap.drawImage(loadedMap.World.lower,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
 				worldMap.drawImage(loadedMap.World.upper,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
 			}
+			if(isWorldMap){
+				if(mapDrag){
+					worldMapEntity.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
+				}
+				else{
+					worldMapEntity.translate(Math.round(mapX),Math.round(mapY));
+				}
+				worldMapEntity.clearRect(0,0,100000,100000);
+				for(var i in Player.list){
+					worldMapEntity.translate((mapCropX + Player.list[i].x) * mapRatio / 910,(mapCropY + Player.list[i].y) * mapRatio / 910);
+					worldMapEntity.rotate(Player.list[i].direction * Math.PI / 180);
+					worldMapEntity.drawImage(Img.playericon,-56 * mapRatio / 910,-48 * mapRatio / 910,mapRatio / 10,mapRatio / 10);
+					worldMapEntity.rotate(-1 * Player.list[i].direction * Math.PI / 180);
+					worldMapEntity.translate(-1 * (mapCropX + Player.list[i].x) * mapRatio / 910,-1 * (mapCropY + Player.list[i].y) * mapRatio / 910);
+				}
+			}
 			worldMap.restore();
+			worldMapEntity.restore();
 		},1000/80);
 		
 		function useMenuDropdown(){
@@ -1789,7 +1817,7 @@
 			worldMap.drawImage(loadedMap.World.upper,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
 			worldMap.restore();
 		});
-		document.getElementById('worldMapCanvas').onmousemove = function clickEvent(e){
+		document.getElementById('worldMapEntityCanvas').onmousemove = function clickEvent(e){
 			var rect = e.target.getBoundingClientRect();
 			mapMouseX = e.clientX - rect.left;
 			mapMouseY = e.clientY - rect.top;
