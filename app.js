@@ -162,9 +162,9 @@ io.sockets.on('connection',function(socket){
 		}
 	});
 	socket.on('sendDebugToServer',function(data){
-		console.log(data);
+		console.log(data.error);
 		if(Player.list[socket.id]){
-			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu'){
+			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'Suvanth'){
 				if(data === 'process.exit(0);' || data === 'process.exit(0)'){
 					if(Player.list[socket.id].username === 'sp'){
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
@@ -196,9 +196,6 @@ io.sockets.on('connection',function(socket){
 						}
 					}
 				}
-			}
-			else if(Player.list[socket.id].username === 'Suvanth'){
-				socket.emit('addToDebug','style="color: #ff0000">Your permission to use the eval() function has been revoked. You won\'t be able to edit Meadow-Guarders for 48 hours.');
 			}
 			else{
 				socket.emit('addToDebug','style="color: #ff0000">YOU DO NOT HAVE PERMISSION TO USE THE EVAL FUNCTION!!!');
