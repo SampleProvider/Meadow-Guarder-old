@@ -1386,32 +1386,88 @@ Player = function(param){
             if(map !== self.map){
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
-                        var monsterType = 'purple';
-                        if(Math.random() < 0.1){
-                            monsterType = 'green';
+                        if(Math.random() < 0.00001){
+                           monsterType = 'black';
+                           var monster = new Monster({
+                               spawnId:i,
+                               x:Spawner.list[i].x,
+                               y:Spawner.list[i].y,
+                               map:Spawner.list[i].map,
+                               moveSpeed:20,
+                               monsterType:monsterType,
+                               stats:{
+                                   attack:Infinity,
+                                   defense:1,
+                                   heal:1,
+                               },
+                               onDeath:function(pt){
+                                   pt.toRemove = true;
+                                   if(pt.spawnId){
+                                       Spawner.list[pt.spawnId].spawned = false;
+                                   }
+                                   for(var i in Projectile.list){
+                                       if(Projectile.list[i].parent === pt.id){
+                                           Projectile.list[i].toRemove = true;
+                                       }
+                                   }
+                               },
+                            });
                         }
-                        if(Math.random() < 0.01){
-                            monsterType = 'blue';
+                        else if(Math.random() < 0.000001){
+                           monsterType = 'white';
+                           var monster = new Monster({
+                               spawnId:i,
+                               x:Spawner.list[i].x,
+                               y:Spawner.list[i].y,
+                               map:Spawner.list[i].map,
+                               moveSpeed:2.5,
+                               monsterType:monsterType,
+                               stats:{
+                                   attack:1,
+                                   defense: Infinity,
+                                   heal:Infinity,
+                               },
+                               onDeath:function(pt){
+                                   pt.toRemove = true;
+                                   if(pt.spawnId){
+                                       Spawner.list[pt.spawnId].spawned = false;
+                                   }
+                                   for(var i in Projectile.list){
+                                       if(Projectile.list[i].parent === pt.id){
+                                           Projectile.list[i].toRemove = true;
+                                       }
+                                   }
+                               },
+                            });
                         }
-                        var monster = new Monster({
-                            spawnId:i,
-                            x:Spawner.list[i].x,
-                            y:Spawner.list[i].y,
-                            map:Spawner.list[i].map,
-                            moveSpeed:2,
-                            monsterType:monsterType,
-                            onDeath:function(pt){
-                                pt.toRemove = true;
-                                if(pt.spawnId){
-                                    Spawner.list[pt.spawnId].spawned = false;
-                                }
-                                for(var i in Projectile.list){
-                                    if(Projectile.list[i].parent === pt.id){
-                                        Projectile.list[i].toRemove = true;
+                        else {
+                            var monsterType = 'purple';
+                            if(Math.random() < 0.1){
+                                monsterType = 'green';
+                            }
+                            if(Math.random() < 0.01){
+                                monsterType = 'blue';
+                            }
+                            var monster = new Monster({
+                                spawnId:i,
+                                x:Spawner.list[i].x,
+                                y:Spawner.list[i].y,
+                                map:Spawner.list[i].map,
+                                moveSpeed:2,
+                                monsterType:monsterType,
+                                onDeath:function(pt){
+                                    pt.toRemove = true;
+                                    if(pt.spawnId){
+                                        Spawner.list[pt.spawnId].spawned = false;
                                     }
-                                }
-                            },
-                        });
+                                    for(var i in Projectile.list){
+                                        if(Projectile.list[i].parent === pt.id){
+                                            Projectile.list[i].toRemove = true;
+                                        }
+                                    }
+                                },
+                            });
+                        }
                         Spawner.list[i].spawned = true;
                     }
                 }
@@ -2995,32 +3051,87 @@ spawnEnemies = function(){
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
-                var monsterType = 'purple';
-                if(Math.random() < 0.1){
-                    monsterType = 'green';
+                if(Math.random() < 0.00001){
+                   monsterType = 'black';
+                   var monster = new Monster({
+                       spawnId:i,
+                       x:Spawner.list[i].x,
+                       y:Spawner.list[i].y,
+                       map:Spawner.list[i].map,
+                       moveSpeed:20,
+                       monsterType:monsterType,
+                       stats:{
+                           attack:Infinity,
+                           defense:1,
+                           heal:1,
+                       },
+                       onDeath:function(pt){
+                           pt.toRemove = true;
+                           if(pt.spawnId){
+                               Spawner.list[pt.spawnId].spawned = false;
+                           }
+                           for(var i in Projectile.list){
+                               if(Projectile.list[i].parent === pt.id){
+                                   Projectile.list[i].toRemove = true;
+                               }
+                           }
+                       },
+                    });
                 }
-                if(Math.random() < 0.01){
-                    monsterType = 'blue';
+                else if(Math.random() < 0.000001){
+                   monsterType = 'white';
+                   var monster = new Monster({
+                       spawnId:i,
+                       x:Spawner.list[i].x,
+                       y:Spawner.list[i].y,
+                       map:Spawner.list[i].map,
+                       moveSpeed:2.5,
+                       monsterType:monsterType,
+                       stats:{
+                           attack:1,
+                           defense: Infinity,
+                           heal:Infinity,
+                       },
+                       onDeath:function(pt){
+                           pt.toRemove = true;
+                           if(pt.spawnId){
+                               Spawner.list[pt.spawnId].spawned = false;
+                           }
+                           for(var i in Projectile.list){
+                               if(Projectile.list[i].parent === pt.id){
+                                   Projectile.list[i].toRemove = true;
+                               }
+                           }
+                       },
+                    });
                 }
-                var monster = new Monster({
-                    spawnId:i,
-                    x:Spawner.list[i].x,
-                    y:Spawner.list[i].y,
-                    map:Spawner.list[i].map,
-                    moveSpeed:2,
-                    monsterType:monsterType,
-                    onDeath:function(pt){
-                        pt.toRemove = true;
-                        if(pt.spawnId){
-                            Spawner.list[pt.spawnId].spawned = false;
-                        }
-                        for(var i in Projectile.list){
-                            if(Projectile.list[i].parent === pt.id){
-                                Projectile.list[i].toRemove = true;
+                else {
+                    var monsterType = 'purple';
+                    if(Math.random() < 0.1){
+                        monsterType = 'green';
+                    }
+                    if(Math.random() < 0.01){
+                        monsterType = 'blue';
+                    }
+                    var monster = new Monster({
+                        spawnId:i,
+                        x:Spawner.list[i].x,
+                        y:Spawner.list[i].y,
+                        map:Spawner.list[i].map,
+                        moveSpeed:2,
+                        monsterType:monsterType,
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
                             }
-                        }
-                    },
-                });
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                        },
+                    });
                 Spawner.list[i].spawned = true;
             }
         }
