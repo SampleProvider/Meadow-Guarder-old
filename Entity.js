@@ -1386,6 +1386,33 @@ Player = function(param){
             if(map !== self.map){
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
+                        if(Math.random() < 0.0000001){
+                           monsterType = 'gray';
+                           var monster = new Monster({
+                               spawnId:i,
+                               x:Spawner.list[i].x,
+                               y:Spawner.list[i].y,
+                               map:Spawner.list[i].map,
+                               moveSpeed:20,
+                               monsterType:monsterType,
+                               stats:{
+                                   attack:Infinity,
+                                   defense:Infinity,
+                                   heal:Infinity,
+                               },
+                               onDeath:function(pt){
+                                   pt.toRemove = true;
+                                   if(pt.spawnId){
+                                       Spawner.list[pt.spawnId].spawned = false;
+                                   }
+                                   for(var i in Projectile.list){
+                                       if(Projectile.list[i].parent === pt.id){
+                                           Projectile.list[i].toRemove = true;
+                                       }
+                                   }
+                               },
+                            });
+                        }
                         if(Math.random() < 0.00001){
                            monsterType = 'black';
                            var monster = new Monster({
@@ -2324,7 +2351,7 @@ Monster = function(param){
                 }
                 break;
             case "move":
-                if (self.monsterType = 'black') {
+                if (self.monsterType = 'black' || self.monsterType = 'gray') {
 
                 }
                 else {
@@ -2334,7 +2361,7 @@ Monster = function(param){
                 }
                 break;
             case "attack":
-                if (self.monsterType = 'black') {
+                if (self.monsterType = 'black' || self.monsterType = 'gray') {
                     if(self.reload % 40 < 5 && self.reload > 10 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                     }
@@ -3090,6 +3117,33 @@ spawnEnemies = function(){
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
+                if(Math.random() < 0.0000001){
+                   monsterType = 'gray';
+                   var monster = new Monster({
+                       spawnId:i,
+                       x:Spawner.list[i].x,
+                       y:Spawner.list[i].y,
+                       map:Spawner.list[i].map,
+                       moveSpeed:20,
+                       monsterType:monsterType,
+                       stats:{
+                           attack:Infinity,
+                           defense:Infinity,
+                           heal:Infinity,
+                       },
+                       onDeath:function(pt){
+                           pt.toRemove = true;
+                           if(pt.spawnId){
+                               Spawner.list[pt.spawnId].spawned = false;
+                           }
+                           for(var i in Projectile.list){
+                               if(Projectile.list[i].parent === pt.id){
+                                   Projectile.list[i].toRemove = true;
+                               }
+                           }
+                       },
+                    });
+                }
                 if(Math.random() < 0.00001){
                    monsterType = 'black';
                    var monster = new Monster({

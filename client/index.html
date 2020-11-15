@@ -496,6 +496,8 @@
 		Img.monsterBlack.src = '/client/img/Monster Black.png';
 		Img.monsterBrown = new Image();
 		Img.monsterBrown.src = '/client/img/Monster Brown.png';
+		Img.monsterGray = new Image();
+		Img.monsterGray.src = '/client/img/Monster Gray.png';
 		Img.monsterBoss = new Image();
 		Img.monsterBoss.src = '/client/img/Monster Boss.png';
 		Img.npc = new Image();
@@ -1026,6 +1028,9 @@
 				else if(self.monsterType === 'brown'){
 					ctx.drawImage(Img.monsterBrown,self.x - 6,self.y - 9);
 				}
+				else if(self.monsterType === 'gray'){
+					ctx.drawImage(Img.monsterGray,self.x - 6,self.y - 9);
+
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
