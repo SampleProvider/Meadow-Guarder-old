@@ -1440,6 +1440,33 @@ Player = function(param){
                                },
                             });
                         }
+                        else if(Math.random() < 0.001){
+                           monsterType = 'brown';
+                           var monster = new Monster({
+                               spawnId:i,
+                               x:Spawner.list[i].x,
+                               y:Spawner.list[i].y,
+                               map:Spawner.list[i].map,
+                               moveSpeed:1,
+                               monsterType:monsterType,
+                               stats:{
+                                   attack:5,
+                                   defense: 50,
+                                   heal:50,
+                               },
+                               onDeath:function(pt){
+                                   pt.toRemove = true;
+                                   if(pt.spawnId){
+                                       Spawner.list[pt.spawnId].spawned = false;
+                                   }
+                                   for(var i in Projectile.list){
+                                       if(Projectile.list[i].parent === pt.id){
+                                           Projectile.list[i].toRemove = true;
+                                       }
+                                   }
+                               },
+                            });
+                        }
                         else {
                             var monsterType = 'purple';
                             if(Math.random() < 0.1){
