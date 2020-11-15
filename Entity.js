@@ -2334,11 +2334,18 @@ Monster = function(param){
                 }
                 break;
             case "attack":
-                if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                if (self.monsterType = 'black') {
+                    if(self.reload % 40 < 5 && self.reload > 10 && self.target.invincible === false){
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    }
                 }
-                if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                else {
+                    if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    }
+                    if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    }
                 }
                 self.reload += 1;
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
