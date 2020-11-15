@@ -1451,8 +1451,8 @@ Player = function(param){
                                monsterType:monsterType,
                                stats:{
                                    attack:5,
-                                   defense: 50,
-                                   heal:50,
+                                   defense: 100,
+                                   heal:100,
                                },
                                onDeath:function(pt){
                                    pt.toRemove = true;
@@ -3155,8 +3155,8 @@ spawnEnemies = function(){
                        monsterType:monsterType,
                        stats:{
                            attack:5,
-                           defense: 50,
-                           heal:50,
+                           defense: 100,
+                           heal:100,
                        },
                        onDeath:function(pt){
                            pt.toRemove = true;
