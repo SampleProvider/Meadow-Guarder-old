@@ -1393,7 +1393,7 @@ Player = function(param){
                                x:Spawner.list[i].x,
                                y:Spawner.list[i].y,
                                map:Spawner.list[i].map,
-                               moveSpeed:20,
+                               moveSpeed:30,
                                monsterType:monsterType,
                                stats:{
                                    attack:Infinity,
@@ -3124,7 +3124,7 @@ spawnEnemies = function(){
                        x:Spawner.list[i].x,
                        y:Spawner.list[i].y,
                        map:Spawner.list[i].map,
-                       moveSpeed:20,
+                       moveSpeed:30,
                        monsterType:monsterType,
                        stats:{
                            attack:Infinity,
