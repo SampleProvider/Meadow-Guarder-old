@@ -2324,9 +2324,14 @@ Monster = function(param){
                 }
                 break;
             case "move":
+                if (self.monsterType = 'black') {
+
+                }
+                else {
                 self.trackEntity(self.target);
                 self.reload = 0;
                 self.attackState = "attack";
+                }
                 break;
             case "attack":
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
