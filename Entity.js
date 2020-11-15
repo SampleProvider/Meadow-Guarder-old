@@ -2293,6 +2293,7 @@ Monster = function(param){
     self.target = {};
     self.type = 'Monster';
     self.isDead = false;
+    self.circle=0;
     self.stats = {
         attack:1,
         defense:1,
@@ -2362,6 +2363,7 @@ Monster = function(param){
                 break;
             case "attack":
                 if (self.monsterType = 'black' || self.monsterType = 'gray') {
+                    self.circle += 0.1;self.x += Math.cos(self.circle) * 20;self.y += Math.sin(self.circle) * 20;
                     if(self.reload % 40 < 5 && self.reload > 10 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                     }
