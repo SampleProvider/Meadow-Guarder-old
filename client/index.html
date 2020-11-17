@@ -95,6 +95,10 @@
 				    <div id="cursorMove">Use mouse cursor to move the player instead of WASD</div>
 				    <div id="cursorMoveDisable">Use WASD instead of mouse cursor to move the player</div>
 				</div>
+				<div id="settingsScreen" style="display: none;">
+				    <div id="Fullscreen">Enter fullscreen mode</div>
+				    <div id="FullscreenDisable">Exit fullscreen mode</div>
+				</div>
 			</div>
 			
 			<div id="menu-text" class="UI-text-light">
@@ -103,8 +107,7 @@
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
 				<button id="worldMapButton" class="UI-button-light menuButton">World Map</button>
 				<button id="optionsButton" class="UI-button-light menuButton">Options</button>
-				<button class="UI-button-light menuButton">Useless</button>
-				<button class="UI-button-light menuButton">Useless</button>
+				<button id="settingsButton" class="UI-button-light menuButton">Settings</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
@@ -676,6 +679,7 @@
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
 			document.getElementById('optionsScreen').style.display = 'none';
+			document.getElementById('settingsScreen').style.display = 'none';
 			document.getElementById('debugScreen').style.display = 'inline-block';
 		}
 		document.getElementById('inventoryButton').onclick = function(){
@@ -685,6 +689,7 @@
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
 			document.getElementById('optionsScreen').style.display = 'none';
+			document.getElementById('settingsScreen').style.display = 'none';
 			document.getElementById('inventory').style.display = 'inline-block';
 		}
 		document.getElementById('statButton').onclick = function(){
@@ -694,6 +699,7 @@
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
 			document.getElementById('optionsScreen').style.display = 'none';
+			document.getElementById('settingsScreen').style.display = 'none';
 			document.getElementById('statScreen').style.display = 'inline-block';
 		}
 		document.getElementById('worldMapButton').onclick = function(){
@@ -703,6 +709,7 @@
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('statScreen').style.display = 'none';
 			document.getElementById('optionsScreen').style.display = 'none';
+			document.getElementById('settingsScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'inline-block';
 		}
 		document.getElementById('optionsButton').onclick = function(){
@@ -712,8 +719,20 @@
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('statScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('settingsScreen').style.display = 'none';
 			document.getElementById('optionsScreen').style.display = 'inline-block';
 		}
+		document.getElementById('settingsButton').onclick = function(){
+			menu = 'settings';
+			document.getElementById('inventory').style.display = 'none';
+			document.getElementById('debugScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('optionsScreen').style.display = 'none';
+			document.getElementById('settingsScreen').style.display = 'inline-block';
+		}
+
 		var Player = function(initPack){
 			var self = {};
 			self.id = initPack.id;
@@ -2007,6 +2026,35 @@
                        break;
                }
 			},1000/40);
+		}
+		var Fullscreen = document.getElementById('Fullscreen');
+		var FullscreenDisable = document.getElementById('FullscreenDisable');
+		Fullscreen.onclick = function() {
+			function enterFullscreen() {
+			  if (document.documentElement.requestFullscreen) {
+			    document.documentElement.requestFullscreen();
+			  } else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+			    document.documentElement.mozRequestFullScreen();
+			  } else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+			    document.documentElement.webkitRequestFullscreen();
+			  } else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+			    document.documentElement.msRequestFullscreen();
+			  }
+			} 
+			enterFullScreen();
+		}
+		FullscreenDisable.onclick = function() {
+			function exitFullscreen() {
+			  if (document.documentElement.ExitFullscreen) {
+			    document.documentElement.ExitFullscreen();
+			  } else if (document.documentElement.mozExitFullScreen) { /* Firefox */
+			    document.documentElement.mozExitFullScreen();
+			  } else if (document.documentElement.webkitExitFullscreen) { /* Chrome, Safari & Opera */
+			    document.documentElement.webkitExitFullscreen();
+			  } else if (document.documentElement.msExitFullscreen) { /* IE/Edge */
+			    document.documentElement.msExitFullscreen();
+		  	}
+		  	exitFullScreen();
 		}
 	</script>
 </body>
