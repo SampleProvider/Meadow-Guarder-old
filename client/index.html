@@ -91,6 +91,10 @@
 					<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
 					<canvas id="worldMapEntityCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
 				</div>
+				<div id="optionsScreen" style="display: none;">
+				    <div id="cursorMove">Use mouse cursor to move the player instead of WASD</div>
+				    <div id="cursorMoveDisable">Use WASD instead of mouse cursor to move the player</div>
+				</div>
 			</div>
 			
 			<div id="menu-text" class="UI-text-light">
@@ -98,6 +102,7 @@
 				<button id="debugButton" class="UI-button-light menuButton">Debug</button>
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
 				<button id="worldMapButton" class="UI-button-light menuButton">World Map</button>
+				<button id="optionsButton" class="UI-button-light menuButton">Options</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
@@ -670,6 +675,7 @@
 			document.getElementById('statScreen').style.display = 'none';
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('optionsScreen').style.display = 'none';
 			document.getElementById('debugScreen').style.display = 'inline-block';
 		}
 		document.getElementById('inventoryButton').onclick = function(){
@@ -678,6 +684,7 @@
 			document.getElementById('statScreen').style.display = 'none';
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('optionsScreen').style.display = 'none';
 			document.getElementById('inventory').style.display = 'inline-block';
 		}
 		document.getElementById('statButton').onclick = function(){
@@ -686,6 +693,7 @@
 			document.getElementById('debugScreen').style.display = 'none';
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('optionsScreen').style.display = 'none';
 			document.getElementById('statScreen').style.display = 'inline-block';
 		}
 		document.getElementById('worldMapButton').onclick = function(){
@@ -694,9 +702,18 @@
 			document.getElementById('debugScreen').style.display = 'none';
 			document.getElementById('questScreen').style.display = 'none';
 			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('optionsScreen').style.display = 'none';
 			document.getElementById('worldMap').style.display = 'inline-block';
 		}
-		
+		document.getElementById('optionsButton').onclick = function(){
+			menu = 'options';
+			document.getElementById('inventory').style.display = 'none';
+			document.getElementById('debugScreen').style.display = 'none';
+			document.getElementById('questScreen').style.display = 'none';
+			document.getElementById('statScreen').style.display = 'none';
+			document.getElementById('worldMap').style.display = 'none';
+			document.getElementById('optionsScreen').style.display = 'inline-block';
+		}
 		var Player = function(initPack){
 			var self = {};
 			self.id = initPack.id;
@@ -1895,6 +1912,101 @@
 		});
 		document.oncontextmenu = function(event){
 			event.preventDefault();
+		}
+
+		var cursorMove = document.getElementById('cursorMove');
+		var cursorMoveDisable = document.getElementById('cursorMoveDisable');
+		cursorMove.onclick = function() {
+			setInterval(function(){
+               switch(Math.round((Math.atan2(mouseY,mouseX) / Math.PI * 180) / 45)){
+                   case 0:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:68,state:true});
+                       break;
+                   case 1:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:68,state:true});
+                       socket.emit('keyPress',{inputId:83,state:true});
+                       break;
+                   case 2:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:83,state:true});
+                       break;
+                   case 3:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       socket.emit('keyPress',{inputId:83,state:true});
+                       break;
+                   case 4:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       break;
+                   case -1:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:68,state:true});
+                       socket.emit('keyPress',{inputId:87,state:true});
+                       break;
+                   case -2:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:87,state:true});
+                       break;
+                   case -3:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       socket.emit('keyPress',{inputId:87,state:true});
+                       break;
+                   case -4:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       break;
+               }
+			},1000/40);
+		}
+		cursorMoveDisable.onclick = function() {
+			clearInterval(function(){
+               switch(Math.round((Math.atan2(mouseY,mouseX) / Math.PI * 180) / 45)){
+                   case 0:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:68,state:true});
+                       break;
+                   case 1:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:68,state:true});
+                       socket.emit('keyPress',{inputId:83,state:true});
+                       break;
+                   case 2:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:83,state:true});
+                       break;
+                   case 3:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       socket.emit('keyPress',{inputId:83,state:true});
+                       break;
+                   case 4:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       break;
+                   case -1:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:68,state:true});
+                       socket.emit('keyPress',{inputId:87,state:true});
+                       break;
+                   case -2:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:87,state:true});
+                       break;
+                   case -3:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       socket.emit('keyPress',{inputId:87,state:true});
+                       break;
+                   case -4:
+                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
+                       socket.emit('keyPress',{inputId:65,state:true});
+                       break;
+               }
+			},1000/40);
 		}
 	</script>
 </body>
