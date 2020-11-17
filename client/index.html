@@ -96,8 +96,10 @@
 				    <div id="cursorMoveDisable">Use WASD instead of mouse cursor to move the player</div>
 				</div>
 				<div id="settingsScreen" style="display: none;">
-				    <div id="Fullscreen">Enter fullscreen mode</div>
-				    <div id="FullscreenDisable">Exit fullscreen mode</div>
+					<div id="EnterExploreMode">Enter exploring mode (You can move anywhere and monsters can't harm you, though none of your progress saves)</div>
+					<div id="ExitExploreMode">Exit explore mode</div>
+				    <div id="Fullscreen">Enter fullscreen </div>
+				    <div id="FullscreenDisable">Exit fullscreen </div>
 				</div>
 			</div>
 			
@@ -1982,6 +1984,7 @@
                }
 			},1000/40);
 		}
+
 		cursorMoveDisable.onclick = function() {
 			clearInterval(cursorMoveInterval)
 		}
@@ -2013,6 +2016,16 @@
 			    document.documentElement.msExitFullscreen();
 		  	}
 		  	exitFullScreen();
+		}
+
+		var EnterExploreMode = document.getElementById('EnterExploreMode');
+		var ExitExploreMode = document.getElementById('ExitExploreMode');
+		EnterExploreMode.onclick = function() {
+			socket.emit('changeMode',{state:'explore'})
+
+		}
+		ExitExploreMode.onclick = function() {
+			socket.emit('changeMode',{state:'normal'})
 		}
 	</script>
 </body>

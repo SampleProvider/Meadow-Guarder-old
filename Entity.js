@@ -1949,6 +1949,24 @@ Player.onConnect = function(socket,username){
             }
         });
 
+        socket.on('changeMode',function(data){
+            if(data.state === 'explore'){
+
+            self.invincible = true;
+            self.width = 0;
+            self.height = 0;
+            }
+            else if(data.state === 'normal'){
+
+            }
+        });
+
+        socket.on('normalMode',function(data){
+            self.invincible = false;
+            self.width = 24;
+            self.height = 28;
+        });
+
         socket.on('startQuest',function(data){
             player.questInfo.started = true;
         });
