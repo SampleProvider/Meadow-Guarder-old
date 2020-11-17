@@ -1935,8 +1935,9 @@
 
 		var cursorMove = document.getElementById('cursorMove');
 		var cursorMoveDisable = document.getElementById('cursorMoveDisable');
+    var cursorMoveInterval;
 		cursorMove.onclick = function() {
-			setInterval(function(){
+			cursorMoveInterval = setInterval(function(){
                switch(Math.round((Math.atan2(mouseY,mouseX) / Math.PI * 180) / 45)){
                    case 0:
                        socket.emit('keyPress',{inputId:'releaseAll',state:true});
@@ -1982,50 +1983,7 @@
 			},1000/40);
 		}
 		cursorMoveDisable.onclick = function() {
-			clearInterval(function(){
-               switch(Math.round((Math.atan2(mouseY,mouseX) / Math.PI * 180) / 45)){
-                   case 0:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:68,state:true});
-                       break;
-                   case 1:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:68,state:true});
-                       socket.emit('keyPress',{inputId:83,state:true});
-                       break;
-                   case 2:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:83,state:true});
-                       break;
-                   case 3:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:65,state:true});
-                       socket.emit('keyPress',{inputId:83,state:true});
-                       break;
-                   case 4:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:65,state:true});
-                       break;
-                   case -1:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:68,state:true});
-                       socket.emit('keyPress',{inputId:87,state:true});
-                       break;
-                   case -2:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:87,state:true});
-                       break;
-                   case -3:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:65,state:true});
-                       socket.emit('keyPress',{inputId:87,state:true});
-                       break;
-                   case -4:
-                       socket.emit('keyPress',{inputId:'releaseAll',state:true});
-                       socket.emit('keyPress',{inputId:65,state:true});
-                       break;
-               }
-			},1000/40);
+			clearInterval(cursorMoveInterval)
 		}
 		var Fullscreen = document.getElementById('Fullscreen');
 		var FullscreenDisable = document.getElementById('FullscreenDisable');
