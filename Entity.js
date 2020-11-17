@@ -127,6 +127,7 @@ Entity = function(param){
     self.spdY = 0;
     self.map = '';
     self.type = 'Entity';
+    self.mode = 'normal';
     if(param){
         if(param.id){
             self.id = param.id;
@@ -1700,6 +1701,9 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
+        if (self.mode = 'explore') {
+            return false;
+        }
         if(self.state !== 'dead'){
             if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
                 self.attackReload = 1;
@@ -1950,21 +1954,18 @@ Player.onConnect = function(socket,username){
         });
 
         socket.on('changeMode',function(data){
-            if(data.state === 'explore'){
-
-            self.invincible = true;
-            self.width = 0;
-            self.height = 0;
-            }
-            else if(data.state === 'normal'){
-
-            }
-        });
-
-        socket.on('normalMode',function(data){
-            self.invincible = false;
-            self.width = 24;
-            self.height = 28;
+          if(data.state === 'explore'){
+              self.mode = 'explore'
+              self.invincible = true;
+              self.width = 0;
+              self.height = 0;
+          }
+          else if(data.state === 'normal'){
+              self.mode = 'normal'
+              self.invincible = false;
+              self.width = 24;
+              self.height = 28;
+          }
         });
 
         socket.on('startQuest',function(data){
