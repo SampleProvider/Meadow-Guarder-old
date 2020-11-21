@@ -97,9 +97,10 @@
 				</div>
 				<div id="settingsScreen" style="display: none;">
 					<div id="EnterExploreMode">Enter exploring mode (You can move anywhere and monsters can't harm you, though none of your progress saves)</div>
+					<br>
 					<div id="ExitExploreMode">Exit explore mode</div>
-				    <div id="Fullscreen">Enter fullscreen </div>
-				    <div id="FullscreenDisable">Exit fullscreen </div>
+					<br>
+				    <div id="Fullscreen">Enter fullscreen (if you want to exit, press the ESC key)</div>
 				</div>
 			</div>
 			
@@ -1989,7 +1990,6 @@
 			clearInterval(cursorMoveInterval)
 		}
 		var Fullscreen = document.getElementById('Fullscreen');
-		var FullscreenDisable = document.getElementById('FullscreenDisable');
 		Fullscreen.onclick = function() {
 			function enterFullscreen() {
 			  if (document.documentElement.requestFullscreen) {
@@ -2003,20 +2003,6 @@
 			  }
 			} 
 			enterFullscreen();
-		}
-		FullscreenDisable.onclick = function() {
-			function exitFullscreen() {
-			  if (document.documentElement.ExitFullscreen) {
-			    document.documentElement.ExitFullscreen();
-			  } else if (document.documentElement.mozExitFullScreen) { /* Firefox */
-			    document.documentElement.mozExitFullScreen();
-			  } else if (document.documentElement.webkitExitFullscreen) { /* Chrome, Safari & Opera */
-			    document.documentElement.webkitExitFullscreen();
-			  } else if (document.documentElement.msExitFullscreen) { /* IE/Edge */
-			    document.documentElement.msExitFullscreen();
-		  	  }
-		  	}
-		  	exitFullscreen();
 		}
 
 		var enterExploreMode = document.getElementById('EnterExploreMode');
