@@ -2002,7 +2002,7 @@
 			    document.documentElement.msRequestFullscreen();
 			  }
 			} 
-			enterFullScreen();
+			enterFullscreen();
 		}
 		FullscreenDisable.onclick = function() {
 			function exitFullscreen() {
@@ -2016,16 +2016,16 @@
 			    document.documentElement.msExitFullscreen();
 		  	  }
 		  	}
-		  	exitFullScreen();
+		  	exitFullscreen();
 		}
 
-		var EnterExploreMode = document.getElementById('EnterExploreMode');
-		var ExitExploreMode = document.getElementById('ExitExploreMode');
-		EnterExploreMode.onclick = function() {
+		var enterExploreMode = document.getElementById('EnterExploreMode');
+		var exitExploreMode = document.getElementById('ExitExploreMode');
+		enterExploreMode.onclick = function() {
 			socket.emit('changeMode',{state:'explore'})
 
 		}
-		ExitExploreMode.onclick = function() {
+		exitExploreMode.onclick = function() {
 			socket.emit('changeMode',{state:'normal'})
 		}
 
