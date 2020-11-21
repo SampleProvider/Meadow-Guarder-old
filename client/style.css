@@ -738,6 +738,26 @@ canvas {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+#options-text {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 440px;
+    height: 320px;
+    color: #ffffff;
+    overflow-y: scroll;
+    user-select: contain;
+}
+#settings-text {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 440px;
+    height: 320px;
+    color: #ffffff;
+    overflow-y: scroll;
+    user-select: contain;
+}
 #stat-text {
     position: absolute;
     left: 5px;
