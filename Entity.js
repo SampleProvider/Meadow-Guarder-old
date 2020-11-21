@@ -1701,7 +1701,7 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
-        if (self.mode = 'explore') {
+        if (self.mode === 'explore') {
             return false;
         }
         if(self.state !== 'dead'){
@@ -1955,13 +1955,13 @@ Player.onConnect = function(socket,username){
 
         socket.on('changeMode',function(data){
           if(data.state === 'explore'){
-              self.mode = 'explore'
+              self.mode === 'explore'
               self.invincible = true;
               self.width = 0;
               self.height = 0;
           }
           else if(data.state === 'normal'){
-              self.mode = 'normal'
+              self.mode === 'normal'
               self.invincible = false;
               self.width = 24;
               self.height = 28;
