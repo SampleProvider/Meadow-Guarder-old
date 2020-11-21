@@ -127,7 +127,7 @@ Entity = function(param){
     self.spdY = 0;
     self.map = '';
     self.type = 'Entity';
-    self.mode === 'normal';
+    self.mode = 'normal';
     if(param){
         if(param.id){
             self.id = param.id;
