@@ -1,27 +1,32 @@
 {
-    "woodenbowsimple":{
+    "simplewoodenbow":{
         "name":"Simple Wooden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 3;"
+        "event":"self.stats.attack = self.stats.attack * 3;",
+        "dropChance":"0.1"
     },
-    "steelbowsimple":{
+    "simplesteelbow":{
         "name":"Simple Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 6;"
+        "event":"self.stats.attack = self.stats.attack * 6;",
+        "dropChance":"0.01"
     },
-    "darksteelbowsimple":{
+    "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 15;"
+        "event":"self.stats.attack = self.stats.attack * 15;",
+        "dropChance":"0.005"
     },
-    "goldenbowsimple":{
+    "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 20;"
+        "event":"self.stats.attack = self.stats.attack * 20;",
+        "dropChance":"0.003"
     },
-    "rubybowsimple":{
+    "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 30;"
+        "event":"self.stats.attack = self.stats.attack * 30;",
+        "dropChance":"0.001"
     }
 }

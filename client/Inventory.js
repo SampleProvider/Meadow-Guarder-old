@@ -136,6 +136,15 @@ Inventory = function(socket,server){
 			}
 		}    
     }
+    self.addRandomizedItem = function(luck){
+        for(var i in Item.list){
+            if(Math.random() < Item.list[i].dropChance * luck){
+                self.addItem(i,1);
+                return Item.list[i];
+            }
+        }
+        return false;
+    }
     self.hasItem = function(id,amount){
 		for(var i = 0;i < self.items.length;i++){
 			if(self.items[i].id === id){
@@ -292,12 +301,13 @@ Inventory = function(socket,server){
 }
 
 
-Item = function(id,name,equip,event){
+Item = function(id,name,equip,event,dropChance){
 	var self = {
 		id:id,
         name:name,
         equip:equip,
         event:event,
+        dropChance:dropChance,
     }
 	Item.list[self.id] = self;
 	return self;
@@ -307,7 +317,7 @@ Item.list = {};
 try{
     var items = require('./item.json');
     for(var i in items){
-        Item(i,items[i].name,items[i].equip,items[i].event);
+        Item(i,items[i].name,items[i].equip,items[i].event,parseFloat(items[i].dropChance,10));
     }
 }
 catch(err){
@@ -319,7 +329,7 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event);
+                Item(i,items[i].name,items[i].equip,items[i].event,parseFloat(items[i].dropChance,10));
             }
         }
         else{

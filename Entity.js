@@ -91,8 +91,6 @@ s = {
     },
 };
 
-
-
 var playerMap = {
     'Cave':0,
     'Starter House':0,
@@ -466,6 +464,24 @@ Actor = function(param){
                 }
                 if(pt.hp < 1 && pt.isDead === false && self.toRemove === false){
                     if(parentType === 'Player'){
+                        var item = Player.list[self.parent].inventory.addRandomizedItem(1);
+                        if(item){
+                            var d = new Date();
+                            var m = '' + d.getMinutes();
+                            if(m.length === 1){
+                                m = '' + 0 + m;
+                            }
+                            if(m === '0'){
+                                m = '00';
+                            }
+                            console.error("[" + d.getHours() + ":" + m + "] " + Player.list[self.parent].username + " got a " + item.name + ".");
+                            for(var i in SOCKET_LIST){
+                                SOCKET_LIST[i].emit('addToChat',{
+                                    style:'style="color: ' + Player.list[self.parent].textColor + '">',
+                                    message:Player.list[self.parent].username + " got a " + item.name + ".",
+                                });
+                            }
+                        }
                         Player.list[self.parent].xp += Math.round((10 + Math.random() * 10) * Player.list[self.parent].stats.xp);
                     }
                     pt.isDead = true;
@@ -816,14 +832,12 @@ Player = function(param){
     self.inventory = new Inventory(socket,true);
     if(param.param.inventory){
         for(var i in param.param.inventory){
-            if(param.param.inventory[i].id[0] === 'w' || param.param.inventory[i].id[0] === 'x' || param.param.inventory[i].id[0] === 'i' || param.param.inventory[i].id[0] === 'g'){
-                //self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
-            }
+            self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
         }
     }
     if(param.param.equip){
         for(var i in param.param.equip){
-            //self.inventory.currentEquip[i] = param.param.equip[i];
+            self.inventory.currentEquip[i] = param.param.equip[i];
         }
     }
     if(param.param.xp){
@@ -1023,12 +1037,22 @@ Player = function(param){
                         if(Math.random() < 0.01){
                             monsterType = 'blue';
                         }
+                        var monsterHp = 0;
+                        for(var j in Player.list){
+                            if(Player.list[j].map === Spawner.list[i].map){
+                                monsterHp += Player.list[j].hpMax;
+                                monsterHp += Player.list[j].stats.attack * 100;
+                                monsterHp += Player.list[j].stats.defense * 100;
+                            }
+                        }
+                        monsterHp = monsterHp / playerMap[Spawner.list[i].map];
                         var monster = new Monster({
                             spawnId:i,
                             x:Spawner.list[i].x,
                             y:Spawner.list[i].y,
                             map:Spawner.list[i].map,
                             moveSpeed:2,
+                            hp:Math.round(monsterHp / 3),
                             monsterType:monsterType,
                             onDeath:function(pt){
                                 pt.toRemove = true;
@@ -1896,8 +1920,8 @@ Monster = function(param){
     if(param.stats){
         self.stats = param.stats;
     }
-    self.hp = 1000;
-    self.hpMax = 1000;
+    self.hp = param.hp;
+    self.hpMax = param.hp;
     if(param.hpMax){
         self.hp = param.hpMax;
         self.hpMax = param.hpMax;
@@ -2709,12 +2733,22 @@ spawnEnemies = function(){
                 if(Math.random() < 0.01){
                     monsterType = 'blue';
                 }
+                var monsterHp = 0;
+                for(var j in Player.list){
+                    if(Player.list[j].map === Spawner.list[i].map){
+                        monsterHp += Player.list[j].hpMax;
+                        monsterHp += Player.list[j].stats.attack * 100;
+                        monsterHp += Player.list[j].stats.defense * 100;
+                    }
+                }
+                monsterHp = monsterHp / playerMap[Spawner.list[i].map];
                 var monster = new Monster({
                     spawnId:i,
                     x:Spawner.list[i].x,
                     y:Spawner.list[i].y,
                     map:Spawner.list[i].map,
                     moveSpeed:2,
+                    hp:Math.round(monsterHp / 3),
                     monsterType:monsterType,
                     onDeath:function(pt){
                         pt.toRemove = true;
