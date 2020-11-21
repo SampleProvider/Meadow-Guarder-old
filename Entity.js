@@ -1957,15 +1957,15 @@ Player.onConnect = function(socket,username){
         socket.on('changeMode',function(data){
           if(data.state === 'explore'){
               player.mode === 'explore';
-              self.invincible = true;
-              self.width = 0;
-              self.height = 0;
+              player.invincible = true;
+              player.width = 0;
+              player.height = 0;
           } 
           else if(data.state === 'normal'){
               player.mode === 'normal';
-              self.invincible = false;
-              self.width = 24;
-              self.height = 28;
+              player.invincible = false;
+              player.width = 24;
+              player.height = 28;
           }
         });
 
