@@ -127,7 +127,7 @@ Entity = function(param){
     self.spdY = 0;
     self.map = '';
     self.type = 'Entity';
-    self.mode = 'normal';
+    self.mode === 'normal';
     if(param){
         if(param.id){
             self.id = param.id;
@@ -1955,13 +1955,13 @@ Player.onConnect = function(socket,username){
 
         socket.on('changeMode',function(data){
           if(data.state === 'explore'){
-              self.mode = 'explore';
+              self.mode === 'explore';
               self.invincible = true;
               self.width = 0;
               self.height = 0;
           } 
           else if(data.state === 'normal'){
-              self.mode = 'normal';
+              self.mode === 'normal';
               self.invincible = false;
               self.width = 24;
               self.height = 28;
