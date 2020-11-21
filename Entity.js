@@ -3165,7 +3165,7 @@ spawnEnemies = function(){
                        },
                     });
                 }
-                if(Math.random() < 0.00001){
+                else if(Math.random() < 0.00001){
                    monsterType = 'black';
                    var monster = new Monster({
                        spawnId:i,
@@ -3278,4 +3278,3 @@ spawnEnemies = function(){
         }
     }
 }
-
