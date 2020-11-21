@@ -34,7 +34,7 @@ canvas {
     padding: 0px;
     margin: 0px;
 }
-#ctx {
+#ctx0 {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -45,8 +45,50 @@ canvas {
     image-rendering: optimize-contrast;
     -ms-interpolation-mode: nearest-neighbor;
     cursor: crosshair;
-    image-rendering: pixelated;
     image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+#ctx1 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: -o-crisp-edges;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    cursor: crosshair;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+#map0 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: -o-crisp-edges;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    cursor: crosshair;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+}
+#map1 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: -o-crisp-edges;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+    cursor: crosshair;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 #worldMapCanvas {
     image-rendering: optimizeSpeed;
@@ -322,8 +364,8 @@ canvas {
     position: absolute;
     bottom: 10px;
     left: 30%;
-    width: 600px;
-    height: 25px;
+    width: 610px;
+    height: 20px;
 }
 
 #disconnected {
@@ -343,7 +385,7 @@ canvas {
 }
 #mapName {
     position: absolute;
-    font-size: 60;
+    font-size: 60px;
     top: 15%;
     left: 50%;
     margin-right: -50%;
@@ -593,7 +635,7 @@ canvas {
     position: relative;
     left: 50%;
     top: 4px;
-    width: 688;
+    width: 688px;
     height: 30px;
     margin-top: 4px;
     text-align: left;
@@ -605,7 +647,7 @@ canvas {
     position: relative;
     left: 50%;
     top: 4px;
-    width: 688;
+    width: 688px;
     color: #dddddd;
     transform: translate(-50%, 0%);
 }
@@ -698,8 +740,8 @@ canvas {
     position: absolute;
     bottom: 5px;
     left: 5px;
-    width: 430px;
-    height: 25px;
+    width: 440px;
+    height: 20px;
     user-select: text;
 }
 
@@ -833,4 +875,52 @@ canvas {
 }
 .itemUnequip:hover {
     background-color: #990000;
+}
+
+.slider {
+    position: relative;
+    display: block;
+    left: 8px;
+    top: 50px;
+    width: 100px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+.slider:hover {
+    opacity: 1;
+}
+#ctPlayerDisplay {
+    position: absolute;
+    left: 8px;
+    top: 20px;
+    margin: auto;
+    width: 80px;
+    height: 136px;
+    cursor: crosshair;
+}
+#ctPlayer {
+    position: relative;
+    left: 4px;
+    top: 40px;
+    width: 88px;
+    height: 164px;
+    background-color: #1d1100;
+    border: 1px solid #000000;
+    margin: 5px;
+}
+#ctPlayerName {
+    position: absolute;
+    top: 4px;
+    left: 0px;
+    width: 100%;
+    color: #ff7700;
+    text-align: center;
+}
+audio {
+    position: absolute;
+    top: -200px;
+    left: -200px;
 }

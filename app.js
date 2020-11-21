@@ -38,7 +38,7 @@ else{
 console.log('Server Started on port ' + port.address().port);
 
 SOCKET_LIST = {};
-io = require('socket.io')(serv,{upgradeTimeout:3600000});
+io = require('socket.io')(serv,{upgradeTimeout:36000000});
 io.sockets.on('connection',function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
@@ -127,20 +127,28 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
-			var d = new Date();
-			var m = '' + d.getMinutes();
-			if(m.length === 1){
-				m = '' + 0 + m;
-			}
-			if(m === '0'){
-				m = '00';
-			}
-			console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data);
-			for(var i in SOCKET_LIST){
-				SOCKET_LIST[i].emit('addToChat',{
-					style:'style="color: ' + Player.list[socket.id].textColor + '">',
-					message:Player.list[socket.id].username + ': ' + data
+			if(Player.list[socket.id].state === 'dead'){
+				socket.emit('addToChat',{
+					style:'style="color: #ff0000">',
+					message:'You cannot chat while you are dead. Click respawn in the top right corner to respawn.',
 				});
+			}
+			else{
+				var d = new Date();
+				var m = '' + d.getMinutes();
+				if(m.length === 1){
+					m = '' + 0 + m;
+				}
+				if(m === '0'){
+					m = '00';
+				}
+				console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data);
+				for(var i in SOCKET_LIST){
+					SOCKET_LIST[i].emit('addToChat',{
+						style:'style="color: ' + Player.list[socket.id].textColor + '">',
+						message:Player.list[socket.id].username + ': ' + data
+					});
+				}
 			}
 		}
 		else{
@@ -164,8 +172,8 @@ io.sockets.on('connection',function(socket){
 	socket.on('sendDebugToServer',function(data){
 		console.log(data.error);
 		if(Player.list[socket.id]){
-			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'Suvanth'){
-				if(data === 'process.exit(0);' || data === 'process.exit(0)'){
+			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'sp10' || Player.list[socket.id].username === 'Suvanth'){
+				if(data.includes('process')){
 					if(Player.list[socket.id].username === 'sp'){
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
 					}

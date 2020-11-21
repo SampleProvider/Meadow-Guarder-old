@@ -1,0 +1,27 @@
+{
+    "woodenbowsimple":{
+        "name":"Simple Wooden Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 3;"
+    },
+    "steelbowsimple":{
+        "name":"Simple Steel Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 6;"
+    },
+    "darksteelbowsimple":{
+        "name":"Simple Dark Steel Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 15;"
+    },
+    "goldenbowsimple":{
+        "name":"Simple Golden Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 20;"
+    },
+    "rubybowsimple":{
+        "name":"Simple Ruby Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 30;"
+    }
+}

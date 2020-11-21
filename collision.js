@@ -12,6 +12,7 @@ Collision = function(param){
 
 Collision.list = {};
 
+
 ProjectileCollision = function(param){
     var self = Entity(param);
     self.id = "" + self.map + ":" + self.x + ":" + self.y + ":";
@@ -106,3 +107,18 @@ QuestInfo = function(param){
 }
 
 QuestInfo.list = {};
+
+WayPoint = function(param){
+    var self = Entity(param);
+    self.id = "" + self.map + ":" + Math.floor(self.x / 64) * 64 + ":" + Math.floor(self.y / 64) * 64 + ":";
+    self.info = param.info;
+    self.width = param.width;
+    self.height = param.height;
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+    }
+    WayPoint.list[self.id] = self;
+}
+
+WayPoint.list = {};

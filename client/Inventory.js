@@ -158,7 +158,6 @@ Inventory = function(socket,server){
         var currentEquip = document.getElementById("currentEquip");
         currentEquip.innerHTML = "";
         var addButton = function(data,index){
-            console.log(data);
             let item = Item.list[data.id];
             let button = document.createElement('button');
             let equip = document.createElement('button');
@@ -271,19 +270,19 @@ Inventory = function(socket,server){
             }
 
             self.removeItem(itemId,1);
-            if(self.currentEquip[Item.list[itemId].type] !== ''){
-                self.addItem(self.currentEquip[Item.list[itemId].type],1);
+            if(self.currentEquip[Item.list[itemId].equip] !== ''){
+                self.addItem(self.currentEquip[Item.list[itemId].equip],1);
             }
-            self.currentEquip[Item.list[itemId].type] = itemId;
+            self.currentEquip[Item.list[itemId].equip] = itemId;
             self.refreshRender();
         });
         self.socket.on("unequipItem",function(itemId){
-            if(self.currentEquip[Item.list[itemId].type] !== itemId){
+            if(self.currentEquip[Item.list[itemId].equip] !== itemId){
                 console.log('cheater');
                 return;
             }
-            self.addItem(self.currentEquip[Item.list[itemId].type],1);
-            self.currentEquip[Item.list[itemId].type] = '';
+            self.addItem(self.currentEquip[Item.list[itemId].equip],1);
+            self.currentEquip[Item.list[itemId].equip] = '';
             self.refreshRender();
         });
     }
@@ -293,122 +292,44 @@ Inventory = function(socket,server){
 }
 
 
-Item = function(id,name,type,event){
+Item = function(id,name,equip,event){
 	var self = {
 		id:id,
         name:name,
-        type:type,
+        equip:equip,
         event:event,
-	}
+    }
 	Item.list[self.id] = self;
 	return self;
 }
 Item.list = {};
 
-Item("sword","Sword","weapon",function(player){
-    player.stats.attack = player.stats.attack * 1.1;
-    player.inventory.removeItem("sword",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("helmet","Helmet","helmet",function(player){
-    player.stats.defense = player.stats.defense * 1.1;
-    player.inventory.removeItem("helmet",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("bow","Bow","weapon",function(player){
-    player.stats.attack = player.stats.attack * 1.1;
-    player.inventory.removeItem("bow",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("fish","Red Fish","boost",function(player){
-    player.hpMax = player.hpMax * 1.1;
-    player.inventory.removeItem("fish",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("orangefish","Orange Fish","boost",function(player){
-    player.stats.attack = player.stats.attack * 1.1;
-    player.stats.defense = player.stats.defense * 1.1;
-    player.stats.heal = player.stats.heal * 1.1;
-    player.hpMax = player.hpMax * 1.1;
-    player.inventory.removeItem("orangefish",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("shield","Shield","weapon",function(player){
-    player.stats.defense = player.stats.defense * 1.5;
-    player.inventory.removeItem("shield",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("amulet","Amulet","boost",function(player){
-    player.stats.heal = player.stats.heal * 1.1;
-    player.inventory.removeItem("amulet",1);
-    player.xp += Math.round(player.stats.xp * 2000);
-});
-Item("xpgem","XP Gem","boost",function(player){
-    player.stats.xp = player.stats.xp * 1.1;
-});
-
-
-
-Item("woodensword","Wooden Sword","weapon",function(player){
-    player.stats.attack = player.stats.attack * 3;
-});
-Item("ironsword","Iron Sword","weapon",function(player){
-    player.stats.attack = player.stats.attack * 10;
-});
-Item("goldensword","Golden Sword","weapon",function(player){
-    player.stats.attack = player.stats.attack * 121;
-});
-
-Item("woodenhelmet","Wooden Helmet","helmet",function(player){
-    player.stats.defense = player.stats.defense * 1.2;
-});
-Item("ironhelmet","Iron Helmet","helmet",function(player){
-    player.stats.defense = player.stats.defense * 2;
-});
-Item("goldenhelmet","Golden Helmet","helmet",function(player){
-    player.stats.defense = player.stats.defense * 11;
-});
-
-Item("woodenamulet","Wooden Amulet","boost",function(player){
-    player.stats.heal = player.stats.heal * 1.2;
-});
-Item("ironamulet","Iron Amulet","boost",function(player){
-    player.stats.heal = player.stats.heal * 2;
-});
-Item("goldenamulet","Golden Amulet","boost",function(player){
-    player.stats.heal = player.stats.heal * 11;
-    player.hpMax = player.hpMax * 2;
-});
-
-Item("developerkey","Developer Key","key",function(player){
-    if(player.username !== 'sp' && player.username !== 'Suvanth'){
-        player.inventory.currentEquip.key = '';
-        player.inventory.refreshRender();
+try{
+    var items = require('./item.json');
+    for(var i in items){
+        Item(i,items[i].name,items[i].equip,items[i].event);
     }
-    else if(player.username === 'Suvanth'){
-        player.stats.heal = player.stats.heal * 121;
-        player.hpMax = player.hpMax * 11;
-        player.stats.attack = player.stats.attack * 11;
-        player.stats.defense = player.stats.defense * 11;
-        player.stats.xp = player.stats.xp * 121;
-    }
-    else{
-        player.stats.heal = player.stats.heal * 242;
-        player.hpMax = player.hpMax * 22;
-        player.stats.attack = player.stats.attack * 22;
-        player.stats.defense = player.stats.defense * 22;
-        player.stats.xp = player.stats.xp * 242;
-    }
-});
-Item("goldenkey","Golden Key","key",function(player){
-    if(player.username !== 'Suvanth' && player.username !== 'sp' && player.username !== 'the-real-tianmu'){
-        player.inventory.currentEquip.key = '';
-        player.inventory.refreshRender();
-    }
-    else{
-        player.stats.heal = player.stats.heal * 11;
-        player.hpMax = player.hpMax * 3;
-        player.stats.attack = player.stats.attack * 5;
-        player.stats.defense = player.stats.defense * 5;
-    }
-});
+}
+catch(err){
+    var request = new XMLHttpRequest();
+    request.open('GET',"/client/item.json",true);
+
+    request.onload = function(){
+        if(this.status >= 200 && this.status < 400){
+            // Success!
+            var items = JSON.parse(this.response);
+            for(var i in items){
+                Item(i,items[i].name,items[i].equip,items[i].event);
+            }
+        }
+        else{
+            // We reached our target server, but it returned an error
+        }
+    };
+
+    request.onerror = function(){
+        // There was a connection error of some sort
+    };
+
+    request.send();
+}
