@@ -3081,7 +3081,7 @@ var renderLayers = function(data,loadedMap){
 }
 var load = function(name){
     if(SERVER === 'localhost'){
-        renderLayers(require("C:/Users/gu/Documents/game/client/maps/" + name + ".json"),name);
+        renderLayers(require("C:/Users/Suvanth/Documents/Github/Meadow-Guarder/client/maps/" + name + ".json"),name);
     }
     else{
         renderLayers(require("/app/client/maps/" + name + ".json"),name);
@@ -3139,7 +3139,7 @@ spawnEnemies = function(){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
                 if(Math.random() < 0.0000001){
-                   monsterType = 'gray';
+                   var monsterType = 'gray';
                    var monster = new Monster({
                        spawnId:i,
                        x:Spawner.list[i].x,
@@ -3166,7 +3166,7 @@ spawnEnemies = function(){
                     });
                 }
                 else if(Math.random() < 0.00001){
-                   monsterType = 'black';
+                   var monsterType = 'black';
                    var monster = new Monster({
                        spawnId:i,
                        x:Spawner.list[i].x,
@@ -3193,7 +3193,7 @@ spawnEnemies = function(){
                     });
                 }
                 else if(Math.random() < 0.000001){
-                   monsterType = 'white';
+                   var monsterType = 'white';
                    var monster = new Monster({
                        spawnId:i,
                        x:Spawner.list[i].x,
@@ -3220,7 +3220,7 @@ spawnEnemies = function(){
                     });
                 }
                 else if(Math.random() < 0.001){
-                   monsterType = 'brown';
+                   var monsterType = 'brown';
                    var monster = new Monster({
                        spawnId:i,
                        x:Spawner.list[i].x,
@@ -3273,6 +3273,7 @@ spawnEnemies = function(){
                             }
                         },
                     });
+                }
                 Spawner.list[i].spawned = true;
             }
         }
