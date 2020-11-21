@@ -1068,7 +1068,7 @@
 				}
 				else if(self.monsterType === 'gray'){
 					ctx.drawImage(Img.monsterGray,self.x - 6,self.y - 9);
-
+				}
 				if(DEBUG !== 0){
 					ctx.strokeStyle = '#000000';
 					ctx.lineWidth = 4;
@@ -1937,7 +1937,7 @@
 
 		var cursorMove = document.getElementById('cursorMove');
 		var cursorMoveDisable = document.getElementById('cursorMoveDisable');
-    var cursorMoveInterval;
+    	var cursorMoveInterval;
 		cursorMove.onclick = function() {
 			cursorMoveInterval = setInterval(function(){
                switch(Math.round((Math.atan2(mouseY,mouseX) / Math.PI * 180) / 45)){
@@ -2028,6 +2028,7 @@
 		ExitExploreMode.onclick = function() {
 			socket.emit('changeMode',{state:'normal'})
 		}
+
 	</script>
 </body>
 </html>
