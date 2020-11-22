@@ -2,31 +2,49 @@
     "simplewoodenbow":{
         "name":"Simple Wooden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 3;",
+        "event":"self.stats.attack = self.stats.attack * 1.1;",
         "dropChance":"0.1"
     },
     "simplesteelbow":{
         "name":"Simple Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 6;",
+        "event":"self.stats.attack = self.stats.attack * 1.4;",
         "dropChance":"0.01"
     },
     "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 15;",
+        "event":"self.stats.attack = self.stats.attack * 1.7;",
         "dropChance":"0.005"
     },
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 20;self.stats.xp *= 10",
+        "event":"self.stats.attack = self.stats.attack * 2;self.stats.xp *= 2",
         "dropChance":"0.003"
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 30;self.stats.xp *= 25",
+        "event":"self.stats.attack = self.stats.attack * 5;self.stats.xp *= 5",
         "dropChance":"0.001"
+    },
+    "bronzekey":{
+        "name":"Bronze Key",
+        "equip":"key",
+        "event":"self.textColor = '#904000'",
+        "dropChance":"0.05"
+    },
+    "silverkey":{
+        "name":"Silver Key",
+        "equip":"key",
+        "event":"self.textColor = '#909090'",
+        "dropChance":"0.01"
+    },
+    "goldenkey":{
+        "name":"Golden Key",
+        "equip":"key",
+        "event":"self.textColor = '#dd9000'",
+        "dropChance":"0.003"
     }
 }

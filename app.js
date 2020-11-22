@@ -42,6 +42,7 @@ io = require('socket.io')(serv,{upgradeTimeout:36000000});
 io.sockets.on('connection',function(socket){
 	socket.id = Math.random();
 	SOCKET_LIST[socket.id] = socket;
+	socket.emit('loadMap',worldMap);
 	socket.on('signIn',function(data){
 		Database.isValidPassword(data,function(res){
 			if(res === 3){

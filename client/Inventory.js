@@ -153,6 +153,14 @@ Inventory = function(socket,server){
 		}  
 		return false;
     }
+    self.equippedItem = function(id){
+        for(var i in self.currentEquip){
+            if(self.currentEquip[i] === id){
+                return true;
+            }
+        }
+        return false;
+    }
 	self.refreshRender = function(){
         if(self.server){
             self.refresh = true;
@@ -270,7 +278,7 @@ Inventory = function(socket,server){
             }
 
             self.removeItem(itemId,1);
-            Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 2000);
+            Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200);
         });
         self.socket.on("equipItem",function(itemId){
             if(!self.hasItem(itemId,1)){

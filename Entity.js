@@ -41,7 +41,18 @@ var xpLevels = [
     140000,
     200000,
     275000,
+    400000,
+    725000,
+    1000000,
+    1500000,
+    2500000,
+    4000000,
+    7000000,
+    10000000,
 ];
+var fs = require('fs');
+
+worldMap = [];
 
 s = {
     findPlayer:function(param){
@@ -91,16 +102,9 @@ s = {
     },
 };
 
-var playerMap = {
-    'Cave':0,
-    'Starter House':0,
-    'House':0,
-    'Secret Base':0,
-    'Secret Base Basement':0,
-};
+var playerMap = {};
 
 Maps = {};
-
 
 Entity = function(param){
     var self = {};
@@ -150,7 +154,7 @@ Entity = function(param){
 		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2))
     }
     self.isColliding = function(pt){
-        if(pt.x + pt.width / 2 > self.x - self.width / 2 && pt.x - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y - self.height / 2 && pt.y - pt.height / 2 < self.y + self.height / 2){
+        if(pt.map === self.map && pt.x + pt.width / 2 > self.x - self.width / 2 && pt.x - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y - self.height / 2 && pt.y - pt.height / 2 < self.y + self.height / 2){
             return true;
         }
         return false;
@@ -190,15 +194,17 @@ Entity.getFrameUpdateData = function(){
         Projectile.list[i].update();
     }
     for(var i in Npc.list){
-        Npc.list[i].update();
-        if(!pack[Npc.list[i].map]){
-            pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
-        }
-        if(Npc.list[i].toRemove){
-            delete Npc.list[i];
-        }
-        else{
-            pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
+        if(playerMap[Npc.list[i].map] > 0){
+            Npc.list[i].update();
+            if(!pack[Npc.list[i].map]){
+                pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+            }
+            if(Npc.list[i].toRemove){
+                delete Npc.list[i];
+            }
+            else{
+                pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
+            }
         }
     }
 	updateCrashes();
@@ -1049,7 +1055,7 @@ Player = function(param){
         if(self.questStage === 7 && self.quest === 'qMissingPerson'){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'qMissingPerson' && QuestInfo.list[i].info === 'spawner'){
-                    self.questDependent.mark = Npc({
+                    self.questDependent.mark = new Npc({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
@@ -1103,7 +1109,7 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(10000 * self.stats.xp);
+            self.xp += Math.round(1000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -1115,6 +1121,7 @@ Player = function(param){
                 heal:1,
                 xp:1,
             }
+            self.textColor = '#ffff00';
             self.hpMax = 1000;
             for(var i in self.inventory.currentEquip){
                 if(self.inventory.currentEquip[i] !== ''){
@@ -1142,6 +1149,18 @@ Player = function(param){
             if(self.inventory.spawn === true){
                 self.inventory.spawn = false;
                 self.hp = self.hpMax;
+            }
+            if(self.username === 'sp'){
+                self.textColor = '#ff0090';
+            }
+            if(self.username === 'Suvanth'){
+                self.textColor = '#0090ff';
+            }
+            if(self.username === 'Unknown'){
+                self.textColor = '#000000';
+            }
+            if(self.username === 'the-real-tianmu'){
+                self.textColor = '#0090ff';
             }
         }
     }
@@ -1176,7 +1195,7 @@ Player = function(param){
                         var monsterHp = 0;
                         for(var j in Player.list){
                             if(Player.list[j].map === Spawner.list[i].map){
-                                monsterHp += Player.list[j].hpMax / 2;
+                                monsterHp += Player.list[j].hpMax / 3;
                                 monsterHp += Player.list[j].stats.attack * 100;
                                 monsterHp += Player.list[j].stats.defense * 100;
                             }
@@ -2365,41 +2384,20 @@ Projectile.list = {};
 
 
 
-var mapLocations = [
-    ['The River','The Village'],
-    ['','The Docks'],
-];
 var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" && layer.visible === false){
         return;
     }
     var size = data.tilewidth;
     size = 64;
-    if(data.backgroundcolor){
-        Maps[loadedMap] = {width:layer.width * size,height:layer.height * size};
-        playerMap[loadedMap] = 0;
-    }
-    else{
-        for(var i = 0;i < mapLocations.length;i++){
-            for(var j = 0;j < mapLocations[i].length;j++){
-                Maps[mapLocations[i][j]] = {width:size * 50,height:size * 50};
-                playerMap[mapLocations[i][j]] = 0;
-            }
-        }
-    }
+    Maps[loadedMap] = {width:layer.width * size,height:layer.height * size};
+    playerMap[loadedMap] = 0;
     for(var i = 0;i < layer.data.length;i++){
         var tile_idx = layer.data[i];
         if(tile_idx){
-            if(data.backgroundcolor){
-                var x = (i % layer.width) * size;
-                var y = ~~(i / layer.width) * size;
-                var map = loadedMap;
-            }
-            else{
-                var x = ((i % layer.width) * size) % (size * 50);
-                var y = (~~(i / layer.width) * size) % (size * 50);
-                var map = mapLocations[~~(~~(i / layer.width) / 50)][~~((i % layer.width) / 50)];
-            }
+            var x = (i % layer.width) * size;
+            var y = ~~(i / layer.width) * size;
+            var map = loadedMap;
             tile = data.tilesets[0];
             if(tile_idx === 2122){
                 var collision = new Collision({
@@ -2819,7 +2817,20 @@ var load = function(name){
         renderLayers(require("/app/client/maps/" + name + ".json"),name);
     }
 }
-load("World");
+//load("World");
+var compareMaps = function(a,b){
+    if(a.y === b.y){
+        return a.x - b.x;
+    }
+    return a.y - b.y;
+}
+fs.readFile("./client/maps/World.world",'utf8',function(err,data){
+    worldMap = JSON.parse(data).maps;
+    worldMap.sort(compareMaps);
+    for(var i in worldMap){
+        load(worldMap[i].fileName.slice(0,-4));
+    }
+});
 
 updateCrashes = function(){
     for(var i in Player.list){
@@ -2873,7 +2884,7 @@ spawnEnemies = function(){
                 var monsterHp = 0;
                 for(var j in Player.list){
                     if(Player.list[j].map === Spawner.list[i].map){
-                        monsterHp += Player.list[j].hpMax / 2;
+                        monsterHp += Player.list[j].hpMax / 3;
                         monsterHp += Player.list[j].stats.attack * 100;
                         monsterHp += Player.list[j].stats.defense * 100;
                     }

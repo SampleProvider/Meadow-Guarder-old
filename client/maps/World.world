@@ -1,0 +1,27 @@
+{
+    "maps": [
+        {
+            "fileName": "The Village.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 800,
+            "y": 0
+        },
+        {
+            "fileName": "The Docks.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 800,
+            "y": 800
+        },
+        {
+            "fileName": "The River.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}

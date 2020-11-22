@@ -7,19 +7,14 @@ var HEIGHT = window.innerHeight;
 
 var cameraX = 0;
 var cameraY = 0;
-var lastCameraX = 0;
-var lastCameraY = 0;
-var mouseCameraX = 0;
-var mouseCameraY = 0;
 
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
 var menu = 'none';
 
-var RENDERDIST = 5;
 var STATE = 'signIn';
-var VERSION = '010f1a';
+var VERSION = '010f2a';
 
 var DEBUG = 0;
 
@@ -349,6 +344,13 @@ var loadMap = function(name){
 
     request.send();
 }
+var world;
+socket.on('loadMap',function(data){
+    world = data;
+    for(var i in world){
+        loadMap(world[i].fileName.slice(0,-4));
+    }
+});
 const times = [];
 let fps;
 
@@ -427,7 +429,6 @@ var mapLocations = [
 ];
 var mapCropX = 3200;
 var mapCropY = 0;
-loadMap('World');
 
 document.getElementById('bodySlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgBody',state:this.value});
@@ -451,7 +452,6 @@ var mapSlide = 0;
 var lastMap = '';
 var currentMap = '';
 var drewMap = false;
-var isWorldMap = true;
 
 var talking = false;
 var selfId = null;
@@ -963,7 +963,7 @@ var Npc = function(initPack){
 Npc.list = {};
 socket.on('selfId',function(data){
     selfId = data.id;
-    '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
+    chat = '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
     chatText.innerHTML = '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
 });
 socket.on('update',function(data){
@@ -1287,7 +1287,6 @@ state.isHidden = true;
 var response = function(data){
 socket.emit('diolougeResponse',data);
 }
-
 setInterval(function(){
     if(STATE === 'signIn'){
         gameDiv.style.display = 'none';
@@ -1406,21 +1405,11 @@ setInterval(function(){
     map0.save();
     map0.translate(Math.round(cameraX),Math.round(cameraY));
 
-    if(!isWorldMap){
-        if(loadedMap[Player.list[selfId].map]){
-            map0.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
-        }
-        else{
-            loadMap(Player.list[selfId].map);
-        }
+    if(loadedMap[Player.list[selfId].map]){
+        map0.drawImage(loadedMap[Player.list[selfId].map].lower,0,0);
     }
     else{
-        if(loadedMap.World){
-            map0.drawImage(loadedMap.World.lower,mapCropX,mapCropY,3200,3200,0,0,3200,3200);
-        }
-        else{
-            loadMap("World");
-        }
+        loadMap(Player.list[selfId].map);
     }
 
     map0.restore();
@@ -1468,21 +1457,11 @@ setInterval(function(){
     ctx0.restore();
     map1.save();
     map1.translate(Math.round(cameraX),Math.round(cameraY));
-    if(!isWorldMap){
-        if(loadedMap[Player.list[selfId].map]){
-            map1.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
-        }
-        else{
-            loadMap(Player.list[selfId].map);
-        }
+    if(loadedMap[Player.list[selfId].map]){
+        map1.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
     }
     else{
-        if(loadedMap.World){
-            map1.drawImage(loadedMap.World.upper,mapCropX,mapCropY,3200,3200,0,0,3200,3200);
-        }
-        else{
-            loadMap("World");
-        }
+        loadMap(Player.list[selfId].map);
     }
     
     map1.restore();
@@ -1522,21 +1501,6 @@ setInterval(function(){
     }
     if(Player.list[selfId].map === currentMap && shadeAmount > 1.5){
         shadeSpeed = -3 / 40;
-        isWorldMap = false;
-        for(var i = 0;i < mapLocations.length;i++){
-            for(var j = 0;j < mapLocations[i].length;j++){
-                if(currentMap === mapLocations[i][j]){
-                    mapCropX = j * 3200;
-                    mapCropY = i * 3200;
-                    isWorldMap = true;
-                    currentMap = 'World';
-                }
-            }
-        }
-        if(!isWorldMap){
-            mapCropX = 0;
-            mapCropY = 0;
-        }
     }
     if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
         document.getElementById('mapName').innerHTML = Player.list[selfId].map;
@@ -1554,24 +1518,24 @@ setInterval(function(){
         worldMap.fillStyle = '#000000';
         worldMap.fillRect(0,0,910,730);
         worldMap.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
-        worldMap.drawImage(loadedMap.World.lower,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
-        worldMap.drawImage(loadedMap.World.upper,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
+        for(var i in world){
+            worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
+            worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
+        }
     }
-    if(isWorldMap){
-        if(mapDrag){
-            worldMapEntity.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
-        }
-        else{
-            worldMapEntity.translate(Math.round(mapX),Math.round(mapY));
-        }
-        worldMapEntity.clearRect(0,0,100000,100000);
-        for(var i in Player.list){
-            worldMapEntity.translate((mapCropX + Player.list[i].x) * mapRatio / 910,(mapCropY + Player.list[i].y) * mapRatio / 910);
-            worldMapEntity.rotate(Player.list[i].direction * Math.PI / 180);
-            worldMapEntity.drawImage(Img.playericon,-56 * mapRatio / 910,-48 * mapRatio / 910,mapRatio / 10,mapRatio / 10);
-            worldMapEntity.rotate(-1 * Player.list[i].direction * Math.PI / 180);
-            worldMapEntity.translate(-1 * (mapCropX + Player.list[i].x) * mapRatio / 910,-1 * (mapCropY + Player.list[i].y) * mapRatio / 910);
-        }
+    if(mapDrag){
+        worldMapEntity.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
+    }
+    else{
+        worldMapEntity.translate(Math.round(mapX),Math.round(mapY));
+    }
+    worldMapEntity.clearRect(0,0,100000,100000);
+    for(var i in Player.list){
+        worldMapEntity.translate((mapCropX + Player.list[i].x) * mapRatio / 910,(mapCropY + Player.list[i].y) * mapRatio / 910);
+        worldMapEntity.rotate(Player.list[i].direction * Math.PI / 180);
+        worldMapEntity.drawImage(Img.playericon,-56 * mapRatio / 910,-48 * mapRatio / 910,mapRatio / 10,mapRatio / 10);
+        worldMapEntity.rotate(-1 * Player.list[i].direction * Math.PI / 180);
+        worldMapEntity.translate(-1 * (mapCropX + Player.list[i].x) * mapRatio / 910,-1 * (mapCropY + Player.list[i].y) * mapRatio / 910);
     }
     worldMap.restore();
     worldMapEntity.restore();
@@ -1690,8 +1654,10 @@ window.addEventListener('wheel',function(event){
     worldMap.fillStyle = '#000000';
     worldMap.fillRect(0,0,910,730);
     worldMap.translate(Math.round(mapX),Math.round(mapY));
-    worldMap.drawImage(loadedMap.World.lower,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
-    worldMap.drawImage(loadedMap.World.upper,0,0,mapRatio / 910 * 3200 * mapLocations[0].length,mapRatio / 910 * 3200 * mapLocations.length);
+    for(var i in world){
+        worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
+        worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
+    }
     worldMap.restore();
 });
 document.getElementById('worldMapEntityCanvas').onmousemove = function clickEvent(e){

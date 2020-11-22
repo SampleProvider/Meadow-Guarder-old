@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.4" tiledversion="1.4.1" name="roguelikeSheet" tilewidth="16" tileheight="16" spacing="1" tilecount="5074" columns="86">
+<tileset version="1.4" tiledversion="1.4.3" name="roguelikeSheet" tilewidth="16" tileheight="16" spacing="1" tilecount="5074" columns="86">
  <image source="roguelikeSheet.png" width="1461" height="1002"/>
  <terraintypes>
   <terrain name="Grass" tile="5"/>
@@ -156,6 +156,7 @@
  <tile id="1550" terrain=",,,9"/>
  <tile id="1551" terrain=",,9,9"/>
  <tile id="1552" terrain=",,9,"/>
+ <tile id="1578" type="fad"/>
  <tile id="1634" terrain="9,,9,9"/>
  <tile id="1635" terrain=",9,9,9"/>
  <tile id="1636" terrain=",9,,9"/>
@@ -206,4 +207,124 @@
  <tile id="4324" terrain=",12,12,12"/>
  <tile id="4325" terrain="11,,11,11"/>
  <tile id="4326" terrain=",11,11,11"/>
+ <wangsets>
+  <wangset name="Path" tile="868">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="607" wangid="0x1010102"/>
+   <wangtile tileid="608" wangid="0x1010201"/>
+   <wangtile tileid="609" wangid="0x2010102"/>
+   <wangtile tileid="610" wangid="0x1010202"/>
+   <wangtile tileid="611" wangid="0x2010201"/>
+   <wangtile tileid="693" wangid="0x2010101"/>
+   <wangtile tileid="694" wangid="0x1020101"/>
+   <wangtile tileid="695" wangid="0x2020101"/>
+   <wangtile tileid="696" wangid="0x1020201"/>
+   <wangtile tileid="697" wangid="0x1020102"/>
+   <wangtile tileid="951" wangid="0x2020201"/>
+   <wangtile tileid="952" wangid="0x2010202"/>
+   <wangtile tileid="1037" wangid="0x1020202"/>
+   <wangtile tileid="1038" wangid="0x2020102"/>
+   <wangtile tileid="1039" wangid="0x1010101"/>
+   <wangtile tileid="1040" wangid="0x2020202"/>
+  </wangset>
+  <wangset name="Clay" tile="1384">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="1123" wangid="0x1010102"/>
+   <wangtile tileid="1124" wangid="0x1010201"/>
+   <wangtile tileid="1125" wangid="0x2010102"/>
+   <wangtile tileid="1126" wangid="0x1010202"/>
+   <wangtile tileid="1127" wangid="0x2010201"/>
+   <wangtile tileid="1209" wangid="0x2010101"/>
+   <wangtile tileid="1210" wangid="0x1020101"/>
+   <wangtile tileid="1211" wangid="0x2020101"/>
+   <wangtile tileid="1212" wangid="0x1020201"/>
+   <wangtile tileid="1213" wangid="0x1020102"/>
+   <wangtile tileid="1467" wangid="0x2020201"/>
+   <wangtile tileid="1468" wangid="0x2010202"/>
+   <wangtile tileid="1553" wangid="0x1020202"/>
+   <wangtile tileid="1554" wangid="0x2020102"/>
+   <wangtile tileid="1555" wangid="0x1010101"/>
+   <wangtile tileid="1556" wangid="0x2020202"/>
+  </wangset>
+  <wangset name="Sand" tile="1900">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="1639" wangid="0x1010102"/>
+   <wangtile tileid="1640" wangid="0x1010201"/>
+   <wangtile tileid="1641" wangid="0x2010102"/>
+   <wangtile tileid="1642" wangid="0x1010202"/>
+   <wangtile tileid="1643" wangid="0x2010201"/>
+   <wangtile tileid="1725" wangid="0x2010101"/>
+   <wangtile tileid="1726" wangid="0x1020101"/>
+   <wangtile tileid="1727" wangid="0x2020101"/>
+   <wangtile tileid="1728" wangid="0x1020201"/>
+   <wangtile tileid="1729" wangid="0x1020102"/>
+   <wangtile tileid="1983" wangid="0x2020201"/>
+   <wangtile tileid="1984" wangid="0x2010202"/>
+   <wangtile tileid="2069" wangid="0x1020202"/>
+   <wangtile tileid="2070" wangid="0x2020102"/>
+   <wangtile tileid="2071" wangid="0x1010101"/>
+   <wangtile tileid="2072" wangid="0x2020202"/>
+  </wangset>
+  <wangset name="Rail 3" tile="1591">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="1591" wangid="0x1020102"/>
+   <wangtile tileid="1593" wangid="0x1010102"/>
+   <wangtile tileid="1594" wangid="0x1010102"/>
+   <wangtile tileid="1677" wangid="0x2010201"/>
+   <wangtile tileid="1679" wangid="0x1020101"/>
+   <wangtile tileid="1680" wangid="0x1020101"/>
+   <wangtile tileid="1761" wangid="0x1020202"/>
+   <wangtile tileid="1762" wangid="0x2020102"/>
+   <wangtile tileid="1765" wangid="0x2010101"/>
+   <wangtile tileid="1766" wangid="0x1010201"/>
+   <wangtile tileid="1851" wangid="0x2010101"/>
+   <wangtile tileid="1852" wangid="0x1010201"/>
+   <wangtile tileid="1933" wangid="0x2020201"/>
+   <wangtile tileid="1934" wangid="0x2010202"/>
+   <wangtile tileid="1937" wangid="0x1010101"/>
+   <wangtile tileid="1938" wangid="0x2020202"/>
+  </wangset>
+  <wangset name="Wood Wall" tile="1329">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="1066" wangid="0x2020102"/>
+   <wangtile tileid="1067" wangid="0x1020102"/>
+   <wangtile tileid="1068" wangid="0x1020202"/>
+   <wangtile tileid="1069" wangid="0x2010102"/>
+   <wangtile tileid="1070" wangid="0x1010202"/>
+   <wangtile tileid="1071" wangid="0x2010101"/>
+   <wangtile tileid="1072" wangid="0x1020101"/>
+   <wangtile tileid="1152" wangid="0x2010202"/>
+   <wangtile tileid="1153" wangid="0x1010101"/>
+   <wangtile tileid="1154" wangid="0x2010201"/>
+   <wangtile tileid="1155" wangid="0x2020101"/>
+   <wangtile tileid="1156" wangid="0x1020201"/>
+   <wangtile tileid="1157" wangid="0x1010201"/>
+   <wangtile tileid="1158" wangid="0x1010100"/>
+   <wangtile tileid="1238" wangid="0x2020201"/>
+  </wangset>
+  <wangset name="Clay Wall" tile="1322">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="1059" wangid="0x2020102"/>
+   <wangtile tileid="1060" wangid="0x1020102"/>
+   <wangtile tileid="1061" wangid="0x1020202"/>
+   <wangtile tileid="1062" wangid="0x2010102"/>
+   <wangtile tileid="1063" wangid="0x1010202"/>
+   <wangtile tileid="1064" wangid="0x2010101"/>
+   <wangtile tileid="1065" wangid="0x1020101"/>
+   <wangtile tileid="1145" wangid="0x2010202"/>
+   <wangtile tileid="1146" wangid="0x1010101"/>
+   <wangtile tileid="1147" wangid="0x2010201"/>
+   <wangtile tileid="1148" wangid="0x2020101"/>
+   <wangtile tileid="1149" wangid="0x1020201"/>
+   <wangtile tileid="1150" wangid="0x1010201"/>
+   <wangtile tileid="1151" wangid="0x1010102"/>
+   <wangtile tileid="1231" wangid="0x2020201"/>
+  </wangset>
+ </wangsets>
 </tileset>
