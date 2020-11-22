@@ -152,11 +152,12 @@ client.query('SELECT * FROM progress;', (err, res) => {
             displayXP(leaderboardXP[i],i);
         }
     }
-    console.log('```\n## XP Gems\n```');
+    console.log('```');
+    //console.log('```\n## XP Gems\n```');
     for(var i in leaderboardGem){
         if(leaderboardGem[i].xpGems !== 0){
-            displayGem(leaderboardGem[i],i);
+            //displayGem(leaderboardGem[i],i);
         }
     }
-    console.log('```');
+    //console.log('```');
 });

@@ -1176,7 +1176,7 @@ Player = function(param){
                         var monsterHp = 0;
                         for(var j in Player.list){
                             if(Player.list[j].map === Spawner.list[i].map){
-                                monsterHp += Player.list[j].hpMax;
+                                monsterHp += Player.list[j].hpMax / 2;
                                 monsterHp += Player.list[j].stats.attack * 100;
                                 monsterHp += Player.list[j].stats.defense * 100;
                             }
@@ -2873,7 +2873,7 @@ spawnEnemies = function(){
                 var monsterHp = 0;
                 for(var j in Player.list){
                     if(Player.list[j].map === Spawner.list[i].map){
-                        monsterHp += Player.list[j].hpMax;
+                        monsterHp += Player.list[j].hpMax / 2;
                         monsterHp += Player.list[j].stats.attack * 100;
                         monsterHp += Player.list[j].stats.defense * 100;
                     }
