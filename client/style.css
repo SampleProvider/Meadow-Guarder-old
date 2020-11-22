@@ -800,6 +800,7 @@ canvas {
     left: 50%;
     top: 15%;
     width: 300px;
+    text-align: center;
     transform: translate(-50%, 0%);
 }
 #questDescription {

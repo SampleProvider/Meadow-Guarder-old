@@ -213,7 +213,7 @@ io.sockets.on('connection',function(socket){
 });
 
 
-setInterval(function(){
+var update = function(){
 	spawnEnemies();
 	var packs = Entity.getFrameUpdateData();
 	for(var i in SOCKET_LIST){
@@ -223,8 +223,9 @@ setInterval(function(){
 			socket.emit('update',packs[map]);
 		}
 	}
-},1000/20);
-
+	setTimeout(update,50);
+}
+update();
 setInterval(function(){
 	storeDatabase(Player.list);
 },600000);

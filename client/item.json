@@ -20,13 +20,13 @@
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 20;",
+        "event":"self.stats.attack = self.stats.attack * 20;self.stats.xp *= 10",
         "dropChance":"0.003"
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 30;",
+        "event":"self.stats.attack = self.stats.attack * 30;self.stats.xp *= 25",
         "dropChance":"0.001"
     }
 }

@@ -194,7 +194,12 @@ Entity.getFrameUpdateData = function(){
         if(!pack[Npc.list[i].map]){
             pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
         }
-        pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
+        if(Npc.list[i].toRemove){
+            delete Npc.list[i];
+        }
+        else{
+            pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
+        }
     }
 	updateCrashes();
     for(var i in Projectile.list){
@@ -244,6 +249,7 @@ Actor = function(param){
     self.animation = 0;
     self.state = 'none';
     self.mapChange = 100;
+    self.toRemove = false;
     var super_update = self.update;
     self.update = function(){
         self.mapChange += 1;
@@ -379,6 +385,12 @@ Actor = function(param){
                 }
                 self.randomPos.timeX += 1;
                 self.randomPos.timeY += 1;
+                if(Math.abs(self.x - self.randomPos.x) > 256){
+                    self.spdX = -1 * Math.abs(self.x - self.randomPos.x) / (self.x - self.randomPos.x);
+                }
+                if(Math.abs(self.y - self.randomPos.y) > 256){
+                    self.spdY = -1 * Math.abs(self.y - self.randomPos.y) / (self.y - self.randomPos.y);
+                }
             }
         }
     }
@@ -944,30 +956,154 @@ Player = function(param){
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'for rent' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
                 if(self.quest === false){
-                    self.quest = 'qForRent';
                     self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'qMissingPerson';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescure Mark for me?',
+                        response1:'Sure, I can rescure Mark.',
+                        response2:'No way. That isn\'t my problem.',
+                    });
                 }
-                if(self.questStage === 1){
+                if(self.questStage === 4){
                     self.questStage += 1;
-                    self.questInfo.started = false;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
-                        message:'This piece of land is for rent. You can buy it <a href="https://forms.gle/XZ9zMboGuHcbHXYL6">here</a>.',
-                        response1:'Cool.',
+                        message:'Thanks. The map The River is to the west of The Village, which is where you are now.',
+                        response1:'*End conversation*',
+                    });
+                }
+                if(self.questStage === 11){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Oh, Mark is fine? That\'s great!',
+                        response1:'*End conversation*',
                     });
                 }
                 self.keyPress.attack = false;
             }
         }
-        if(self.quest = 'qForRent' && self.questStage === 2 && self.currentResponse === 1){
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'qMissingPerson'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Missing Person',
+                questDescription:'Find Mark who has been missing in the map The River. Test out some new quest mechanics.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'qMissingPerson'){
             self.quest = false;
+            for(var i in Player.list[socket.id].questDependent){
+                Player.list[socket.id].questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 2 && self.questInfo.quest === 'qMissingPerson'){
+            self.quest = 'qMissingPerson'
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with Bob.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'qMissingPerson'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'qMissingPerson'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.quest === 'qMissingPerson' && self.questStage === 6 && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qMissingPerson' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage += 1;
+                }
+            }
+        }
+        if(self.questStage === 7 && self.quest === 'qMissingPerson'){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qMissingPerson' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent.mark = Npc({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        name:'Mark',
+                        entityId:'mark',
+                        moveSpeed:5,
+                    });
+                    for(var i in Player.list){
+                        if(Player.list[i].map === self.map){
+                            SOCKET_LIST[i].emit('initEntity',self.questDependent.mark.getInitPack());
+                        }
+                    }
+                    self.questStage += 1;
+                }
+            }
+        }
+        if(self.questStage === 8 && self.quest === 'qMissingPerson'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Oh! Hey, who are you?',
+                response1:'Um, your friend Bob sent me to rescue you.',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'qMissingPerson'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Oh, because I was gone for a long time? I\'m completely fine! Just collecting wood. Go tell Bob.',
+                response1:'Ok, I can tell Bob you are fine.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'qMissingPerson'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'qMissingPerson'){
+            self.quest = false;
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+                delete self.questDependent[i];
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(10000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -1052,7 +1188,7 @@ Player = function(param){
                             y:Spawner.list[i].y,
                             map:Spawner.list[i].map,
                             moveSpeed:2,
-                            hp:Math.round(monsterHp / 3),
+                            hp:Math.round(monsterHp),
                             monsterType:monsterType,
                             onDeath:function(pt){
                                 pt.toRemove = true;
@@ -1716,6 +1852,7 @@ Player.onDisconnect = function(socket){
     if(Player.list[socket.id]){
         storeDatabase(Player.list);
         for(var i in Player.list[socket.id].questDependent){
+            Player.list[socket.id].questDependent[i].toRemove = true;
             delete Player.list[socket.id].questDependent[i];
         }
         var d = new Date();
@@ -1753,7 +1890,7 @@ Npc = function(param){
         hairType:'vikingHat',
     };
     self.name = param.name;
-    self.entityId = param.username;
+    self.entityId = param.entityId;
     var lastSelf = {};
 	var super_update = self.update;
     self.mapHeight = Maps[self.map].height;
@@ -2342,7 +2479,7 @@ var renderLayer = function(layer,data,loadedMap){
                         x:x + size / 2,
                         y:y + size / 2,
                         name:name,
-                        username:id,
+                        entityId:id,
                         map:map,
                         moveSpeed:5,
                     });
@@ -2748,7 +2885,7 @@ spawnEnemies = function(){
                     y:Spawner.list[i].y,
                     map:Spawner.list[i].map,
                     moveSpeed:2,
-                    hp:Math.round(monsterHp / 3),
+                    hp:Math.round(monsterHp),
                     monsterType:monsterType,
                     onDeath:function(pt){
                         pt.toRemove = true;
