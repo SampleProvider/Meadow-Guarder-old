@@ -221,26 +221,6 @@ canvas {
     opacity: 1;
     font-size: 150px;
 }
-.spectator {
-    background-color: #ffffff;
-    top: 0px;
-    left: 0px;
-    position: absolute;
-    font-family: 'pixel';
-    text-align: center;
-    font-size: 20px;
-    color: #000000;
-    padding-top: 2px;
-    padding-right: 5px;
-    padding-bottom: 2px;
-    padding-left: 5px;
-    transition-duration: 0.4s;
-    opacity: 0.75;
-}
-.spectator:hover {
-    opacity: 1;
-    font-size: 45px;
-}
 .respawn {
     background-color: #555555;
     top: 0px;
@@ -459,7 +439,9 @@ canvas {
     position: absolute;
     left: 8px;
     top: 230px;
-    width: 425px;
+    width: 455px;
+    height: 134px;
+    overflow-y: scroll;
 }
 #currentEquip {
     position: absolute;

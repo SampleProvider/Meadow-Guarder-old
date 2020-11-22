@@ -46,5 +46,17 @@
         "equip":"key",
         "event":"self.textColor = '#dd9000'",
         "dropChance":"0.003"
+    },
+    "developerkey":{
+        "name":"Developer Key",
+        "equip":"key",
+        "event":"self.textColor = '#0090ff'",
+        "dropChance":"0"
+    },
+    "spkey":{
+        "name":"SP Key",
+        "equip":"key",
+        "event":"self.textColor = '#ff0090'",
+        "dropChance":"0"
     }
 }

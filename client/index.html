@@ -37,16 +37,19 @@
 			<source src="/client/websiteAssets/2003042901_04.mp3" type="audio/mpeg">
 		</audio>
 		<div id="blackShade" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
-		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">Starter House</div>
 		<div id="mainAttack" class="UI-text-light"></div>
 		<div id="secondaryAttack" class="UI-text-light"></div>
 		<div id="heal" class="UI-text-light"></div>
+		<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
+			<div class="death-screen"></div>
+			<button class="respawn" onclick="respawn()">Respawn</button>
+		</div>
+		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">Starter House</div>
 		<div id="questInventoryDiv" class="UI-text-light" onmouseover="mouseUp(event)"></div>
 		<div id="fps" class="UI-text-light"></div>
 		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
 			
 		</div>
-
 		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event)">
 			<input id="chat-input" class="UI-input-light" type="text"></input>
 		</form>
@@ -167,13 +170,9 @@
 			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)">NO IM NOT!</button>
 		</div>
 
+
 		<div id="htmlDebug" style="position: absolute; right: 15px; bottom: 15px;"></div>
 
-	</div>
-	<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
-		<div class="death-screen"></div>
-		<button class="spectator">You're a spectator!</button>
-		<button class="respawn" onclick="respawn()">Respawn</button>
 	</div>
 	<div id="ads" style="display:none" onmouseover="mouseUp(event)">
 		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>

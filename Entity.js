@@ -798,17 +798,8 @@ Player = function(param){
     self.type = 'Player';
     self.username = param.username;
     self.tag = '';
-    if(self.username === 'sp'){
-        self.textColor = '#ff0090';
-    }
-    if(self.username === 'Suvanth'){
-        self.textColor = '#0090ff';
-    }
     if(self.username === 'Unknown'){
         self.textColor = '#000000';
-    }
-    if(self.username === 'the-real-tianmu'){
-        self.textColor = '#0090ff';
     }
 	self.keyPress = {
         up:false,
@@ -1150,17 +1141,8 @@ Player = function(param){
                 self.inventory.spawn = false;
                 self.hp = self.hpMax;
             }
-            if(self.username === 'sp'){
-                self.textColor = '#ff0090';
-            }
-            if(self.username === 'Suvanth'){
-                self.textColor = '#0090ff';
-            }
             if(self.username === 'Unknown'){
                 self.textColor = '#000000';
-            }
-            if(self.username === 'the-real-tianmu'){
-                self.textColor = '#0090ff';
             }
         }
     }
