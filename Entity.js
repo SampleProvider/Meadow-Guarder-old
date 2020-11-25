@@ -2799,7 +2799,7 @@ var load = function(name){
         renderLayers(require("/app/client/maps/" + name + ".json"),name);
     }
 }
-//load("World");
+load("Town Hall");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

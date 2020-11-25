@@ -354,6 +354,8 @@ socket.on('loadMap',function(data){
 const times = [];
 let fps;
 
+loadMap('Town Hall');
+
 var documentHidden = false;
 
 function refreshLoop(){
@@ -872,13 +874,13 @@ var Monster = function(initPack){
     }
     self.draw = function(){
         if(self.monsterType === 'purple'){
-            ctx0.drawImage(Img.monster,self.x - 12,self.y - 18);
+            ctx0.drawImage(Img.monster,self.x - 12,self.y - 22);
         }
         else if(self.monsterType === 'green'){
-            ctx0.drawImage(Img.monsterGreen,self.x - 12,self.y - 18);
+            ctx0.drawImage(Img.monsterGreen,self.x - 12,self.y - 22);
         }
         else if(self.monsterType === 'blue'){
-            ctx0.drawImage(Img.monsterBlue,self.x - 12,self.y - 18);
+            ctx0.drawImage(Img.monsterBlue,self.x - 12,self.y - 22);
         }
         else if(self.monsterType === 'red'){
             ctx0.drawImage(Img.monsterBoss,self.x - 24,self.y - 36);

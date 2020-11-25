@@ -29,6 +29,18 @@
         "event":"self.stats.attack = self.stats.attack * 5;self.stats.xp *= 5",
         "dropChance":"0.001"
     },
+    "developerbow":{
+        "name":"Developer Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 7;self.stats.xp *= 10",
+        "dropChance":"0"
+    },
+    "spbow":{
+        "name":"SP Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack = self.stats.attack * 10;self.stats.xp *= 50",
+        "dropChance":"0"
+    },
     "bronzekey":{
         "name":"Bronze Key",
         "equip":"key",
