@@ -243,6 +243,9 @@ Actor = function(param){
         waitTimeX:60,
         waitTimeY:60,
     };
+    self.pushPt = undefined;
+    self.pushX = 0;
+    self.pushY = 0;
     self.trackingEntity = undefined;
     self.entityId = undefined;
     self.canMove = true;
@@ -256,6 +259,10 @@ Actor = function(param){
     self.state = 'none';
     self.mapChange = 100;
     self.toRemove = false;
+    self.isHostile = false;
+    self.isDead = false;
+    self.pushPower = 1;
+    self.pushTime = 100;
     var super_update = self.update;
     self.update = function(){
         self.mapChange += 1;
@@ -399,6 +406,23 @@ Actor = function(param){
                 }
             }
         }
+        self.pushTime += 1;
+        if(self.pushPt){
+            if(self.isColliding(self.pushPt)){
+                var pushPower = self.pushPt.pushPower * Math.random();
+                self.spdX += (self.width / 2 + self.pushPt.width / 2 - (self.x - self.pushPt.x)) * pushPower;
+                self.spdY += (self.height / 2 + self.pushPt.height / 2 - (self.y - self.pushPt.y)) * pushPower;
+                self.pushTime = -1;
+            }
+            else if(self.pushTime < 5){
+                var pushPower = self.pushPt.pushPower * Math.random() / (self.pushTime + 1);
+                self.spdX += (self.width / 2 + self.pushPt.width / 2 - (self.x - self.pushPt.x)) * pushPower;
+                self.spdY += (self.height / 2 + self.pushPt.height / 2 - (self.y - self.pushPt.y)) * pushPower;
+            }
+            else{
+                self.pushPt = undefined;
+            }
+        }
     }
     self.updateAnimation = function(){
         if(self.spdX === 1){
@@ -438,6 +462,10 @@ Actor = function(param){
     self.move = function(x,y){
         self.moveArray.push({x:x,y:y});
     }
+    self.onPush = function(pt){
+        self.pushPt = pt;
+        self.onCollision(pt);
+    }
     self.randomWalk = function(walking,waypoint,x,y){
         self.randomPos.walking = walking;
         self.randomPos.waypoint = waypoint;
@@ -463,6 +491,57 @@ Actor = function(param){
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
     }
+    self.onCollision = function(pt){
+        if(!self.invincible && pt.toRemove === false){
+            self.hp -= Math.round(pt.stats.attack * (50 + Math.random() * 50) / self.stats.defense);
+        }
+        if(self.hp < 1 && self.isDead === false && pt.toRemove === false){
+            if(pt.parentType === 'Player'){
+                var item = Player.list[pt.parent].inventory.addRandomizedItem(1);
+                if(item){
+                    var d = new Date();
+                    var m = '' + d.getMinutes();
+                    if(m.length === 1){
+                        m = '' + 0 + m;
+                    }
+                    if(m === '0'){
+                        m = '00';
+                    }
+                    console.error("[" + d.getHours() + ":" + m + "] " + Player.list[pt.parent].username + " got a " + item.name + ".");
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('addToChat',{
+                            style:'style="color: ' + Player.list[pt.parent].textColor + '">',
+                            message:Player.list[pt.parent].username + " got a " + item.name + ".",
+                        });
+                    }
+                }
+                Player.list[pt.parent].xp += Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
+            }
+            if(pt.type === 'Player'){
+                var item = pt.inventory.addRandomizedItem(1);
+                if(item){
+                    var d = new Date();
+                    var m = '' + d.getMinutes();
+                    if(m.length === 1){
+                        m = '' + 0 + m;
+                    }
+                    if(m === '0'){
+                        m = '00';
+                    }
+                    console.error("[" + d.getHours() + ":" + m + "] " + pt.username + " got a " + item.name + ".");
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('addToChat',{
+                            style:'style="color: ' + pt.textColor + '">',
+                            message:pt.username + " got a " + item.name + ".",
+                        });
+                    }
+                }
+                pt.xp += Math.round((10 + Math.random() * 10) * pt.stats.xp);
+            }
+            self.isDead = true;
+            self.toRemove = true;
+        }
+    }
     self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,stats){
 		var projectile = Projectile({
             id:id,
@@ -477,34 +556,6 @@ Actor = function(param){
             mapHeight:self.mapHeight,
             stats:stats,
             onCollision:function(self,pt){
-                if(!pt.invincible && self.toRemove === false){
-                    pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
-                }
-                if(pt.hp < 1 && pt.isDead === false && self.toRemove === false){
-                    if(parentType === 'Player'){
-                        var item = Player.list[self.parent].inventory.addRandomizedItem(1);
-                        if(item){
-                            var d = new Date();
-                            var m = '' + d.getMinutes();
-                            if(m.length === 1){
-                                m = '' + 0 + m;
-                            }
-                            if(m === '0'){
-                                m = '00';
-                            }
-                            console.error("[" + d.getHours() + ":" + m + "] " + Player.list[self.parent].username + " got a " + item.name + ".");
-                            for(var i in SOCKET_LIST){
-                                SOCKET_LIST[i].emit('addToChat',{
-                                    style:'style="color: ' + Player.list[self.parent].textColor + '">',
-                                    message:Player.list[self.parent].username + " got a " + item.name + ".",
-                                });
-                            }
-                        }
-                        Player.list[self.parent].xp += Math.round((10 + Math.random() * 10) * Player.list[self.parent].stats.xp);
-                    }
-                    pt.isDead = true;
-                    self.toRemove = true;
-                }
                 if(pt.isDead === false){
                     self.toRemove = true;
                 }
@@ -1101,6 +1152,9 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(1000 * self.stats.xp);
+        }
+        if(self.quest === false){
+            self.questDependent = {};
         }
     }
     self.updateStats = function(){
@@ -2050,6 +2104,7 @@ Monster = function(param){
     self.target = {};
     self.type = 'Monster';
     self.isDead = false;
+    self.isHostile = true;
     self.stats = {
         attack:1,
         defense:1,
@@ -2058,8 +2113,12 @@ Monster = function(param){
     if(param.stats){
         self.stats = param.stats;
     }
-    self.hp = param.hp;
-    self.hpMax = param.hp;
+    self.hp = 200;
+    self.hpMax = 200;
+    if(param.hp){
+        self.hp = param.hp;
+        self.hpMax = param.hp;
+    }
     if(param.hpMax){
         self.hp = param.hpMax;
         self.hpMax = param.hpMax;
@@ -2820,6 +2879,7 @@ updateCrashes = function(){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                    Player.list[i].onCollision(Projectile.list[j]);
                 }
             }
         }
@@ -2829,6 +2889,17 @@ updateCrashes = function(){
             if(Monster.list[i] && Projectile.list[j]){
                 if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
                     Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
+                    Monster.list[i].onCollision(Projectile.list[j]);
+                }
+            }
+        }
+        for(var j in Player.list){
+            if(Monster.list[i] && Player.list[j]){
+                if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
+                    Player.list[j].onPush(Monster.list[i]);
+                    Monster.list[i].onPush(Player.list[j]);
+                    Player.list[j].hp -= Math.round(Monster.list[i].stats.attack * (50 + Math.random() * 50) / Player.list[j].stats.defense);
+                    Monster.list[i].hp -= Math.round(Player.list[j].stats.attack * (50 + Math.random() * 50) / Monster.list[i].stats.defense);
                 }
             }
         }

@@ -907,3 +907,7 @@ audio {
     top: -200px;
     left: -200px;
 }
+
+#menu-div {
+    background-image: url("paper.gif");
+}
