@@ -244,8 +244,6 @@ Actor = function(param){
         waitTimeY:60,
     };
     self.pushPt = undefined;
-    self.pushX = 0;
-    self.pushY = 0;
     self.trackingEntity = undefined;
     self.entityId = undefined;
     self.canMove = true;
@@ -262,7 +260,6 @@ Actor = function(param){
     self.isHostile = false;
     self.isDead = false;
     self.pushPower = 1;
-    self.pushTime = 100;
     var super_update = self.update;
     self.update = function(){
         self.mapChange += 1;
@@ -291,6 +288,7 @@ Actor = function(param){
             self.canMove = true;
             self.invincible = false;
         }
+        self.pushPt = undefined;
     }
     self.updateMove = function(){
         self.lastX = self.x;
@@ -406,21 +404,20 @@ Actor = function(param){
                 }
             }
         }
-        self.pushTime += 1;
         if(self.pushPt){
-            if(self.isColliding(self.pushPt)){
-                var pushPower = self.pushPt.pushPower * Math.random();
-                self.spdX += (self.width / 2 + self.pushPt.width / 2 - (self.x - self.pushPt.x)) * pushPower;
-                self.spdY += (self.height / 2 + self.pushPt.height / 2 - (self.y - self.pushPt.y)) * pushPower;
-                self.pushTime = -1;
+            var pushPower = self.pushPt.pushPower * Math.random();
+            self.moveSpeed = 50 - self.getDistance(self.pushPt) + pushPower;
+            if(self.x > self.pushPt.x){
+                self.spdX = 1;
             }
-            else if(self.pushTime < 5){
-                var pushPower = self.pushPt.pushPower * Math.random() / (self.pushTime + 1);
-                self.spdX += (self.width / 2 + self.pushPt.width / 2 - (self.x - self.pushPt.x)) * pushPower;
-                self.spdY += (self.height / 2 + self.pushPt.height / 2 - (self.y - self.pushPt.y)) * pushPower;
+            if(self.x < self.pushPt.x){
+                self.spdX = -1;
             }
-            else{
-                self.pushPt = undefined;
+            if(self.y > self.pushPt.y){
+                self.spdY = 1;
+            }
+            if(self.y < self.pushPt.y){
+                self.spdY = -1;
             }
         }
     }
@@ -464,7 +461,7 @@ Actor = function(param){
     }
     self.onPush = function(pt){
         self.pushPt = pt;
-        self.onCollision(pt);
+        self.onCollision(pt,10);
     }
     self.randomWalk = function(walking,waypoint,x,y){
         self.randomPos.walking = walking;
@@ -491,9 +488,9 @@ Actor = function(param){
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
     }
-    self.onCollision = function(pt){
+    self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false){
-            self.hp -= Math.round(pt.stats.attack * (50 + Math.random() * 50) / self.stats.defense);
+            self.hp -= Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
         }
         if(self.hp < 1 && self.isDead === false && pt.toRemove === false){
             if(pt.parentType === 'Player'){
@@ -548,17 +545,15 @@ Actor = function(param){
             projectileType:projectileType,
 			angle:angle,
 			direction:direction,
-			x:self.x + Math.cos(direction/180*Math.PI) * distance,
-			y:self.y + Math.sin(direction/180*Math.PI) * distance,
+			x:self.x + Math.cos(direction / 180 * Math.PI) * distance,
+			y:self.y + Math.sin(direction / 180 * Math.PI) * distance,
             map:self.map,
             parentType:parentType,
             mapWidth:self.mapWidth,
             mapHeight:self.mapHeight,
             stats:stats,
             onCollision:function(self,pt){
-                if(pt.isDead === false){
-                    self.toRemove = true;
-                }
+                self.toRemove = true;
             }
 		});
     }
@@ -1001,6 +996,7 @@ Player = function(param){
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
         }
+        self.pushPt = undefined;
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
@@ -2878,8 +2874,8 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
+                    Player.list[i].onCollision(Projectile.list[j],50);
                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
-                    Player.list[i].onCollision(Projectile.list[j]);
                 }
             }
         }
@@ -2888,8 +2884,8 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
                 if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
+                    Monster.list[i].onCollision(Projectile.list[j],50);
                     Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
-                    Monster.list[i].onCollision(Projectile.list[j]);
                 }
             }
         }
@@ -2898,8 +2894,6 @@ updateCrashes = function(){
                 if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
                     Player.list[j].onPush(Monster.list[i]);
                     Monster.list[i].onPush(Player.list[j]);
-                    Player.list[j].hp -= Math.round(Monster.list[i].stats.attack * (50 + Math.random() * 50) / Player.list[j].stats.defense);
-                    Monster.list[i].hp -= Math.round(Player.list[j].stats.attack * (50 + Math.random() * 50) / Monster.list[i].stats.defense);
                 }
             }
         }
