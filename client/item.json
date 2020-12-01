@@ -2,43 +2,43 @@
     "simplewoodenbow":{
         "name":"Simple Wooden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 1.1;",
+        "event":"self.stats.attack *= 1.1;",
         "dropChance":"0.1"
     },
     "simplesteelbow":{
         "name":"Simple Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 1.4;",
+        "event":"self.stats.attack *= 1.4;",
         "dropChance":"0.01"
     },
     "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 1.7;",
+        "event":"self.stats.attack *= 1.7;",
         "dropChance":"0.005"
     },
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 2;self.stats.xp *= 2",
+        "event":"self.stats.attack *= 2;self.stats.xp *= 2;",
         "dropChance":"0.003"
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 5;self.stats.xp *= 5",
+        "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
         "dropChance":"0.001"
     },
     "developerbow":{
         "name":"Developer Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 7;self.stats.xp *= 10",
+        "event":"self.stats.attack *= 7;self.stats.xp *= 10;",
         "dropChance":"0"
     },
     "spbow":{
         "name":"SP Bow",
         "equip":"weapon",
-        "event":"self.stats.attack = self.stats.attack * 10;self.stats.xp *= 50",
+        "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 100;",
         "dropChance":"0"
     },
     "bronzekey":{

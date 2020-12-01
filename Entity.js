@@ -1812,6 +1812,7 @@ Player.onConnect = function(socket,username){
             player.hp = Math.round(player.hpMax / 2);
             player.isDead = false;
             player.toRemove = false;
+            player.state = 'none';
             player.dazed = 0;
             var d = new Date();
 			var m = '' + d.getMinutes();

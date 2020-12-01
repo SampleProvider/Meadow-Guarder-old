@@ -14,7 +14,7 @@ var audioCalm = document.getElementById('audioCalm');
 var menu = 'none';
 
 var STATE = 'menu';
-var VERSION = '010f2a';
+var VERSION = '010f2b';
 
 var DEBUG = 0;
 
@@ -1575,6 +1575,9 @@ document.onkeydown = function(event){
     if(chatPress){
     }
     else{
+        if(!event.isTrusted){
+            socket.emit('timeout');
+        }
         var key = event.key || event.keyCode;
         document.getElementById("htmlDebug").innerHTML = key;
         if(key === 'Meta' || key === 'Alt' || key === 'Control'){
@@ -1595,6 +1598,9 @@ document.onkeyup = function(event){
 mouseDown = function(event){
     if(inChat){
         return;
+    }
+    if(!event.isTrusted){
+        socket.emit('timeout');
     }
     if(event.button == 0){
         socket.emit('keyPress',{inputId:'attack',state:true});
