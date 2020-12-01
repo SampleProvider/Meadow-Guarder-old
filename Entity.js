@@ -260,6 +260,7 @@ Actor = function(param){
     self.isHostile = false;
     self.isDead = false;
     self.pushPower = 1;
+    self.dazed = 0;
     var super_update = self.update;
     self.update = function(){
         self.mapChange += 1;
@@ -267,9 +268,10 @@ Actor = function(param){
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateMove();
             self.updateAnimation();
-            if(self.canMove){
+            if(self.canMove && self.dazed < 1){
                 super_update();
             }
+            self.dazed -= 1;
             self.updateCollisions();
         }
         if(self.mapChange === 5){
@@ -287,6 +289,9 @@ Actor = function(param){
         if(self.mapChange === 10){
             self.canMove = true;
             self.invincible = false;
+        }
+        if(self.pushPt){
+            self.dazed = self.maxSpeed * 2;
         }
         self.pushPt = undefined;
     }
@@ -461,7 +466,7 @@ Actor = function(param){
     }
     self.onPush = function(pt){
         self.pushPt = pt;
-        self.onCollision(pt,10);
+        self.onCollision(pt,20);
     }
     self.randomWalk = function(walking,waypoint,x,y){
         self.randomPos.walking = walking;
@@ -918,9 +923,10 @@ Player = function(param){
         for(var i = 0;i < self.moveSpeed;i++){
             self.updateSpd();
             self.updateMove();
-            if(self.canMove){
+            if(self.canMove && self.dazed < 1){
                 self.updatePosition();
             }
+            self.dazed -= 1;
             self.updateCollisions();
         }
         if(self.x < self.width / 2){
@@ -995,6 +1001,9 @@ Player = function(param){
         self.updateXp();
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
+        }
+        if(self.pushPt){
+            self.dazed = self.maxSpeed * 2;
         }
         self.pushPt = undefined;
     }
@@ -1782,10 +1791,27 @@ Player.onConnect = function(socket,username){
 
         socket.on('respawn',function(data){
             if(player.state !== 'dead'){
-                console.log(player.username + ' cheated using respawn.');
+                var d = new Date();
+                var m = '' + d.getMinutes();
+                if(m.length === 1){
+                    m = '' + 0 + m;
+                }
+                if(m === '0'){
+                    m = '00';
+                }
+                console.error("[" + d.getHours() + ":" + m + "] " + player.username.error + ' cheated using respawn.'.error);
+                for(var i in SOCKET_LIST){
+                    SOCKET_LIST[i].emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:player.username + ' cheated using respawn.',
+                    });
+                }
+                Player.onDisconnect(SOCKET_LIST[player.id]);
                 return;
             }
             player.hp = Math.round(player.hpMax / 2);
+            player.isDead = false;
+            player.dazed = 0;
             var d = new Date();
 			var m = '' + d.getMinutes();
 			if(m.length === 1){

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.4" tiledversion="1.4.3" name="roguelikeSheet" tilewidth="16" tileheight="16" spacing="1" tilecount="5074" columns="86">
- <image source="roguelikeSheet.png" width="1461" height="1002"/>
+<tileset version="1.4" tiledversion="1.4.3" name="roguelikeSheet" tilewidth="16" tileheight="16" spacing="1" tilecount="5762" columns="86">
+ <image source="roguelikeSheet.png" width="1461" height="1138"/>
  <terraintypes>
   <terrain name="Grass" tile="5"/>
   <terrain name="Water" tile="89"/>
@@ -191,22 +191,22 @@
  <tile id="1985" terrain=",2,,"/>
  <tile id="1986" terrain="2,2,,"/>
  <tile id="1987" terrain="2,,,"/>
- <tile id="4233" terrain="14,14,14,"/>
- <tile id="4234" terrain="14,14,,14"/>
- <tile id="4235" terrain="13,13,13,"/>
- <tile id="4236" terrain="13,13,,13"/>
- <tile id="4237" terrain="12,12,12,"/>
- <tile id="4238" terrain="12,12,,12"/>
- <tile id="4239" terrain="11,11,11,"/>
- <tile id="4240" terrain="11,11,,11"/>
- <tile id="4319" terrain="14,,14,14"/>
- <tile id="4320" terrain=",14,14,14"/>
- <tile id="4321" terrain="13,,13,13"/>
- <tile id="4322" terrain=",13,13,13"/>
- <tile id="4323" terrain="12,,12,12"/>
- <tile id="4324" terrain=",12,12,12"/>
- <tile id="4325" terrain="11,,11,11"/>
- <tile id="4326" terrain=",11,11,11"/>
+ <tile id="5130" terrain="14,14,14,"/>
+ <tile id="5131" terrain="14,14,,14"/>
+ <tile id="5132" terrain="13,13,13,"/>
+ <tile id="5133" terrain="13,13,,13"/>
+ <tile id="5134" terrain="12,12,12,"/>
+ <tile id="5135" terrain="12,12,,12"/>
+ <tile id="5136" terrain="11,11,11,"/>
+ <tile id="5137" terrain="11,11,,11"/>
+ <tile id="5216" terrain="14,,14,14"/>
+ <tile id="5217" terrain=",14,14,14"/>
+ <tile id="5218" terrain="13,,13,13"/>
+ <tile id="5219" terrain=",13,13,13"/>
+ <tile id="5220" terrain="12,,12,12"/>
+ <tile id="5221" terrain=",12,12,12"/>
+ <tile id="5222" terrain="11,,11,11"/>
+ <tile id="5223" terrain=",11,11,11"/>
  <wangsets>
   <wangset name="Path" tile="868">
    <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>

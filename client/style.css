@@ -258,42 +258,6 @@ canvas {
     background: rgba(255,0,0,0.3);
 }
 
-#signIn {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-}
-#username {
-    position: absolute;
-    top: 60px;
-    left: 100px;
-}
-#password {
-    position: absolute;
-    top: 90px;
-    left: 100px;
-}
-#username-label {
-    position: absolute;
-    top: 60px;
-    left: 10px;
-}
-#password-label {
-    position: absolute;
-    top: 90px;
-    left: 10px;
-}
-#createAccount {
-    position: absolute;
-    top: 120px;
-    left: 10px;
-}
-#deleteAccount {
-    position: absolute;
-    top: 150px;
-    left: 10px;
-}
-
 #ad1 {
     width: 200px;
     top: 150px;
@@ -908,6 +872,114 @@ audio {
     left: -200px;
 }
 
-#menu-div {
-    background-image: url("paper.gif");
+#pageDiv {
+    padding: 0px;
+    margin: 0px;
+    left: 0px;
+    top: 0px;
+    background-image: url("./maps/Preview.png");
+    background-size: contain;
+}
+#pageShade {
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    opacity: 0.3;
+}
+#pageScroll {
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    left: 0px;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+}
+#pageName {
+    position: absolute;
+    left: 50%;
+    top: 15%;
+    transform: translate(-50%, 0%);
+    font-size: 80px;
+    font-family: 'pixel';
+    color: #000000;
+}
+
+#signDiv {
+    position: absolute;
+    top: 400px;
+    left: 10%;
+    width: 35%;
+    height: auto;
+}
+#githubDiv {
+    position: absolute;
+    top: 400px;
+    left: 55%;
+    width: 35%;
+    height: auto;
+}
+#signInput {
+    position: static;
+    top: 8px;
+    float: left;
+    width: auto;
+}
+#signLabel {
+    position: static;
+    top: 8px;
+    left: 8px;
+    float: left;
+    width: auto;
+}
+#signBottom {
+    position: static;
+    top: 52px;
+    left: 8px;
+    float: left;
+    width: auto;
+    margin-bottom: 8px;
+}
+#username {
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
+#password {
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
+#username-label {
+    position: relative;
+    top: 8px;
+    left: 8px;
+    color: #ffffff;
+}
+#password-label {
+    position: relative;
+    top: 12px;
+    left: 8px;
+    color: #ffffff;
+}
+#signIn {
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
+#createAccount {
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
+#deleteAccount {
+    position: relative;
+    top: 8px;
+    left: 8px;
 }

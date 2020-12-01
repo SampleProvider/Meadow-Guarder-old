@@ -13,7 +13,7 @@ var audioCalm = document.getElementById('audioCalm');
 
 var menu = 'none';
 
-var STATE = 'signIn';
+var STATE = 'menu';
 var VERSION = '010f2a';
 
 var DEBUG = 0;
@@ -33,6 +33,7 @@ socket.on('disconnect',function(){
 });
 
 var gameDiv = document.getElementById('gameDiv');
+var pageDiv = document.getElementById('pageDiv');
 var mainAttackDiv = document.getElementById('mainAttack');
 var secondaryAttackDiv = document.getElementById('secondaryAttack');
 var healDiv = document.getElementById('heal');
@@ -44,7 +45,6 @@ var ctx1Raw = document.getElementById('ctx1');
 var map0Raw = document.getElementById('map0');
 var map1Raw = document.getElementById('map1');
 var inventoryPlayerDisplayRaw = document.getElementById('inventoryPlayerDisplay');
-var signDiv = document.getElementById('sign');
 var worldMapButton = document.getElementById('worldMapButton');
 var blackShade = document.getElementById('blackShade');
 var healthBarText = document.getElementById('healthBarText');
@@ -57,6 +57,9 @@ var signDivPassword = document.getElementById('password');
 var signDivSignIn = document.getElementById('signIn');
 var signDivCreateAccount = document.getElementById('createAccount');
 var signDivDeleteAccount = document.getElementById('deleteAccount');
+
+pageDiv.style.width = window.innerWidth + 'px';
+pageDiv.style.height = window.innerHeight + 'px';
 
 var canSignIn = true;
 signDivSignIn.onclick = function(){
@@ -1290,42 +1293,44 @@ var response = function(data){
 socket.emit('diolougeResponse',data);
 }
 setInterval(function(){
-    if(STATE === 'signIn'){
+    if(STATE === 'menu'){
         gameDiv.style.display = 'none';
-        signDiv.style.display = 'inline-block';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         adDiv.style.display = 'none';
+        pageDiv.style.display = 'inline-block';
+        pageDiv.style.width = window.innerWidth + 'px';
+        pageDiv.style.height = window.innerHeight + 'px';
     }
     if(STATE === 'disconnected'){
         gameDiv.style.display = 'inline-block';
-        signDiv.style.display = 'none';
         disconnectedDiv.style.display = 'inline-block';
         spectatorDiv.style.display = 'none';
         adDiv.style.display = 'none';
+        pageDiv.style.display = 'none';
     }
     if(STATE === 'spectator'){
         gameDiv.style.display = 'inline-block';
-        signDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'inline-block';
         adDiv.style.display = 'inline-block';
         adDiv.style.display = 'none';
+        pageDiv.style.display = 'none';
     }
     if(STATE === 'game'){
         gameDiv.style.display = 'inline-block';
-        signDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         //adDiv.style.display = 'inline-block';
         adDiv.style.display = 'none';
+        pageDiv.style.display = 'none';
     }
     if(STATE === 'respawn'){
         gameDiv.style.display = 'inline-block';
-        signDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
-        adDiv.style.display = 'inline-block';
+        //adDiv.style.display = 'inline-block';
+        pageDiv.style.display = 'none';
     }
 
 
