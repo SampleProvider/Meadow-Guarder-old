@@ -107,15 +107,23 @@ io.sockets.on('connection',function(socket){
 			socket.emit('deleteAccountResponse',{success:0});
 			return;
 		}
-		Database.isUsernameTaken(data,function(res){
-			if(res === 0){
+		Database.isValidPassword(data,function(res){
+			if(res === 3){
 				Database.removeUser(data,function(){
-					socket.emit('deleteAccountResponse',{success:1});
+					
 				});
 			}
-			else{
-				socket.emit('deleteAccountResponse',{success:0});
+			socket.emit('deleteAccountResponse',{success:res});
+		});
+	});
+	socket.on('changePassword',function(data){
+		Database.isValidPassword(data,function(res){
+			if(res === 3){
+				Database.changePassword(data,function(){
+
+				});
 			}
+			socket.emit('changePasswordResponse',{success:res});
 		});
 	});
 	socket.on('disconnect',function(){

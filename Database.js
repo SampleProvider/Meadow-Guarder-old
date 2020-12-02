@@ -101,16 +101,17 @@ Database.addUser = function(data,cb){
 Database.removeUser = function(data,cb){
     if(!USE_DB)
 		return cb();
-	if(data === 'sp'){
-		return cb();
-	}
 	client.query('DELETE FROM account WHERE qusername=\'' + data.username + '\';', (err, res) => {
 		if(err){
 			throw err;
 		}
 		return cb();
 	});
-	client.query('DELETE FROM progress WHERE qusername=\'' + data.username + '\';', (err, res) => {
+}
+Database.changePassword = function(data,cb){
+    if(!USE_DB)
+		return cb();
+	client.query('UPDATE account SET qpassword=\'' + data.newPassword + '\'WHERE qusername=\'' + data.username + '\';', (err, res) => {
 		if(err){
 			throw err;
 		}

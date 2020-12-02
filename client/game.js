@@ -54,11 +54,13 @@ var signDivPassword = document.getElementById('password');
 var signDivSignIn = document.getElementById('signIn');
 var signDivCreateAccount = document.getElementById('createAccount');
 var signDivDeleteAccount = document.getElementById('deleteAccount');
+var signDivChangePassword = document.getElementById('changePassword');
 
 pageDiv.style.width = window.innerWidth + 'px';
 pageDiv.style.height = window.innerHeight + 'px';
 
 var canSignIn = true;
+var changePasswordState = 0;
 signDivSignIn.onclick = function(){
     if(canSignIn){
         socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
@@ -72,7 +74,20 @@ signDivCreateAccount.onclick = function(){
     socket.emit('createAccount',{username:signDivUsername.value,password:signDivPassword.value});
 }
 signDivDeleteAccount.onclick = function(){
-    socket.emit('deleteAccount',{username:signDivUsername.value});
+    socket.emit('deleteAccount',{username:signDivUsername.value,password:signDivPassword.value});
+}
+signDivChangePassword.onclick = function(){
+    if(changePasswordState === 0){
+        changePasswordState += 1;
+        document.getElementById('newPassword-label').style.display = 'inline-block';
+        document.getElementById('newPassword').style.display = 'inline-block';
+    }
+    else if(changePasswordState === 1){
+        changePasswordState = 0;
+        socket.emit('changePassword',{username:signDivUsername.value,password:signDivPassword.value,newPassword:document.getElementById('newPassword').value});
+        document.getElementById('newPassword-label').style.display = 'none';
+        document.getElementById('newPassword').style.display = 'none';
+    }
 }
 socket.on('signInResponse',function(data){
     if(data.success === 3){
@@ -102,29 +117,50 @@ socket.on('signInResponse',function(data){
     }
 });
 socket.on('createAccountResponse',function(data){
-    if(data.success == 1){
+    if(data.success === 1){
         alert("Account created with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
     }
-    else if(data.success == 0){
+    else if(data.success === 0){
         alert("Sorry, there is already an account with username \'" + signDivUsername.value + "\'.");
     }
-    else if(data.success == 2){
+    else if(data.success === 2){
         alert("Please use a username with 3+ characters.");
     }
-    else if(data.success == 3){
+    else if(data.success === 3){
         alert("Invalid characters.");
     }
-    else if(data.success == 4){
+    else if(data.success === 4){
         alert("Please use a shorter username / password.");
     }
 });
 socket.on('deleteAccountResponse',function(data){
-    if(data.success == 1){
+    if(data.success === 3){
         alert("Deleted account created with username \'" + signDivUsername.value + "\'.");
     }
-    else if(data.success == 0){
-        alert("Sorry, there is no account with username \'" + signDivUsername.value + "\'.");
+    else if(data.success === 2){
+        alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. Disconnect this account to change the password.");
     }
+    else if(data.success === 1){
+        alert("Incorrect Password.");
+    }
+    else{
+        alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+    }
+});
+socket.on('changePasswordResponse',function(data){
+    if(data.success === 3){
+        alert("Changed password to \'" + document.getElementById('newPassword').value + "\'.");
+    }
+    else if(data.success === 2){
+        alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. Disconnect this account to change the password.");
+    }
+    else if(data.success === 1){
+        alert("Incorrect Password.");
+    }
+    else{
+        alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+    }
+    document.getElementById('newPassword').value = '';
 });
 
 var chatText = document.getElementById('chat-text');

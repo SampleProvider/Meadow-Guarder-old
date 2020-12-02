@@ -26,6 +26,9 @@
 							<div>
 								<label id="password-label" class="UI-text-light" for="password">Password:</label>
 							</div>
+							<div>
+								<label id="newPassword-label" class="UI-text-light" for="newPassword" style="display: none;">New Password:</label>
+							</div>
 						</div>
 						<div id="signInput">
 							<form>
@@ -35,12 +38,16 @@
 								<div>
 									<input class="UI-input-light" type="password" id="password" name="password" autocomplete="off">
 								</div>
+								<div>
+									<input class="UI-input-light" type="password" id="newPassword" name="newPassword" autocomplete="off" style="display: none;">
+								</div>
 							</form>
 						</div>
 						<div id="signBottom">
 							<button id="signIn" class="UI-button-light">Sign In</button>
 							<button id="createAccount" class="UI-button-light">Create Account</button>
 							<button id="deleteAccount" class="UI-button-light">Delete Account</button>
+							<button id="changePassword" class="UI-button-light">Change Password</button>
 							<div id="signError"></div>
 						</div>
 					</div>
@@ -215,7 +222,7 @@
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
 				<button id="worldMapButton" class="UI-button-light menuButton">World Map</button>
 				<button id="settingsButton" class="UI-button-light menuButton">Settings</button>
-				<button id="leaderboardButton" class="UI-button-light menuButton">Top XP</button>
+				<button id="leaderboardButton" class="UI-button-light menuButton" style="font-size: 13px;">Leaderboards</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>

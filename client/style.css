@@ -951,6 +951,11 @@ audio {
     top: 8px;
     left: 8px;
 }
+#newPassword {
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
 #username-label {
     position: relative;
     top: 8px;
@@ -958,6 +963,12 @@ audio {
     color: #ffffff;
 }
 #password-label {
+    position: relative;
+    top: 12px;
+    left: 8px;
+    color: #ffffff;
+}
+#newPassword-label {
     position: relative;
     top: 12px;
     left: 8px;
@@ -974,6 +985,11 @@ audio {
     left: 8px;
 }
 #deleteAccount {
+    position: relative;
+    top: 8px;
+    left: 8px;
+}
+#changePassword {
     position: relative;
     top: 8px;
     left: 8px;
