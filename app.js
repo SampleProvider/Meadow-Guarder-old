@@ -231,5 +231,7 @@ var update = function(){
 update();
 setInterval(function(){
 	storeDatabase(Player.list);
-	updateLeaderboard();
+	setTimeout(() => {
+		updateLeaderboard();
+	},10000);
 },600000);

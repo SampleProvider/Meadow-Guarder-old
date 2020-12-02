@@ -686,7 +686,6 @@ var Player = function(initPack){
     self.update = function(){
         if(talking && self.id === selfId){
             socket.emit('keyPress',{inputId:'releaseAll'});
-            return;
         }
         if(self.x !== self.nextX){
             self.x += self.moveX;
@@ -1291,7 +1290,7 @@ socket.on('questInfo',function(data){
     state.isHidden = false;
 });
 socket.on('updateLeaderboard',function(data){
-    document.getElementById('leaderboardScreen').innerHTML = '';
+    document.getElementById('leaderboardScreen').innerHTML = '<div style="font-size:18px;">Leaderboards update every five minutes.</div><br>';
     var j = 1;
     for(var i in data){
         if(data[i].xp !== undefined && data[i].xp !== 0){
