@@ -23,6 +23,7 @@ require('./Database');
 require('./client/Inventory');
 require('./collision');
 require('./Entity');
+require('./leaderboard.js');
 
 app.get('/',function(req,res){
 	res.sendFile(__dirname + '/client/index.html');
@@ -47,6 +48,7 @@ io.sockets.on('connection',function(socket){
 		Database.isValidPassword(data,function(res){
 			if(res === 3){
 				Player.onConnect(socket,data.username);
+				updateLeaderboard();
 			}
 			if(res === 2){
 				for(var i in Player.list){
@@ -229,4 +231,5 @@ var update = function(){
 update();
 setInterval(function(){
 	storeDatabase(Player.list);
+	updateLeaderboard();
 },600000);

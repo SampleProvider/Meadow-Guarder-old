@@ -11,8 +11,6 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var menu = 'none';
-
 var STATE = 'menu';
 var VERSION = '010f2b';
 
@@ -39,7 +37,6 @@ var secondaryAttackDiv = document.getElementById('secondaryAttack');
 var healDiv = document.getElementById('heal');
 var disconnectedDiv = document.getElementById('disconnected');
 var spectatorDiv = document.getElementById('spectator');
-var adDiv = document.getElementById('ads');
 var ctx0Raw = document.getElementById('ctx0');
 var ctx1Raw = document.getElementById('ctx1');
 var map0Raw = document.getElementById('map0');
@@ -80,15 +77,18 @@ signDivDeleteAccount.onclick = function(){
 socket.on('signInResponse',function(data){
     if(data.success === 3){
         document.getElementById('inventoryPlayerName').innerHTML = data.username;
-        document.getElementById('settingPlayerName').innerHTML = data.username;
-        if(Math.random() < 0.1){
-            audioCalm.play();
-            audioCalm.loop = true;
+        document.getElementById('settingsPlayerName').innerHTML = data.username;
+        audioTense.play();
+        audioTense.loop = true;
+        worldMap.save();
+        worldMap.fillStyle = '#000000';
+        worldMap.fillRect(0,0,910,730);
+        worldMap.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
+        for(var i in world){
+            worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
+            worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
         }
-        else{
-            audioTense.play();
-            audioTense.loop = true;
-        }
+        worldMap.restore();
         STATE = 'game';
     }
     else if(data.success === 2){
@@ -200,7 +200,7 @@ var ctx1 = document.getElementById("ctx1").getContext("2d");
 var map0 = document.getElementById("map0").getContext("2d");
 var map1 = document.getElementById("map1").getContext("2d");
 var inventoryPlayerDisplay = document.getElementById("inventoryPlayerDisplay").getContext("2d");
-var settingPlayerDisplay = document.getElementById("settingPlayerDisplay").getContext("2d");
+var settingsPlayerDisplay = document.getElementById("settingsPlayerDisplay").getContext("2d");
 var worldMap = document.getElementById("worldMapCanvas").getContext("2d");
 var worldMapEntity = document.getElementById("worldMapEntityCanvas").getContext("2d");
 ctx0.canvas.width = window.innerWidth;
@@ -217,8 +217,8 @@ worldMapEntity.canvas.width = 910;
 worldMapEntity.canvas.height = 730;
 inventoryPlayerDisplay.canvas.width = 10;
 inventoryPlayerDisplay.canvas.height = 17;
-settingPlayerDisplay.canvas.width = 10;
-settingPlayerDisplay.canvas.height = 17;
+settingsPlayerDisplay.canvas.width = 10;
+settingsPlayerDisplay.canvas.height = 17;
 var resetCanvas = function(ctx){
 ctx.webkitImageSmoothingEnabled = false;
 ctx.filter = 'url(#remove-alpha)';
@@ -231,7 +231,7 @@ resetCanvas(map1);
 resetCanvas(worldMap);
 resetCanvas(worldMapEntity);
 resetCanvas(inventoryPlayerDisplay);
-resetCanvas(settingPlayerDisplay);
+resetCanvas(settingsPlayerDisplay);
 
 var renderPlayer = function(img,shadeValues){
     var temp = new OffscreenCanvas(72,152);
@@ -450,6 +450,25 @@ document.getElementById('hairSlider').oninput = function(){
 document.getElementById('hairTypeSlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgHairType',state:this.value});
 }
+var audio = 'tense';
+document.getElementById('audioSwitch').onclick = function(){
+    if(audio === 'tense'){
+        audioTense.pause();
+        audioCalm.loop = true;
+        audioCalm.currentTime = 0;
+        audioCalm.play();
+        document.getElementById('audioSwitch').innerHTML = 'Change music. Current music is calm.';
+        audio = 'calm';
+    }
+    else{
+        audioCalm.pause();
+        audioTense.loop = true;
+        audioTense.currentTime = 0;
+        audioTense.play();
+        document.getElementById('audioSwitch').innerHTML = 'Change music. Current music is tense.';
+        audio = 'tense';
+    }
+}
 
 var mapChange = 0;
 var mapDirection = 'up';
@@ -515,7 +534,6 @@ function onMouseUp(){
 }
 function closeWindow(){
     state.isHidden = true;
-    menu = 'none';
 
     var w = document.getElementById('window');
     renderWindow(w,state);
@@ -536,12 +554,6 @@ var w = document.getElementById('window');
     var toggleButton = document.getElementById('windowtoggle');
     toggleButton.addEventListener('click',function() {
         state.isHidden = !state.isHidden;
-        if(menu !== 'inventory'){
-            menu = 'inventory';
-        }
-        else{
-            menu = 'none';
-        }
         renderWindow(w,state);
     });
 });
@@ -573,29 +585,28 @@ var disableAllMenu = function(){
 }
 
 document.getElementById('debugButton').onclick = function(){
-    menu = 'debug';
     disableAllMenu();
     document.getElementById('debugScreen').style.display = 'inline-block';
 }
 document.getElementById('inventoryButton').onclick = function(){
-    menu = 'inventory';
     disableAllMenu();
-    document.getElementById('inventory').style.display = 'inline-block';
+    document.getElementById('inventoryScreen').style.display = 'inline-block';
 }
 document.getElementById('statButton').onclick = function(){
-    menu = 'stat';
     disableAllMenu();
     document.getElementById('statScreen').style.display = 'inline-block';
 }
 document.getElementById('worldMapButton').onclick = function(){
-    menu = 'worldMap';
     disableAllMenu();
     document.getElementById('worldMap').style.display = 'inline-block';
 }
-document.getElementById('settingButton').onclick = function(){
-    menu = 'setting';
+document.getElementById('settingsButton').onclick = function(){
     disableAllMenu();
-    document.getElementById('settingScreen').style.display = 'inline-block';
+    document.getElementById('settingsScreen').style.display = 'inline-block';
+}
+document.getElementById('leaderboardButton').onclick = function(){
+    disableAllMenu();
+    document.getElementById('leaderboardScreen').style.display = 'inline-block';
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
@@ -694,11 +705,11 @@ var Player = function(initPack){
             drawPlayer(self.renderedImg.shirt,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
             drawPlayer(self.renderedImg.pants,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
             drawPlayer(self.renderedImg.hair,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            settingPlayerDisplay.clearRect(0,0,10,17);
-            drawPlayer(self.renderedImg.body,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.shirt,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.pants,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.hair,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            settingsPlayerDisplay.clearRect(0,0,10,17);
+            drawPlayer(self.renderedImg.body,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.renderedImg.shirt,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.renderedImg.pants,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.renderedImg.hair,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
         }
     }
     self.drawName = function(){
@@ -1274,30 +1285,38 @@ socket.on('dialougeLine',function(data){
 socket.on('questInfo',function(data){
     document.getElementById('questName').innerHTML = data.questName;
     document.getElementById('questDescription').innerHTML = data.questDescription;
-    menu = 'quest';
-    document.getElementById('inventory').style.display = 'none';
-    document.getElementById('debugScreen').style.display = 'none';
-    document.getElementById('statScreen').style.display = 'none';
+    disableAllMenu();
     document.getElementById('questScreen').style.display = 'inline-block';
     document.getElementById('window').style.display = 'inline-block';
     state.isHidden = false;
 });
+socket.on('updateLeaderboard',function(data){
+    document.getElementById('leaderboardScreen').innerHTML = '';
+    var j = 1;
+    for(var i in data){
+        if(data[i].xp !== undefined && data[i].xp !== 0){
+            document.getElementById('leaderboardScreen').innerHTML += '<div>' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
+            j += 1;
+        }
+    }
+});
 
 startQuest = function(){
-socket.emit('startQuest');
-document.getElementById('window').style.display = 'none';
-state.isHidden = true;
+    socket.emit('startQuest');
+    document.getElementById('window').style.display = 'none';
+    state.isHidden = true;
+    disableAllMenu();
+    document.getElementById('inventoryScreen').style.display = 'inline-block';
 };
 
 var response = function(data){
-socket.emit('diolougeResponse',data);
+    socket.emit('diolougeResponse',data);
 }
 setInterval(function(){
     if(STATE === 'menu'){
         gameDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
-        adDiv.style.display = 'none';
         pageDiv.style.display = 'inline-block';
         pageDiv.style.width = window.innerWidth + 'px';
         pageDiv.style.height = window.innerHeight + 'px';
@@ -1306,33 +1325,26 @@ setInterval(function(){
         gameDiv.style.display = 'inline-block';
         disconnectedDiv.style.display = 'inline-block';
         spectatorDiv.style.display = 'none';
-        adDiv.style.display = 'none';
         pageDiv.style.display = 'none';
     }
     if(STATE === 'spectator'){
         gameDiv.style.display = 'inline-block';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'inline-block';
-        adDiv.style.display = 'inline-block';
-        adDiv.style.display = 'none';
         pageDiv.style.display = 'none';
     }
     if(STATE === 'game'){
         gameDiv.style.display = 'inline-block';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
-        //adDiv.style.display = 'inline-block';
-        adDiv.style.display = 'none';
         pageDiv.style.display = 'none';
     }
     if(STATE === 'respawn'){
         gameDiv.style.display = 'inline-block';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
-        //adDiv.style.display = 'inline-block';
         pageDiv.style.display = 'none';
     }
-
 
     if(!selfId){
         return;
@@ -1407,7 +1419,6 @@ setInterval(function(){
             cameraY = HEIGHT - Player.list[selfId].mapHeight;
         }
     }
-
 
     map0.save();
     map0.translate(Math.round(cameraX),Math.round(cameraY));
@@ -1530,22 +1541,20 @@ setInterval(function(){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
         }
     }
-    if(mapDrag){
+    /*if(mapDrag){
         worldMapEntity.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
     }
     else{
         worldMapEntity.translate(Math.round(mapX),Math.round(mapY));
     }
     worldMapEntity.clearRect(0,0,100000,100000);
-    for(var i in Player.list){
-        worldMapEntity.translate((mapCropX + Player.list[i].x) * mapRatio / 910,(mapCropY + Player.list[i].y) * mapRatio / 910);
-        worldMapEntity.rotate(Player.list[i].direction * Math.PI / 180);
-        worldMapEntity.drawImage(Img.playericon,-56 * mapRatio / 910,-48 * mapRatio / 910,mapRatio / 10,mapRatio / 10);
-        worldMapEntity.rotate(-1 * Player.list[i].direction * Math.PI / 180);
-        worldMapEntity.translate(-1 * (mapCropX + Player.list[i].x) * mapRatio / 910,-1 * (mapCropY + Player.list[i].y) * mapRatio / 910);
-    }
-    worldMap.restore();
-    worldMapEntity.restore();
+    worldMapEntity.translate((mapCropX + Player.list[selfId].x) * mapRatio / 910,(mapCropY + Player.list[selfId].y) * mapRatio / 910);
+    worldMapEntity.rotate(Player.list[selfId].direction * Math.PI / 180);
+    worldMapEntity.drawImage(Img.playericon,-56 * mapRatio / 910,-48 * mapRatio / 910,mapRatio / 10,mapRatio / 10);
+    worldMapEntity.rotate(-1 * Player.list[selfId].direction * Math.PI / 180);
+    worldMapEntity.translate(-1 * (mapCropX + Player.list[selfId].x) * mapRatio / 910,-1 * (mapCropY + Player.list[selfId].y) * mapRatio / 910);
+    */worldMap.restore();
+    //worldMapEntity.restore();
 },1000/80);
 
 function useMenuDropdown(){

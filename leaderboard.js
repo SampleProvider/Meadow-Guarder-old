@@ -14,7 +14,6 @@ client.connect();
 var CLEAN = false;
 
 var leaderboardXP = [];
-var leaderboardGem = [];
 
 var compareXP = function(currentRow){
     if(currentRow.xp === undefined){
@@ -42,122 +41,27 @@ var compareXP = function(currentRow){
     }
     leaderboardXP.push(currentRow);
 }
-var compareGem = function(currentRow){
-    if(currentRow.xpGems === 0){
-        return;
-    }
-    for(var i in leaderboardGem){
-        if(leaderboardGem[i].xpGems > currentRow.xpGems){
-            leaderboardGem.splice(i,0,currentRow);
-            return;
-        }
-        else if(leaderboardGem[i].xpGems === currentRow.xpGems){
-            leaderboardGem.splice(i,0,currentRow);
-            return;
-        }
-    }
-    leaderboardGem.push(currentRow);
-}
 
-var displayXP = function(row,i){
-    var j = parseInt(i,10) + 1;
-    var tag = '';
-    if(row.username === 'speedrunSP'){
-        tag = ' (Speed Run)'
-    }
-    if(row.username === 'Fast_run_1'){
-        tag = ' (Speed Run)'
-    }
-    var xpText = row.xp + " ";
-    if(row.xp > 999999999999999){
-        xpText = Math.round(row.xp / 100000000000000) / 10 + "Q ";
-    }
-    else if(row.xp > 999999999999){
-        xpText = Math.round(row.xp / 100000000000) / 10 + "T ";
-    }
-    else if(row.xp > 999999999){
-        xpText = Math.round(row.xp / 100000000) / 10 + "B ";
-    }
-    else if(row.xp > 999999){
-        xpText = Math.round(row.xp / 100000) / 10 + "M ";
-    }
-    else if(row.xp > 9999){
-        xpText = Math.round(row.xp / 1000) + "K ";
-    }
-    console.log(j + '. ' + row.username + tag + '\nLevel ' + row.level + ' ' + xpText + 'XP');
-}
-var displayGem = function(row,i){
-    var j = parseInt(i,10) + 1;
-    var tag = '';
-    if(row.username === 'speedrunSP'){
-        tag = ' (Speed Run)'
-    }
-    if(row.username === 'Fast_run_1'){
-        tag = ' (Speed Run)'
-    }
-    console.log(j + '. ' + row.username + tag + '\n' + row.xpGems + ' XP gems');
-}
-
-client.query('SELECT * FROM progress;', (err, res) => {
-    for(var i in res.rows){
-        var currentRow = {
-            xp:JSON.parse(res.rows[i].qprogress).xp,
-            level:JSON.parse(res.rows[i].qprogress).level,
-            inventory:JSON.parse(res.rows[i].qprogress).inventory,
-            username:res.rows[i].qusername,
-        }
-        for(var i in currentRow.inventory){
-            if(currentRow.inventory[i].id === 'xpgem'){
-                currentRow.xpGems = currentRow.inventory[i].amount;
+updateLeaderboard = function(){
+    leaderboardXP = [];
+    client.query('SELECT * FROM progress;', (err, res) => {
+        for(var i in res.rows){
+            var currentRow = {
+                xp:JSON.parse(res.rows[i].qprogress).xp,
+                level:JSON.parse(res.rows[i].qprogress).level,
+                inventory:JSON.parse(res.rows[i].qprogress).inventory,
+                username:res.rows[i].qusername,
             }
-        }
-        if(currentRow.xpGems === undefined){
-            currentRow.xpGems = 0;
-        }
-        if(leaderboardXP.length === 0){
-            leaderboardXP.push(currentRow);
-        }
-        else{
-            compareXP(currentRow);
-        }
-        if(leaderboardGem.length === 0){
-            leaderboardGem.push(currentRow);
-        }
-        else{
-            compareGem(currentRow);
-        }
-    }
-    leaderboardXP = leaderboardXP.reverse();
-    leaderboardGem = leaderboardGem.reverse();
-
-    console.log('## XP\n```');
-
-    for(var i in leaderboardXP){
-        if(leaderboardXP[i].level === 0 || leaderboardXP[i].level === undefined){
-            if(leaderboardXP[i].xp === 0 || leaderboardXP[i].xp === undefined){
-                if(CLEAN === true){
-                    client.query('DELETE FROM progress WHERE qusername=\'' + leaderboardXP[i].username + '\';', (err, res) => {
-
-                    });
-                    client.query('DELETE FROM account WHERE qusername=\'' + leaderboardXP[i].username + '\';', (err, res) => {
-
-                    });
-                }
+            if(leaderboardXP.length === 0){
+                leaderboardXP.push(currentRow);
             }
             else{
-                displayXP(leaderboardXP[i],i);
+                compareXP(currentRow);
             }
         }
-        else{
-            displayXP(leaderboardXP[i],i);
+        leaderboardXP = leaderboardXP.reverse();
+        for(var i in SOCKET_LIST){
+            SOCKET_LIST[i].emit('updateLeaderboard',leaderboardXP);
         }
-    }
-    console.log('```');
-    //console.log('```\n## XP Gems\n```');
-    for(var i in leaderboardGem){
-        if(leaderboardGem[i].xpGems !== 0){
-            //displayGem(leaderboardGem[i],i);
-        }
-    }
-    //console.log('```');
-});
+    });
+}

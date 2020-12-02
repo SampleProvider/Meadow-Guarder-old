@@ -198,6 +198,12 @@ canvas {
     padding-bottom: 2px;
     padding-left: 5px;
 }
+.UI-link-light {
+    color: #00ff90;
+}
+.UI-link-light:focus {
+    color: #00aa70;
+}
 
 .disconnected {
     background-color: #ff0000;
@@ -256,22 +262,6 @@ canvas {
     top: 0px;
     bottom: 0px;
     background: rgba(255,0,0,0.3);
-}
-
-#ad1 {
-    width: 200px;
-    top: 150px;
-    left: 10px;
-}
-#ad2 {
-    width: 200px;
-    top: 200px;
-    left: 10px;
-}
-#ad3 {
-    width: 200px;
-    top: 300px;
-    left: 10px;
 }
 
 #mainAttack {
@@ -351,7 +341,7 @@ canvas {
     bottom: 50px;
     padding: 5px;
 }
-#inventoryDiv {
+#inventoryScreen {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -669,6 +659,7 @@ canvas {
 .window-body {
     position: absolute;
     margin: 1em;
+    margin-top: 8px;
     color: #ffffff;
 }
 
@@ -839,7 +830,7 @@ canvas {
 .slider:hover {
     opacity: 1;
 }
-#settingPlayerDisplay {
+#settingsPlayerDisplay {
     position: absolute;
     left: 8px;
     top: 20px;
@@ -848,7 +839,7 @@ canvas {
     height: 136px;
     cursor: crosshair;
 }
-#settingPlayer {
+#settingsPlayer {
     position: relative;
     left: 4px;
     top: 40px;
@@ -858,7 +849,7 @@ canvas {
     border: 1px solid #000000;
     margin: 5px;
 }
-#settingPlayerName {
+#settingsPlayerName {
     position: absolute;
     top: 4px;
     left: 0px;
@@ -911,19 +902,35 @@ audio {
     color: #000000;
 }
 
-#signDiv {
+#pageStackLeft {
     position: absolute;
     top: 400px;
     left: 10%;
     width: 35%;
     height: auto;
 }
-#githubDiv {
+#pageStackRight {
     position: absolute;
     top: 400px;
     left: 55%;
     width: 35%;
     height: auto;
+}
+.pageStackInner {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: auto;
+}
+.pageStackOuter {
+    position: relative;
+    top: 0px;
+    left: 0%;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    min-height: 0px;
+    margin-bottom: 8px;
 }
 #signInput {
     position: static;
@@ -982,4 +989,19 @@ audio {
     position: relative;
     top: 8px;
     left: 8px;
+}
+
+.menuText {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 440px;
+    height: 320px;
+    color: #ffffff;
+    user-select: none;
+}
+#audioSwitch {
+    position: absolute;
+    left: 120px;
+    top: 45px;
 }

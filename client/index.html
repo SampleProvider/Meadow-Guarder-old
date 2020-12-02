@@ -16,43 +16,83 @@
 		<div id="pageShade"></div>
 		<div id="pageScroll">
 			<div id="pageName">Guarded Meadow</div>
-			<div id="signDiv" class="UI-display-light">
-				<div id="signLabel">
-					<div>
-						<label id="username-label" class="UI-text-light" for="username">Username:</label>
-					</div>
-					<div>
-						<label id="password-label" class="UI-text-light" for="password">Password:</label>
+			<div id="pageStackLeft">
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div id="signLabel">
+							<div>
+								<label id="username-label" class="UI-text-light" for="username">Username:</label>
+							</div>
+							<div>
+								<label id="password-label" class="UI-text-light" for="password">Password:</label>
+							</div>
+						</div>
+						<div id="signInput">
+							<form>
+								<div>
+									<input class="UI-input-light" type="text" id="username" name="username" autocomplete="off">
+								</div>
+								<div>
+									<input class="UI-input-light" type="password" id="password" name="password" autocomplete="off">
+								</div>
+							</form>
+						</div>
+						<div id="signBottom">
+							<button id="signIn" class="UI-button-light">Sign In</button>
+							<button id="createAccount" class="UI-button-light">Create Account</button>
+							<button id="deleteAccount" class="UI-button-light">Delete Account</button>
+							<div id="signError"></div>
+						</div>
 					</div>
 				</div>
-				<div id="signInput">
-					<form>
-						<div>
-							<input class="UI-input-light" type="text" id="username" name="username" autocomplete="off">
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Do you want to contribute to this game? Then click <a class="UI-link-light" href="https://forms.gle/ScdgYv1CqezcGb1r9">here</a>!
 						</div>
-						<div>
-							<input class="UI-input-light" type="password" id="password" name="password" autocomplete="off">
-						</div>
-					</form>
+					</div>
 				</div>
-				<div id="signBottom">
-					<button id="signIn" class="UI-button-light">Sign In</button>
-					<button id="createAccount" class="UI-button-light">Create Account</button>
-					<button id="deleteAccount" class="UI-button-light">Delete Account</button>
-					<div id="signError"></div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							12/2/2020
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Updated menu screen.
+							<br>
+							Fixed many bugs.
+						</div>
+					</div>
 				</div>
 			</div>
-			<div id="githubDiv" class="UI-display-light">
-				<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
-					HOW TO PLAY: There are monsters that will shoot ninja stars at you. 
-					You can click to shoot bullets, right click to use a special attack, and spacebar to heal yourself. 
-					Each attack has a cooldown. There are certain NPC's that can send you on a quest, and you get XP as a reward.
-					<br><br>
-					Disclaimer: The server only processes maps with players in them. For more information, click 
-					<a style="color: #00ff90" href="https://github.com/maitian352/Meadow-Guarder/issues/89">here</a>.
-					If you see a glitch, check our Github page for if this glitch is already posted. 
-					If you don't see a already posted glitch, feel free to post a glitch! Our Github page is 
-					<a style="color: #00ff90" href="https://github.com/maitian352/Meadow-Guarder/issues">here</a>.
+			<div id="pageStackRight">
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							HOW TO PLAY: There are monsters that will shoot ninja stars at you. 
+							You can click to shoot bullets, right click to use a special attack, and spacebar to heal yourself. 
+							Each attack has a cooldown. There are certain NPC's that can send you on a quest, and you get XP as a reward.
+							<br><br>
+							Disclaimer: The server only processes maps with players in them. For more information, click 
+							<a class="UI-link-light" href="https://github.com/maitian352/Meadow-Guarder/issues/89">here</a>.
+							If you see a glitch, check our Github page for if this glitch is already posted. 
+							If you don't see a already posted glitch, feel free to post a glitch! Our Github page is 
+							<a class="UI-link-light" href="https://github.com/maitian352/Meadow-Guarder/issues">here</a>.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Ad for random things. Click <a class="UI-link-light" href="javascript:history.back(0)">here</a>!
+							<br>
+							Also contains a random image.
+							<br>
+							<img src="/client/img/W_Throw004 - Copy.png"></img>
+							<img src="/client/img/W_Throw004 - Copy.png"></img>
+							<img src="/client/img/W_Throw004 - Copy.png"></img>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -123,32 +163,35 @@
 						<input id="debug-input" class="UI-input-light" type="text"></input>
 					</form>
 				</div>
-				<div id="statScreen" class="menuDisplay" style="display: none;">
+				<div id="statScreen" class="menuText menuDisplay" style="display: none;">
 					<div id="stat-text" class="UI-text-light">
 						<div id="stat-attack">Attack Power:</div>
 						<div id="stat-defense">Defense Power:</div>
 					</div>
-
 				</div>
 				<div id="questScreen" class="menuDisplay" style="display: none;">
-					<div id="questName">Weird House</div>
-					<div id="questDescription">Invenstigate a weird house in the map Forest. Go on a big boss battle against the Monster Boss.</div>
+					<div id="questName"></div>
+					<div id="questDescription"></div>
 					<button id="questStart" onclick="startQuest()">Start Quest</button>
 				</div>
 				<div id="worldMap" class="menuDisplay" style="display: none;">
 					<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
 					<canvas id="worldMapEntityCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
 				</div>
-				<div id="settingScreen" class="menuDisplay" style="display: none;">
-					<div id="settingPlayer" class="UI-text-light">
-						<div id="settingPlayerName"></div>
-						<canvas id="settingPlayerDisplay"></canvas>
+				<div id="settingsScreen" class="menuDisplay" style="display: none;">
+					<div id="settingsPlayer" class="UI-text-light">
+						<div id="settingsPlayerName"></div>
+						<canvas id="settingsPlayerDisplay"></canvas>
 					</div>
 					<input type="range" min="0" max="150" value="50" class="slider" id="bodySlider">
 					<input type="range" min="1" max="150" value="50" class="slider" id="shirtSlider">
 					<input type="range" min="1" max="150" value="50" class="slider" id="pantsSlider">
 					<input type="range" min="1" max="150" value="50" class="slider" id="hairSlider">
 					<input type="range" min="0" max="5" value="0" class="slider" id="hairTypeSlider">
+					<button id="audioSwitch" class='UI-button-light'>Change music. Current music is tense.</button>
+				</div>
+				<div id="leaderboardScreen" class="menuText menuDisplay" style="display: none; overflow: scroll;">
+
 				</div>
 			</div>
 			
@@ -157,7 +200,8 @@
 				<button id="debugButton" class="UI-button-light menuButton">Debug</button>
 				<button id="statButton" class="UI-button-light menuButton">Stats</button>
 				<button id="worldMapButton" class="UI-button-light menuButton">World Map</button>
-				<button id="settingButton" class="UI-button-light menuButton">Settings</button>
+				<button id="settingsButton" class="UI-button-light menuButton">Settings</button>
+				<button id="leaderboardButton" class="UI-button-light menuButton">Top XP</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
@@ -195,21 +239,16 @@
 		</div>
 		
 		<div id="interactMenu" class="UI-display-light" style="display:none;" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
-			<div id="interactMenuText" class="UI-text-light">Hey and tianmu is a poop</div>
-			<button id="interactMenuButton1" class="interactMenuButton UI-button-light" onclick="response(1)">Wait really?</button>
-			<button id="interactMenuButton2" class="interactMenuButton UI-button-light" onclick="response(2)">Gotcha.</button>
-			<button id="interactMenuButton3" class="interactMenuButton UI-button-light" onclick="response(3)">HAHAHAHA!</button>
-			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)">NO IM NOT!</button>
+			<div id="interactMenuText" class="UI-text-light"></div>
+			<button id="interactMenuButton1" class="interactMenuButton UI-button-light" onclick="response(1)"></button>
+			<button id="interactMenuButton2" class="interactMenuButton UI-button-light" onclick="response(2)"></button>
+			<button id="interactMenuButton3" class="interactMenuButton UI-button-light" onclick="response(3)"></button>
+			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)"></button>
 		</div>
 
 
 		<div id="htmlDebug" style="position: absolute; right: 15px; bottom: 15px;"></div>
 
-	</div>
-	<div id="ads" style="display:none" onmouseover="mouseUp(event)">
-		<button id="ad1" class="UI-button-light" onclick="disconnect()">Get FREE PlastiSnow!</button>
-		<button id="ad2" class="UI-button-light" onclick="disconnect()">Do YOU want YOUR ad featured here? Then click <a href="https://forms.gle/stnavsadkja7r7b96">THIS LINK</a> to write a application!</button>
-		<button id="ad3" class="UI-button-light" onclick="history.go(0)">Go to <a href="https://docs.google.com/forms/d/e/1FAIpQLSfyp_-6rxw0Kh-e4dru1Lpb6VRwoN2f_L_rawko3Hbm6n9KvQ/viewform">Tianmu's Lego center</a>! Get a free discount if your the first 100 People to get there!</button>
 	</div>
 	<div id="disconnected" style="display:none;" onmouseover="mouseUp(event)">
 		<button class="disconnected">Disconnected</button>
