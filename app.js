@@ -110,7 +110,7 @@ io.sockets.on('connection',function(socket){
 		Database.isValidPassword(data,function(res){
 			if(res === 3){
 				Database.removeUser(data,function(){
-					
+
 				});
 			}
 			socket.emit('deleteAccountResponse',{success:res});

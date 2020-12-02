@@ -460,6 +460,7 @@ var mapMouseX = mouseX + WIDTH / 2;
 var mapMouseY = mouseY + HEIGHT / 2;
 var mapDragX = mouseX + WIDTH / 2;
 var mapDragY = mouseY + HEIGHT / 2;
+var mapMouseOver = false;
 var mapX = -640;
 var mapY = -640;
 var mapDrag = true;
@@ -1330,7 +1331,7 @@ socket.on('updateLeaderboard',function(data){
     var j = 1;
     for(var i in data){
         if(data[i].xp !== undefined && data[i].xp !== 0){
-            document.getElementById('leaderboardScreen').innerHTML += '<div>' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
+            document.getElementById('leaderboardScreen').innerHTML += '<div style="font-size: 13px;">' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
             j += 1;
         }
     }
@@ -1666,10 +1667,8 @@ mapMouseDown = function(event){
     mapDragY = mapMouseY;
     mapDrag = true;
 }
-mapMouseUp = function(event){
-    //mapDrag = false;
-    //mapX = mapX + 2000 * (mouseX + WIDTH / 2 - mapMouseX) / 600;
-    //mapY = mapY + 2000 * (mouseY + HEIGHT / 2 - mapMouseY) / 600;
+onMapMouseOver = function(event){
+    mapMouseOver = event;
 }
 document.addEventListener("visibilitychange",function(){
     var hidden = document.hidden;
@@ -1689,6 +1688,9 @@ document.onmouseup = function(event){
     }
 }
 window.addEventListener('wheel',function(event){
+    if(!mapMouseOver){
+        return;
+    }
     if(event.deltaY < 0 && mapRatio < 20000){
         mapRatio *= 1.1;
         mapX -= mapMouseX * 2;

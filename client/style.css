@@ -602,6 +602,11 @@ canvas {
     height: 365px;
     border: 1px solid #000000;
     transform: translate(-50%, -50%);
+    cursor: move;
+    cursor: grab;
+}
+#worldMapEntityCanvas:active {
+    cursor: grabbing;
 }
 .window {
     z-index: 2;

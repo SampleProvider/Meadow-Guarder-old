@@ -196,8 +196,8 @@
 					<button id="questStart" onclick="startQuest()">Start Quest</button>
 				</div>
 				<div id="worldMap" class="menuDisplay" style="display: none;">
-					<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
-					<canvas id="worldMapEntityCanvas" onmousedown="mapMouseDown(event)" onmouseup="mapMouseUp(event)"></canvas>
+					<canvas id="worldMapCanvas"></canvas>
+					<canvas id="worldMapEntityCanvas" onmousedown="mapMouseDown(event)" onmouseover="onMapMouseOver(true)" onmouseout="onMapMouseOver(false)"></canvas>
 				</div>
 				<div id="settingsScreen" class="menuDisplay" style="display: none;">
 					<div id="settingsPlayer" class="UI-text-light">
