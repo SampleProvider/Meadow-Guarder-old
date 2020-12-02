@@ -341,18 +341,6 @@ canvas {
     bottom: 50px;
     padding: 5px;
 }
-#inventoryScreen {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 800px;
-    height: 400px;
-    font-family: 'pixel';
-    background-color: #362a1e;
-    border: 1px solid #000000;
-    padding: 5px;
-    transform: translate(-50%, -50%);
-}
 #inventoryPlayer {
     position: relative;
     left: 4px;
