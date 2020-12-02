@@ -839,7 +839,7 @@ canvas {
 .slider:hover {
     opacity: 1;
 }
-#ctPlayerDisplay {
+#settingPlayerDisplay {
     position: absolute;
     left: 8px;
     top: 20px;
@@ -848,7 +848,7 @@ canvas {
     height: 136px;
     cursor: crosshair;
 }
-#ctPlayer {
+#settingPlayer {
     position: relative;
     left: 4px;
     top: 40px;
@@ -858,7 +858,7 @@ canvas {
     border: 1px solid #000000;
     margin: 5px;
 }
-#ctPlayerName {
+#settingPlayerName {
     position: absolute;
     top: 4px;
     left: 0px;

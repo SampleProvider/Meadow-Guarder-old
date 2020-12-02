@@ -80,7 +80,7 @@ signDivDeleteAccount.onclick = function(){
 socket.on('signInResponse',function(data){
     if(data.success === 3){
         document.getElementById('inventoryPlayerName').innerHTML = data.username;
-        document.getElementById('ctPlayerName').innerHTML = data.username;
+        document.getElementById('settingPlayerName').innerHTML = data.username;
         if(Math.random() < 0.1){
             audioCalm.play();
             audioCalm.loop = true;
@@ -200,7 +200,7 @@ var ctx1 = document.getElementById("ctx1").getContext("2d");
 var map0 = document.getElementById("map0").getContext("2d");
 var map1 = document.getElementById("map1").getContext("2d");
 var inventoryPlayerDisplay = document.getElementById("inventoryPlayerDisplay").getContext("2d");
-var ctPlayerDisplay = document.getElementById("ctPlayerDisplay").getContext("2d");
+var settingPlayerDisplay = document.getElementById("settingPlayerDisplay").getContext("2d");
 var worldMap = document.getElementById("worldMapCanvas").getContext("2d");
 var worldMapEntity = document.getElementById("worldMapEntityCanvas").getContext("2d");
 ctx0.canvas.width = window.innerWidth;
@@ -217,8 +217,8 @@ worldMapEntity.canvas.width = 910;
 worldMapEntity.canvas.height = 730;
 inventoryPlayerDisplay.canvas.width = 10;
 inventoryPlayerDisplay.canvas.height = 17;
-ctPlayerDisplay.canvas.width = 10;
-ctPlayerDisplay.canvas.height = 17;
+settingPlayerDisplay.canvas.width = 10;
+settingPlayerDisplay.canvas.height = 17;
 var resetCanvas = function(ctx){
 ctx.webkitImageSmoothingEnabled = false;
 ctx.filter = 'url(#remove-alpha)';
@@ -231,7 +231,7 @@ resetCanvas(map1);
 resetCanvas(worldMap);
 resetCanvas(worldMapEntity);
 resetCanvas(inventoryPlayerDisplay);
-resetCanvas(ctPlayerDisplay);
+resetCanvas(settingPlayerDisplay);
 
 var renderPlayer = function(img,shadeValues){
     var temp = new OffscreenCanvas(72,152);
@@ -592,10 +592,10 @@ document.getElementById('worldMapButton').onclick = function(){
     disableAllMenu();
     document.getElementById('worldMap').style.display = 'inline-block';
 }
-document.getElementById('ctButton').onclick = function(){
-    menu = 'ct';
+document.getElementById('settingButton').onclick = function(){
+    menu = 'setting';
     disableAllMenu();
-    document.getElementById('ctScreen').style.display = 'inline-block';
+    document.getElementById('settingScreen').style.display = 'inline-block';
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
@@ -694,11 +694,11 @@ var Player = function(initPack){
             drawPlayer(self.renderedImg.shirt,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
             drawPlayer(self.renderedImg.pants,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
             drawPlayer(self.renderedImg.hair,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            ctPlayerDisplay.clearRect(0,0,10,17);
-            drawPlayer(self.renderedImg.body,ctPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.shirt,ctPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.pants,ctPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.hair,ctPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            settingPlayerDisplay.clearRect(0,0,10,17);
+            drawPlayer(self.renderedImg.body,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.renderedImg.shirt,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.renderedImg.pants,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.renderedImg.hair,settingPlayerDisplay,self.animationDirection,self.animation,5,15,1);
         }
     }
     self.drawName = function(){
@@ -1439,10 +1439,10 @@ setInterval(function(){
         var ay = a.y;
         var by = b.y;
         if(a.type === 'Player' || a.type === 'Npc'){
-            ay -= 12;
+            ay -= 8;
         }
         if(b.type === 'Player' || b.type === 'Npc'){
-            by -= 12;
+            by -= 8;
         }
         if(ay < by){
             return -1;
