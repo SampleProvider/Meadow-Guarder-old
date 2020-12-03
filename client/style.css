@@ -897,14 +897,14 @@ audio {
 
 #pageStackLeft {
     position: absolute;
-    top: 400px;
+    top: 50%;
     left: 10%;
     width: 35%;
     height: auto;
 }
 #pageStackRight {
     position: absolute;
-    top: 400px;
+    top: 50%;
     left: 55%;
     width: 35%;
     height: auto;
