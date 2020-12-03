@@ -323,6 +323,11 @@ var renderLayers = function(json,name){
     var glUpper = tempUpper.getContext('2d');
     resetCanvas(glLower);
     resetCanvas(glUpper);
+    var tile = json.tilesets[0];
+    mapTiles[name] = {
+        tile:tile,
+        width:json.layers[0].width,
+    };
     for(var i = 0;i < json.layers.length;i++){
         if(json.layers[i].type === "tilelayer" && json.layers[i].visible){
             var size = json.tilewidth;
@@ -330,7 +335,6 @@ var renderLayers = function(json,name){
                 tile_idx = json.layers[i].data[j];
                 if(tile_idx !== 0){
                     var img_x, img_y, s_x, s_y;
-                    var tile = json.tilesets[0];
                     tile_idx -= 1;
                     img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
                     img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
@@ -370,6 +374,7 @@ var loadMap = function(name){
             // Success!
             var json = JSON.parse(this.response);
             maps[name] = json.backgroundcolor;
+            tempMap[name] = [];
             loadTileset(json,name);
         }
         else{
@@ -469,6 +474,7 @@ var mapLocations = [
     ['The River','The Village'],
     ['','The Docks'],
 ];
+var mapTiles = {}
 var mapCropX = 3200;
 var mapCropY = 0;
 
@@ -507,12 +513,8 @@ document.getElementById('audioSwitch').onclick = function(){
     }
 }
 
-var mapChange = 0;
-var mapDirection = 'up';
-var mapSlide = 0;
-var lastMap = '';
 var currentMap = '';
-var drewMap = false;
+var tempMap = {};
 
 var talking = false;
 var selfId = null;
@@ -1259,6 +1261,8 @@ socket.on('disconnected',function(data){
     setTimeout(function(){
         location.reload();
     },5000);
+    document.getElementById('window').style.display = 'none';
+    state.isHidden = true;
 });
 socket.on('spectator',function(data){
     Player.list[selfId].hp = 0;
@@ -1273,7 +1277,6 @@ socket.on('changeMap',function(data){
     if(shadeAmount < 0){
         shadeAmount = 0;
     }
-    lastMap = Player.list[selfId].map;
     currentMap = data.teleport;
     shadeSpeed = 3 / 40;
 });
@@ -1335,6 +1338,12 @@ socket.on('updateLeaderboard',function(data){
             j += 1;
         }
     }
+});
+socket.on('drawTile',function(data){
+    tempMap[data.map].push(data);
+});
+socket.on('removeTile',function(data){
+    tempMap[data.map] = [];
 });
 
 startQuest = function(){
@@ -1465,6 +1474,18 @@ setInterval(function(){
     else{
         loadMap(Player.list[selfId].map);
     }
+    for(var i in tempMap[Player.list[selfId].map]){
+        if(tempMap[Player.list[selfId].map][i].canvas === 'lower'){
+            var tile = mapTiles[tempMap[Player.list[selfId].map][i].map].tile;
+            var size = 16;
+            var img_x, img_y, s_x, s_y;
+            img_x = (tempMap[Player.list[selfId].map][i].tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+            img_y = ~~(tempMap[Player.list[selfId].map][i].tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+            s_x = tempMap[Player.list[selfId].map][i].x;
+            s_y = tempMap[Player.list[selfId].map][i].y;
+            map0.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,s_x,s_y,64,64);
+        }
+    }
 
     map0.restore();
     ctx0.save();
@@ -1511,11 +1532,24 @@ setInterval(function(){
     ctx0.restore();
     map1.save();
     map1.translate(Math.round(cameraX),Math.round(cameraY));
+    
     if(loadedMap[Player.list[selfId].map]){
         map1.drawImage(loadedMap[Player.list[selfId].map].upper,0,0);
     }
     else{
         loadMap(Player.list[selfId].map);
+    }
+    for(var i in tempMap[Player.list[selfId].map]){
+        if(tempMap[Player.list[selfId].map][i].canvas === 'upper'){
+            var tile = mapTiles[tempMap[Player.list[selfId].map][i].map].tile;
+            var size = 16;
+            var img_x, img_y, s_x, s_y;
+            img_x = (tempMap[Player.list[selfId].map][i].tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+            img_y = ~~(tempMap[Player.list[selfId].map][i].tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+            s_x = tempMap[Player.list[selfId].map][i].x;
+            s_y = tempMap[Player.list[selfId].map][i].y;
+            map1.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,s_x,s_y,64,64);
+        }
     }
     
     map1.restore();

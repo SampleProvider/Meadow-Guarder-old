@@ -11,8 +11,6 @@ const client = new Client({
 
 client.connect();
 
-var CLEAN = false;
-
 var leaderboardXP = [];
 
 var compareXP = function(currentRow){

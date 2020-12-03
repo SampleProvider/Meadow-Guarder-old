@@ -207,6 +207,11 @@ Entity.getFrameUpdateData = function(){
             }
         }
     }
+    for(var i in Collision.list){
+        if(Collision.list[i].toRemove){
+            delete Collision.list[i];
+        }
+    }
 	updateCrashes();
     for(var i in Projectile.list){
         if(!pack[Projectile.list[i].map]){
@@ -360,11 +365,11 @@ Actor = function(param){
                     }
                     if(self.x === self.randomPos.currentWaypoint.x && self.y === self.randomPos.currentWaypoint.y){
                         self.randomPos.currentWaypoint = undefined;
-                        self.randomPos.time = 0;
+                        self.randomPos.waypointAttemptTime = 0;
                     }
-                    if(self.randomPos.waypointAttemptTime > 600){
+                    if(self.randomPos.waypointAttemptTime > 1200){
                         self.randomPos.currentWaypoint = undefined;
-                        self.randomPos.time = 0;
+                        self.randomPos.waypointAttemptTime = 0;
                     }
                 }
                 else{
@@ -844,8 +849,14 @@ Player = function(param){
     self.textColor = '#ffff00';
     self.quest = false;
     self.questStage = 0;
-    self.questInfo = {};
+    self.questInfo = {
+        quest:false,
+    };
     self.questDependent = {};
+    self.questStats = {
+        qMissingPerson:false,
+        qWeirdTower:false,
+    }
     self.type = 'Player';
     self.username = param.username;
     self.tag = '';
@@ -908,6 +919,9 @@ Player = function(param){
         if(self.level < xpLevels.length){
             self.xpMax = xpLevels[self.level];
         }
+    }
+    if(param.param.questStats){
+        self.questStats = param.param.questStats;
     }
     self.inventory.refreshRender();
     self.stats = {
@@ -1010,7 +1024,7 @@ Player = function(param){
     self.updateQuest = function(){
         for(var i in Npc.list){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
-                if(self.quest === false){
+                if(self.quest === false && self.questInfo.quest === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'qMissingPerson';
@@ -1021,7 +1035,7 @@ Player = function(param){
                         response2:'No way. That isn\'t my problem.',
                     });
                 }
-                if(self.questStage === 4){
+                if(self.questStage === 4 && self.quest === 'qMissingPerson'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1041,6 +1055,51 @@ Player = function(param){
                 }
                 self.keyPress.attack = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats.qMissingPerson === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'qWeirdTower';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'What do you want?',
+                        response1:'Do you have a quest for me?',
+                        response2:'Nothing.',
+                    });
+                }
+                if(self.quest === false && self.questInfo.quest === false && self.questStats.qMissingPerson === true){
+                    self.questStage = 3;
+                    self.invincible = true;
+                    self.questInfo.quest = 'qWeirdTower';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Can you go on a quest for me?',
+                        response1:'Sure!',
+                        response2:'No.',
+                    });
+                }
+                if(self.questStage === 7 && self.quest === 'qWeirdTower'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thanks. Go investigate that weird tower.',
+                        response1:'*End conversation*',
+                    });
+                }
+                if(self.questStage === 13){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'What did you find?',
+                        response1:'There were Red Monsters protecting the tower.',
+                        response2:'I found diamonds!',
+                        response3:'Nothing.',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
         }
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'qMissingPerson'){
             self.questInfo.started = false;
@@ -1056,11 +1115,13 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'qMissingPerson'){
-            self.quest = false;
-            for(var i in Player.list[socket.id].questDependent){
-                Player.list[socket.id].questDependent[i].toRemove = true;
-            }
             self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
             socket.emit('dialougeLine',{
                 state:'remove',
             });
@@ -1092,14 +1153,14 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.quest === 'qMissingPerson' && self.questStage === 6 && self.mapChange > 10){
+        if(self.questStage === 6 && self.quest === 'qMissingPerson' && self.mapChange > 10){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'qMissingPerson' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
                     self.questStage += 1;
                 }
             }
         }
-        if(self.questStage === 7 && self.quest === 'qMissingPerson'){
+        if(self.questStage === 7 && self.quest === 'qMissingPerson' && self.mapChange > 10){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'qMissingPerson' && QuestInfo.list[i].info === 'spawner'){
                     self.questDependent.mark = new Npc({
@@ -1109,10 +1170,11 @@ Player = function(param){
                         name:'Mark',
                         entityId:'mark',
                         moveSpeed:5,
+                        info:'wander',
                     });
-                    for(var i in Player.list){
-                        if(Player.list[i].map === self.map){
-                            SOCKET_LIST[i].emit('initEntity',self.questDependent.mark.getInitPack());
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent.mark.getInitPack());
                         }
                     }
                     self.questStage += 1;
@@ -1147,9 +1209,12 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'qMissingPerson'){
             self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            self.questStats.qMissingPerson = true;
             for(var i in self.questDependent){
                 self.questDependent[i].toRemove = true;
-                delete self.questDependent[i];
             }
             self.invincible = false;
             socket.emit('dialougeLine',{
@@ -1158,8 +1223,268 @@ Player = function(param){
             self.currentResponse = 0;
             self.xp += Math.round(1000 * self.stats.xp);
         }
-        if(self.quest === false){
-            self.questDependent = {};
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'No, I don\'t have a quest for you. If you want a quest, talk to my friend Bob in the map The Village.',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'qWeirdTower'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'qWeirdTower'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'There is a weird tower in the map The River, and every time I go with Mark to collect wood, it gives me the creeps. Can you investigate that tower?',
+                response1:'Ok.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 3 && self.questInfo.quest === 'qWeirdTower'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.questInfo.quest === 'qWeirdTower'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Weird Tower',
+                questDescription:'Investigate a weird house in the map The River. Defeat red monsters to save The Village.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 5 && self.questInfo.quest === 'qWeirdTower'){
+            self.quest = 'qWeirdTower';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with John.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'qWeirdTower'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'qWeirdTower'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 9 && self.quest === 'qWeirdTower' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qWeirdTower' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 10;
+                    self.questInfo.monstersKilled = 0;
+                    self.questInfo.maxMonsters = 0;
+                }
+            }
+        }
+        if(self.questStage === 10 && self.quest === 'qWeirdTower' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qWeirdTower' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:2,
+                        hp:1000,
+                        monsterType:'red',
+                        stats:{
+                            attack:2,
+                            defense:2,
+                            heal:1,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'qWeirdTower' && QuestInfo.list[i].info === 'collision'){
+                    self.questDependent[i] = new Collision({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        width:64,
+                        height:64,
+                        map:QuestInfo.list[i].map,
+                    });
+                    for(var j in SOCKET_LIST){
+                        SOCKET_LIST[j].emit('drawTile',{
+                            x:QuestInfo.list[i].x - 32,
+                            y:QuestInfo.list[i].y - 32,
+                            map:QuestInfo.list[i].map,
+                            tile_idx:2031,
+                            canvas:'lower',
+                        });
+                    }
+                }
+            }
+            self.questStage += 1;
+        }
+        if(self.questStage === 11 && self.quest === 'qWeirdTower' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I killed the monsters, now I should talk back to John.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'qWeirdTower'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('removeTile',{
+                    map:self.map,
+                });
+            }
+            for(var i in self.questDependent){
+                if(self.questDependent[i].type === 'Collision'){
+                    self.questDependent[i].toRemove = true;
+                }
+            }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 14 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Red Monsters? Did you kill them?',
+                response1:'Yes.',
+                response2:'No.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 14 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 2;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'You found diamonds! I guess that is your reward for finishing this quest.',
+                response1:'What! That isn\'t fair!',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 3 && self.questStage === 14 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 3;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'What! I know there is something in the tower! Go back and try again!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 15 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 3;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Woo! Now I can go collect wood with Mark without worring about that tower.',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 15 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage += 2;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'You found the Red Monsters but you didn\'t kill them? Go back and kill them!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 16 && self.questInfo.quest === 'qWeirdTower'){
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 17 && self.questInfo.quest === 'qWeirdTower'){
+            self.questStage = 9;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 18 && self.questInfo.quest === 'qWeirdTower'){
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(2000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -1932,7 +2257,6 @@ Player.onDisconnect = function(socket){
         storeDatabase(Player.list);
         for(var i in Player.list[socket.id].questDependent){
             Player.list[socket.id].questDependent[i].toRemove = true;
-            delete Player.list[socket.id].questDependent[i];
         }
         var d = new Date();
         var m = '' + d.getMinutes();
@@ -1977,7 +2301,12 @@ Npc = function(param){
     self.width = 32;
     self.height = 28;
     self.canMove = true;
-    self.randomWalk(true,false,self.x,self.y);
+    if(param.info === 'wander'){
+        self.randomWalk(true,false,self.x,self.y);
+    }
+    else if(param.info === 'waypoint'){
+        self.randomWalk(true,true,self.x,self.y);
+    }
 	self.update = function(){
         self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
@@ -2113,7 +2442,6 @@ Npc = function(param){
 	return self;
 }
 Npc.list = {};
-
 
 
 Monster = function(param){
@@ -2510,18 +2838,13 @@ var renderLayer = function(layer,data,loadedMap){
                 });
             }
             if(tile_idx === 1950){
-                /*
-                var projectileCollision = new ProjectileCollision({
-                    x:x,
-                    y:y,
-                    size:size,
-                    map:map,
-                });*/
                 var type = "";
                 var typej = 0;
                 var id = "";
                 var idj = 0;
                 var name = "";
+                var namej = 0;
+                var info = "";
                 for(var j = 0;j < layer.name.length;j++){
                     if(layer.name[j] === ':'){
                         if(type === ""){
@@ -2534,6 +2857,10 @@ var renderLayer = function(layer,data,loadedMap){
                         }
                         else if(name === ""){
                             name = layer.name.substr(idj + 1,j - idj - 1);
+                            namej = j;
+                        }
+                        else if(info === ""){
+                            info = layer.name.substr(namej + 1,j - namej - 1);
                         }
                     }
                 }
@@ -2545,6 +2872,7 @@ var renderLayer = function(layer,data,loadedMap){
                         entityId:id,
                         map:map,
                         moveSpeed:5,
+                        info:info,
                     });
                 }
                 if(type === 'WayPoint'){
