@@ -252,6 +252,7 @@ Actor = function(param){
     self.trackingEntity = undefined;
     self.entityId = undefined;
     self.canMove = true;
+    self.canChangeMap = true;
     self.transporter = {};
     self.invincible = false;
     self.mapWidth = Maps[self.map].width;
@@ -371,11 +372,14 @@ Actor = function(param){
                         self.randomPos.currentWaypoint = undefined;
                         self.randomPos.waypointAttemptTime = 0;
                     }
+                    if(self.randomPos.currentWaypoint.map !== self.map){
+                        self.randomPos.currentWaypoint = undefined;
+                    }
                 }
                 else{
                     var waypoints = [];
                     for(var i in WayPoint.list){
-                        if(WayPoint.list[i].info.id === self.entityId){
+                        if(WayPoint.list[i].info.id === self.entityId && WayPoint.list[i].map === self.map){
                             waypoints.push(WayPoint.list[i]);
                         }
                     }
@@ -792,6 +796,9 @@ Actor = function(param){
         }
     }
     self.doTransport = function(transporter){
+        if(!self.canChangeMap){
+            return;
+        }
         if(self.isColliding(transporter)){
             self.invincible = true;
             if(self.mapChange > 10){
@@ -2300,13 +2307,15 @@ Npc = function(param){
     self.mapWidth = Maps[self.map].width;
     self.width = 32;
     self.height = 28;
+    console.log(param.info);
     self.canMove = true;
-    if(param.info === 'wander'){
+    if(param.info.randomWalk === 'wander'){
         self.randomWalk(true,false,self.x,self.y);
     }
-    else if(param.info === 'waypoint'){
+    else if(param.info.randomWalk === 'waypoint'){
         self.randomWalk(true,true,self.x,self.y);
     }
+    self.canChangeMap = param.info.canChangeMap;
 	self.update = function(){
         self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
@@ -2487,6 +2496,7 @@ Monster = function(param){
     if(param.attackState){
         self.attackState = param.attackState;
     }
+    self.canChangeMap = false;
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -2502,9 +2512,6 @@ Monster = function(param){
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
         }
-    }
-    self.doTransport = function(transporter){
-
     }
     self.updateAttack = function(){
         if(self.target){
@@ -2860,7 +2867,7 @@ var renderLayer = function(layer,data,loadedMap){
                             namej = j;
                         }
                         else if(info === ""){
-                            info = layer.name.substr(namej + 1,j - namej - 1);
+                            info = layer.name.substr(namej + 1,layer.name.length - namej - 2);
                         }
                     }
                 }
@@ -2872,7 +2879,7 @@ var renderLayer = function(layer,data,loadedMap){
                         entityId:id,
                         map:map,
                         moveSpeed:5,
-                        info:info,
+                        info:JSON.parse(info),
                     });
                 }
                 if(type === 'WayPoint'){
@@ -3211,6 +3218,7 @@ var load = function(name){
     }
 }
 load("Town Hall");
+load("Fishing Hut");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

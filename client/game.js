@@ -399,6 +399,7 @@ const times = [];
 let fps;
 
 loadMap('Town Hall');
+loadMap('Fishing Hut');
 
 var documentHidden = false;
 
