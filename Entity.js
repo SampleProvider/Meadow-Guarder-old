@@ -1303,7 +1303,7 @@ Player = function(param){
             });
             socket.emit('questInfo',{
                 questName:'Weird Tower',
-                questDescription:'Investigate a weird house in the map The River. Defeat red monsters to save The Village.',
+                questDescription:'Investigate a weird house in the map The River. Defeat Red Monsters to save The Village.',
             });
             self.currentResponse = 0;
         }

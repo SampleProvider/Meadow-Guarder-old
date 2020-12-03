@@ -1010,7 +1010,7 @@ var Npc = function(initPack){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.name,self.x,self.y - 58);
+        ctx1.fillText(self.name,self.x,self.y - 62);
     }
     Npc.list[self.id] = self;
     return self;
