@@ -1156,7 +1156,7 @@ Player = function(param){
         if(self.questStage === 6 && self.quest === 'qMissingPerson' && self.mapChange > 10){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'qMissingPerson' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
-                    self.questStage += 1;
+                    self.questStage = 7;
                 }
             }
         }
@@ -1177,9 +1177,9 @@ Player = function(param){
                             SOCKET_LIST[j].emit('initEntity',self.questDependent.mark.getInitPack());
                         }
                     }
-                    self.questStage += 1;
                 }
             }
+            self.questStage += 1;
         }
         if(self.questStage === 8 && self.quest === 'qMissingPerson'){
             self.questStage += 1;
