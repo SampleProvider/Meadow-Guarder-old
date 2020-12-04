@@ -1757,11 +1757,13 @@ Player = function(param){
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
                         var monsterType = 'blueBird';
+                        var monsterAttack = 'passiveBird';
                         if(Math.random() < 0.5){
                             monsterType = 'greenBird';
                         }
                         if(Math.random() < 0.1){
                             monsterType = 'ball';
+                            monsterAttack = 'passiveBall';
                         }
                         var monsterHp = 0;
                         for(var j in Player.list){
@@ -1780,7 +1782,7 @@ Player = function(param){
                             moveSpeed:2,
                             hp:Math.round(monsterHp),
                             monsterType:monsterType,
-                            attackState:'passiveBird',
+                            attackState:monsterAttack,
                             onDeath:function(pt){
                                 pt.toRemove = true;
                                 if(pt.spawnId){
@@ -3693,11 +3695,13 @@ spawnEnemies = function(){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
                 var monsterType = 'blueBird';
+                var monsterAttack = 'passiveBird';
                 if(Math.random() < 0.5){
                     monsterType = 'greenBird';
                 }
                 if(Math.random() < 0.1){
                     monsterType = 'ball';
+                    monsterAttack = 'passiveBall';
                 }
                 var monsterHp = 0;
                 for(var j in Player.list){
@@ -3716,7 +3720,7 @@ spawnEnemies = function(){
                     moveSpeed:2,
                     hp:Math.round(monsterHp),
                     monsterType:monsterType,
-                    attackState:'passiveBird',
+                    attackState:monsterAttack,
                     onDeath:function(pt){
                         pt.toRemove = true;
                         if(pt.spawnId){
