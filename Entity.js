@@ -65,11 +65,12 @@ s = {
     spawnMonster:function(param,pt){
         var monster = new Monster({
             spawnId:0,
-            x:pt.x,
-            y:pt.y,
+            x:pt.x + Math.random() * 2 - 1,
+            y:pt.y + Math.random() * 2 - 1,
             map:pt.map,
             moveSpeed:2,
             monsterType:param,
+            attackState:'passiveBall',
             onDeath:function(pt){
                 pt.toRemove = true;
                 for(var i in Projectile.list){
@@ -83,8 +84,8 @@ s = {
     },
     spawnNpc:function(param,pt){
         var npc = new Npc({
-            x:pt.x,
-            y:pt.name,
+            x:pt.x + Math.random() * 2 - 1,
+            y:pt.y + Math.random() * 2 - 1,
             name:param,
             entityId:'spawnedNpc',
             map:pt.map,
@@ -287,6 +288,7 @@ Actor = function(param){
     self.isDead = false;
     self.pushPower = 1;
     self.dazed = 0;
+    self.animate = true;
     var super_update = self.update;
     self.update = function(){
         self.mapChange += 1;
@@ -317,7 +319,9 @@ Actor = function(param){
             self.invincible = false;
         }
         if(self.pushPt){
-            self.dazed = self.maxSpeed * 2;
+            if(self.dazed < 1){
+                self.dazed = self.maxSpeed * 2;
+            }
         }
         self.pushPt = undefined;
     }
@@ -456,6 +460,9 @@ Actor = function(param){
         }
     }
     self.updateAnimation = function(){
+        if(!self.animate){
+            return;
+        }
         if(self.spdX === 1){
             if(self.spdY === 1){
                 self.animationDirection = "rightdown";
@@ -1159,8 +1166,8 @@ Player = function(param){
                     self.questInfo.quest = 'Missing Person';
                     socket.emit('dialougeLine',{
                         state:'ask',
-                        message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescure Mark for me?',
-                        response1:'Sure, I can rescure Mark.',
+                        message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescue Mark for me?',
+                        response1:'Sure, I can rescue Mark.',
                         response2:'No way. That isn\'t my problem.',
                     });
                 }
@@ -1474,10 +1481,45 @@ Player = function(param){
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
                         hp:1000,
-                        monsterType:'red',
+                        monsterType:'ball',
+                        attackState:'redBird',
                         stats:{
-                            attack:2,
-                            defense:2,
+                            attack:5,
+                            defense:5,
+                            heal:1,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+                if(QuestInfo.list[i].quest === 'Weird Tower' && QuestInfo.list[i].info === 'spawner2'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:2,
+                        hp:10,
+                        monsterType:'greenBird',
+                        attackState:'passiveBird',
+                        stats:{
+                            attack:5,
+                            defense:1,
                             heal:1,
                         },
                         onDeath:function(pt){
@@ -1714,12 +1756,12 @@ Player = function(param){
             if(map !== self.map){
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
-                        var monsterType = 'purple';
-                        if(Math.random() < 0.1){
-                            monsterType = 'green';
+                        var monsterType = 'blueBird';
+                        if(Math.random() < 0.5){
+                            monsterType = 'greenBird';
                         }
-                        if(Math.random() < 0.01){
-                            monsterType = 'blue';
+                        if(Math.random() < 0.1){
+                            monsterType = 'ball';
                         }
                         var monsterHp = 0;
                         for(var j in Player.list){
@@ -1738,6 +1780,7 @@ Player = function(param){
                             moveSpeed:2,
                             hp:Math.round(monsterHp),
                             monsterType:monsterType,
+                            attackState:'passiveBird',
                             onDeath:function(pt){
                                 pt.toRemove = true;
                                 if(pt.spawnId){
@@ -2627,10 +2670,10 @@ Npc.list = {};
 Monster = function(param){
     var self = Actor(param);
     self.spawnId = param.spawnId;
-    self.attackState = "passive";
+    self.attackState = param.attackState;
     self.direction = 0;
-    self.width = 24;
-    self.height = 24;
+    self.width = 44;
+    self.height = 52;
     self.toRemove = false;
     self.reload = 0;
     self.target = {};
@@ -2656,17 +2699,19 @@ Monster = function(param){
         self.hpMax = param.hpMax;
     }
     self.monsterType = param.monsterType;
-    if(self.monsterType === 'red'){
-        self.width = 48;
-        self.height = 48;
-    }
-    if(self.monsterType === 'orange'){
-        self.width = 96;
-        self.height = 96;
-    }
     if(param.attackState){
         self.attackState = param.attackState;
     }
+    if(self.monsterType === 'redBird'){
+        self.width = 88;
+        self.height = 104;
+    }
+    if(self.monsterType === 'ball'){
+        self.width = 44;
+        self.height = 44;
+    }
+    self.animation = 0;
+    self.animate = false;
     self.canChangeMap = false;
     var lastSelf = {};
     var super_update = self.update;
@@ -2689,22 +2734,23 @@ Monster = function(param){
             self.direction = Math.atan2(self.target.y - self.y,self.target.x - self.x) / Math.PI * 180;
         }
         switch(self.attackState){
-            case "passive":
+            case "passiveBird":
                 self.spdX = 0;
                 self.spdY = 0;
+                self.animate = true;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
-                        self.attackState = "move";
+                        self.attackState = "moveBird";
                         self.target = Player.list[i];
                     }
                 }
                 break;
-            case "move":
+            case "moveBird":
                 self.trackEntity(self.target);
                 self.reload = 0;
-                self.attackState = "attack";
+                self.attackState = "attackBird";
                 break;
-            case "attack":
+            case "attackBird":
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
@@ -2714,7 +2760,47 @@ Monster = function(param){
                 self.reload += 1;
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
                     self.target = undefined;
-                    self.attackState = 'passive';
+                    self.attackState = 'passiveBird';
+                }
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "passiveBall":
+                self.spdX = 0;
+                self.spdY = 0;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveBall";
+                        self.target = Player.list[i];
+                    }
+                }
+                break;
+            case "moveBall":
+                self.trackEntity(self.target);
+                self.reload = 0;
+                self.attackState = "attackBall";
+                break;
+            case "attackBall":
+                if(self.reload % 50 < 16 && self.reload > 49 && self.target.invincible === false){
+                    self.animation += 0.5;
+                    if(self.animation >= 8){
+                        self.animation = 0;
+                    }
+                    for(var i = 0;i < 4;i++){
+                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'Ball_Bullet',-30,self.stats);
+                    }
+                }
+                self.reload += 1;
+                if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
+                    self.target = undefined;
+                    self.attackState = 'passiveBall';
                 }
                 break;
         }
@@ -2746,6 +2832,10 @@ Monster = function(param){
             pack.monsterType = self.monsterType;
             lastSelf.monsterType = self.monsterType;
         }
+        if(lastSelf.animation !== self.animation){
+            pack.animation = self.animation;
+            lastSelf.animation = self.animation;
+        }
         return pack;
     }
     self.getInitPack = function(){
@@ -2757,6 +2847,7 @@ Monster = function(param){
         pack.hpMax = self.hpMax;
         pack.map = self.map;
         pack.monsterType = self.monsterType;
+        pack.animation = self.animation;
         pack.type = self.type;
         return pack;
     }
@@ -3533,7 +3624,7 @@ var compareMaps = function(a,b){
     }
     return a.y - b.y;
 }
-fs.readFile("./client/maps/World.world",'utf8',function(err,data){
+fs.readFile("./client/maps/World.world","utf8",function(err,data){
     worldMap = JSON.parse(data).maps;
     worldMap.sort(compareMaps);
     for(var i in worldMap){
@@ -3601,12 +3692,12 @@ spawnEnemies = function(){
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
-                var monsterType = 'purple';
-                if(Math.random() < 0.1){
-                    monsterType = 'green';
+                var monsterType = 'blueBird';
+                if(Math.random() < 0.5){
+                    monsterType = 'greenBird';
                 }
-                if(Math.random() < 0.01){
-                    monsterType = 'blue';
+                if(Math.random() < 0.1){
+                    monsterType = 'ball';
                 }
                 var monsterHp = 0;
                 for(var j in Player.list){
@@ -3625,6 +3716,7 @@ spawnEnemies = function(){
                     moveSpeed:2,
                     hp:Math.round(monsterHp),
                     monsterType:monsterType,
+                    attackState:'passiveBird',
                     onDeath:function(pt){
                         pt.toRemove = true;
                         if(pt.spawnId){

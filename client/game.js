@@ -1,7 +1,10 @@
 /*if(navigator.userAgent.search(/gecko/i) > 0){
     alert("The game only supports firefox if OffscreenCanvas is enabled in settings. To learn more, go to: https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas");
 }*/
-console.log(navigator.userAgent);
+var isFirefox = typeof InstallTrigger !== 'undefined';
+if(isFirefox === true) {
+    alert('This game uses OffscreenCanvas, which is not supported in Firefox.');
+}
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
@@ -444,8 +447,10 @@ Img.playerHair.longHat = new Image();
 Img.playerHair.longHat.src = '/client/img/Player Map Hat Long.png';
 Img.playerHair.vikingHat = new Image();
 Img.playerHair.vikingHat.src = '/client/img/Player Map Hat Viking.png';
-Img.monster = new Image();
-Img.monster.src = '/client/img/Pet.png';
+Img.bird = new Image();
+Img.bird.src = '/client/img/Bird Monster.png';
+Img.ball = new Image();
+Img.ball.src = '/client/img/ball.png';
 Img.monsterGreen = new Image();
 Img.monsterGreen.src = '/client/img/Monster Green.png';
 Img.monsterBlue = new Image();
@@ -922,43 +927,42 @@ var Monster = function(initPack){
     self.map = initPack.map;
     self.monsterType = initPack.monsterType;
     self.type = initPack.type;
+    self.animation = initPack.animation;
     self.updated = true;
     self.update = function(){
         self.x += self.moveX;
         self.y += self.moveY;
     }
     self.draw = function(){
-        if(self.monsterType === 'purple'){
-            ctx0.drawImage(Img.monster,self.x - 12,self.y - 22);
+        if(self.monsterType === 'blueBird'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 26,44,52);
         }
-        else if(self.monsterType === 'green'){
-            ctx0.drawImage(Img.monsterGreen,self.x - 12,self.y - 22);
+        if(self.monsterType === 'greenBird'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 26,44,52);
         }
-        else if(self.monsterType === 'blue'){
-            ctx0.drawImage(Img.monsterBlue,self.x - 12,self.y - 22);
+        if(self.monsterType === 'redBird'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,self.x - 44,self.y - 52,88,104);
         }
-        else if(self.monsterType === 'red'){
-            ctx0.drawImage(Img.monsterBoss,self.x - 24,self.y - 36);
-        }
-        else if(self.monsterType === 'orange'){
-            ctx0.drawImage(Img.monsterOrange,self.x - 48,self.y - 72);
-        }
-        else if(self.monsterType === 'white'){
-            ctx0.drawImage(Img.monsterWhite,self.x - 6,self.y - 9);
+        if(self.monsterType === 'ball'){
+            ctx0.translate(self.x,self.y);
+            console.log(self.animation);
+            ctx0.rotate(self.animation * 45 * Math.PI / 180);
+            ctx0.drawImage(Img.ball,0,0,11,11,-22,-22,44,44);
+            ctx0.rotate(-self.animation * 45 * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
         }
     }
     self.drawHp = function(){
-        if(self.monsterType === 'red'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 65,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 65,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'orange'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 95,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 95,Math.round(126 * self.hp / self.hpMax),15);
+        if(self.monsterType === 'redBird'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 75,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
         }
         else{
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 45,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 45,Math.round(126 * self.hp / self.hpMax),15);
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 50,Math.round(126 * self.hp / self.hpMax),15);
         }
     }
     Monster.list[self.id] = self;
@@ -1040,21 +1044,21 @@ socket.on('update',function(data){
         if(data.player.length > 0){
             for(var i = 0;i < data.player.length;i++){
                 if(Player.list[data.player[i].id]){
-                    if(data.player[i].x){
+                    if(data.player[i].x !== undefined){
                         Player.list[data.player[i].id].nextX = data.player[i].x;
                     }
                     Player.list[data.player[i].id].moveX = (Player.list[data.player[i].id].nextX - Player.list[data.player[i].id].x) / 4;
-                    if(data.player[i].y){
+                    if(data.player[i].y !== undefined){
                         Player.list[data.player[i].id].nextY = data.player[i].y;
                     }
                     Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].nextY - Player.list[data.player[i].id].y) / 4;
-                    if(data.player[i].spdX){
+                    if(data.player[i].spdX !== undefined){
                         Player.list[data.player[i].id].spdX = data.player[i].spdX;
                     }
-                    if(data.player[i].spdY){
+                    if(data.player[i].spdY !== undefined){
                         Player.list[data.player[i].id].spdY = data.player[i].spdY;
                     }
-                    if(data.player[i].img){
+                    if(data.player[i].img !== undefined){
                         if(data.player[i].img.body !== Player.list[data.player[i].id].img.body){
                             Player.list[data.player[i].id].renderedImg.body = renderPlayer(Img.playerBody,data.player[i].img.body);
                         }
@@ -1078,53 +1082,50 @@ socket.on('update',function(data){
                         ctx.drawImage(Player.list[data.player[i].id].renderedImg.hair,0,0);
                         Player.list[data.player[i].id].img = data.player[i].img;
                     }
-                    if(data.player[i].animationDirection){
+                    if(data.player[i].animationDirection !== undefined){
                         Player.list[data.player[i].id].animationDirection = data.player[i].animationDirection;
                     }
-                    if(data.player[i].direction){
+                    if(data.player[i].direction !== undefined){
                         Player.list[data.player[i].id].direction = data.player[i].direction;
                     }
-                    if(data.player[i].hp){
+                    if(data.player[i].hp !== undefined){
                         Player.list[data.player[i].id].hp = data.player[i].hp;
                     }
-                    if(data.player[i].hpMax){
+                    if(data.player[i].hpMax !== undefined){
                         Player.list[data.player[i].id].hpMax = data.player[i].hpMax;
                     }
-                    if(data.player[i].xp){
+                    if(data.player[i].xp !== undefined){
                         Player.list[data.player[i].id].xp = data.player[i].xp;
                     }
-                    if(data.player[i].xpMax){
+                    if(data.player[i].xpMax !== undefined){
                         Player.list[data.player[i].id].xpMax = data.player[i].xpMax;
                     }
-                    if(data.player[i].level){
+                    if(data.player[i].level !== undefined){
                         Player.list[data.player[i].id].level = data.player[i].level;
                     }
-                    if(data.player[i].map){
+                    if(data.player[i].map !== undefined){
                         Player.list[data.player[i].id].map = data.player[i].map;
                     }
-                    if(data.player[i].attackReload){
+                    if(data.player[i].attackReload !== undefined){
                         Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
                     }
-                    if(data.player[i].secondReload){
+                    if(data.player[i].secondReload !== undefined){
                         Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
                     }
-                    if(data.player[i].healReload){
+                    if(data.player[i].healReload !== undefined){
                         Player.list[data.player[i].id].healReload = data.player[i].healReload;
                     }
-                    if(data.player[i].mapWidth){
+                    if(data.player[i].mapWidth !== undefined){
                         Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
                     }
-                    if(data.player[i].mapHeight){
+                    if(data.player[i].mapHeight !== undefined){
                         Player.list[data.player[i].id].mapHeight = data.player[i].mapHeight;
                     }
-                    if(data.player[i].stats){
+                    if(data.player[i].stats !== undefined){
                         Player.list[data.player[i].id].stats = data.player[i].stats;
                     }
-                    if(data.player[i].animation){
+                    if(data.player[i].animation !== undefined){
                         Player.list[data.player[i].id].animation = data.player[i].animation;
-                    }
-                    else{
-                        Player.list[data.player[i].id].animation = 0;
                     }
                     Player.list[data.player[i].id].updated = true;
                 }
@@ -1138,21 +1139,21 @@ socket.on('update',function(data){
                 if(Projectile.list[data.projectile[i].id]){
                     Projectile.list[data.projectile[i].id].moveX = 0;
                     Projectile.list[data.projectile[i].id].moveY = 0;
-                    if(data.projectile[i].x){
+                    if(data.projectile[i].x !== undefined){
                         Projectile.list[data.projectile[i].id].nextX = data.projectile[i].x;
                     }
                     Projectile.list[data.projectile[i].id].moveX = (Projectile.list[data.projectile[i].id].nextX - Projectile.list[data.projectile[i].id].x) / 4;
-                    if(data.projectile[i].y){
+                    if(data.projectile[i].y !== undefined){
                         Projectile.list[data.projectile[i].id].nextY = data.projectile[i].y;
                     }
                     Projectile.list[data.projectile[i].id].moveY = (Projectile.list[data.projectile[i].id].nextY - Projectile.list[data.projectile[i].id].y) / 4;
-                    if(data.projectile[i].map){
+                    if(data.projectile[i].map !== undefined){
                         Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
                     }
-                    if(data.projectile[i].projectileType){
+                    if(data.projectile[i].projectileType !== undefined){
                         Projectile.list[data.projectile[i].id].projectileType = data.projectile[i].projectileType;
                     }
-                    if(data.projectile[i].direction){
+                    if(data.projectile[i].direction !== undefined){
                         Projectile.list[data.projectile[i].id].direction = data.projectile[i].direction;
                     }
                     Projectile.list[data.projectile[i].id].updated = true;
@@ -1167,19 +1168,22 @@ socket.on('update',function(data){
                 if(Monster.list[data.monster[i].id]){
                     Monster.list[data.monster[i].id].moveX = 0;
                     Monster.list[data.monster[i].id].moveY = 0;
-                    if(data.monster[i].x){
+                    if(data.monster[i].x !== undefined){
                         Monster.list[data.monster[i].id].nextX = data.monster[i].x;
                     }
                     Monster.list[data.monster[i].id].moveX = (Monster.list[data.monster[i].id].nextX - Monster.list[data.monster[i].id].x) / 4;
-                    if(data.monster[i].y){
+                    if(data.monster[i].y !== undefined){
                         Monster.list[data.monster[i].id].nextY = data.monster[i].y;
                     }
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
-                    if(data.monster[i].hp){
+                    if(data.monster[i].hp !== undefined){
                         Monster.list[data.monster[i].id].hp = data.monster[i].hp;
                     }
-                    if(data.monster[i].hpMax){
+                    if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
+                    }
+                    if(data.monster[i].animation !== undefined){
+                        Monster.list[data.monster[i].id].animation = data.monster[i].animation;
                     }
                     Monster.list[data.monster[i].id].updated = true;
                 }
@@ -1191,28 +1195,25 @@ socket.on('update',function(data){
         if(data.npc.length > 0){
             for(var i = 0;i < data.npc.length;i++){
                 if(Npc.list[data.npc[i].id]){
-                    if(data.npc[i].x){
+                    if(data.npc[i].x !== undefined){
                         Npc.list[data.npc[i].id].nextX = data.npc[i].x;
                     }
                     Npc.list[data.npc[i].id].moveX = (Npc.list[data.npc[i].id].nextX - Npc.list[data.npc[i].id].x) / 4;
-                    if(data.npc[i].y){
+                    if(data.npc[i].y !== undefined){
                         Npc.list[data.npc[i].id].nextY = data.npc[i].y;
                     }
                     Npc.list[data.npc[i].id].moveY = (Npc.list[data.npc[i].id].nextY - Npc.list[data.npc[i].id].y) / 4;
-                    if(data.npc[i].animationDirection){
+                    if(data.npc[i].animationDirection !== undefined){
                         Npc.list[data.npc[i].id].animationDirection = data.npc[i].animationDirection;
                     }
-                    if(data.npc[i].hp){
+                    if(data.npc[i].hp !== undefined){
                         Npc.list[data.npc[i].id].hp = data.npc[i].hp;
                     }
-                    if(data.npc[i].hpMax){
+                    if(data.npc[i].hpMax !== undefined){
                         Npc.list[data.npc[i].id].hpMax = data.npc[i].hpMax;
                     }
-                    if(data.npc[i].animation){
+                    if(data.npc[i].animation !== undefined){
                         Npc.list[data.npc[i].id].animation = data.npc[i].animation;
-                    }
-                    else{
-                        Npc.list[data.npc[i].id].animation = 0;
                     }
                     Npc.list[data.npc[i].id].updated = true;
                 }
