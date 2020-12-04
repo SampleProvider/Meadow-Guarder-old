@@ -1230,7 +1230,7 @@ Player = function(param){
                         state:'ask',
                         message:'What did you find?',
                         response1:'I found diamonds!',
-                        response2:'There were Red Monsters protecting the tower.',
+                        response2:'There were Monsters protecting the tower.',
                         response3:'Nothing.',
                     });
                 }
@@ -1435,7 +1435,7 @@ Player = function(param){
             });
             socket.emit('questInfo',{
                 questName:'Weird Tower',
-                questDescription:'Investigate a weird house in the map The River. Defeat Red Monsters to save The Village.',
+                questDescription:'Investigate a weird house in the map The River. Defeat Monsters to save The Village.',
             });
             self.currentResponse = 0;
         }
@@ -1481,8 +1481,8 @@ Player = function(param){
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
                         hp:1000,
-                        monsterType:'ball',
-                        attackState:'redBird',
+                        monsterType:'blueBall',
+                        attackState:'passiveBall',
                         stats:{
                             attack:5,
                             defense:5,
@@ -1605,7 +1605,7 @@ Player = function(param){
             self.questStage += 2;
             socket.emit('dialougeLine',{
                 state:'ask',
-                message:'Red Monsters? Did you kill them?',
+                message:'Monsters? Did you kill them?',
                 response1:'Yes.',
                 response2:'No.',
             });
@@ -1647,7 +1647,7 @@ Player = function(param){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'ask',
-                message:'You found the Red Monsters but you didn\'t kill them? Go back and kill them!',
+                message:'You found the Monsters but you didn\'t kill them? Go back and kill them!',
                 response1:'*End conversation*',
             });
             self.currentResponse = 0;
@@ -1762,7 +1762,7 @@ Player = function(param){
                             monsterType = 'greenBird';
                         }
                         if(Math.random() < 0.1){
-                            monsterType = 'ball';
+                            monsterType = 'blueBall';
                             monsterAttack = 'passiveBall';
                         }
                         var monsterHp = 0;
@@ -2708,7 +2708,7 @@ Monster = function(param){
         self.width = 88;
         self.height = 104;
     }
-    if(self.monsterType === 'ball'){
+    if(self.monsterType === 'blueBall'){
         self.width = 44;
         self.height = 44;
     }
@@ -2719,6 +2719,14 @@ Monster = function(param){
     var super_update = self.update;
     self.update = function(){
         super_update();
+        if(self.animate){
+            if(self.animation === -1){
+                self.animation = 0;
+            }
+            else{
+                self.animation += 1;
+            }
+        }
         self.updateAttack();
         if(self.target && self.target.state === "dead"){
             self.target = {};
@@ -3700,7 +3708,7 @@ spawnEnemies = function(){
                     monsterType = 'greenBird';
                 }
                 if(Math.random() < 0.1){
-                    monsterType = 'ball';
+                    monsterType = 'blueBall';
                     monsterAttack = 'passiveBall';
                 }
                 var monsterHp = 0;

@@ -451,14 +451,6 @@ Img.bird = new Image();
 Img.bird.src = '/client/img/Bird Monster.png';
 Img.ball = new Image();
 Img.ball.src = '/client/img/ball.png';
-Img.monsterGreen = new Image();
-Img.monsterGreen.src = '/client/img/Monster Green.png';
-Img.monsterBlue = new Image();
-Img.monsterBlue.src = '/client/img/Monster Blue.png';
-Img.monsterOrange = new Image();
-Img.monsterOrange.src = '/client/img/Monster Orange.png';
-Img.monsterBoss = new Image();
-Img.monsterBoss.src = '/client/img/Monster Boss.png';
 Img.bullet = new Image();
 Img.bullet.src = '/client/img/Bullet.png';
 Img.healthBar = new Image();
@@ -946,9 +938,8 @@ var Monster = function(initPack){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,self.x - 44,self.y - 52,88,104);
         }
-        if(self.monsterType === 'ball'){
+        if(self.monsterType === 'blueBall'){
             ctx0.translate(self.x,self.y);
-            console.log(self.animation);
             ctx0.rotate(self.animation * 45 * Math.PI / 180);
             ctx0.drawImage(Img.ball,0,0,11,11,-22,-22,44,44);
             ctx0.rotate(-self.animation * 45 * Math.PI / 180);
