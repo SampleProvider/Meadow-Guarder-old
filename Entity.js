@@ -1503,7 +1503,7 @@ Player = function(param){
             }
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Weird Tower' && QuestInfo.list[i].info === 'collision'){
-                    self.questDependent[i] = new Collision({
+                    self.questDependent[i] = new Collision2({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
                         width:64,
@@ -1515,7 +1515,7 @@ Player = function(param){
                             x:QuestInfo.list[i].x - 32,
                             y:QuestInfo.list[i].y - 32,
                             map:QuestInfo.list[i].map,
-                            tile_idx:2031,
+                            tile_idx:3547,
                             canvas:'lower',
                         });
                     }
@@ -1544,7 +1544,7 @@ Player = function(param){
                 });
             }
             for(var i in self.questDependent){
-                if(self.questDependent[i].type === 'Collision'){
+                if(self.questDependent[i].type === 'Collision2'){
                     self.questDependent[i].toRemove = true;
                 }
             }
