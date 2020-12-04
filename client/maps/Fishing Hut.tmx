@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="10" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="10" height="11" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#000000" nextlayerid="8" nextobjectid="1">
+ <editorsettings>
+  <export target="Fishing Hut.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="roguelikeSheet.tsx"/>
  <layer id="1" name="Ground Terrain" width="10" height="11">
   <data encoding="csv">

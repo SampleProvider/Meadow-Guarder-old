@@ -1,6 +1,7 @@
 /*if(navigator.userAgent.search(/gecko/i) > 0){
     alert("The game only supports firefox if OffscreenCanvas is enabled in settings. To learn more, go to: https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas/OffscreenCanvas");
 }*/
+console.log(navigator.userAgent);
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
@@ -12,7 +13,7 @@ var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
 var STATE = 'menu';
-var VERSION = '010f2b';
+var VERSION = '010f3a';
 
 var DEBUG = 0;
 
@@ -400,6 +401,7 @@ let fps;
 
 loadMap('Town Hall');
 loadMap('Fishing Hut');
+loadMap('House');
 
 var documentHidden = false;
 

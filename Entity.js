@@ -81,6 +81,21 @@ s = {
         });
         return monster;
     },
+    spawnNpc:function(param,pt){
+        var npc = new Npc({
+            x:pt.x,
+            y:pt.name,
+            name:param,
+            entityId:'spawnedNpc',
+            map:pt.map,
+            moveSpeed:5,
+            info:{
+                randomWalk:'wander',
+                canChangeMap:false,
+            },
+        });
+        return npc;
+    },
     kick:function(username){
         for(var i in Player.list){
             if(Player.list[i].username === username){
@@ -210,6 +225,11 @@ Entity.getFrameUpdateData = function(){
     for(var i in Collision.list){
         if(Collision.list[i].toRemove){
             delete Collision.list[i];
+        }
+    }
+    for(var i in Collision2.list){
+        if(Collision2.list[i].toRemove){
+            delete Collision2.list[i];
         }
     }
 	updateCrashes();
@@ -473,9 +493,9 @@ Actor = function(param){
     self.move = function(x,y){
         self.moveArray.push({x:x,y:y});
     }
-    self.onPush = function(pt){
+    self.onPush = function(pt,pushPower){
         self.pushPt = pt;
-        self.onCollision(pt,20);
+        self.onCollision(pt,pushPower);
     }
     self.randomWalk = function(walking,waypoint,x,y){
         self.randomPos.walking = walking;
@@ -508,8 +528,8 @@ Actor = function(param){
         }
         if(self.hp < 1 && self.isDead === false && pt.toRemove === false){
             if(pt.parentType === 'Player'){
-                var item = Player.list[pt.parent].inventory.addRandomizedItem(1);
-                if(item){
+                var item = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                while(item){
                     var d = new Date();
                     var m = '' + d.getMinutes();
                     if(m.length === 1){
@@ -525,12 +545,13 @@ Actor = function(param){
                             message:Player.list[pt.parent].username + " got a " + item.name + ".",
                         });
                     }
+                    item = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 }
                 Player.list[pt.parent].xp += Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
             }
             if(pt.type === 'Player'){
-                var item = pt.inventory.addRandomizedItem(1);
-                if(item){
+                var item = pt.inventory.addRandomizedItem(pt.stats.luck);
+                while(item){
                     var d = new Date();
                     var m = '' + d.getMinutes();
                     if(m.length === 1){
@@ -546,6 +567,7 @@ Actor = function(param){
                             message:pt.username + " got a " + item.name + ".",
                         });
                     }
+                    item = pt.inventory.addRandomizedItem(pt.stats.luck);
                 }
                 pt.xp += Math.round((10 + Math.random() * 10) * pt.stats.xp);
             }
@@ -591,6 +613,18 @@ Actor = function(param){
                 if(Collision.list[firstTile]){
                     self.doCollision(Collision.list[firstTile]);
                 }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
+                }
             }
             else if(self.spdY > 0){
                 if(Collision.list[thirdTile]){
@@ -605,6 +639,18 @@ Actor = function(param){
                 if(Collision.list[secondTile]){
                     self.doCollision(Collision.list[secondTile]);
                 }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
             }
             else{
                 if(Collision.list[fourthTile]){
@@ -618,6 +664,18 @@ Actor = function(param){
                 }
                 if(Collision.list[firstTile]){
                     self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
                 }
             }
         }
@@ -635,6 +693,18 @@ Actor = function(param){
                 if(Collision.list[thirdTile]){
                     self.doCollision(Collision.list[thirdTile]);
                 }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
+                }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
             }
             else if(self.spdY > 0){
                 if(Collision.list[firstTile]){
@@ -649,6 +719,18 @@ Actor = function(param){
                 if(Collision.list[fourthTile]){
                     self.doCollision(Collision.list[fourthTile]);
                 }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision.list[firstTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
             }
             else{
                 if(Collision.list[secondTile]){
@@ -662,6 +744,18 @@ Actor = function(param){
                 }
                 if(Collision.list[thirdTile]){
                     self.doCollision(Collision.list[thirdTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
+                }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
                 }
             }
         }
@@ -679,6 +773,18 @@ Actor = function(param){
                 if(Collision.list[firstTile]){
                     self.doCollision(Collision.list[firstTile]);
                 }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
+                }
             }
             else if(self.spdY > 0){
                 if(Collision.list[thirdTile]){
@@ -693,9 +799,21 @@ Actor = function(param){
                 if(Collision.list[secondTile]){
                     self.doCollision(Collision.list[secondTile]);
                 }
+                if(Collision2.list[thirdTile]){
+                    self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision2.list[fourthTile]){
+                    self.doCollision(Collision2.list[fourthTile]);
+                }
+                if(Collision2.list[firstTile]){
+                    self.doCollision(Collision2.list[firstTile]);
+                }
+                if(Collision2.list[secondTile]){
+                    self.doCollision(Collision2.list[secondTile]);
+                }
             }
             else{
-    
+                
             }
         }
 
@@ -799,6 +917,9 @@ Actor = function(param){
         if(!self.canChangeMap){
             return;
         }
+        if(self.isDead || self.toRemove){
+            return;
+        }
         if(self.isColliding(transporter)){
             self.invincible = true;
             if(self.mapChange > 10){
@@ -834,7 +955,7 @@ Player = function(param){
         body:[-1,-1,-1,0.5],
         shirt:[255,0,0,0.5],
         pants:[0,0,255,0.6],
-        hair:[120,90,0,0.5],
+        hair:[90,75,0,0.5],
         hairType:'bald',
     };
     self.imgwidth = 0;
@@ -936,6 +1057,7 @@ Player = function(param){
         defense:1,
         heal:1,
         xp:1,
+        luck:1,
     }
     var lastSelf = {};
     self.update = function(){
@@ -1177,7 +1299,10 @@ Player = function(param){
                         name:'Mark',
                         entityId:'mark',
                         moveSpeed:5,
-                        info:'wander',
+                        info:{
+                            randomWalk:'wander',
+                            canChangeMap:false,
+                        },
                     });
                     for(var j in Player.list){
                         if(Player.list[j].map === self.map){
@@ -1532,6 +1657,7 @@ Player = function(param){
                 defense:1,
                 heal:1,
                 xp:1,
+                luck:1,
             }
             self.textColor = '#ffff00';
             self.hpMax = 1000;
@@ -2844,7 +2970,8 @@ var renderLayer = function(layer,data,loadedMap){
             var y = ~~(i / layer.width) * size;
             var map = loadedMap;
             tile = data.tilesets[0];
-            if(tile_idx === 2122){
+            tile_idx -= 1;
+            if(tile_idx === 2121){
                 var collision = new Collision({
                     x:x + size / 2,
                     y:y + size / 2,
@@ -2853,7 +2980,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 2123){
+            if(tile_idx === 2122){
                 var collision = new Collision({
                     x:x + size / 2,
                     y:y + 3 * size / 4,
@@ -2862,7 +2989,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 2124){
+            if(tile_idx === 2123){
                 var collision = new Collision({
                     x:x + size / 2,
                     y:y + size / 4,
@@ -2871,7 +2998,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 2125){
+            if(tile_idx === 2124){
                 var collision = new Collision({
                     x:x + size / 4,
                     y:y + size / 2,
@@ -2880,7 +3007,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 2126){
+            if(tile_idx === 2125){
                 var collision = new Collision({
                     x:x + 3 * size / 4,
                     y:y + size / 2,
@@ -2889,7 +3016,142 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1950){
+            if(tile_idx === 2126){
+                var collision2 = new Collision2({
+                    x:x + size / 2,
+                    y:y + size / 2,
+                    width:size,
+                    height:size,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2127){
+                var collision = new Collision({
+                    x:x + size / 2,
+                    y:y + 3 * size / 4,
+                    width:size,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2128){
+                var collision2 = new Collision2({
+                    x:x + size / 2,
+                    y:y + size / 4,
+                    width:size,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2129){
+                var collision2 = new Collision2({
+                    x:x + size / 4,
+                    y:y + size / 2,
+                    width:size / 2,
+                    height:size,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2130){
+                var collision2 = new Collision2({
+                    x:x + 3 * size / 4,
+                    y:y + size / 2,
+                    width:size / 2,
+                    height:size,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2207){
+                var collision = new Collision({
+                    x:x + size / 2,
+                    y:y + size / 2,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2208){
+                var collision = new Collision({
+                    x:x + size / 4,
+                    y:y + 3 * size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2209){
+                var collision = new Collision({
+                    x:x + 3 * size / 4,
+                    y:y + 3 * size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2210){
+                var collision = new Collision({
+                    x:x + 3 * size / 4,
+                    y:y + size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2211){
+                var collision = new Collision({
+                    x:x + size / 4,
+                    y:y + size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2212){
+                var collision2 = new Collision2({
+                    x:x + size / 2,
+                    y:y + size / 2,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2213){
+                var collision2 = new Collision2({
+                    x:x + size / 4,
+                    y:y + 3 * size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2214){
+                var collision2 = new Collision2({
+                    x:x + 3 * size / 4,
+                    y:y + 3 * size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2215){
+                var collision2 = new Collision2({
+                    x:x + 3 * size / 4,
+                    y:y + size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 2216){
+                var collision2 = new Collision2({
+                    x:x + size / 4,
+                    y:y + size / 4,
+                    width:size / 2,
+                    height:size / 2,
+                    map:map,
+                });
+            }
+            if(tile_idx === 1949){
                 var type = "";
                 var typej = 0;
                 var id = "";
@@ -2936,7 +3198,7 @@ var renderLayer = function(layer,data,loadedMap){
                     });
                 }
             }
-            if(tile_idx === 1864){
+            if(tile_idx === 1863){
                 var slowDown = new SlowDown({
                     x:x + size / 2,
                     y:y + size / 2,
@@ -2945,7 +3207,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1865){
+            if(tile_idx === 1864){
                 var slowDown = new SlowDown({
                     x:x + size / 2,
                     y:y + 3 * size / 4,
@@ -2954,7 +3216,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1866){
+            if(tile_idx === 1865){
                 var slowDown = new SlowDown({
                     x:x + size / 2,
                     y:y + size / 4,
@@ -2963,7 +3225,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1867){
+            if(tile_idx === 1866){
                 var slowDown = new SlowDown({
                     x:x + size / 4,
                     y:y + size / 2,
@@ -2972,7 +3234,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1868){
+            if(tile_idx === 1867){
                 var slowDown = new SlowDown({
                     x:x + 3 * size / 4,
                     y:y + size / 2,
@@ -2981,7 +3243,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1778){
+            if(tile_idx === 1777){
                 var spawner = new Spawner({
                     x:x + size / 2,
                     y:y + size / 2,
@@ -2990,7 +3252,7 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                 });
             }
-            if(tile_idx === 1692){
+            if(tile_idx === 1691){
                 var quest = "";
                 var questj = 0;
                 var info = "";
@@ -3015,7 +3277,7 @@ var renderLayer = function(layer,data,loadedMap){
                     quest:quest,
                 });
             }
-            if(tile_idx === 2036){
+            if(tile_idx === 2035){
                 var teleport = "";
                 var teleportj = 0;
                 var teleportx = "";
@@ -3062,7 +3324,7 @@ var renderLayer = function(layer,data,loadedMap){
                     requirements:requirements,
                 });
             }
-            if(tile_idx === 2037){
+            if(tile_idx === 2036){
                 var teleport = "";
                 var teleportj = 0;
                 var teleportx = "";
@@ -3108,7 +3370,7 @@ var renderLayer = function(layer,data,loadedMap){
                     requirements:requirements,
                 });
             }
-            if(tile_idx === 2038){
+            if(tile_idx === 2037){
                 var teleport = "";
                 var teleportj = 0;
                 var teleportx = "";
@@ -3154,7 +3416,7 @@ var renderLayer = function(layer,data,loadedMap){
                     requirements:requirements,
                 });
             }
-            if(tile_idx === 2039){
+            if(tile_idx === 2038){
                 var teleport = "";
                 var teleportj = 0;
                 var teleportx = "";
@@ -3200,7 +3462,7 @@ var renderLayer = function(layer,data,loadedMap){
                     requirements:requirements,
                 });
             }
-            if(tile_idx === 2040){
+            if(tile_idx === 2039){
                 var teleport = "";
                 var teleportj = 0;
                 var teleportx = "";
@@ -3264,6 +3526,7 @@ var load = function(name){
 }
 load("Town Hall");
 load("Fishing Hut");
+load("House");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;
@@ -3301,8 +3564,16 @@ updateCrashes = function(){
         for(var j in Player.list){
             if(Monster.list[i] && Player.list[j]){
                 if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
-                    Player.list[j].onPush(Monster.list[i]);
-                    Monster.list[i].onPush(Player.list[j]);
+                    Player.list[j].onPush(Monster.list[i],20);
+                    Monster.list[i].onPush(Player.list[j],20);
+                }
+            }
+        }
+        for(var j in Monster.list){
+            if(Monster.list[i] && Monster.list[j]){
+                if(Monster.list[i].isColliding(Monster.list[j]) && Monster.list[j].invincible === false && Monster.list[i].invincible === false && i !== j){
+                    Monster.list[j].onPush(Monster.list[i],0);
+                    Monster.list[i].onPush(Monster.list[j],0);
                 }
             }
         }
