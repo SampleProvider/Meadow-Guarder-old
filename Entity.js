@@ -2845,6 +2845,9 @@ Monster = function(param){
                         self.target = Player.list[i];
                     }
                 }
+                if(self.damaged){
+                    self.attackState = "moveBird";
+                }
                 break;
             case "moveBird":
                 self.trackEntity(self.target);
