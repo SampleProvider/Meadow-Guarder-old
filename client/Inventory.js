@@ -137,13 +137,14 @@ Inventory = function(socket,server){
 		}    
     }
     self.addRandomizedItem = function(luck){
+        var obtainedItems = [];
         for(var i in Item.list){
             if(Math.random() < Item.list[i].dropChance * luck){
                 self.addItem(i,1);
-                return Item.list[i];
+                obtainedItems.push(Item.list[i]);
             }
         }
-        return false;
+        return obtainedItems;
     }
     self.hasItem = function(id,amount){
 		for(var i = 0;i < self.items.length;i++){

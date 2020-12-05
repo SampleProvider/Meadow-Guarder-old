@@ -63,6 +63,13 @@ s = {
         }
     },
     spawnMonster:function(param,pt){
+        var monsterAttack = 'passiveBird';
+        if(param === 'blueBall'){
+            monsterAttack = 'passiveBall';
+        }
+        if(param === 'redCherryBomb'){
+            monsterAttack = 'passiveCherryBomb';
+        }
         var monster = new Monster({
             spawnId:0,
             x:pt.x + Math.random() * 2 - 1,
@@ -70,7 +77,7 @@ s = {
             map:pt.map,
             moveSpeed:2,
             monsterType:param,
-            attackState:'passiveBall',
+            attackState:monsterAttack,
             onDeath:function(pt){
                 pt.toRemove = true;
                 for(var i in Projectile.list){
@@ -80,6 +87,11 @@ s = {
                 }
             },
         });
+        for(var i in Player.list){
+            if(Player.list[i].map === monster.map){
+                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+            }
+        }
         return monster;
     },
     spawnNpc:function(param,pt){
@@ -95,6 +107,11 @@ s = {
                 canChangeMap:false,
             },
         });
+        for(var i in Player.list){
+            if(Player.list[i].map === npc.map){
+                SOCKET_LIST[i].emit('initEntity',npc.getInitPack());
+            }
+        }
         return npc;
     },
     kick:function(username){
@@ -117,6 +134,60 @@ s = {
         return pack;
     },
 };
+
+var spawnMonster = function(spawner,spawnId){
+    var monsterType = 'blueBird';
+    var monsterAttack = 'passiveBird';
+    if(Math.random() < 0.5){
+        monsterType = 'greenBird';
+    }
+    if(Math.random() < 0.1){
+        monsterType = 'blueBall';
+        monsterAttack = 'passiveBall';
+    }
+    if(Math.random() < 0.05){
+        monsterType = 'redCherryBomb';
+        monsterAttack = 'passiveCherryBomb';
+    }
+    var monsterHp = 0;
+    var monsterStats = {
+        attack:0,
+        defense:0,
+        heal:0,
+    }
+    for(var j in Player.list){
+        if(Player.list[j].map === spawner.map){
+            monsterHp += Player.list[j].hpMax;
+            monsterStats.attack += Player.list[j].stats.attack / 2;
+            monsterStats.defense += Player.list[j].stats.defense / 2;
+            monsterStats.heal += Player.list[j].stats.heal / 2;
+        }
+    }
+    monsterHp = monsterHp / playerMap[spawner.map];
+    var monster = new Monster({
+        spawnId:spawnId,
+        x:spawner.x,
+        y:spawner.y,
+        map:spawner.map,
+        moveSpeed:2,
+        stats:monsterStats,
+        hp:Math.round(monsterHp),
+        monsterType:monsterType,
+        attackState:monsterAttack,
+        onDeath:function(pt){
+            pt.toRemove = true;
+            if(pt.spawnId){
+                Spawner.list[pt.spawnId].spawned = false;
+            }
+            for(var i in Projectile.list){
+                if(Projectile.list[i].parent === pt.id){
+                    Projectile.list[i].toRemove = true;
+                }
+            }
+        },
+    });
+    spawner.spawned = true;
+}
 
 var playerMap = {};
 
@@ -180,15 +251,6 @@ Entity = function(param){
 
 Entity.getFrameUpdateData = function(){
     var pack = {};
-    for(var i in Player.list){
-        if(Player.list[i]){
-            Player.list[i].update();
-            if(!pack[Player.list[i].map]){
-                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
-            }
-            pack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
-        }
-    }
     for(var i in Monster.list){
         if(Monster.list[i]){
             Monster.list[i].update();
@@ -204,6 +266,15 @@ Entity.getFrameUpdateData = function(){
                 }
                 pack[Monster.list[i].map].monster.push(Monster.list[i].getUpdatePack());
             }
+        }
+    }
+    for(var i in Player.list){
+        if(Player.list[i]){
+            Player.list[i].update();
+            if(!pack[Player.list[i].map]){
+                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+            }
+            pack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
         }
     }
     for(var i in Projectile.list){
@@ -238,11 +309,9 @@ Entity.getFrameUpdateData = function(){
         if(!pack[Projectile.list[i].map]){
             pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
         }
+        pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
-        }
-        else{
-            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
     }
     return pack;
@@ -271,6 +340,7 @@ Actor = function(param){
     };
     self.pushPt = undefined;
     self.trackingEntity = undefined;
+    self.trackingState = true;
     self.entityId = undefined;
     self.canMove = true;
     self.canChangeMap = true;
@@ -298,6 +368,18 @@ Actor = function(param){
             self.updateAnimation();
             if(self.canMove && self.dazed < 1){
                 super_update();
+            }
+            if(self.x < self.width / 2){
+                self.x = self.width / 2;
+            }
+            if(self.x > self.mapWidth - self.width / 2){
+                self.x = self.mapWidth - self.width / 2;
+            }
+            if(self.y < self.height / 2){
+                self.y = self.height / 2;
+            }
+            if(self.y > self.mapHeight - self.height / 2){
+                self.y = self.mapHeight - self.height / 2;
             }
             self.dazed -= 1;
             self.updateCollisions();
@@ -367,8 +449,9 @@ Actor = function(param){
                     self.spdY = -1;
                 }
             }
-            if(self.x === self.trackingEntity.x && self.y === self.trackingEntity.y){
-                //self.trackingEntity = undefined;
+            if(!self.trackingState){
+                self.spdX = -self.spdX;
+                self.spdY = -self.spdY;
             }
         }
         else if(self.randomPos.walking){
@@ -443,19 +526,25 @@ Actor = function(param){
             }
         }
         if(self.pushPt){
-            var pushPower = self.pushPt.pushPower * Math.random();
+            var pushPower = self.pushPt.pushPower * (Math.random() + 1);
             self.moveSpeed = 50 - self.getDistance(self.pushPt) + pushPower;
             if(self.x > self.pushPt.x){
                 self.spdX = 1;
             }
-            if(self.x < self.pushPt.x){
+            else if(self.x < self.pushPt.x){
                 self.spdX = -1;
+            }
+            else{
+                self.spdX = 0;
             }
             if(self.y > self.pushPt.y){
                 self.spdY = 1;
             }
-            if(self.y < self.pushPt.y){
+            else if(self.y < self.pushPt.y){
                 self.spdY = -1;
+            }
+            else{
+                self.spdY = 0;
             }
         }
     }
@@ -502,7 +591,7 @@ Actor = function(param){
     }
     self.onPush = function(pt,pushPower){
         self.pushPt = pt;
-        self.onCollision(pt,pushPower);
+        self.onCollision(pt,pushPower * self.pushPower);
     }
     self.randomWalk = function(walking,waypoint,x,y){
         self.randomPos.walking = walking;
@@ -528,53 +617,65 @@ Actor = function(param){
     }
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
+        self.trackingState = true;
+    }
+    self.escapeEntity = function(pt){
+        self.trackingEntity = pt;
+        self.trackingState = false;
+    }
+    self.onHit = function(pt){
     }
     self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false){
             self.hp -= Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
+            self.onHit(pt);
         }
         if(self.hp < 1 && self.isDead === false && pt.toRemove === false){
             if(pt.parentType === 'Player'){
-                var item = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
-                while(item){
-                    var d = new Date();
-                    var m = '' + d.getMinutes();
-                    if(m.length === 1){
-                        m = '' + 0 + m;
+                var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                while(items.length > 0){
+                    for(var i in items){
+                        var d = new Date();
+                        var m = '' + d.getMinutes();
+                        if(m.length === 1){
+                            m = '' + 0 + m;
+                        }
+                        if(m === '0'){
+                            m = '00';
+                        }
+                        console.error("[" + d.getHours() + ":" + m + "] " + Player.list[pt.parent].username + " got a " + items[i].name + ".");
+                        for(var j in SOCKET_LIST){
+                            SOCKET_LIST[j].emit('addToChat',{
+                                style:'style="color: ' + Player.list[pt.parent].textColor + '">',
+                                message:Player.list[pt.parent].username + " got a " + items[i].name + ".",
+                            });
+                        }
                     }
-                    if(m === '0'){
-                        m = '00';
-                    }
-                    console.error("[" + d.getHours() + ":" + m + "] " + Player.list[pt.parent].username + " got a " + item.name + ".");
-                    for(var i in SOCKET_LIST){
-                        SOCKET_LIST[i].emit('addToChat',{
-                            style:'style="color: ' + Player.list[pt.parent].textColor + '">',
-                            message:Player.list[pt.parent].username + " got a " + item.name + ".",
-                        });
-                    }
-                    item = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                    items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 }
                 Player.list[pt.parent].xp += Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
             }
             if(pt.type === 'Player'){
-                var item = pt.inventory.addRandomizedItem(pt.stats.luck);
-                while(item){
-                    var d = new Date();
-                    var m = '' + d.getMinutes();
-                    if(m.length === 1){
-                        m = '' + 0 + m;
+                var items = pt.inventory.addRandomizedItem(pt.stats.luck);
+                while(items.length > 0){
+                    for(var i in items){
+                        var d = new Date();
+                        var m = '' + d.getMinutes();
+                        if(m.length === 1){
+                            m = '' + 0 + m;
+                        }
+                        if(m === '0'){
+                            m = '00';
+                        }
+                        console.error("[" + d.getHours() + ":" + m + "] " + pt.username + " got a " + items[i].name + ".");
+                        for(var j in SOCKET_LIST){
+                            SOCKET_LIST[j].emit('addToChat',{
+                                style:'style="color: ' + pt.textColor + '">',
+                                message:pt.username + " got a " + items[i].name + ".",
+                            });
+                        }
                     }
-                    if(m === '0'){
-                        m = '00';
-                    }
-                    console.error("[" + d.getHours() + ":" + m + "] " + pt.username + " got a " + item.name + ".");
-                    for(var i in SOCKET_LIST){
-                        SOCKET_LIST[i].emit('addToChat',{
-                            style:'style="color: ' + pt.textColor + '">',
-                            message:pt.username + " got a " + item.name + ".",
-                        });
-                    }
-                    item = pt.inventory.addRandomizedItem(pt.stats.luck);
+                    items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 }
                 pt.xp += Math.round((10 + Math.random() * 10) * pt.stats.xp);
             }
@@ -824,8 +925,6 @@ Actor = function(param){
             }
         }
 
-        self.moveSpeed = self.maxSpeed;
-
         if(SlowDown.list[firstTile]){
             self.doSlowDown(SlowDown.list[firstTile]);
         }
@@ -962,7 +1061,7 @@ Player = function(param){
         body:[-1,-1,-1,0.5],
         shirt:[255,0,0,0.5],
         pants:[0,0,255,0.6],
-        hair:[90,75,0,0.5],
+        hair:[144,64,0,0.5],
         hairType:'bald',
     };
     self.imgwidth = 0;
@@ -1138,9 +1237,6 @@ Player = function(param){
                     self.hp += Math.round(self.stats.heal * (10 + Math.random() * 15));
                 }
             }
-        }
-        if(self.hp > self.hpMax){
-            self.hp = self.hpMax;
         }
         if(!self.invincible){
             self.updateAttack();
@@ -1756,46 +1852,7 @@ Player = function(param){
             if(map !== self.map){
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
-                        var monsterType = 'blueBird';
-                        var monsterAttack = 'passiveBird';
-                        if(Math.random() < 0.5){
-                            monsterType = 'greenBird';
-                        }
-                        if(Math.random() < 0.1){
-                            monsterType = 'blueBall';
-                            monsterAttack = 'passiveBall';
-                        }
-                        var monsterHp = 0;
-                        for(var j in Player.list){
-                            if(Player.list[j].map === Spawner.list[i].map){
-                                monsterHp += Player.list[j].hpMax / 3;
-                                monsterHp += Player.list[j].stats.attack * 100;
-                                monsterHp += Player.list[j].stats.defense * 100;
-                            }
-                        }
-                        monsterHp = monsterHp / playerMap[Spawner.list[i].map];
-                        var monster = new Monster({
-                            spawnId:i,
-                            x:Spawner.list[i].x,
-                            y:Spawner.list[i].y,
-                            map:Spawner.list[i].map,
-                            moveSpeed:2,
-                            hp:Math.round(monsterHp),
-                            monsterType:monsterType,
-                            attackState:monsterAttack,
-                            onDeath:function(pt){
-                                pt.toRemove = true;
-                                if(pt.spawnId){
-                                    Spawner.list[pt.spawnId].spawned = false;
-                                }
-                                for(var i in Projectile.list){
-                                    if(Projectile.list[i].parent === pt.id){
-                                        Projectile.list[i].toRemove = true;
-                                    }
-                                }
-                            },
-                        });
-                        Spawner.list[i].spawned = true;
+                        spawnMonster(Spawner.list[i],i);
                     }
                 }
                 var d = new Date();
@@ -2712,9 +2769,19 @@ Monster = function(param){
         self.width = 44;
         self.height = 44;
     }
+    if(self.monsterType === 'cherryBomb'){
+        self.width = 12 * 4;
+        self.height = 10 * 4;
+    }
     self.animation = 0;
     self.animate = false;
+    self.healReload = 0;
     self.canChangeMap = false;
+    self.damaged = false;
+    self.onHit = function(pt){
+        self.target = pt;
+        self.damaged = true;
+    }
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -2735,6 +2802,12 @@ Monster = function(param){
         if(self.hp < 1){
             param.onDeath(self);
         }
+        else{
+            if(self.healReload % 10 === 0){
+                self.hp += Math.round(self.stats.heal * (10 + Math.random() * 15));
+            }
+        }
+        self.healReload += 1;
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
         }
@@ -2758,6 +2831,7 @@ Monster = function(param){
             case "moveBird":
                 self.trackEntity(self.target);
                 self.reload = 0;
+                self.damaged = false;
                 self.attackState = "attackBird";
                 break;
             case "attackBird":
@@ -2768,9 +2842,19 @@ Monster = function(param){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
                 self.reload += 1;
+                if(self.hp < 0.5 * self.hpMax){
+                    self.trackingEntity = undefined;
+                    self.escapeEntity(self.target);
+                    self.attackState = 'retreatBird';
+                    self.maxSpeed *= 3;
+                    break;
+                }
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
-                    self.target = undefined;
-                    self.attackState = 'passiveBird';
+                    if(!self.damaged){
+                        self.target = undefined;
+                        self.trackingEntity = undefined;
+                        self.attackState = 'passiveBird';
+                    }
                 }
                 if(self.animation === -1){
                     self.animation = 0;
@@ -2780,6 +2864,14 @@ Monster = function(param){
                     if(self.animation > 5){
                         self.animation = 0;
                     }
+                }
+                break;
+            case "retreatBird":
+                if(self.hp > 0.8 * self.hpMax){
+                    self.attackState = 'passiveBird';
+                    self.maxSpeed = param.moveSpeed;
+                    self.target = undefined;
+                    self.trackingEntity = undefined;
                 }
                 break;
             case "passiveBall":
@@ -2795,7 +2887,9 @@ Monster = function(param){
             case "moveBall":
                 self.trackEntity(self.target);
                 self.reload = 0;
+                self.animation = 0;
                 self.attackState = "attackBall";
+                self.damaged = false;
                 break;
             case "attackBall":
                 if(self.reload % 50 < 16 && self.reload > 49 && self.target.invincible === false){
@@ -2804,13 +2898,62 @@ Monster = function(param){
                         self.animation = 0;
                     }
                     for(var i = 0;i < 4;i++){
-                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'Ball_Bullet',-30,self.stats);
+                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'Ball_Bullet',-20,self.stats);
                     }
                 }
                 self.reload += 1;
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
-                    self.target = undefined;
-                    self.attackState = 'passiveBall';
+                    if(!self.damaged){
+                        self.target = undefined;
+                        self.attackState = 'passiveBall';
+                    }
+                }
+                break;
+            case "passiveCherryBomb":
+                self.spdX = 0;
+                self.spdY = 0;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveCherryBomb";
+                        self.target = Player.list[i];
+                    }
+                }
+                break;
+            case "moveCherryBomb":
+                self.trackEntity(self.target);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackCherryBomb";
+                self.damaged = false;
+                break;
+            case "attackCherryBomb":
+                    self.reload += 1;
+                    if(self.getDistance(self.target) < 64){
+                        self.stats.defense *= 10;
+                        self.stats.attack *= 20;
+                        self.attackState = 'explodeCherryBomb';
+                    }
+                    else if(self.animation < 2){
+                        if(self.animation === 0){
+                            self.animation = 1;
+                        }
+                        else if(self.animation === 1){
+                            self.animation = 0;
+                        }
+                    }
+                    break;
+            case "explodeCherryBomb":
+                if(self.animation === 0){
+                    self.animation = 1;
+                }
+                self.animation += 0.2;
+                if(self.animation > 4){
+                    self.width = 18 * 8;
+                    self.height = 18 * 8;
+                    self.pushPower = 300;
+                }
+                if(self.animation > 5){
+                    self.toRemove = true;
                 }
                 break;
         }
@@ -2940,8 +3083,8 @@ Projectile = function(param){
     self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
     self.mapWidth = param.mapWidth;
     self.mapHeight = param.mapHeight;
-    self.width = 48;
-    self.height = 48;
+    self.width = 36;
+    self.height = 36;
 	self.direction = param.direction;
 	self.timer = 0;
 	self.toRemove = false;
@@ -3646,7 +3789,7 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
+                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
                     Player.list[i].onCollision(Projectile.list[j],50);
                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                 }
@@ -3656,7 +3799,7 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
+                if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
                     Monster.list[i].onCollision(Projectile.list[j],50);
                     Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                 }
@@ -3682,7 +3825,7 @@ updateCrashes = function(){
     for(var i in Npc.list){
         for(var j in Projectile.list){
             if(Npc.list[i] && Projectile.list[j]){
-                if(Npc.list[i].getDistance(Projectile.list[j]) < 30 && "" + Projectile.list[j].parent != i && Projectile.list[j].map === Npc.list[i].map){
+                if(Npc.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent != i && Projectile.list[j].map === Npc.list[i].map){
                     Projectile.list[j].toRemove = true;
                 }
             }
@@ -3702,46 +3845,7 @@ spawnEnemies = function(){
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
-                var monsterType = 'blueBird';
-                var monsterAttack = 'passiveBird';
-                if(Math.random() < 0.5){
-                    monsterType = 'greenBird';
-                }
-                if(Math.random() < 0.1){
-                    monsterType = 'blueBall';
-                    monsterAttack = 'passiveBall';
-                }
-                var monsterHp = 0;
-                for(var j in Player.list){
-                    if(Player.list[j].map === Spawner.list[i].map){
-                        monsterHp += Player.list[j].hpMax / 3;
-                        monsterHp += Player.list[j].stats.attack * 100;
-                        monsterHp += Player.list[j].stats.defense * 100;
-                    }
-                }
-                monsterHp = monsterHp / playerMap[Spawner.list[i].map];
-                var monster = new Monster({
-                    spawnId:i,
-                    x:Spawner.list[i].x,
-                    y:Spawner.list[i].y,
-                    map:Spawner.list[i].map,
-                    moveSpeed:2,
-                    hp:Math.round(monsterHp),
-                    monsterType:monsterType,
-                    attackState:monsterAttack,
-                    onDeath:function(pt){
-                        pt.toRemove = true;
-                        if(pt.spawnId){
-                            Spawner.list[pt.spawnId].spawned = false;
-                        }
-                        for(var i in Projectile.list){
-                            if(Projectile.list[i].parent === pt.id){
-                                Projectile.list[i].toRemove = true;
-                            }
-                        }
-                    },
-                });
-                Spawner.list[i].spawned = true;
+                spawnMonster(Spawner.list[i],i);
             }
         }
     }

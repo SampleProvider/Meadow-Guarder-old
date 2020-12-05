@@ -6,6 +6,8 @@ if(isFirefox === true) {
     alert('This game uses OffscreenCanvas, which is not supported in Firefox.');
 }
 
+document.getElementById('javascriptBlocker').remove();
+
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
 
@@ -16,7 +18,7 @@ var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
 var STATE = 'menu';
-var VERSION = '010f3a';
+var VERSION = '010f4a';
 
 var DEBUG = 0;
 
@@ -451,6 +453,8 @@ Img.bird = new Image();
 Img.bird.src = '/client/img/Bird Monster.png';
 Img.ball = new Image();
 Img.ball.src = '/client/img/ball.png';
+Img.cherryBomb = new Image();
+Img.cherryBomb.src = '/client/img/CherryBomb.png';
 Img.bullet = new Image();
 Img.bullet.src = '/client/img/Bullet.png';
 Img.healthBar = new Image();
@@ -503,8 +507,12 @@ document.getElementById('audioSwitch').onclick = function(){
         document.getElementById('audioSwitch').innerHTML = 'Change music. Current music is calm.';
         audio = 'calm';
     }
-    else{
+    else if(audio === 'calm'){
         audioCalm.pause();
+        document.getElementById('audioSwitch').innerHTML = 'Change music. Current music is none.';
+        audio = 'none';
+    }
+    else{
         audioTense.loop = true;
         audioTense.currentTime = 0;
         audioTense.play();
@@ -945,6 +953,17 @@ var Monster = function(initPack){
             ctx0.rotate(-self.animation * 45 * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
+        if(self.monsterType === 'redCherryBomb'){
+            if(self.animation === 0){
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
+            }
+            else if(self.animation === 1){
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
+            }
+            else{
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
+            }
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
@@ -1013,6 +1032,10 @@ var Npc = function(initPack){
     return self;
 }
 Npc.list = {};
+window.onoffline = function(event){
+    socket.emit('timeout');
+};
+
 socket.on('selfId',function(data){
     selfId = data.id;
     chat = '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
