@@ -226,13 +226,18 @@ io.sockets.on('connection',function(socket){
 
 var update = function(){
 	spawnEnemies();
-	var packs = Entity.getFrameUpdateData();
-	for(var i in SOCKET_LIST){
-		var socket = SOCKET_LIST[i];
-		if(Player.list[socket.id]){
-			var map = Player.list[socket.id].map;
-			socket.emit('update',packs[map]);
+	try{
+		var packs = Entity.getFrameUpdateData();
+		for(var i in SOCKET_LIST){
+			var socket = SOCKET_LIST[i];
+			if(Player.list[socket.id]){
+				var map = Player.list[socket.id].map;
+				socket.emit('update',packs[map]);
+			}
 		}
+	}
+	catch(err){
+		console.error(err);
 	}
 	setTimeout(update,50);
 }

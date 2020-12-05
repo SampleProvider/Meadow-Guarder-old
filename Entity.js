@@ -193,6 +193,8 @@ var playerMap = {};
 
 Maps = {};
 
+var tiles = [];
+
 Entity = function(param){
     var self = {};
     self.id = Math.random();
@@ -1648,6 +1650,13 @@ Player = function(param){
                         height:64,
                         map:QuestInfo.list[i].map,
                     });
+                    tiles.push({
+                        x:QuestInfo.list[i].x - 32,
+                        y:QuestInfo.list[i].y - 32,
+                        map:QuestInfo.list[i].map,
+                        tile_idx:3547,
+                        canvas:'lower',
+                    });
                     for(var j in SOCKET_LIST){
                         SOCKET_LIST[j].emit('drawTile',{
                             x:QuestInfo.list[i].x - 32,
@@ -1680,6 +1689,11 @@ Player = function(param){
                 SOCKET_LIST[i].emit('removeTile',{
                     map:self.map,
                 });
+            }
+            for(var i in tiles){
+                if(tiles[i].map === self.map){
+                    tiles.splice(i,1);
+                }
             }
             for(var i in self.questDependent){
                 if(self.questDependent[i].type === 'Collision2'){
@@ -2487,6 +2501,9 @@ Player.onConnect = function(socket,username){
                 message:username + " just logged on.",
             });
         }
+        for(var i in tiles){
+            socket.emit('drawTile',tiles[i]);
+        }
     });
 }
 Player.spectate = function(socket){
@@ -3139,6 +3156,26 @@ Projectile = function(param){
         }
         if(Collision.list[fourthTile]){
             if(self.isColliding(Collision.list[fourthTile])){
+                self.toRemove = true;
+            }
+        }
+        if(Collision2.list[firstTile]){
+            if(self.isColliding(Collision2.list[firstTile])){
+                self.toRemove = true;
+            }
+        }
+        if(Collision2.list[secondTile]){
+            if(self.isColliding(Collision2.list[secondTile])){
+                self.toRemove = true;
+            }
+        }
+        if(Collision2.list[thirdTile]){
+            if(self.isColliding(Collision2.list[thirdTile])){
+                self.toRemove = true;
+            }
+        }
+        if(Collision2.list[fourthTile]){
+            if(self.isColliding(Collision2.list[fourthTile])){
                 self.toRemove = true;
             }
         }
