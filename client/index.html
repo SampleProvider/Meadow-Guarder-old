@@ -7,15 +7,15 @@
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://bajie:3000 http://localhost:3000 http://guarded-meadow-00030.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
-	<title>Meadow Guarders</title>
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://bajie:3000 http://localhost:3000 http://meadowguarder.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
+	<title>Meadow Guarder</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="pageDiv" style="display:inline-block;">
 		<div id="pageShade"></div>
 		<div id="pageScroll">
-			<div id="pageName">Guarded Meadow</div>
+			<div id="pageName">Meadow Guarder</div>
 			<div id="pageStackLeft">
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
@@ -169,6 +169,7 @@
 			</div>
 		</div>
 	</div>
+	<noscript><meta http-equiv="refresh" content="0; url=./client/nojs.html"/></noscript>
 	<div id="javascriptBlocker" class="UI-text-light" style="display: inline-block;font-size: 80px; left:50%; top:50%; transform: translate(-50%,-50%); background-color: #ffff00;">Please enable javascript in your browser.</div>
 	<div id="gameDiv" style="display:none;">
 		<canvas id="map0"></canvas>
