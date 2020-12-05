@@ -2796,7 +2796,12 @@ Monster = function(param){
     self.canChangeMap = false;
     self.damaged = false;
     self.onHit = function(pt){
-        self.target = pt;
+        if(pt.parent){
+            self.target = Player.list[pt.parent];
+        }
+        else{
+            self.target = pt;
+        }
         self.damaged = true;
     }
     var lastSelf = {};
@@ -2856,7 +2861,6 @@ Monster = function(param){
                 }
                 self.reload += 1;
                 if(self.hp < 0.5 * self.hpMax){
-                    self.trackingEntity = undefined;
                     self.escapeEntity(self.target);
                     self.attackState = 'retreatBird';
                     self.maxSpeed *= 3;
