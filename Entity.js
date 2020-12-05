@@ -2795,10 +2795,6 @@ Monster = function(param){
             }
         }
         self.updateAttack();
-        if(self.target && self.target.state === "dead"){
-            self.target = {};
-            self.attackState = "passive";
-        }
         if(self.hp < 1){
             param.onDeath(self);
         }
@@ -2927,21 +2923,22 @@ Monster = function(param){
                 self.damaged = false;
                 break;
             case "attackCherryBomb":
-                    self.reload += 1;
-                    if(self.getDistance(self.target) < 64){
-                        self.stats.defense *= 10;
-                        self.stats.attack *= 20;
-                        self.attackState = 'explodeCherryBomb';
-                    }
-                    else if(self.animation < 2){
-                        if(self.animation === 0){
-                            self.animation = 1;
-                        }
-                        else if(self.animation === 1){
-                            self.animation = 0;
-                        }
-                    }
+                self.reload += 1;
+                if(self.getDistance(self.target) < 64){
+                    self.stats.defense *= 10;
+                    self.stats.attack *= 20;
+                    self.attackState = 'explodeCherryBomb';
                     break;
+                }
+                else if(self.animation < 2){
+                    if(self.animation === 0){
+                        self.animation = 1;
+                    }
+                    else if(self.animation === 1){
+                        self.animation = 0;
+                    }
+                }
+                break;
             case "explodeCherryBomb":
                 if(self.animation === 0){
                     self.animation = 1;
