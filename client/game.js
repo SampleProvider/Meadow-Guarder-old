@@ -6,7 +6,6 @@ if(isFirefox === true) {
     alert('This game uses OffscreenCanvas, which is not supported in Firefox.');
 }
 
-document.getElementById('javascriptBlocker').remove();
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
@@ -279,7 +278,14 @@ resetCanvas(inventoryPlayerDisplay);
 resetCanvas(settingsPlayerDisplay);
 
 var renderPlayer = function(img,shadeValues){
-    var temp = new OffscreenCanvas(72,152);
+    if(isFirefox){
+        var temp = document.createElement('canvas');
+        temp.canvas.width = 72;
+        temp.canvas.heiht = 152;
+    }
+    else{
+        var temp = new OffscreenCanvas(72,152);
+    }
     var gl = temp.getContext('2d');
     resetCanvas(gl);
     gl.drawImage(img,0,0);
@@ -305,16 +311,6 @@ var renderPlayer = function(img,shadeValues){
     gl.putImageData(imageData,0,0);
     return temp;
 }
-var renderName = function(name,color){
-    var temp = new OffscreenCanvas(30,300);
-    var gl = temp.getContext('2d');
-    resetCanvas(gl);
-    gl.font = "15px pixel";
-    gl.textAlign = "center";
-    gl.fillStyle = color;
-    gl.fillText(name,15,150);
-    return temp;
-}
 
 var maps = {};
 
@@ -326,8 +322,18 @@ tileset.onload = function(){
 };
 var loadedMap = {};
 var renderLayers = function(json,name){
-    var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
-    var tempUpper = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+    if(isFirefox){
+        var tempLower = document.createElement('canvas');
+        var tempUpper = document.createElement('canvas');
+        tempLower.canvas.width = json.layers[0].width * 64;
+        tempLower.canvas.heiht = json.layers[0].height * 64;
+        tempUpper.canvas.width = json.layers[0].width * 64;
+        tempUpper.canvas.heiht = json.layers[0].height * 64;
+    }
+    else{
+        var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+        var tempUpper = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+    }
     var glLower = tempLower.getContext('2d');
     var glUpper = tempUpper.getContext('2d');
     resetCanvas(glLower);
@@ -714,7 +720,6 @@ var Player = function(initPack){
     ctx.drawImage(self.renderedImg.shirt,0,0);
     ctx.drawImage(self.renderedImg.pants,0,0);
     ctx.drawImage(self.renderedImg.hair,0,0);
-    self.renderedName = renderName(self.username,'#ff7700');
     self.direction = initPack.direction;
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
@@ -967,6 +972,17 @@ var Monster = function(initPack){
                 ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
             }
         }
+        if(self.monsterType === 'blueCherryBomb'){
+            if(self.animation === 0){
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,self.x - 24,self.y - 20,48,40);
+            }
+            else if(self.animation === 1){
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,self.x - 24,self.y - 20,48,40);
+            }
+            else{
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
+            }
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
@@ -1010,7 +1026,6 @@ var Npc = function(initPack){
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
     self.name = initPack.name;
-    self.renderedName = renderName(self.name,'#ff7700');
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){

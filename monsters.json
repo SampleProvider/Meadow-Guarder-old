@@ -1,0 +1,37 @@
+{
+    "blueBird":{
+        "spawnChance":0.5,
+        "xpGain":1,
+        "width":44,
+        "height":52,
+        "attackState":"passiveBird"
+    },
+    "greenBird":{
+        "spawnChance":0.5,
+        "xpGain":1,
+        "width":44,
+        "height":52,
+        "attackState":"passiveBird"
+    },
+    "blueBall":{
+        "spawnChance":0.1,
+        "xpGain":2,
+        "width":44,
+        "height":44,
+        "attackState":"passiveBall"
+    },
+    "redCherryBomb":{
+        "spawnChance":0.1,
+        "xpGain":2,
+        "width":48,
+        "height":40,
+        "attackState":"passiveCherryBomb"
+    },
+    "blueCherryBomb":{
+        "spawnChance":0.1,
+        "xpGain":2,
+        "width":48,
+        "height":40,
+        "attackState":"passiveCherryBomb"
+    }
+}

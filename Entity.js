@@ -135,20 +135,9 @@ s = {
     },
 };
 
+var monsterData = require('./monsters.json');
+
 var spawnMonster = function(spawner,spawnId){
-    var monsterType = 'blueBird';
-    var monsterAttack = 'passiveBird';
-    if(Math.random() < 0.5){
-        monsterType = 'greenBird';
-    }
-    if(Math.random() < 0.1){
-        monsterType = 'blueBall';
-        monsterAttack = 'passiveBall';
-    }
-    if(Math.random() < 0.05){
-        monsterType = 'redCherryBomb';
-        monsterAttack = 'passiveCherryBomb';
-    }
     var monsterHp = 0;
     var monsterStats = {
         attack:0,
@@ -159,34 +148,52 @@ var spawnMonster = function(spawner,spawnId){
         if(Player.list[j].map === spawner.map){
             monsterHp += Player.list[j].hpMax;
             monsterStats.attack += Player.list[j].stats.attack / 2;
-            monsterStats.defense += Player.list[j].stats.defense / 2;
+            monsterStats.defense += Player.list[j].stats.defense;
             monsterStats.heal += Player.list[j].stats.heal / 2;
         }
     }
     monsterHp = monsterHp / playerMap[spawner.map];
-    var monster = new Monster({
-        spawnId:spawnId,
-        x:spawner.x,
-        y:spawner.y,
-        map:spawner.map,
-        moveSpeed:2,
-        stats:monsterStats,
-        hp:Math.round(monsterHp),
-        monsterType:monsterType,
-        attackState:monsterAttack,
-        onDeath:function(pt){
-            pt.toRemove = true;
-            if(pt.spawnId){
-                Spawner.list[pt.spawnId].spawned = false;
-            }
-            for(var i in Projectile.list){
-                if(Projectile.list[i].parent === pt.id){
-                    Projectile.list[i].toRemove = true;
-                }
-            }
-        },
-    });
-    spawner.spawned = true;
+    monsterStats.attack = monsterStats.attack / playerMap[spawner.map];
+    monsterStats.defense = monsterStats.defense / playerMap[spawner.map];
+    monsterStats.heal = monsterStats.heal / playerMap[spawner.map];
+    var monsterSeed = Math.random();
+    var monsterTotal = 0;
+    for(var i in monsterData){
+        monsterTotal += monsterData[i].spawnChance;
+    }
+    monsterSeed *= monsterTotal;
+    for(var i in monsterData){
+        if(monsterSeed > 0 && monsterSeed < monsterData[i].spawnChance){
+            var monster = new Monster({
+                spawnId:spawnId,
+                x:spawner.x,
+                y:spawner.y,
+                map:spawner.map,
+                moveSpeed:2,
+                stats:monsterStats,
+                hp:Math.round(monsterHp),
+                monsterType:i,
+                attackState:monsterData[i].attackState,
+                width:monsterData[i].width,
+                height:monsterData[i].height,
+                xpGain:monsterData[i].xpGain,
+                onDeath:function(pt){
+                    pt.toRemove = true;
+                    if(pt.spawnId){
+                        Spawner.list[pt.spawnId].spawned = false;
+                    }
+                    for(var i in Projectile.list){
+                        if(Projectile.list[i].parent === pt.id){
+                            Projectile.list[i].toRemove = true;
+                        }
+                    }
+                },
+            });
+            spawner.spawned = true;
+            return;
+        }
+        monsterSeed -= monsterData[i].spawnChance;
+    }
 }
 
 var playerMap = {};
@@ -633,7 +640,7 @@ Actor = function(param){
             self.onHit(pt);
         }
         if(self.hp < 1 && self.isDead === false && pt.toRemove === false){
-            if(pt.parentType === 'Player'){
+            if(pt.parentType === 'Player' && self.type === 'Monster'){
                 var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 while(items.length > 0){
                     for(var i in items){
@@ -655,9 +662,9 @@ Actor = function(param){
                     }
                     items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 }
-                Player.list[pt.parent].xp += Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
+                Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
             }
-            if(pt.type === 'Player'){
+            if(pt.type === 'Player' && self.type === 'Monster'){
                 var items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 while(items.length > 0){
                     for(var i in items){
@@ -679,7 +686,7 @@ Actor = function(param){
                     }
                     items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 }
-                pt.xp += Math.round((10 + Math.random() * 10) * pt.stats.xp);
+                pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
             }
             self.isDead = true;
             self.toRemove = true;
@@ -2748,8 +2755,9 @@ Monster = function(param){
     self.spawnId = param.spawnId;
     self.attackState = param.attackState;
     self.direction = 0;
-    self.width = 44;
-    self.height = 52;
+    self.width = param.width;
+    self.height = param.height;
+    self.xpGain = param.xpGain;
     self.toRemove = false;
     self.reload = 0;
     self.target = {};
@@ -2777,18 +2785,6 @@ Monster = function(param){
     self.monsterType = param.monsterType;
     if(param.attackState){
         self.attackState = param.attackState;
-    }
-    if(self.monsterType === 'redBird'){
-        self.width = 88;
-        self.height = 104;
-    }
-    if(self.monsterType === 'blueBall'){
-        self.width = 44;
-        self.height = 44;
-    }
-    if(self.monsterType === 'cherryBomb'){
-        self.width = 12 * 4;
-        self.height = 10 * 4;
     }
     self.animation = 0;
     self.animate = false;
@@ -2860,6 +2856,10 @@ Monster = function(param){
                     self.attackState = 'passiveBird';
                     break;
                 }
+                if(self.target.state === 'dead'){
+                    self.attackState = 'passiveBird';
+                    break;
+                }
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
@@ -2917,6 +2917,10 @@ Monster = function(param){
                 break;
             case "attackBall":
                 if(!self.target){
+                    self.attackState = 'passiveBall';
+                    break;
+                }
+                if(self.target.state === 'dead'){
                     self.attackState = 'passiveBall';
                     break;
                 }
