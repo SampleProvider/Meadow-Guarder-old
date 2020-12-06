@@ -135,6 +135,8 @@ s = {
     },
 };
 
+var questList = ["Missing Person","Weird Tower","Clear River"];
+
 var monsterData = require('./monsters.json');
 
 var spawnMonster = function(spawner,spawnId){
@@ -1096,10 +1098,7 @@ Player = function(param){
         quest:false,
     };
     self.questDependent = {};
-    self.questStats = {
-        "Missing Person":false,
-        "Weird Tower":false,
-    }
+    self.questStats = {}
     self.type = 'Player';
     self.username = param.username;
     self.tag = '';
@@ -1165,6 +1164,17 @@ Player = function(param){
     }
     if(param.param.questStats){
         self.questStats = param.param.questStats;
+    }
+    for(var i in questList){
+        if(self.questStats[questList[i]] === true){
+            
+        }
+        else if(self.questStats[questList[i]] === false){
+            
+        }
+        else{
+            self.questStats[questList[i]] = false;
+        }
     }
     self.inventory.refreshRender();
     self.stats = {
@@ -1341,6 +1351,48 @@ Player = function(param){
                 }
                 self.keyPress.attack = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fisherman' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Clear River';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Go away. I\'m fishing.',
+                        response1:'*End conversation*',
+                    });
+                }
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Clear River';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You talked to John and defeated the monsters in that weird tower right?',
+                        response1:'Yeah!',
+                        response2:'No.',
+                    });
+                }
+                if(self.questStage === 6 && self.quest === 'Clear River'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Ok, go kill those Monsters!',
+                        response1:'*End conversation*',
+                    });
+                }
+                if(self.questStage === 11 && self.quest === 'Clear River'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You did it? Thanks! Here is a reward.',
+                        response1:'*End conversation*',
+                    });
+                }
+                self.keyPress.attack = false;
+            }
         }
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
             self.questInfo.started = false;
@@ -1467,11 +1519,11 @@ Player = function(param){
                     message:Player.list[socket.id].username + " completed the quest " + self.quest + ".",
                 });
             }
+            self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
                 quest:false,
             };
-            self.questStats["Missing Person"] = true;
             for(var i in self.questDependent){
                 self.questDependent[i].toRemove = true;
             }
@@ -1588,10 +1640,13 @@ Player = function(param){
                         hp:1000,
                         monsterType:'blueBall',
                         attackState:'passiveBall',
+                        width:monsterData['blueBall'].width,
+                        height:monsterData['blueBall'].height,
+                        xpGain:monsterData['blueBall'].xpGain * 10,
                         stats:{
-                            attack:5,
-                            defense:5,
-                            heal:1,
+                            attack:self.stats.attack * 2,
+                            defense:self.stats.defense * 5,
+                            heal:0,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -1620,12 +1675,15 @@ Player = function(param){
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
                         hp:10,
-                        monsterType:'greenBird',
-                        attackState:'passiveBird',
+                        monsterType:'blueCherryBomb',
+                        attackState:'passiveCherryBomb',
+                        width:monsterData['blueCherryBomb'].width,
+                        height:monsterData['blueCherryBomb'].height,
+                        xpGain:monsterData['blueCherryBomb'].xpGain * 10,
                         stats:{
-                            attack:5,
-                            defense:1,
-                            heal:1,
+                            attack:self.stats.attack * 2,
+                            defense:self.stats.defense,
+                            heal:self.stats.heal,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -1663,6 +1721,7 @@ Player = function(param){
                         map:QuestInfo.list[i].map,
                         tile_idx:3547,
                         canvas:'lower',
+                        parent:self.id,
                     });
                     for(var j in SOCKET_LIST){
                         SOCKET_LIST[j].emit('drawTile',{
@@ -1698,7 +1757,7 @@ Player = function(param){
                 });
             }
             for(var i in tiles){
-                if(tiles[i].map === self.map){
+                if(tiles[i].parent === self.id){
                     tiles.splice(i,1);
                 }
             }
@@ -1793,6 +1852,7 @@ Player = function(param){
                     message:Player.list[socket.id].username + " completed the quest " + self.quest + ".",
                 });
             }
+            self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
                 quest:false,
@@ -1806,6 +1866,134 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(2000 * self.stats.xp);
+        }
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Clear River'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Clear River'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Mark keeps complaining about Monsters attacking him while he is collecting wood. I don\'t have a weapon or anything. If you defeated the Monsters on that weird tower, you should be able to defeat all the Monsters in the map The River. Remember, Monsters will spawn natually.',
+                response1:'Ok, I can defeat all the Monsters in the map The River.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Clear River'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Clear River'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Clear River',
+                questDescription:'Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class="UI-link-light" href="https://github.com/maitian352/Meadow-Guarder/issues">here</a>.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 4 && self.questInfo.quest === 'Clear River'){
+            self.quest = 'Clear River';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with Fisherman.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Clear River'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'Clear River'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 8 && self.quest === 'Clear River' && self.map === 'The River' && self.mapChange > 10){
+            var monstersCleared = true;
+            for(var i in Spawner.list){
+                if(Spawner.list[i].spawned === true && Spawner.list[i].map === 'The River'){
+                    monstersCleared = false;
+                }
+            }
+            if(monstersCleared === true){
+                self.questStage += 1;
+            }
+        }
+        if(self.questStage === 9 && self.quest === 'Clear River'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I did it! I defeated all the Monsters in the map The River! Let me go tell Fisherman.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Clear River'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.questInfo.quest === 'Clear River'){
+            var d = new Date();
+            var m = '' + d.getMinutes();
+            if(m.length === 1){
+                m = '' + 0 + m;
+            }
+            if(m === '0'){
+                m = '00';
+            }
+            console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " completed the quest " + self.quest + ".");
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('addToChat',{
+                    style:'style="color: ' + self.textColor + '">',
+                    message:Player.list[socket.id].username + " completed the quest " + self.quest + ".",
+                });
+            }
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(5000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -2547,6 +2735,11 @@ Player.onDisconnect = function(socket){
         for(var i in Player.list[socket.id].questDependent){
             Player.list[socket.id].questDependent[i].toRemove = true;
         }
+        for(var i in tiles){
+            if(tiles[i].parent === socket.id){
+                tiles.splice(i,1);
+            }
+        }
         var d = new Date();
         var m = '' + d.getMinutes();
         if(m.length === 1){
@@ -2853,10 +3046,17 @@ Monster = function(param){
                 break;
             case "attackBird":
                 if(!self.target){
+                    self.target = undefined;
                     self.attackState = 'passiveBird';
                     break;
                 }
                 if(self.target.state === 'dead'){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
                     self.attackState = 'passiveBird';
                     break;
                 }
@@ -2917,10 +3117,17 @@ Monster = function(param){
                 break;
             case "attackBall":
                 if(!self.target){
+                    self.target = undefined;
                     self.attackState = 'passiveBall';
                     break;
                 }
                 if(self.target.state === 'dead'){
+                    self.target = undefined;
+                    self.attackState = 'passiveBall';
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
                     self.attackState = 'passiveBall';
                     break;
                 }
@@ -2960,6 +3167,17 @@ Monster = function(param){
                 break;
             case "attackCherryBomb":
                 if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveCherryBomb';
+                    break;
+                }
+                if(self.target.state === 'dead'){
+                    self.target = undefined;
+                    self.attackState = 'passiveCherryBomb';
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
                     break;
                 }
@@ -2991,6 +3209,7 @@ Monster = function(param){
                 }
                 if(self.animation > 5){
                     self.toRemove = true;
+                    param.onDeath(self);
                 }
                 break;
         }
