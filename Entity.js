@@ -202,7 +202,7 @@ var playerMap = {};
 
 Maps = {};
 
-var tiles = [];
+tiles = [];
 
 Entity = function(param){
     var self = {};
@@ -1184,6 +1184,13 @@ Player = function(param){
         xp:1,
         luck:1,
     }
+    self.permStats = {
+        attack:1,
+        defense:1,
+        heal:1,
+        xp:1,
+        luck:1,
+    }
     var lastSelf = {};
     self.update = function(){
         self.mapChange += 1;
@@ -1756,11 +1763,13 @@ Player = function(param){
                     map:self.map,
                 });
             }
+            var newTiles = [];
             for(var i in tiles){
-                if(tiles[i].parent === self.id){
-                    tiles.splice(i,1);
+                if(tiles[i].parent !== self.id){
+                    newTiles.push(tiles[i]);
                 }
             }
+            tiles = JSON.parse(JSON.stringify(newTiles));
             for(var i in self.questDependent){
                 if(self.questDependent[i].type === 'Collision2'){
                     self.questDependent[i].toRemove = true;
@@ -1999,13 +2008,7 @@ Player = function(param){
     self.updateStats = function(){
         if(self.inventory.refresh){
             self.inventory.refresh = false;
-            self.stats = {
-                attack:1,
-                defense:1,
-                heal:1,
-                xp:1,
-                luck:1,
-            }
+            self.stats = JSON.parse(JSON.stringify(self.permStats));
             self.textColor = '#ffff00';
             self.hpMax = 1000;
             for(var i in self.inventory.currentEquip){
@@ -3042,23 +3045,25 @@ Monster = function(param){
             case "moveBird":
                 self.trackEntity(self.target);
                 self.reload = 0;
-                self.damaged = false;
                 self.attackState = "attackBird";
                 break;
             case "attackBird":
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
+                    self.damaged = false;
                     break;
                 }
                 if(self.target.state === 'dead'){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
+                    self.damaged = false;
                     break;
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
+                    self.damaged = false;
                     break;
                 }
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
@@ -3072,6 +3077,7 @@ Monster = function(param){
                     self.escapeEntity(self.target);
                     self.attackState = 'retreatBird';
                     self.maxSpeed *= 3;
+                    self.damaged = false;
                     break;
                 }
                 if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
@@ -3120,16 +3126,19 @@ Monster = function(param){
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
+                    self.damaged = false;
                     break;
                 }
                 if(self.target.state === 'dead'){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
+                    self.damaged = false;
                     break;
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
+                    self.damaged = false;
                     break;
                 }
                 if(self.reload % 50 < 16 && self.reload > 49 && self.target.invincible === false){
@@ -3170,16 +3179,19 @@ Monster = function(param){
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
+                    self.damaged = false;
                     break;
                 }
                 if(self.target.state === 'dead'){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
+                    self.damaged = false;
                     break;
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
+                    self.damaged = false;
                     break;
                 }
                 self.reload += 1;
@@ -3197,6 +3209,11 @@ Monster = function(param){
                         self.animation = 0;
                     }
                 }
+                if(self.damaged){
+                    self.stats.defense *= 10;
+                    self.stats.attack *= 20;
+                    self.attackState = 'explodeCherryBomb';
+                }
                 break;
             case "explodeCherryBomb":
                 if(self.animation === 0){
@@ -3209,7 +3226,6 @@ Monster = function(param){
                     self.pushPower = 300;
                 }
                 if(self.animation > 5){
-                    self.toRemove = true;
                     param.onDeath(self);
                 }
                 break;

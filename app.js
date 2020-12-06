@@ -160,31 +160,6 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
-			if(Player.list[socket.id].state === 'dead'){
-				socket.emit('addToChat',{
-					style:'style="color: #ff0000">',
-					message:'You cannot chat while you are dead. Click respawn in the top right corner to respawn.',
-				});
-			}
-			else{
-				var d = new Date();
-				var m = '' + d.getMinutes();
-				if(m.length === 1){
-					m = '' + 0 + m;
-				}
-				if(m === '0'){
-					m = '00';
-				}
-				console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data);
-				for(var i in SOCKET_LIST){
-					SOCKET_LIST[i].emit('addToChat',{
-						style:'style="color: ' + Player.list[socket.id].textColor + '">',
-						message:Player.list[socket.id].username + ': ' + data
-					});
-				}
-			}
-		}
-		else{
 			var d = new Date();
 			var m = '' + d.getMinutes();
 			if(m.length === 1){
@@ -193,13 +168,16 @@ io.sockets.on('connection',function(socket){
 			if(m === '0'){
 				m = '00';
 			}
-			console.error("[" + d.getHours() + ":" + m + "] Unknown: " + data.error);
+			console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + ': ' + data);
 			for(var i in SOCKET_LIST){
 				SOCKET_LIST[i].emit('addToChat',{
-					style:'style="color: #000000">',
-					message:'Unknown: ' + data
+					style:'style="color: ' + Player.list[socket.id].textColor + '">',
+					message:Player.list[socket.id].username + ': ' + data,
 				});
 			}
+		}
+		else{
+			socket.emit('disconnected');
 		}
 	});
 	socket.on('sendDebugToServer',function(data){
@@ -240,6 +218,7 @@ io.sockets.on('connection',function(socket){
 			}
 			else{
 				socket.emit('addToDebug','style="color: #ff0000">YOU DO NOT HAVE PERMISSION TO USE THE EVAL FUNCTION!!!');
+				socket.emit('disconnected');
 			}
 		}
 	});
@@ -269,4 +248,4 @@ setInterval(function(){
 	setTimeout(() => {
 		updateLeaderboard();
 	},10000);
-},600000);
+},300000);
