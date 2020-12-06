@@ -2856,6 +2856,10 @@ Monster = function(param){
                 self.attackState = "attackBird";
                 break;
             case "attackBird":
+                if(!self.target){
+                    self.attackState = 'passiveBird';
+                    break;
+                }
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
                 }
@@ -2912,6 +2916,10 @@ Monster = function(param){
                 self.damaged = false;
                 break;
             case "attackBall":
+                if(!self.target){
+                    self.attackState = 'passiveBall';
+                    break;
+                }
                 if(self.reload % 50 < 16 && self.reload > 49 && self.target.invincible === false){
                     self.animation += 0.5;
                     if(self.animation >= 8){
@@ -2947,6 +2955,10 @@ Monster = function(param){
                 self.damaged = false;
                 break;
             case "attackCherryBomb":
+                if(!self.target){
+                    self.attackState = 'passiveCherryBomb';
+                    break;
+                }
                 self.reload += 1;
                 if(self.getDistance(self.target) < 64){
                     self.stats.defense *= 10;
@@ -2969,8 +2981,8 @@ Monster = function(param){
                 }
                 self.animation += 0.2;
                 if(self.animation > 4){
-                    self.width = 18 * 8;
-                    self.height = 18 * 8;
+                    self.width = 18 * 16;
+                    self.height = 18 * 16;
                     self.pushPower = 300;
                 }
                 if(self.animation > 5){

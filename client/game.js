@@ -163,6 +163,9 @@ socket.on('changePasswordResponse',function(data){
     else if(data.success === 1){
         alert("Incorrect Password.");
     }
+    else if(data.success === 4){
+        alert("Invalid characters.");
+    }
     else{
         alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
     }

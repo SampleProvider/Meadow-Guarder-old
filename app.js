@@ -117,14 +117,36 @@ io.sockets.on('connection',function(socket){
 		});
 	});
 	socket.on('changePassword',function(data){
-		Database.isValidPassword(data,function(res){
-			if(res === 3){
-				Database.changePassword(data,function(){
+		if(data.username.includes(' ') || data.password.includes(' ') || data.newPassword.includes(' ')){
+			socket.emit('changePasswordResponse',{success:4});
+			return;
+		}
+		if(data.username.includes('--') || data.password.includes('--') || data.newPassword.includes('--')){
+			socket.emit('changePasswordResponse',{success:4});
+			return;
+		}
+		if(data.username.includes(';') || data.password.includes(';') || data.newPassword.includes(';')){
+			socket.emit('changePasswordResponse',{success:4});
+			return;
+		}
+		if(data.username.includes('\'') || data.password.includes('\'') || data.newPassword.includes('\'')){
+			socket.emit('changePasswordResponse',{success:4});
+			return;
+		}
+		if(data.username.length > 40 || data.password.length > 40 || data.newPassword.length > 40){
+			socket.emit('changePasswordResponse',{success:4});
+			return;
+		}
+		else{
+			Database.isValidPassword(data,function(res){
+				if(res === 3){
+					Database.changePassword(data,function(){
 
-				});
-			}
-			socket.emit('changePasswordResponse',{success:res});
-		});
+					});
+				}
+				socket.emit('changePasswordResponse',{success:res});
+			});
+		}
 	});
 	socket.on('disconnect',function(){
 		socket.emit('disconnected');
