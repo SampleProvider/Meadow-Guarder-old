@@ -1,6 +1,6 @@
 # Guarded Meadow
 
-Guarded Meadow is a free to play RPG. You can play at http://guarded-meadow-00030.herokuapp.com.
+Guarded Meadow is a free to play RPG. You can play at http://meadowguarder.herokuapp.com/.
 
 What I used:
 
