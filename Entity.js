@@ -198,6 +198,30 @@ var spawnMonster = function(spawner,spawnId){
     }
 }
 
+addToChat = function(style,message){
+    var d = new Date();
+    var m = '' + d.getMinutes();
+    var h = d.getHours() + 24;
+    if(SERVER !== 'localhost'){
+        h -= 5;
+    }
+    h = h % 24;
+    h = '' + h;
+    if(m.length === 1){
+        m = '' + 0 + m;
+    }
+    if(m === '0'){
+        m = '00';
+    }
+    console.error("[" + h + ":" + m + "] " + message);
+    for(var i in Player.list){
+        SOCKET_LIST[i].emit('addToChat',{
+            style:style,
+            message:message,
+        });
+    }
+}
+
 var playerMap = {};
 
 Maps = {};
@@ -646,21 +670,7 @@ Actor = function(param){
                 var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 while(items.length > 0){
                     for(var i in items){
-                        var d = new Date();
-                        var m = '' + d.getMinutes();
-                        if(m.length === 1){
-                            m = '' + 0 + m;
-                        }
-                        if(m === '0'){
-                            m = '00';
-                        }
-                        console.error("[" + d.getHours() + ":" + m + "] " + Player.list[pt.parent].username + " got a " + items[i].name + ".");
-                        for(var j in SOCKET_LIST){
-                            SOCKET_LIST[j].emit('addToChat',{
-                                style:'style="color: ' + Player.list[pt.parent].textColor + '">',
-                                message:Player.list[pt.parent].username + " got a " + items[i].name + ".",
-                            });
-                        }
+                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].username + " got a " + items[i].name + ".");
                     }
                     items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 }
@@ -670,21 +680,7 @@ Actor = function(param){
                 var items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 while(items.length > 0){
                     for(var i in items){
-                        var d = new Date();
-                        var m = '' + d.getMinutes();
-                        if(m.length === 1){
-                            m = '' + 0 + m;
-                        }
-                        if(m === '0'){
-                            m = '00';
-                        }
-                        console.error("[" + d.getHours() + ":" + m + "] " + pt.username + " got a " + items[i].name + ".");
-                        for(var j in SOCKET_LIST){
-                            SOCKET_LIST[j].emit('addToChat',{
-                                style:'style="color: ' + pt.textColor + '">',
-                                message:pt.username + " got a " + items[i].name + ".",
-                            });
-                        }
+                        addToChat('style="color: ' + pt.textColor + '">',pt.username + " got a " + items[i].name + ".");
                     }
                     items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 }
@@ -1235,21 +1231,7 @@ Player = function(param){
             self.hp = 0;
             if(self.state !== 'dead'){
                 Player.spectate(socket);
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + self.username + ' died.');
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:self.username + ' died.',
-                    });
-                }
+                addToChat('style="color: #ff0000">',self.username + ' died.');
                 self.state = 'dead';
             }
         }
@@ -1511,21 +1493,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Missing Person'){
-            var d = new Date();
-            var m = '' + d.getMinutes();
-            if(m.length === 1){
-                m = '' + 0 + m;
-            }
-            if(m === '0'){
-                m = '00';
-            }
-            console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " completed the quest " + self.quest + ".");
-            for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: ' + self.textColor + '">',
-                    message:Player.list[socket.id].username + " completed the quest " + self.quest + ".",
-                });
-            }
+            addToChat('style="color: ' + self.textColor + '">',Player.list[socket.id].username + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -1846,21 +1814,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 18 && self.questInfo.quest === 'Weird Tower'){
-            var d = new Date();
-            var m = '' + d.getMinutes();
-            if(m.length === 1){
-                m = '' + 0 + m;
-            }
-            if(m === '0'){
-                m = '00';
-            }
-            console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " completed the quest " + self.quest + ".");
-            for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: ' + self.textColor + '">',
-                    message:Player.list[socket.id].username + " completed the quest " + self.quest + ".",
-                });
-            }
+            addToChat('style="color: ' + self.textColor + '">',Player.list[socket.id].username + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -1974,21 +1928,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.questInfo.quest === 'Clear River'){
-            var d = new Date();
-            var m = '' + d.getMinutes();
-            if(m.length === 1){
-                m = '' + 0 + m;
-            }
-            if(m === '0'){
-                m = '00';
-            }
-            console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " completed the quest " + self.quest + ".");
-            for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: ' + self.textColor + '">',
-                    message:Player.list[socket.id].username + " completed the quest " + self.quest + ".",
-                });
-            }
+            addToChat('style="color: ' + self.textColor + '">',Player.list[socket.id].username + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -2067,21 +2007,7 @@ Player = function(param){
                         spawnMonster(Spawner.list[i],i);
                     }
                 }
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + self.username + " went to map " + self.map + ".");
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: ' + self.textColor + '">',
-                        message:self.username + " went to map " + self.map + ".",
-                    });
-                }
+                addToChat('style="color: ' + self.textColor + '">',self.username + " went to map " + self.map + ".");
             }
             var pack = {player:[],projectile:[],monster:[],npc:[]};
             for(var i in Player.list){
@@ -2201,7 +2127,7 @@ Player = function(param){
         }
     }
     self.updateXp = function(){
-        if(self.level > xpLevels.length + 1){
+        if(self.level > xpLevels.length - 1){
             self.xpMax = self.xp;
             return;
         }
@@ -2209,21 +2135,7 @@ Player = function(param){
             self.xp = self.xp - self.xpMax;
             self.level += 1;
             self.xpMax = xpLevels[self.level];
-            var d = new Date();
-            var m = '' + d.getMinutes();
-            if(m.length === 1){
-                m = '' + 0 + m;
-            }
-            if(m === '0'){
-                m = '00';
-            }
-            console.error("[" + d.getHours() + ":" + m + "] " + self.username + ' is now level ' + self.level + '.');
-            for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: #00ff00">',
-                    message:self.username + ' is now level ' + self.level + '.',
-                });
-            }
+            addToChat('style="color: #00ff00">',self.username + ' is now level ' + self.level + '.');
         }
     }
     self.updateAttack = function(){
@@ -2593,21 +2505,7 @@ Player.onConnect = function(socket,username){
 
         socket.on('respawn',function(data){
             if(player.state !== 'dead'){
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + player.username.error + ' cheated using respawn.'.error);
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:player.username + ' cheated using respawn.',
-                    });
-                }
+                addToChat('style="color: #ff0000">',player.username + ' cheated using respawn.');
                 Player.onDisconnect(SOCKET_LIST[player.id]);
                 return;
             }
@@ -2616,21 +2514,7 @@ Player.onConnect = function(socket,username){
             player.toRemove = false;
             player.state = 'none';
             player.dazed = 0;
-            var d = new Date();
-			var m = '' + d.getMinutes();
-			if(m.length === 1){
-				m = '' + 0 + m;
-			}
-			if(m === '0'){
-				m = '00';
-			}
-            console.error("[" + d.getHours() + ":" + m + "] " + player.username + ' respawned.');
-            for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('addToChat',{
-                    style:'style="color: #00ff00">',
-                    message:player.username + ' respawned.',
-                });
-            }
+            addToChat('style="color: #00ff00">',player.username + ' respawned.');
         });
 
         socket.on('startQuest',function(data){
@@ -2684,21 +2568,7 @@ Player.onConnect = function(socket,username){
             }
         }
         socket.emit('update',pack);
-        var d = new Date();
-        var m = '' + d.getMinutes();
-        if(m.length === 1){
-            m = '' + 0 + m;
-        }
-        if(m === '0'){
-            m = '00';
-        }
-        console.error("[" + d.getHours() + ":" + m + "] " + username + " just logged on.");
-        for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('addToChat',{
-                style:'style="color: #00ff00">',
-                message:username + " just logged on.",
-            });
-        }
+        addToChat('style="color: #00ff00">',username + " just logged on.");
         for(var i in tiles){
             socket.emit('drawTile',tiles[i]);
         }
@@ -2738,26 +2608,14 @@ Player.onDisconnect = function(socket){
         for(var i in Player.list[socket.id].questDependent){
             Player.list[socket.id].questDependent[i].toRemove = true;
         }
+        var newTiles = [];
         for(var i in tiles){
-            if(tiles[i].parent === socket.id){
-                tiles.splice(i,1);
+            if(tiles[i].parent !== socket.id){
+                newTiles.push(tiles[i]);
             }
         }
-        var d = new Date();
-        var m = '' + d.getMinutes();
-        if(m.length === 1){
-            m = '' + 0 + m;
-        }
-        if(m === '0'){
-            m = '00';
-        }
-        console.error("[" + d.getHours() + ":" + m + "] " + Player.list[socket.id].username + " logged off.");
-        for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('addToChat',{
-                style:'style="color: #ff0000">',
-                message:Player.list[socket.id].username + " logged off."
-            });
-        }
+        tiles = JSON.parse(JSON.stringify(newTiles));
+        addToChat('style="color: #ff0000">',Player.list[socket.id].username + " logged off.");
         playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
     }
@@ -2987,13 +2845,16 @@ Monster = function(param){
     self.healReload = 0;
     self.canChangeMap = false;
     self.damaged = false;
+    self.damagedEntity = false;
     self.onHit = function(pt){
         if(pt.parent){
             self.target = Player.list[pt.parent];
+            self.damagedEntity = pt;
             self.damaged = true;
         }
         else if(pt.type === 'Player'){
             self.target = pt;
+            self.damagedEntity = pt;
             self.damaged = true;
         }
     }
@@ -3051,18 +2912,21 @@ Monster = function(param){
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.state === 'dead'){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
@@ -3126,18 +2990,21 @@ Monster = function(param){
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.state === 'dead'){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
@@ -3179,24 +3046,27 @@ Monster = function(param){
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.state === 'dead'){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
+                    self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 self.reload += 1;
                 if(self.getDistance(self.target) < 64){
-                    self.stats.defense *= 10;
+                    self.stats.defense *= 20;
                     self.stats.attack *= 20;
                     self.attackState = 'explodeCherryBomb';
                     break;
@@ -3209,8 +3079,8 @@ Monster = function(param){
                         self.animation = 0;
                     }
                 }
-                if(self.damaged){
-                    self.stats.defense *= 10;
+                if(self.damaged && self.damagedEntity.type === 'Player'){
+                    self.stats.defense *= 20;
                     self.stats.attack *= 20;
                     self.attackState = 'explodeCherryBomb';
                 }

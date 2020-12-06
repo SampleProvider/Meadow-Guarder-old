@@ -265,21 +265,7 @@ Inventory = function(socket,server){
     if(self.server && self.socket){
         self.socket.on("useItem",function(itemId){
             if(!self.hasItem(itemId,1)){
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + Player.list[self.socket.id].username.error + ' cheated using item use.'.error);
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:Player.list[self.socket.id].username + ' cheated using item use.',
-                    });
-                }
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item use.');
                 return;
             }
 
@@ -288,21 +274,7 @@ Inventory = function(socket,server){
         });
         self.socket.on("dismantleItem",function(itemId){
             if(!self.hasItem(itemId,1)){
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + Player.list[self.socket.id].username.error + ' cheated using item dismantle.'.error);
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:Player.list[self.socket.id].username + ' cheated using item dismantle.',
-                    });
-                }
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item dismantle.');
                 return;
             }
 
@@ -311,21 +283,7 @@ Inventory = function(socket,server){
         });
         self.socket.on("equipItem",function(itemId){
             if(!self.hasItem(itemId,1)){
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + Player.list[self.socket.id].username.error + ' cheated using item equip.'.error);
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:Player.list[self.socket.id].username + ' cheated using item equip.',
-                    });
-                }
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item equip.');
                 return;
             }
 
@@ -338,21 +296,7 @@ Inventory = function(socket,server){
         });
         self.socket.on("unequipItem",function(itemId){
             if(self.currentEquip[Item.list[itemId].equip] !== itemId){
-                var d = new Date();
-                var m = '' + d.getMinutes();
-                if(m.length === 1){
-                    m = '' + 0 + m;
-                }
-                if(m === '0'){
-                    m = '00';
-                }
-                console.error("[" + d.getHours() + ":" + m + "] " + Player.list[self.socket.id].username.error + ' cheated using item unequip.'.error);
-                for(var i in SOCKET_LIST){
-                    SOCKET_LIST[i].emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:Player.list[self.socket.id].username + ' cheated using item unequip.',
-                    });
-                }
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item unequip.');
                 return;
             }
             self.addItem(self.currentEquip[Item.list[itemId].equip],1);
