@@ -166,6 +166,10 @@ var spawnMonster = function(spawner,spawnId){
     monsterSeed *= monsterTotal;
     for(var i in monsterData){
         if(monsterSeed > 0 && monsterSeed < monsterData[i].spawnChance){
+            monsterHp *= monsterData[i].hp;
+            monsterStats.attack *= monsterData[i].stats.attack;
+            monsterStats.defense *= monsterData[i].stats.defense;
+            monsterStats.heal *= monsterData[i].stats.heal;
             var monster = new Monster({
                 spawnId:spawnId,
                 x:spawner.x,

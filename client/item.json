@@ -29,6 +29,36 @@
         "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
         "dropChance":"0.001"
     },
+    "advancedwoodenbow":{
+        "name":"Advanced Wooden Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack *= 1.7;",
+        "dropChance":"0.005"
+    },
+    "advancedsteelbow":{
+        "name":"Advanced Steel Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack *= 2;self.stats.xp *= 2;",
+        "dropChance":"0.003"
+    },
+    "advanceddarksteelbow":{
+        "name":"Advanced Dark Steel Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
+        "dropChance":"0.001"
+    },
+    "advancedgoldenbow":{
+        "name":"Advanced Golden Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack *= 7;self.stats.xp *= 7;",
+        "dropChance":"0.0003"
+    },
+    "advancedrubybow":{
+        "name":"Advanced Ruby Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack *= 10;self.stats.xp *= 10;",
+        "dropChance":"0.0001"
+    },
     "developerbow":{
         "name":"Developer Bow",
         "equip":"weapon",
@@ -44,31 +74,43 @@
     "bronzekey":{
         "name":"Bronze Key",
         "equip":"key",
-        "event":"self.textColor = '#904000'",
+        "event":"self.textColor = '#904000';",
         "dropChance":"0.05"
     },
     "silverkey":{
         "name":"Silver Key",
         "equip":"key",
-        "event":"self.textColor = '#909090'",
+        "event":"self.textColor = '#909090';",
         "dropChance":"0.01"
     },
     "goldenkey":{
         "name":"Golden Key",
         "equip":"key",
-        "event":"self.textColor = '#dd9000'",
+        "event":"self.textColor = '#dd9000';",
         "dropChance":"0.003"
     },
     "developerkey":{
         "name":"Developer Key",
         "equip":"key",
-        "event":"self.textColor = '#0090ff'",
+        "event":"self.textColor = '#0090ff';",
         "dropChance":"0"
     },
     "spkey":{
         "name":"SP Key",
         "equip":"key",
-        "event":"self.textColor = '#ff0090'",
+        "event":"self.textColor = '#ff0090';",
         "dropChance":"0"
+    },
+    "knowledgebook":{
+        "name":"Knowledge Book",
+        "equip":"book",
+        "event":"self.luck *= 2;",
+        "dropChance":"0"
+    },
+    "candycane":{
+        "name":"Candy Cane",
+        "equip":"special",
+        "event":"self.hpMax *= 1.2;self.stats.heal *= 2;",
+        "dropChance":"0.005"
     }
 }
