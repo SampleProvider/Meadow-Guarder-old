@@ -2987,11 +2987,12 @@ Monster = function(param){
     self.onHit = function(pt){
         if(pt.parent){
             self.target = Player.list[pt.parent];
+            self.damaged = true;
         }
-        else{
+        else if(pt.type === 'Player'){
             self.target = pt;
+            self.damaged = true;
         }
-        self.damaged = true;
     }
     var lastSelf = {};
     var super_update = self.update;
