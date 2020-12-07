@@ -16,7 +16,6 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var STATE = 'menu';
 var VERSION = '010f4a';
 
 var DEBUG = 0;
@@ -61,6 +60,11 @@ var signDivCreateAccount = document.getElementById('createAccount');
 var signDivDeleteAccount = document.getElementById('deleteAccount');
 var signDivChangePassword = document.getElementById('changePassword');
 
+
+gameDiv.style.display = 'none';
+disconnectedDiv.style.display = 'none';
+spectatorDiv.style.display = 'none';
+pageDiv.style.display = 'inline-block';
 pageDiv.style.width = window.innerWidth + 'px';
 pageDiv.style.height = window.innerHeight + 'px';
 
@@ -109,7 +113,10 @@ socket.on('signInResponse',function(data){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
         }
         worldMap.restore();
-        STATE = 'game';
+        gameDiv.style.display = 'inline-block';
+        disconnectedDiv.style.display = 'none';
+        spectatorDiv.style.display = 'none';
+        pageDiv.style.display = 'none';
     }
     else if(data.success === 2){
         alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. The other account will be disconnected shortly. Please try to sign again.");
@@ -246,7 +253,6 @@ var map1 = document.getElementById("map1").getContext("2d");
 var inventoryPlayerDisplay = document.getElementById("inventoryPlayerDisplay").getContext("2d");
 var settingsPlayerDisplay = document.getElementById("settingsPlayerDisplay").getContext("2d");
 var worldMap = document.getElementById("worldMapCanvas").getContext("2d");
-var worldMapEntity = document.getElementById("worldMapEntityCanvas").getContext("2d");
 ctx0.canvas.width = window.innerWidth;
 ctx0.canvas.height = window.innerHeight;
 ctx1.canvas.width = window.innerWidth;
@@ -257,8 +263,6 @@ map1.canvas.width = window.innerWidth;
 map1.canvas.height = window.innerHeight;
 worldMap.canvas.width = 910;
 worldMap.canvas.height = 730;
-worldMapEntity.canvas.width = 910;
-worldMapEntity.canvas.height = 730;
 inventoryPlayerDisplay.canvas.width = 10;
 inventoryPlayerDisplay.canvas.height = 17;
 settingsPlayerDisplay.canvas.width = 10;
@@ -273,7 +277,6 @@ resetCanvas(ctx1);
 resetCanvas(map0);
 resetCanvas(map1);
 resetCanvas(worldMap);
-resetCanvas(worldMapEntity);
 resetCanvas(inventoryPlayerDisplay);
 resetCanvas(settingsPlayerDisplay);
 
@@ -309,7 +312,18 @@ var renderPlayer = function(img,shadeValues){
     }
     gl.clearRect(0,0,72,152);
     gl.putImageData(imageData,0,0);
-    return temp;
+    if(isFirefox){
+        var finalTemp = document.createElement('canvas');
+        finalTemp.canvas.width = 72 * 4;
+        finalTemp.canvas.height = 152 * 4;
+    }
+    else{
+        var finalTemp = new OffscreenCanvas(72 * 4,152 * 4);
+    }
+    var finalGl = finalTemp.getContext('2d');
+    resetCanvas(finalGl);
+    finalGl.drawImage(temp,0,0,72 * 4,152 * 4);
+    return finalTemp;
 }
 
 var maps = {};
@@ -631,9 +645,15 @@ var w = document.getElementById('window');
 
 var respawn = function(){
     socket.emit('respawn');
-    STATE = 'respawn';
+    gameDiv.style.display = 'inline-block';
+    disconnectedDiv.style.display = 'none';
+    spectatorDiv.style.display = 'none';
+    pageDiv.style.display = 'none';
     setTimeout(function(){
-        STATE = 'game';
+        gameDiv.style.display = 'inline-block';
+        disconnectedDiv.style.display = 'none';
+        spectatorDiv.style.display = 'none';
+        pageDiv.style.display = 'none';
     },50);
 }
 var questInventory = new QuestInventory(socket,false);
@@ -681,32 +701,34 @@ document.getElementById('leaderboardButton').onclick = function(){
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
+    var animationValue = 0;
     switch(animationDirection){
         case "down":
-            canvas.drawImage(img,12 * animation,19 * 0,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 0;
             break;
         case "rightdown":
-            canvas.drawImage(img,12 * animation,19 * 1,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 1;
             break;
         case "right":
-            canvas.drawImage(img,12 * animation,19 * 2,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 2;
             break;
         case "rightup":
-            canvas.drawImage(img,12 * animation,19 * 3,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 3;
             break;
         case "up":
-            canvas.drawImage(img,12 * animation,19 * 4,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 4;
             break;
         case "leftup":
-            canvas.drawImage(img,12 * animation,19 * 5,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 5;
             break;
         case "left":
-            canvas.drawImage(img,12 * animation,19 * 6,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 6;
             break;
         case "leftdown":
-            canvas.drawImage(img,12 * animation,19 * 7,12,19,x - size * 6,y - size * 15,size * 12,size * 19);
+            animationValue = 7;
             break;
     }
+    canvas.drawImage(img,4 * 12 * animation,4 * 19 * animationValue,4 * 12,4 * 19,x - size * 6,y - size * 15,size * 12,size * 19);
     return canvas;
 }
 
@@ -732,6 +754,8 @@ var Player = function(initPack){
     }
     self.render = document.createElement('canvas');
     var ctx = self.render.getContext('2d');
+    ctx.canvas.width = 72 * 4;
+    ctx.canvas.height = 152 * 4;
     ctx.drawImage(self.renderedImg.body,0,0);
     ctx.drawImage(self.renderedImg.shirt,0,0);
     ctx.drawImage(self.renderedImg.pants,0,0);
@@ -767,7 +791,7 @@ var Player = function(initPack){
     }
     self.draw = function(){
         self.animation = Math.round(self.animation);
-        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,Math.round(self.x),Math.round(self.y),4);
+        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
         
         if(self.id === selfId){
             inventoryPlayerDisplay.clearRect(0,0,10,17);
@@ -786,9 +810,9 @@ var Player = function(initPack){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.displayName,Math.round(self.x),Math.round(self.y) - 92);
-        ctx1.drawImage(Img.healthBar,0,0,42,5,Math.round(self.x) - 63,Math.round(self.y) - 75,126,15);
-        ctx1.drawImage(Img.healthBar,0,6,Math.round(42 * self.hp / self.hpMax),5,Math.round(self.x) - 63,Math.round(self.y) - 75,Math.round(126 * self.hp / self.hpMax),15);
+        ctx1.fillText(self.displayName,self.x,self.y - 92);
+        ctx1.drawImage(Img.healthBar,0,0,42,5,self.x - 63,self.y - 75,126,15);
+        ctx1.drawImage(Img.healthBar,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
         if(self.id !== selfId){
             return;
         }
@@ -960,15 +984,15 @@ var Monster = function(initPack){
     self.draw = function(){
         if(self.monsterType === 'blueBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,Math.round(self.x) - 22,Math.round(self.y) - 26,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 26,44,52);
         }
         if(self.monsterType === 'greenBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,Math.round(self.x) - 22,Math.round(self.y) - 26,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 26,44,52);
         }
         if(self.monsterType === 'redBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,Math.round(self.x) - 44,Math.round(self.y) - 52,88,104);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,self.x - 44,self.y - 52,88,104);
         }
         if(self.monsterType === 'blueBall'){
             ctx0.translate(self.x,self.y);
@@ -986,35 +1010,35 @@ var Monster = function(initPack){
         }
         if(self.monsterType === 'redCherryBomb'){
             if(self.animation === 0){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
             }
             else if(self.animation === 1){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
             }
             else{
-                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,Math.round(self.x) - 72,Math.round(self.y) - 72,72 * 2,72 * 2);
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
             }
         }
         if(self.monsterType === 'blueCherryBomb'){
             if(self.animation === 0){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,self.x - 24,self.y - 20,48,40);
             }
             else if(self.animation === 1){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,self.x - 24,self.y - 20,48,40);
             }
             else{
-                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,Math.round(self.x) - 72,Math.round(self.y) - 72,72 * 2,72 * 2);
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
             }
         }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,Math.round(self.x) - 63,Math.round(self.y) - 75,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,Math.round(self.x) - 63,Math.round(self.y) - 75,Math.round(126 * self.hp / self.hpMax),15);
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 75,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
         }
         else{
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,Math.round(self.x) - 63,Math.round(self.y) - 50,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,Math.round(self.x) - 63,Math.round(self.y) - 50,Math.round(126 * self.hp / self.hpMax),15);
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 50,Math.round(126 * self.hp / self.hpMax),15);
         }
     }
     Monster.list[self.id] = self;
@@ -1039,6 +1063,8 @@ var Npc = function(initPack){
     }
     self.render = document.createElement('canvas');
     var ctx = self.render.getContext('2d');
+    ctx.canvas.width = 72 * 4;
+    ctx.canvas.height = 152 * 4;
     ctx.drawImage(self.renderedImg.body,0,0);
     ctx.drawImage(self.renderedImg.shirt,0,0);
     ctx.drawImage(self.renderedImg.pants,0,0);
@@ -1061,13 +1087,13 @@ var Npc = function(initPack){
     }
     self.draw = function(){
         self.animation = Math.round(self.animation);
-        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,Math.round(self.x),Math.round(self.y),4);
+        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
     }
     self.drawName = function(){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.name,Math.round(self.x),Math.round(self.y) - 62);
+        ctx1.fillText(self.name,self.x,self.y - 62);
     }
     Npc.list[self.id] = self;
     return self;
@@ -1320,7 +1346,10 @@ socket.on('initEntity',function(data){
     }
 });
 socket.on('disconnected',function(data){
-    STATE = 'disconnected';
+    gameDiv.style.display = 'inline-block';
+    disconnectedDiv.style.display = 'inline-block';
+    spectatorDiv.style.display = 'none';
+    pageDiv.style.display = 'none';
     Player.list[selfId].moveX = 0;
     Player.list[selfId].moveY = 0;
     setTimeout(function(){
@@ -1330,13 +1359,10 @@ socket.on('disconnected',function(data){
     state.isHidden = true;
 });
 socket.on('spectator',function(data){
-    Player.list[selfId].hp = 0;
-    if(STATE !== 'respawn'){
-        STATE = 'spectator';
-    }
-    else{
-        STATE = 'game';
-    }
+    gameDiv.style.display = 'inline-block';
+    disconnectedDiv.style.display = 'none';
+    spectatorDiv.style.display = 'inline-block';
+    pageDiv.style.display = 'none';
 });
 socket.on('changeMap',function(data){
     if(shadeAmount < 0){
@@ -1423,90 +1449,39 @@ var response = function(data){
     socket.emit('diolougeResponse',data);
 }
 setInterval(function(){
-    if(STATE === 'menu'){
-        gameDiv.style.display = 'none';
-        disconnectedDiv.style.display = 'none';
-        spectatorDiv.style.display = 'none';
-        pageDiv.style.display = 'inline-block';
-        pageDiv.style.width = window.innerWidth + 'px';
-        pageDiv.style.height = window.innerHeight + 'px';
-    }
-    if(STATE === 'disconnected'){
-        gameDiv.style.display = 'inline-block';
-        disconnectedDiv.style.display = 'inline-block';
-        spectatorDiv.style.display = 'none';
-        pageDiv.style.display = 'none';
-    }
-    if(STATE === 'spectator'){
-        gameDiv.style.display = 'inline-block';
-        disconnectedDiv.style.display = 'none';
-        spectatorDiv.style.display = 'inline-block';
-        pageDiv.style.display = 'none';
-    }
-    if(STATE === 'game'){
-        gameDiv.style.display = 'inline-block';
-        disconnectedDiv.style.display = 'none';
-        spectatorDiv.style.display = 'none';
-        pageDiv.style.display = 'none';
-    }
-    if(STATE === 'respawn'){
-        gameDiv.style.display = 'inline-block';
-        disconnectedDiv.style.display = 'none';
-        spectatorDiv.style.display = 'none';
-        pageDiv.style.display = 'none';
-    }
-
     if(!selfId){
         return;
     }
-
-
     if(!Player.list[selfId]){
         return;
     }
-    ctx0Raw.style.width = window.innerWidth;
-    ctx0Raw.style.height = window.innerHeight;
-    ctx1Raw.style.width = window.innerWidth;
-    ctx1Raw.style.height = window.innerHeight;
-    map0Raw.style.width = window.innerWidth;
-    map0Raw.style.height = window.innerHeight;
-    map1Raw.style.width = window.innerWidth;
-    map1Raw.style.height = window.innerHeight;
-    if(ctx0.canvas.width !== window.innerWidth){
+
+
+    if(WIDTH !== window.innerWidth || HEIGHT !== window.innerHeight){
+        ctx0Raw.style.width = window.innerWidth;
+        ctx0Raw.style.height = window.innerHeight;
+        ctx1Raw.style.width = window.innerWidth;
+        ctx1Raw.style.height = window.innerHeight;
+        map0Raw.style.width = window.innerWidth;
+        map0Raw.style.height = window.innerHeight;
+        map1Raw.style.width = window.innerWidth;
+        map1Raw.style.height = window.innerHeight;
+
         ctx0.canvas.width = window.innerWidth;
-        resetCanvas(ctx0);
-    }
-    if(ctx0.canvas.height !== window.innerHeight){
         ctx0.canvas.height = window.innerHeight;
         resetCanvas(ctx0);
-    }
-    if(ctx1.canvas.width !== window.innerWidth){
         ctx1.canvas.width = window.innerWidth;
-        resetCanvas(ctx1);
-    }
-    if(ctx1.canvas.height !== window.innerHeight){
         ctx1.canvas.height = window.innerHeight;
         resetCanvas(ctx1);
-    }
-    if(map0.canvas.width !== window.innerWidth){
         map0.canvas.width = window.innerWidth;
-        resetCanvas(map0);
-    }
-    if(map0.canvas.height !== window.innerHeight){
         map0.canvas.height = window.innerHeight;
         resetCanvas(map0);
-    }
-    if(map1.canvas.width !== window.innerWidth){
         map1.canvas.width = window.innerWidth;
-        resetCanvas(map1);
-    }
-    if(map1.canvas.height !== window.innerHeight){
         map1.canvas.height = window.innerHeight;
         resetCanvas(map1);
     }
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
-    map0.fillStyle = maps[Player.list[selfId].map];
     map0.fillRect(0,0,WIDTH,HEIGHT);
     ctx0.clearRect(0,0,WIDTH,HEIGHT);
     ctx1.clearRect(0,0,WIDTH,HEIGHT);
@@ -1554,7 +1529,7 @@ setInterval(function(){
 
     map0.restore();
     ctx0.save();
-    ctx0.translate(Math.round(cameraX),Math.round(cameraY));
+    ctx0.translate(cameraX,cameraY);
     var entities = [];
     for(var i in Player.list){
         entities.push(Player.list[i]);
@@ -1619,7 +1594,7 @@ setInterval(function(){
     
     map1.restore();
     ctx1.save();
-    ctx1.translate(Math.round(cameraX),Math.round(cameraY));
+    ctx1.translate(cameraX,cameraY);
     for(var i in Projectile.list){
         Projectile.list[i].update();
     }
@@ -1654,6 +1629,7 @@ setInterval(function(){
     }
     if(Player.list[selfId].map === currentMap && shadeAmount > 1.5){
         shadeSpeed = -3 / 40;
+        map0.fillStyle = maps[Player.list[selfId].map];
     }
     if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
         document.getElementById('mapName').innerHTML = Player.list[selfId].map;
@@ -1662,11 +1638,14 @@ setInterval(function(){
     }
     shadeAmount += shadeSpeed;
     mapShadeAmount += mapShadeSpeed;
-    blackShade.style.opacity = shadeAmount;
-    document.getElementById('mapName').style.opacity = mapShadeAmount;
+    if(shadeAmount > 0){
+        blackShade.style.opacity = shadeAmount;
+    }
+    if(mapShadeAmount > 0){
+        document.getElementById('mapName').style.opacity = mapShadeAmount;
+    }
 
     worldMap.save();
-    worldMapEntity.save();
     if(mapDrag){
         worldMap.fillStyle = '#000000';
         worldMap.fillRect(0,0,910,730);
@@ -1676,20 +1655,7 @@ setInterval(function(){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 910 * world[i].x * 4,mapRatio / 910 * world[i].y * 4,mapRatio / 910 * 3200,mapRatio / 910 * 3200);
         }
     }
-    /*if(mapDrag){
-        worldMapEntity.translate(Math.round(mapX - 910 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 910 * (mapDragY - mapMouseY) / 600));
-    }
-    else{
-        worldMapEntity.translate(Math.round(mapX),Math.round(mapY));
-    }
-    worldMapEntity.clearRect(0,0,100000,100000);
-    worldMapEntity.translate((mapCropX + Player.list[selfId].x) * mapRatio / 910,(mapCropY + Player.list[selfId].y) * mapRatio / 910);
-    worldMapEntity.rotate(Player.list[selfId].direction * Math.PI / 180);
-    worldMapEntity.drawImage(Img.playericon,-56 * mapRatio / 910,-48 * mapRatio / 910,mapRatio / 10,mapRatio / 10);
-    worldMapEntity.rotate(-1 * Player.list[selfId].direction * Math.PI / 180);
-    worldMapEntity.translate(-1 * (mapCropX + Player.list[selfId].x) * mapRatio / 910,-1 * (mapCropY + Player.list[selfId].y) * mapRatio / 910);
-    */worldMap.restore();
-    //worldMapEntity.restore();
+    worldMap.restore();
 },1000/80);
 
 function useMenuDropdown(){
@@ -1723,7 +1689,6 @@ document.onkeydown = function(event){
             socket.emit('timeout');
         }
         var key = event.key || event.keyCode;
-        document.getElementById("htmlDebug").innerHTML = key;
         if(key === 'Meta' || key === 'Alt' || key === 'Control'){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
@@ -1818,7 +1783,7 @@ window.addEventListener('wheel',function(event){
     }
     worldMap.restore();
 });
-document.getElementById('worldMapEntityCanvas').onmousemove = function clickEvent(e){
+document.getElementById('worldMapCanvas').onmousemove = function clickEvent(e){
     var rect = e.target.getBoundingClientRect();
     mapMouseX = e.clientX - rect.left;
     mapMouseY = e.clientY - rect.top;
