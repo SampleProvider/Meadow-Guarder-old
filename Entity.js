@@ -1096,7 +1096,7 @@ Player = function(param){
         body:[-1,-1,-1,0.5],
         shirt:[255,0,0,0.5],
         pants:[0,0,255,0.6],
-        hair:[144,64,0,0.5],
+        hair:[0,255,0,0.7],
         hairType:'bald',
     };
     self.imgwidth = 0;
@@ -1194,6 +1194,13 @@ Player = function(param){
         for(var i in param.param.questStats){
             if(self.questStats[i] !== undefined){
                 self.questStats[i] = param.param.questStats[i];
+            }
+        }
+    }
+    if(param.param.img){
+        for(var i in param.param.img){
+            if(self.img[i] !== undefined){
+                self.img[i] = param.param.img[i];
             }
         }
     }
