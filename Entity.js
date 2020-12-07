@@ -686,7 +686,7 @@ Actor = function(param){
                 var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 while(items.length > 0){
                     for(var i in items){
-                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].username + " got a " + items[i].name + ".");
+                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + items[i].name + ".");
                     }
                     items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 }
@@ -696,7 +696,7 @@ Actor = function(param){
                 var items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 while(items.length > 0){
                     for(var i in items){
-                        addToChat('style="color: ' + pt.textColor + '">',pt.username + " got a " + items[i].name + ".");
+                        addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + items[i].name + ".");
                     }
                     items = pt.inventory.addRandomizedItem(pt.stats.luck);
                 }

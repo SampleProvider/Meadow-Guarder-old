@@ -169,7 +169,7 @@ io.sockets.on('connection',function(socket){
 	socket.on('sendDebugToServer',function(data){
 		console.log(data.error);
 		if(Player.list[socket.id]){
-			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'sp10' || Player.list[socket.id].username === 'Suvanth'){
+			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'maitian' || Player.list[socket.id].username === 'Unknown' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'sp10' || Player.list[socket.id].username === 'Suvanth'){
 				if(data.includes('process')){
 					if(Player.list[socket.id].username === 'sp'){
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
