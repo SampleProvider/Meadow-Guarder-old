@@ -1,0 +1,29 @@
+{
+    "ninjaStar":{
+        "width":30,
+        "height":30,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1
+        }
+    },
+    "playerBullet":{
+        "width":36,
+        "height":36,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1
+        }
+    },
+    "ballBullet":{
+        "width":42,
+        "height":42,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1
+        }
+    }
+}

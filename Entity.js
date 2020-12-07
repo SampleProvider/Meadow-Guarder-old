@@ -148,6 +148,7 @@ s = {
 };
 
 var monsterData = require('./monsters.json');
+var projectileData = require('./projectiles.json');
 
 var spawnMonster = function(spawner,spawnId){
     var monsterHp = 0;
@@ -253,6 +254,7 @@ Entity = function(param){
     self.spdY = 0;
     self.map = 'The Village';
     self.type = 'Entity';
+    self.updateNextFrame = true;
     if(param){
         if(param.id){
             self.id = param.id;
@@ -358,7 +360,9 @@ Entity.getFrameUpdateData = function(){
         if(!pack[Projectile.list[i].map]){
             pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
         }
-        pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
+        if(Projectile.list[i].updateNextFrame){
+            pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
+        }
         if(Projectile.list[i].toRemove){
             delete Projectile.list[i];
         }
@@ -705,6 +709,14 @@ Actor = function(param){
         }
     }
     self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,stats){
+        var projectileWidth = 0;
+        var projectileHeight = 0;
+        for(var i in projectileData){
+            if(i === projectileType){
+                projectileWidth = projectileData[i].width;
+                projectileHeight = projectileData[i].height;
+            }
+        }
 		var projectile = Projectile({
             id:id,
             projectileType:projectileType,
@@ -716,6 +728,8 @@ Actor = function(param){
             parentType:parentType,
             mapWidth:self.mapWidth,
             mapHeight:self.mapHeight,
+            width:projectileWidth,
+            height:projectileHeight,
             stats:stats,
             onCollision:function(self,pt){
                 self.toRemove = true;
@@ -2184,29 +2198,29 @@ Player = function(param){
             self.secondTick = 0;
         }
         if(self.attackTick === 0){
-            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);
+            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);
         }
         if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
             }
         }
         if(self.secondTick === 20){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
             }
         }
         if(self.secondTick === 40){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
             }
         }
         if(self.secondTick === 60){
             for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
+                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
             }
         }
     }
@@ -2954,10 +2968,10 @@ Monster = function(param){
                     break;
                 }
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,self.stats);
                 }
                 if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'W_Throw004 - Copy',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,self.stats);
                 }
                 self.reload += 1;
                 if(self.hp < 0.5 * self.hpMax){
@@ -3037,7 +3051,7 @@ Monster = function(param){
                         self.animation = 0;
                     }
                     for(var i = 0;i < 4;i++){
-                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'Ball_Bullet',-20,self.stats);
+                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'ballBullet',-20,self.stats);
                     }
                 }
                 self.reload += 1;
@@ -3249,8 +3263,6 @@ Projectile = function(param){
     self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
     self.mapWidth = param.mapWidth;
     self.mapHeight = param.mapHeight;
-    self.width = 36;
-    self.height = 36;
 	self.direction = param.direction;
 	self.timer = 0;
 	self.toRemove = false;
@@ -3294,41 +3306,49 @@ Projectile = function(param){
         if(Collision.list[firstTile]){
             if(self.isColliding(Collision.list[firstTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision.list[secondTile]){
             if(self.isColliding(Collision.list[secondTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision.list[thirdTile]){
             if(self.isColliding(Collision.list[thirdTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision.list[fourthTile]){
             if(self.isColliding(Collision.list[fourthTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision2.list[firstTile]){
             if(self.isColliding(Collision2.list[firstTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision2.list[secondTile]){
             if(self.isColliding(Collision2.list[secondTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision2.list[thirdTile]){
             if(self.isColliding(Collision2.list[thirdTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
         if(Collision2.list[fourthTile]){
             if(self.isColliding(Collision2.list[fourthTile])){
                 self.toRemove = true;
+                self.updateNextFrame = false;
             }
         }
     }
