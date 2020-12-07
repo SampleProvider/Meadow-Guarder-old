@@ -699,6 +699,7 @@ var Player = function(initPack){
     var self = {};
     self.id = initPack.id;
     self.username = initPack.username;
+    self.displayName = initPack.displayName;
     self.x = initPack.x;
     self.y = initPack.y;
     self.moveX = 0;
@@ -770,7 +771,7 @@ var Player = function(initPack){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.username,self.x,self.y - 92);
+        ctx1.fillText(self.displayName,self.x,self.y - 92);
         ctx1.drawImage(Img.healthBar,0,0,42,5,self.x - 63,self.y - 75,126,15);
         ctx1.drawImage(Img.healthBar,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
         if(self.id !== selfId){
@@ -1165,6 +1166,12 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].animation !== undefined){
                         Player.list[data.player[i].id].animation = data.player[i].animation;
+                    }
+                    if(data.player[i].username !== undefined){
+                        Player.list[data.player[i].id].username = data.player[i].username;
+                    }
+                    if(data.player[i].displayName !== undefined){
+                        Player.list[data.player[i].id].displayName = data.player[i].displayName;
                     }
                     Player.list[data.player[i].id].updated = true;
                 }

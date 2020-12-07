@@ -2262,6 +2262,10 @@ Player = function(param){
             pack.username = self.username;
             lastSelf.username = self.username;
         }
+        if(lastSelf.displayName !== self.displayName){
+            pack.displayName = self.displayName;
+            lastSelf.displayName = self.displayName;
+        }
         for(var i in self.img){
             if(lastSelf.img){
                 if(lastSelf.img[i]){
@@ -2360,6 +2364,7 @@ Player = function(param){
         pack.level = self.level;
         pack.map = self.map;
         pack.username = self.username;
+        pack.displayName = self.displayName;
         pack.img = self.img;
         pack.direction = self.direction;
         pack.animationDirection = self.animationDirection;
