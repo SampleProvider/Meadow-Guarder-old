@@ -161,7 +161,7 @@ var spawnMonster = function(spawner,spawnId){
         if(Player.list[j].map === spawner.map){
             monsterHp += Player.list[j].hpMax;
             monsterStats.attack += Player.list[j].stats.attack / 2;
-            monsterStats.defense += Player.list[j].stats.defense;
+            monsterStats.defense += Player.list[j].stats.defense / 2;
             monsterStats.heal += Player.list[j].stats.heal / 2;
         }
     }
@@ -3977,6 +3977,7 @@ var load = function(name){
 load("Town Hall");
 load("Fishing Hut");
 load("House");
+load("Tiny House");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

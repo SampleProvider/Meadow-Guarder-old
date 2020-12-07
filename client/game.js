@@ -329,6 +329,7 @@ var renderLayers = function(json,name){
         tempLower.canvas.heiht = json.layers[0].height * 64;
         tempUpper.canvas.width = json.layers[0].width * 64;
         tempUpper.canvas.heiht = json.layers[0].height * 64;
+        console.log('Firefox!!!')
     }
     else{
         var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
@@ -415,6 +416,7 @@ let fps;
 
 loadMap('Town Hall');
 loadMap('Fishing Hut');
+loadMap('Tiny House');
 loadMap('House');
 
 var documentHidden = false;

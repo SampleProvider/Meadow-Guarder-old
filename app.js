@@ -160,7 +160,9 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
-			addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ': ' + data);
+			if(data !== ''){
+				addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ': ' + data);
+			}
 		}
 		else{
 			socket.emit('disconnected');
@@ -168,7 +170,7 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendDebugToServer',function(data){
 		console.log(data.error);
-		if(Player.list[socket.id]){
+		if(Player.list[socket.id] && data !== ''){
 			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'maitian' || Player.list[socket.id].username === 'Unknown' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'sp10' || Player.list[socket.id].username === 'Suvanth'){
 				if(data.includes('process')){
 					if(Player.list[socket.id].username === 'sp'){
