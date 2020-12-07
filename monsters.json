@@ -35,7 +35,20 @@
         "stats":{
             "attack":1,
             "defense":2,
-            "heal":2
+            "heal":1
+        }
+    },
+    "snowBall":{
+        "spawnChance":0.05,
+        "xpGain":2,
+        "width":44,
+        "height":44,
+        "attackState":"passiveBall",
+        "hp":1,
+        "stats":{
+            "attack":1,
+            "defense":5,
+            "heal":1
         }
     },
     "redCherryBomb":{

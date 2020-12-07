@@ -63,36 +63,48 @@ s = {
         }
     },
     spawnMonster:function(param,pt){
-        var monsterAttack = 'passiveBird';
-        if(param === 'blueBall'){
-            monsterAttack = 'passiveBall';
+        var monsterHp = 200;
+        var monsterStats = {
+            attack:1,
+            defense:1,
+            heal:1,
         }
-        if(param === 'redCherryBomb'){
-            monsterAttack = 'passiveCherryBomb';
-        }
-        var monster = new Monster({
-            spawnId:0,
-            x:pt.x + Math.random() * 2 - 1,
-            y:pt.y + Math.random() * 2 - 1,
-            map:pt.map,
-            moveSpeed:2,
-            monsterType:param,
-            attackState:monsterAttack,
-            onDeath:function(pt){
-                pt.toRemove = true;
-                for(var i in Projectile.list){
-                    if(Projectile.list[i].parent === pt.id){
-                        Projectile.list[i].toRemove = true;
+        for(var i in monsterData){
+            if(i === param){
+                monsterHp *= monsterData[i].hp;
+                monsterStats.attack *= monsterData[i].stats.attack;
+                monsterStats.defense *= monsterData[i].stats.defense;
+                monsterStats.heal *= monsterData[i].stats.heal;
+                var monster = new Monster({
+                    spawnId:false,
+                    x:pt.x + Math.random() * 128 - 64,
+                    y:pt.y + Math.random() * 128 - 64,
+                    map:pt.map,
+                    moveSpeed:2,
+                    stats:monsterStats,
+                    hp:Math.round(monsterHp),
+                    monsterType:i,
+                    attackState:monsterData[i].attackState,
+                    width:monsterData[i].width,
+                    height:monsterData[i].height,
+                    xpGain:monsterData[i].xpGain,
+                    onDeath:function(pt){
+                        pt.toRemove = true;
+                        for(var i in Projectile.list){
+                            if(Projectile.list[i].parent === pt.id){
+                                Projectile.list[i].toRemove = true;
+                            }
+                        }
+                    },
+                });
+                for(var i in Player.list){
+                    if(Player.list[i].map === monster.map){
+                        SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
                     }
                 }
-            },
-        });
-        for(var i in Player.list){
-            if(Player.list[i].map === monster.map){
-                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                return monster;
             }
         }
-        return monster;
     },
     spawnNpc:function(param,pt){
         var npc = new Npc({
@@ -1101,7 +1113,7 @@ Player = function(param){
     self.questStats = {}
     self.type = 'Player';
     self.username = param.username;
-    self.tag = '';
+    self.displayName = self.username;
     if(self.username === 'Unknown'){
         self.textColor = '#000000';
     }
@@ -1235,7 +1247,7 @@ Player = function(param){
             self.hp = 0;
             if(self.state !== 'dead'){
                 Player.spectate(socket);
-                addToChat('style="color: #ff0000">',self.username + ' died.');
+                addToChat('style="color: #ff0000">',self.displayName + ' died.');
                 self.state = 'dead';
             }
         }
@@ -1250,7 +1262,7 @@ Player = function(param){
                 }
             }
         }
-        if(!self.invincible){
+        if(!self.invincible && self.state !== 'dead'){
             self.updateAttack();
         }
         self.updateQuest();
@@ -1497,7 +1509,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Missing Person'){
-            addToChat('style="color: ' + self.textColor + '">',Player.list[socket.id].username + " completed the quest " + self.quest + ".");
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -1623,7 +1635,7 @@ Player = function(param){
                         height:monsterData['blueBall'].height,
                         xpGain:monsterData['blueBall'].xpGain * 10,
                         stats:{
-                            attack:self.stats.attack * 2,
+                            attack:self.stats.attack * 0.5,
                             defense:self.stats.defense * 5,
                             heal:0,
                         },
@@ -1818,7 +1830,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 18 && self.questInfo.quest === 'Weird Tower'){
-            addToChat('style="color: ' + self.textColor + '">',Player.list[socket.id].username + " completed the quest " + self.quest + ".");
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -1932,7 +1944,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.questInfo.quest === 'Clear River'){
-            addToChat('style="color: ' + self.textColor + '">',Player.list[socket.id].username + " completed the quest " + self.quest + ".");
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -2011,7 +2023,7 @@ Player = function(param){
                         spawnMonster(Spawner.list[i],i);
                     }
                 }
-                addToChat('style="color: ' + self.textColor + '">',self.username + " went to map " + self.map + ".");
+                addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
             }
             var pack = {player:[],projectile:[],monster:[],npc:[]};
             for(var i in Player.list){
@@ -2139,61 +2151,68 @@ Player = function(param){
             self.xp = self.xp - self.xpMax;
             self.level += 1;
             self.xpMax = xpLevels[self.level];
-            addToChat('style="color: #00ff00">',self.username + ' is now level ' + self.level + '.');
+            addToChat('style="color: #00ff00">',self.displayName + ' is now level ' + self.level + '.');
         }
     }
     self.updateAttack = function(){
-        if(self.state !== 'dead'){
-            if(self.keyPress.attack === true && self.attackReload > 15 && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
-                self.attackReload = 1;
-                self.attackTick = 0;
-            }
-            if(self.keyPress.second === true && self.secondReload > 250 && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
-                self.secondReload = 1;
-                self.secondTick = 0;
-            }
-            if(self.keyPress.heal === true && self.healReload > 500){
-                self.healReload = 1;
-                self.healTick = 0;
+        if(self.keyPress.heal === true && self.healReload > 500){
+            self.healReload = 1;
+            self.healTick = 0;
+        }
+        if(self.healTick === 0){
+            self.hp += Math.round(self.stats.heal * 200);
+        }
+        if(self.healTick === 40){
+            self.hp += Math.round(self.stats.heal * 200);
+        }
+        if(self.healTick === 80){
+            self.hp += Math.round(self.stats.heal * 200);
+        }
+        if(self.healTick === 120){
+            self.hp += Math.round(self.stats.heal * 200);
+        }
+        var isFireMap = false;
+        for(var i in worldMap){
+            if(worldMap[i].fileName.slice(0,-4) === self.map){
+                isFireMap = true;
             }
         }
-        if(self.attackTick === 0 && self.state !== 'dead' && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
+        if(isFireMap === false || self.map === 'The Village'){
+            return;
+        }
+        if(self.keyPress.attack === true && self.attackReload > 15){
+            self.attackReload = 1;
+            self.attackTick = 0;
+        }
+        if(self.keyPress.second === true && self.secondReload > 250){
+            self.secondReload = 1;
+            self.secondTick = 0;
+        }
+        if(self.attackTick === 0){
             self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'Bullet',0,self.stats);
             self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'Bullet',0,self.stats);
         }
-        if(self.secondTick === 0 && self.state !== 'dead' && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
+        if(self.secondTick === 0){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 20 && self.state !== 'dead' && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
+        if(self.secondTick === 20){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 40 && self.state !== 'dead' && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
+        if(self.secondTick === 40){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
         }
-        if(self.secondTick === 60 && self.state !== 'dead' && self.map !== "The Village" && self.map !== "House" && self.map !== "Starter House" && self.map !== "Secret Base" && self.map !== "Cacti Farm" && self.map !== "The Guarded Citadel"){
+        if(self.secondTick === 60){
             for(var i = 0;i < 10;i++){
                 self.shootProjectile(self.id,'Player',i * 36,i * 36,'Bullet',0,self.stats);
             }
-        }
-        if(self.healTick === 0 && self.state !== 'dead'){
-            self.hp += Math.round(self.stats.heal * 200);
-        }
-        if(self.healTick === 40 && self.state !== 'dead'){
-            self.hp += Math.round(self.stats.heal * 200);
-        }
-        if(self.healTick === 80 && self.state !== 'dead'){
-            self.hp += Math.round(self.stats.heal * 200);
-        }
-        if(self.healTick === 120 && self.state !== 'dead'){
-            self.hp += Math.round(self.stats.heal * 200);
         }
     }
     self.getUpdatePack = function(){
@@ -2509,7 +2528,7 @@ Player.onConnect = function(socket,username){
 
         socket.on('respawn',function(data){
             if(player.state !== 'dead'){
-                addToChat('style="color: #ff0000">',player.username + ' cheated using respawn.');
+                addToChat('style="color: #ff0000">',player.displayName + ' cheated using respawn.');
                 Player.onDisconnect(SOCKET_LIST[player.id]);
                 return;
             }
@@ -2518,7 +2537,7 @@ Player.onConnect = function(socket,username){
             player.toRemove = false;
             player.state = 'none';
             player.dazed = 0;
-            addToChat('style="color: #00ff00">',player.username + ' respawned.');
+            addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
 
         socket.on('startQuest',function(data){
@@ -2572,7 +2591,7 @@ Player.onConnect = function(socket,username){
             }
         }
         socket.emit('update',pack);
-        addToChat('style="color: #00ff00">',username + " just logged on.");
+        addToChat('style="color: #00ff00">',displayName + " just logged on.");
         for(var i in tiles){
             socket.emit('drawTile',tiles[i]);
         }
@@ -2619,7 +2638,7 @@ Player.onDisconnect = function(socket){
             }
         }
         tiles = JSON.parse(JSON.stringify(newTiles));
-        addToChat('style="color: #ff0000">',Player.list[socket.id].username + " logged off.");
+        addToChat('style="color: #ff0000">',Player.list[socket.id].displayName + " logged off.");
         playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
     }

@@ -160,7 +160,7 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
-			addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].username + ': ' + data);
+			addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ': ' + data);
 		}
 		else{
 			socket.emit('disconnected');

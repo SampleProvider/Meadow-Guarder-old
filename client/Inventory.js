@@ -265,7 +265,7 @@ Inventory = function(socket,server){
     if(self.server && self.socket){
         self.socket.on("useItem",function(itemId){
             if(!self.hasItem(itemId,1)){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item use.');
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item use.');
                 return;
             }
 
@@ -274,7 +274,7 @@ Inventory = function(socket,server){
         });
         self.socket.on("dismantleItem",function(itemId){
             if(!self.hasItem(itemId,1)){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item dismantle.');
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
                 return;
             }
 
@@ -283,7 +283,7 @@ Inventory = function(socket,server){
         });
         self.socket.on("equipItem",function(itemId){
             if(!self.hasItem(itemId,1)){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item equip.');
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item equip.');
                 return;
             }
 
@@ -296,7 +296,7 @@ Inventory = function(socket,server){
         });
         self.socket.on("unequipItem",function(itemId){
             if(self.currentEquip[Item.list[itemId].equip] !== itemId){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].username + ' cheated using item unequip.');
+                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item unequip.');
                 return;
             }
             self.addItem(self.currentEquip[Item.list[itemId].equip],1);

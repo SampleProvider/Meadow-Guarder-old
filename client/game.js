@@ -961,6 +961,13 @@ var Monster = function(initPack){
             ctx0.rotate(-self.animation * 45 * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
+        if(self.monsterType === 'snowBall'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.animation * 45 * Math.PI / 180);
+            ctx0.drawImage(Img.ball,0,12,11,11,-22,-22,44,44);
+            ctx0.rotate(-self.animation * 45 * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
         if(self.monsterType === 'redCherryBomb'){
             if(self.animation === 0){
                 ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
