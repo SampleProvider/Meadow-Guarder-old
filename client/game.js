@@ -767,7 +767,7 @@ var Player = function(initPack){
     }
     self.draw = function(){
         self.animation = Math.round(self.animation);
-        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
+        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,Math.round(self.x),Math.round(self.y),4);
         
         if(self.id === selfId){
             inventoryPlayerDisplay.clearRect(0,0,10,17);
@@ -786,9 +786,9 @@ var Player = function(initPack){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.displayName,self.x,self.y - 92);
-        ctx1.drawImage(Img.healthBar,0,0,42,5,self.x - 63,self.y - 75,126,15);
-        ctx1.drawImage(Img.healthBar,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
+        ctx1.fillText(self.displayName,Math.round(self.x),Math.round(self.y) - 92);
+        ctx1.drawImage(Img.healthBar,0,0,42,5,Math.round(self.x) - 63,Math.round(self.y) - 75,126,15);
+        ctx1.drawImage(Img.healthBar,0,6,Math.round(42 * self.hp / self.hpMax),5,Math.round(self.x) - 63,Math.round(self.y) - 75,Math.round(126 * self.hp / self.hpMax),15);
         if(self.id !== selfId){
             return;
         }
@@ -960,15 +960,15 @@ var Monster = function(initPack){
     self.draw = function(){
         if(self.monsterType === 'blueBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 26,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,Math.round(self.x) - 22,Math.round(self.y) - 26,44,52);
         }
         if(self.monsterType === 'greenBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 26,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,Math.round(self.x) - 22,Math.round(self.y) - 26,44,52);
         }
         if(self.monsterType === 'redBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,self.x - 44,self.y - 52,88,104);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,Math.round(self.x) - 44,Math.round(self.y) - 52,88,104);
         }
         if(self.monsterType === 'blueBall'){
             ctx0.translate(self.x,self.y);
@@ -986,35 +986,35 @@ var Monster = function(initPack){
         }
         if(self.monsterType === 'redCherryBomb'){
             if(self.animation === 0){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
             }
             else if(self.animation === 1){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,self.x - 24,self.y - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 0,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
             }
             else{
-                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,Math.round(self.x) - 72,Math.round(self.y) - 72,72 * 2,72 * 2);
             }
         }
         if(self.monsterType === 'blueCherryBomb'){
             if(self.animation === 0){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,self.x - 24,self.y - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
             }
             else if(self.animation === 1){
-                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,self.x - 24,self.y - 20,48,40);
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 1,12,10,Math.round(self.x) - 24,Math.round(self.y) - 20,48,40);
             }
             else{
-                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,Math.round(self.x) - 72,Math.round(self.y) - 72,72 * 2,72 * 2);
             }
         }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 75,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,Math.round(self.x) - 63,Math.round(self.y) - 75,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,Math.round(self.x) - 63,Math.round(self.y) - 75,Math.round(126 * self.hp / self.hpMax),15);
         }
         else{
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 50,Math.round(126 * self.hp / self.hpMax),15);
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,Math.round(self.x) - 63,Math.round(self.y) - 50,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,Math.round(self.x) - 63,Math.round(self.y) - 50,Math.round(126 * self.hp / self.hpMax),15);
         }
     }
     Monster.list[self.id] = self;
@@ -1061,13 +1061,13 @@ var Npc = function(initPack){
     }
     self.draw = function(){
         self.animation = Math.round(self.animation);
-        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
+        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,Math.round(self.x),Math.round(self.y),4);
     }
     self.drawName = function(){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.name,self.x,self.y - 62);
+        ctx1.fillText(self.name,Math.round(self.x),Math.round(self.y) - 62);
     }
     Npc.list[self.id] = self;
     return self;
@@ -1554,7 +1554,7 @@ setInterval(function(){
 
     map0.restore();
     ctx0.save();
-    ctx0.translate(cameraX,cameraY);
+    ctx0.translate(Math.round(cameraX),Math.round(cameraY));
     var entities = [];
     for(var i in Player.list){
         entities.push(Player.list[i]);
@@ -1619,7 +1619,7 @@ setInterval(function(){
     
     map1.restore();
     ctx1.save();
-    ctx1.translate(cameraX,cameraY);
+    ctx1.translate(Math.round(cameraX),Math.round(cameraY));
     for(var i in Projectile.list){
         Projectile.list[i].update();
     }
