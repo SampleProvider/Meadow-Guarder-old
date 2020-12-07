@@ -2591,7 +2591,7 @@ Player.onConnect = function(socket,username){
             }
         }
         socket.emit('update',pack);
-        addToChat('style="color: #00ff00">',displayName + " just logged on.");
+        addToChat('style="color: #00ff00">',player.displayName + " just logged on.");
         for(var i in tiles){
             socket.emit('drawTile',tiles[i]);
         }
