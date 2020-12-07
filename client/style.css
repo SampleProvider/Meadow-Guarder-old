@@ -288,10 +288,13 @@ canvas {
 
 #chat-text {
     position: absolute;
-    bottom: 10px;
+    bottom: 40px;
     left: 30%;
     width: 610px;
-    height: 150px;
+    height: 135px;
+    margin: 0px;
+    padding: 0px;
+    scroll-padding: 0px;
     overflow-y: scroll;
 }
 #chat-input {
@@ -679,6 +682,7 @@ canvas {
     user-select: text;
 }
 .textNone {
+    position: relative;
     user-select: none;
 }
 #inventoryButton {
@@ -1013,4 +1017,9 @@ audio {
     position: absolute;
     left: 120px;
     top: 45px;
+}
+#chatBackground {
+    position: relative;
+    left: 120px;
+    top: 8px;
 }

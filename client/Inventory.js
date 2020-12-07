@@ -42,7 +42,9 @@ QuestInventory = function(socket,server){
             for(var i = 0;i < self.items.length;i++){
                 self.items[i].index = i;
             }
-            self.socket.emit('updateQuestInventory',self.items);
+            if(self.socket !== undefined){
+                self.socket.emit('updateQuestInventory',self.items);
+            }
             return;
         }
         var questInventory = document.getElementById("questInventoryDiv");
@@ -168,7 +170,9 @@ Inventory = function(socket,server){
             for(var i = 0;i < self.items.length;i++){
                 self.items[i].index = i;
             }
-            self.socket.emit('updateInventory',{items:self.items,currentEquip:self.currentEquip});
+            if(self.socket !== undefined){
+                self.socket.emit('updateInventory',{items:self.items,currentEquip:self.currentEquip});
+            }
             return;
         }
         var inventory = document.getElementById("inventoryItem");

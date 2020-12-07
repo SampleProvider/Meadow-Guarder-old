@@ -147,8 +147,6 @@ s = {
     },
 };
 
-var questList = ["Missing Person","Weird Tower","Clear River"];
-
 var monsterData = require('./monsters.json');
 
 var spawnMonster = function(spawner,spawnId){
@@ -1103,17 +1101,21 @@ Player = function(param){
     playerMap[self.map] += 1;
     self.mapHeight = 3200;
     self.mapWidth = 3200;
-    self.textColor = '#ffff00';
     self.quest = false;
     self.questStage = 0;
     self.questInfo = {
         quest:false,
     };
     self.questDependent = {};
-    self.questStats = {}
+    self.questStats = {
+        "Missing Person":false,
+        "Weird Tower":false,
+        "Clear River":false,
+    }
     self.type = 'Player';
     self.username = param.username;
-    self.displayName = self.username;
+    self.displayName = param.username;
+    self.textColor = '#ffff00';
     if(self.username === 'Unknown'){
         self.textColor = '#000000';
     }
@@ -1175,17 +1177,10 @@ Player = function(param){
         }
     }
     if(param.param.questStats){
-        self.questStats = param.param.questStats;
-    }
-    for(var i in questList){
-        if(self.questStats[questList[i]] === true){
-            
-        }
-        else if(self.questStats[questList[i]] === false){
-            
-        }
-        else{
-            self.questStats[questList[i]] = false;
+        for(var i in param.param.questStats){
+            if(self.questStats[i] !== undefined){
+                self.questStats[i] = param.param.questStats[i];
+            }
         }
     }
     self.inventory.refreshRender();

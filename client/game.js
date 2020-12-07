@@ -197,7 +197,7 @@ socket.on('addToChat',function(data){
         m = '00';
     }
     chat += '<div class="textNone"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
-    chatText.innerHTML = chat + '<br>';
+    chatText.innerHTML = chat;
     if(scroll){
         chatText.scrollTop = chatText.scrollHeight;
     }
@@ -527,6 +527,21 @@ document.getElementById('audioSwitch').onclick = function(){
         audioTense.play();
         document.getElementById('audioSwitch').innerHTML = 'Change music. Current music is tense.';
         audio = 'tense';
+    }
+}
+var chatBackground = 'none';
+document.getElementById('chatBackground').onclick = function(){
+    if(chatBackground === 'none'){
+        document.getElementById('chat-text').style.backgroundColor = '#362a1e';
+        document.getElementById('chat-text').style.border = '1px solid #000000';
+        document.getElementById('chatBackground').innerHTML = 'Remove the background on the chat.';
+        chatBackground = 'brown';
+    }
+    else{
+        document.getElementById('chat-text').style.backgroundColor = 'transparent';
+        document.getElementById('chat-text').style.border = '0px solid #000000';
+        document.getElementById('chatBackground').innerHTML = 'Add a background to the chat.';
+        chatBackground = 'none';
     }
 }
 
