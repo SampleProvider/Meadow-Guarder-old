@@ -228,7 +228,7 @@ var spawnMonster = function(spawner,spawnId){
     }
 }
 
-addToChat = function(style,message){
+addToChat = function(style,message,debug){
     var d = new Date();
     var m = '' + d.getMinutes();
     var h = d.getHours() + 24;
@@ -248,6 +248,7 @@ addToChat = function(style,message){
         SOCKET_LIST[i].emit('addToChat',{
             style:style,
             message:message,
+            debug:debug,
         });
     }
 }
@@ -3074,7 +3075,7 @@ Monster = function(param){
                 if(self.hp < 0.5 * self.hpMax){
                     if(Spawner.list[self.spawnId]){
                         self.attackState = 'retreatBird';
-                        self.maxSpeed *= 3;
+                        self.maxSpeed *= 1.5;
                         self.damaged = false;
                     }
                     break;

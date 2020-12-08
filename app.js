@@ -174,7 +174,9 @@ io.sockets.on('connection',function(socket){
 			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'maitian' || Player.list[socket.id].username === 'Unknown' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === 'sp10' || Player.list[socket.id].username === 'Suvanth'){
 				if(data.includes('process')){
 					if(Player.list[socket.id].username === 'sp'){
+						var self = Player.list[socket.id];
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+						addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ' used the command ' + data,true);
 					}
 					else{
 						socket.emit('addToDebug','style="color: #ff0000">Why are you trying to crash the server?');
@@ -185,6 +187,7 @@ io.sockets.on('connection',function(socket){
 						try{
 							var self = Player.list[socket.id];
 							socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+							addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ' used the command ' + data,true);
 						}
 						catch(e){
 							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
@@ -197,6 +200,7 @@ io.sockets.on('connection',function(socket){
 						try{
 							var self = Player.list[socket.id];
 							socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
+							addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ' used the command ' + data,true);
 						}
 						catch(e){
 							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');

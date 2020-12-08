@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f1b';
+var VERSION = '011f1c';
 
 var DEBUG = false;
 
@@ -191,6 +191,9 @@ var chatPress = false;
 var inChat = false;
 
 socket.on('addToChat',function(data){
+    if(data.debug && !showDebugCommands){
+        return;
+    }
     var scroll = false;
     if(chatText.scrollTop + chatText.clientHeight >= chatText.scrollHeight - 5){
         scroll = true;
@@ -203,7 +206,7 @@ socket.on('addToChat',function(data){
     if(m === '0'){
         m = '00';
     }
-    chat += '<div class="textNone"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
+    chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
     chatText.innerHTML = chat;
     if(scroll){
         chatText.scrollTop = chatText.scrollHeight;
@@ -558,6 +561,17 @@ document.getElementById('chatBackground').onclick = function(){
         document.getElementById('chat-text').style.border = '0px solid #000000';
         document.getElementById('chatBackground').innerHTML = 'Add a background to the chat.';
         chatBackground = 'none';
+    }
+}
+var showDebugCommands = false;
+document.getElementById('showDebugCommands').onclick = function(){
+    if(!showDebugCommands){
+        document.getElementById('showDebugCommands').innerHTML = 'Hide Debug Commands';
+        showDebugCommands = !showDebugCommands;
+    }
+    else{
+        document.getElementById('showDebugCommands').innerHTML = 'Show Debug Commands.';
+        showDebugCommands = !showDebugCommands;
     }
 }
 
@@ -1449,7 +1463,7 @@ socket.on('updateLeaderboard',function(data){
     document.getElementById('leaderboardScreen').innerHTML = '<div style="font-size:18px;">Leaderboards update every five minutes.</div><br>';
     var j = 1;
     for(var i in data){
-        if(data[i].xp !== undefined && data[i].xp !== 0){
+        if(data[i].xp !== undefined && data[i].xp !== 0 && data[i].username !== 'sp' && data[i].username !== 'maitian'){
             document.getElementById('leaderboardScreen').innerHTML += '<div style="font-size: 13px;">' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
             j += 1;
         }

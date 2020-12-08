@@ -660,11 +660,8 @@ canvas {
 }
 
 .text {
-    user-select: text;
-}
-.textNone {
     position: relative;
-    user-select: none;
+    user-select: text;
 }
 #inventoryButton {
     position: relative;
@@ -1000,7 +997,12 @@ audio {
     top: 45px;
 }
 #chatBackground {
-    position: relative;
+    position: absolute;
     left: 120px;
-    top: 8px;
+    top: 75px;
+}
+#showDebugCommands {
+    position: absolute;
+    left: 120px;
+    top: 105px;
 }
