@@ -68,7 +68,7 @@
     "spbow":{
         "name":"SP Bow",
         "equip":"weapon",
-        "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 3;",
+        "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 3;self.hpMax *= 100;self.stats.heal *= 30;",
         "dropChance":"0"
     },
     "bronzekey":{

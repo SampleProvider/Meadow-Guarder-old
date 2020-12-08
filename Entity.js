@@ -51,6 +51,7 @@ var xpLevels = [
     10000000,
 ];
 var fs = require('fs');
+var PF = require('pathfinding');
 
 worldMap = [];
 
@@ -151,24 +152,6 @@ var monsterData = require('./monsters.json');
 var projectileData = require('./projectiles.json');
 
 var spawnMonster = function(spawner,spawnId){
-    var monsterHp = 0;
-    var monsterStats = {
-        attack:0,
-        defense:0,
-        heal:0,
-    }
-    for(var j in Player.list){
-        if(Player.list[j].map === spawner.map){
-            monsterHp += Player.list[j].hpMax;
-            monsterStats.attack += Player.list[j].stats.attack / 2;
-            monsterStats.defense += Player.list[j].stats.defense / 2;
-            monsterStats.heal += Player.list[j].stats.heal / 2;
-        }
-    }
-    monsterHp = monsterHp / playerMap[spawner.map];
-    monsterStats.attack = monsterStats.attack / playerMap[spawner.map];
-    monsterStats.defense = monsterStats.defense / playerMap[spawner.map];
-    monsterStats.heal = monsterStats.heal / playerMap[spawner.map];
     var monsterSeed = Math.random();
     var monsterTotal = 0;
     for(var i in monsterData){
@@ -177,16 +160,38 @@ var spawnMonster = function(spawner,spawnId){
     monsterSeed *= monsterTotal;
     for(var i in monsterData){
         if(monsterSeed > 0 && monsterSeed < monsterData[i].spawnChance){
+            var monsterHp = 0;
+            var monsterStats = {
+                attack:0,
+                defense:0,
+                heal:0,
+            }
+            for(var j in Player.list){
+                if(Player.list[j].map === spawner.map){
+                    monsterHp += Player.list[j].hpMax / 4;
+                    monsterStats.attack += Player.list[j].stats.attack / 4;
+                    monsterStats.defense += Player.list[j].stats.defense / 4;
+                    monsterStats.heal += Player.list[j].stats.heal / 4;
+                }
+            }
+            monsterHp = monsterHp / playerMap[spawner.map];
+            monsterStats.attack = monsterStats.attack / playerMap[spawner.map];
+            monsterStats.defense = monsterStats.defense / playerMap[spawner.map];
+            monsterStats.heal = monsterStats.heal / playerMap[spawner.map];
             monsterHp *= monsterData[i].hp;
             monsterStats.attack *= monsterData[i].stats.attack;
             monsterStats.defense *= monsterData[i].stats.defense;
             monsterStats.heal *= monsterData[i].stats.heal;
+            monsterHp += monsterData[i].baseHp;
+            monsterStats.attack += monsterData[i].baseStats.attack;
+            monsterStats.defense += monsterData[i].baseStats.defense;
+            monsterStats.heal += monsterData[i].baseStats.heal;
             var monster = new Monster({
                 spawnId:spawnId,
                 x:spawner.x,
                 y:spawner.y,
                 map:spawner.map,
-                moveSpeed:2,
+                moveSpeed:monsterData[i].moveSpeed,
                 stats:monsterStats,
                 hp:Math.round(monsterHp),
                 monsterType:i,
@@ -291,6 +296,9 @@ Entity = function(param){
 	self.getDistance = function(pt){
 		return Math.sqrt(Math.pow(self.x-pt.x,2) + Math.pow(self.y-pt.y,2))
     }
+	self.getSquareDistance = function(pt){
+		return Math.max(Math.abs(self.x - pt.x),Math.abs(self.y - pt.y));
+    }
     self.isColliding = function(pt){
         if(pt.map === self.map && pt.x + pt.width / 2 > self.x - self.width / 2 && pt.x - pt.width / 2 < self.x + self.width / 2 && pt.y + pt.height / 2 > self.y - self.height / 2 && pt.y - pt.height / 2 < self.y + self.height / 2){
             return true;
@@ -345,6 +353,21 @@ Entity.getFrameUpdateData = function(){
             }
         }
     }
+    for(var i in Player.list){
+        if(Player.list[i].willBeDead){
+            Player.list[i].isDead = true;
+        }
+    }
+    for(var i in Monster.list){
+        if(Monster.list[i].willBeDead){
+            Monster.list[i].isDead = true;
+        }
+    }
+    for(var i in Npc.list){
+        if(Npc.list[i].willBeDead){
+            Npc.list[i].isDead = true;
+        }
+    }
     for(var i in Collision.list){
         if(Collision.list[i].toRemove){
             delete Collision.list[i];
@@ -393,7 +416,9 @@ Actor = function(param){
     };
     self.pushPt = undefined;
     self.trackingEntity = undefined;
-    self.trackingState = true;
+    self.trackingPos = {x:undefined,y:undefined};
+    self.trackingPath = [];
+    self.trackTime = 100;
     self.entityId = undefined;
     self.canMove = true;
     self.canChangeMap = true;
@@ -409,7 +434,8 @@ Actor = function(param){
     self.toRemove = false;
     self.isHostile = false;
     self.isDead = false;
-    self.pushPower = 1;
+    self.willBeDead = false;
+    self.pushPower = 3;
     self.dazed = 0;
     self.animate = true;
     var super_update = self.update;
@@ -489,22 +515,70 @@ Actor = function(param){
 
             }
             else{
-                if(self.x < self.trackingEntity.x){
-                    self.spdX = 1;
+                var size = 33;
+                var dx = Math.floor(self.x / 64) - size / 2 + 0.5;
+                var dy = Math.floor(self.y / 64) - size / 2 + 0.5;
+                var trackX = Math.floor(self.trackingEntity.x / 64) - dx;
+                var trackY = Math.floor(self.trackingEntity.y / 64) - dy;
+                self.trackTime += 1;
+                if(trackX !== self.trackingPos.x || trackY !== self.trackingPos.y){
+                    if(self.trackTime > 60){
+                        self.trackTime = 0;
+                        self.trackingPos.x = trackX;
+                        self.trackingPos.y = trackY;
+                        var finder = new PF.BiAStarFinder({
+                            allowDiagonal:true,
+                            dontCrossCorners:true,
+                        });
+                        var grid = new PF.Grid(size,size);
+                        for(var i in Collision.list){
+                            if(Collision.list[i].map === self.map && Collision.list[i].x > dx * 64 && Collision.list[i].x < dx * 64 + size * 64 && Collision.list[i].y > dy * 64 && Collision.list[i].y < dy * 64 + size * 64){
+                                grid.setWalkableAt(Math.floor(Collision.list[i].x / 64) - dx,Math.floor(Collision.list[i].y / 64) - dy,false);
+                            }
+                        }
+                        if(self.trackingPath.length > 2){
+                            var nx = self.trackingPath[self.trackingPath.length - 2][0] - dx;
+                            var ny = self.trackingPath[self.trackingPath.length - 2][1] - dy;
+                            if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
+                                var path = finder.findPath(nx,ny,trackX,trackY,grid);
+                                self.trackingPath = PF.Util.compressPath(path);
+                                for(var i in self.trackingPath){
+                                    self.trackingPath[i][0] += dx;
+                                    self.trackingPath[i][1] += dy;
+                                }
+                            }
+                        }
+                        else{
+                            var nx = Math.floor(self.x / 64) - dx;
+                            var ny = Math.floor(self.y / 64) - dy;
+                            if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
+                                var path = finder.findPath(nx,ny,trackX,trackY,grid);
+                                self.trackingPath = PF.Util.compressPath(path);
+                                for(var i in self.trackingPath){
+                                    self.trackingPath[i][0] += dx;
+                                    self.trackingPath[i][1] += dy;
+                                }
+                            }
+                        }
+                    }
                 }
-                if(self.x > self.trackingEntity.x){
-                    self.spdX = -1;
+                if(self.trackingPath[0]){
+                    if(self.x / 64 < self.trackingPath[0][0] + 0.5){
+                        self.spdX = 1;
+                    }
+                    if(self.x / 64 > self.trackingPath[0][0] + 0.5){
+                        self.spdX = -1;
+                    }
+                    if(self.y / 64 < self.trackingPath[0][1] + 0.5){
+                        self.spdY = 1;
+                    }
+                    if(self.y / 64 > self.trackingPath[0][1] + 0.5){
+                        self.spdY = -1;
+                    }
+                    if(self.spdX === 0 && self.spdY === 0){
+                        self.trackingPath.shift();
+                    }
                 }
-                if(self.y < self.trackingEntity.y){
-                    self.spdY = 1;
-                }
-                if(self.y > self.trackingEntity.y){
-                    self.spdY = -1;
-                }
-            }
-            if(!self.trackingState){
-                self.spdX = -self.spdX;
-                self.spdY = -self.spdY;
             }
         }
         else if(self.randomPos.walking){
@@ -643,8 +717,10 @@ Actor = function(param){
         self.moveArray.push({x:x,y:y});
     }
     self.onPush = function(pt,pushPower){
-        self.pushPt = pt;
-        self.onCollision(pt,pushPower * self.pushPower);
+        if(self.dazed < 1){
+            self.pushPt = pt;
+            self.onCollision(pt,pushPower * self.pushPower);
+        }
     }
     self.randomWalk = function(walking,waypoint,x,y){
         self.randomPos.walking = walking;
@@ -670,11 +746,6 @@ Actor = function(param){
     }
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
-        self.trackingState = true;
-    }
-    self.escapeEntity = function(pt){
-        self.trackingEntity = pt;
-        self.trackingState = false;
     }
     self.onHit = function(pt){
     }
@@ -683,7 +754,7 @@ Actor = function(param){
             self.hp -= Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
             self.onHit(pt);
         }
-        if(self.hp < 1 && self.isDead === false && pt.toRemove === false){
+        if(self.hp < 1 && self.willBeDead === false && pt.toRemove === false){
             if(pt.parentType === 'Player' && self.type === 'Monster'){
                 var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                 while(items.length > 0){
@@ -704,7 +775,7 @@ Actor = function(param){
                 }
                 pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
             }
-            self.isDead = true;
+            self.willBeDead = true;
             self.toRemove = true;
         }
     }
@@ -1096,7 +1167,7 @@ Player = function(param){
         body:[-1,-1,-1,0.5],
         shirt:[255,0,0,0.5],
         pants:[0,0,255,0.6],
-        hair:[0,255,0,0.7],
+        hair:[0,255,0,0.9],
         hairType:'bald',
     };
     self.imgwidth = 0;
@@ -2938,7 +3009,7 @@ Monster = function(param){
                 self.spdY = 0;
                 self.animate = true;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveBird";
                         self.target = Player.list[i];
                     }
@@ -2982,13 +3053,14 @@ Monster = function(param){
                 }
                 self.reload += 1;
                 if(self.hp < 0.5 * self.hpMax){
-                    self.escapeEntity(self.target);
-                    self.attackState = 'retreatBird';
-                    self.maxSpeed *= 3;
-                    self.damaged = false;
+                    if(Spawner.list[self.spawnId]){
+                        self.attackState = 'retreatBird';
+                        self.maxSpeed *= 3;
+                        self.damaged = false;
+                    }
                     break;
                 }
-                if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
+                if(self.getSquareDistance(self.target) > 512 || self.target.state === 'dead'){
                     if(!self.damaged){
                         self.target = undefined;
                         self.trackingEntity = undefined;
@@ -3006,6 +3078,24 @@ Monster = function(param){
                 }
                 break;
             case "retreatBird":
+                var bestSpawner = undefined;
+                for(var i in Spawner.list){
+                    if(Spawner.list[i].map === self.map){
+                        if(bestSpawner === undefined){
+                            if(Spawner.list[i].getSquareDistance(self.target) < 16 * 64){
+                                bestSpawner = Spawner.list[i];
+                            }
+                        }
+                        else if(Spawner.list[i].getSquareDistance(self.target) > bestSpawner.getSquareDistance(self.target) && Spawner.list[i].getSquareDistance(self.target) < 16 * 64){
+                            bestSpawner = Spawner.list[i];
+                        }
+                    }
+                }
+                if(bestSpawner !== undefined){
+                    if(self.trackingEntity.id !== bestSpawner.id){
+                        self.trackEntity(bestSpawner);
+                    }
+                }
                 if(self.hp > 0.8 * self.hpMax){
                     self.attackState = 'passiveBird';
                     self.maxSpeed = param.moveSpeed;
@@ -3017,7 +3107,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveBall";
                         self.target = Player.list[i];
                     }
@@ -3052,7 +3142,7 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.reload % 50 < 16 && self.reload > 49 && self.target.invincible === false){
+                if(self.reload % 60 < 16 && self.reload > 49 && self.target.invincible === false){
                     self.animation += 0.5;
                     if(self.animation >= 8){
                         self.animation = 0;
@@ -3062,7 +3152,7 @@ Monster = function(param){
                     }
                 }
                 self.reload += 1;
-                if(self.getDistance(self.target) > 512 || self.target.state === 'dead'){
+                if(self.getSquareDistance(self.target) > 512 || self.target.state === 'dead'){
                     if(!self.damaged){
                         self.target = undefined;
                         self.attackState = 'passiveBall';
@@ -3073,7 +3163,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveCherryBomb";
                         self.target = Player.list[i];
                     }
@@ -3109,7 +3199,7 @@ Monster = function(param){
                     break;
                 }
                 self.reload += 1;
-                if(self.getDistance(self.target) < 64){
+                if(self.getSquareDistance(self.target) < 64){
                     self.stats.defense *= 20;
                     self.stats.attack *= 20;
                     self.attackState = 'explodeCherryBomb';

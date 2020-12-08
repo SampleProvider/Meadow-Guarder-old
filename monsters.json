@@ -3,27 +3,41 @@
         "spawnChance":0.5,
         "xpGain":1,
         "width":44,
-        "height":52,
+        "height":40,
         "attackState":"passiveBird",
         "hp":1,
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
-        }
+            "heal":0.2
+        },
+        "baseHp":100,
+        "baseStats":{
+            "attack":1,
+            "defense":1,
+            "heal":0
+        },
+        "moveSpeed":5
     },
     "greenBird":{
         "spawnChance":0.5,
         "xpGain":1,
         "width":44,
-        "height":52,
+        "height":40,
         "attackState":"passiveBird",
         "hp":1,
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
-        }
+            "heal":0.2
+        },
+        "baseHp":100,
+        "baseStats":{
+            "attack":1,
+            "defense":1,
+            "heal":0
+        },
+        "moveSpeed":5
     },
     "blueBall":{
         "spawnChance":0.1,
@@ -35,21 +49,35 @@
         "stats":{
             "attack":1,
             "defense":2,
-            "heal":1
-        }
+            "heal":0.2
+        },
+        "baseHp":200,
+        "baseStats":{
+            "attack":1,
+            "defense":1,
+            "heal":0
+        },
+        "moveSpeed":5
     },
     "snowBall":{
         "spawnChance":0.05,
-        "xpGain":2,
+        "xpGain":5,
         "width":44,
         "height":44,
         "attackState":"passiveBall",
-        "hp":3,
+        "hp":2,
         "stats":{
             "attack":1,
             "defense":2,
             "heal":0
-        }
+        },
+        "baseHp":200,
+        "baseStats":{
+            "attack":1,
+            "defense":1,
+            "heal":0
+        },
+        "moveSpeed":10
     },
     "redCherryBomb":{
         "spawnChance":0.05,
@@ -57,12 +85,19 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":3,
+        "hp":2,
         "stats":{
             "attack":2,
             "defense":1,
             "heal":0.5
-        }
+        },
+        "baseHp":300,
+        "baseStats":{
+            "attack":1,
+            "defense":1,
+            "heal":0
+        },
+        "moveSpeed":15
     },
     "blueCherryBomb":{
         "spawnChance":0.05,
@@ -70,11 +105,18 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":3,
+        "hp":2,
         "stats":{
             "attack":2,
             "defense":1,
             "heal":0.5
-        }
+        },
+        "baseHp":300,
+        "baseStats":{
+            "attack":1,
+            "defense":1,
+            "heal":0
+        },
+        "moveSpeed":15
     }
 }

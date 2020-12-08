@@ -18,7 +18,7 @@ var audioCalm = document.getElementById('audioCalm');
 
 var VERSION = '010f4a';
 
-var DEBUG = 0;
+var DEBUG = false;
 
 var socket = io({
     reconnection:false,
@@ -811,6 +811,11 @@ var Player = function(initPack){
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
         ctx1.fillText(self.displayName,self.x,self.y - 92);
+        if(DEBUG){
+            ctx1.strokeStyle = '#ff0000';
+            ctx1.lineWidth = 4;
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64)
+        }
         ctx1.drawImage(Img.healthBar,0,0,42,5,self.x - 63,self.y - 75,126,15);
         ctx1.drawImage(Img.healthBar,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
         if(self.id !== selfId){
@@ -957,6 +962,13 @@ var Projectile = function(initPack){
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
+    self.drawHp = function(){
+        if(DEBUG){
+            ctx1.strokeStyle = '#ff0000';
+            ctx1.lineWidth = 4;
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64)
+        }
+    }
     Projectile.list[self.id] = self;
     return self;
 }
@@ -984,11 +996,11 @@ var Monster = function(initPack){
     self.draw = function(){
         if(self.monsterType === 'blueBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 26,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 32,44,52);
         }
         if(self.monsterType === 'greenBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 26,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 32,44,52);
         }
         if(self.monsterType === 'redBird'){
             self.animation = Math.round(self.animation);
@@ -1039,6 +1051,12 @@ var Monster = function(initPack){
         else{
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
             ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 50,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        if(DEBUG){
+            ctx1.strokeStyle = '#ff0000';
+            ctx1.lineWidth = 4;
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64 - 8 * 64,Math.floor(self.y / 64) * 64 - 8 * 64,33 * 64,33 * 64)
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64)
         }
     }
     Monster.list[self.id] = self;
@@ -1094,6 +1112,11 @@ var Npc = function(initPack){
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
         ctx1.fillText(self.name,self.x,self.y - 62);
+        if(DEBUG){
+            ctx1.strokeStyle = '#ff0000';
+            ctx1.lineWidth = 4;
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64)
+        }
     }
     Npc.list[self.id] = self;
     return self;
@@ -1596,6 +1619,7 @@ setInterval(function(){
     ctx1.save();
     ctx1.translate(cameraX,cameraY);
     for(var i in Projectile.list){
+        Projectile.list[i].drawHp();
         Projectile.list[i].update();
     }
     for(var i in Monster.list){
@@ -1638,10 +1662,10 @@ setInterval(function(){
     }
     shadeAmount += shadeSpeed;
     mapShadeAmount += mapShadeSpeed;
-    if(shadeAmount > 0){
+    if(shadeAmount >= -1){
         blackShade.style.opacity = shadeAmount;
     }
-    if(mapShadeAmount > 0){
+    if(mapShadeAmount >= -1){
         document.getElementById('mapName').style.opacity = mapShadeAmount;
     }
 
@@ -1691,6 +1715,9 @@ document.onkeydown = function(event){
         var key = event.key || event.keyCode;
         if(key === 'Meta' || key === 'Alt' || key === 'Control'){
             socket.emit('keyPress',{inputId:'releaseAll'});
+        }
+        if(key === 'b' && selfId){
+            DEBUG = !DEBUG;
         }
         if(!talking){
             socket.emit('keyPress',{inputId:key,state:true});
