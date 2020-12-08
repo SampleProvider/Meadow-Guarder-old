@@ -146,6 +146,16 @@ s = {
         }
         return pack;
     },
+    smite:function(param){
+        var player = s.findPlayer(param);
+        player.invincible = false;
+        s.spawnMonster('redCherryBomb',player);
+    },
+    smiteAll:function(){
+        for(var i in Player.list){
+            s.smite(Player.list[i].username);
+        }
+    },
 };
 
 var monsterData = require('./monsters.json');
@@ -168,10 +178,10 @@ var spawnMonster = function(spawner,spawnId){
             }
             for(var j in Player.list){
                 if(Player.list[j].map === spawner.map){
-                    monsterHp += Player.list[j].hpMax / 4;
-                    monsterStats.attack += Player.list[j].stats.attack / 4;
-                    monsterStats.defense += Player.list[j].stats.defense / 4;
-                    monsterStats.heal += Player.list[j].stats.heal / 4;
+                    monsterHp += Player.list[j].hpMax / 2;
+                    monsterStats.attack += Player.list[j].stats.attack / 2;
+                    monsterStats.defense += Player.list[j].stats.defense / 2;
+                    monsterStats.heal += Player.list[j].stats.heal / 2;
                 }
             }
             monsterHp = monsterHp / playerMap[spawner.map];
@@ -356,16 +366,19 @@ Entity.getFrameUpdateData = function(){
     for(var i in Player.list){
         if(Player.list[i].willBeDead){
             Player.list[i].isDead = true;
+            Player.list[i].willBeDead = false;
         }
     }
     for(var i in Monster.list){
         if(Monster.list[i].willBeDead){
             Monster.list[i].isDead = true;
+            Monster.list[i].willBeDead = false;
         }
     }
     for(var i in Npc.list){
         if(Npc.list[i].willBeDead){
             Npc.list[i].isDead = true;
+            Npc.list[i].willBeDead = false;
         }
     }
     for(var i in Collision.list){
@@ -754,16 +767,18 @@ Actor = function(param){
             self.hp -= Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
             self.onHit(pt);
         }
-        if(self.hp < 1 && self.willBeDead === false && pt.toRemove === false){
+        if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
             if(pt.parentType === 'Player' && self.type === 'Monster'){
-                var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
-                while(items.length > 0){
-                    for(var i in items){
-                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + items[i].name + ".");
+                if(Player.list[pt.parent].isDead === false){
+                    var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                    while(items.length > 0){
+                        for(var i in items){
+                            addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + items[i].name + ".");
+                        }
+                        items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
                     }
-                    items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                    Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
                 }
-                Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
                 var items = pt.inventory.addRandomizedItem(pt.stats.luck);
@@ -2611,6 +2626,9 @@ Player.onConnect = function(socket,username){
                 else if(parseInt(data.state,10) === 5){
                     player.img.hairType = 'vikingHat';
                 }
+                else if(parseInt(data.state,10) === 6){
+                    player.img.hairType = 'mohawkHair';
+                }
             }
         });
 
@@ -2626,6 +2644,7 @@ Player.onConnect = function(socket,username){
             }
             player.hp = Math.round(player.hpMax / 2);
             player.isDead = false;
+            player.willBeDead = false;
             player.toRemove = false;
             player.state = 'none';
             player.dazed = 0;
@@ -3362,7 +3381,8 @@ Projectile = function(param){
     self.mapHeight = param.mapHeight;
 	self.direction = param.direction;
 	self.timer = 0;
-	self.toRemove = false;
+    self.toRemove = false;
+    self.isDead = false;
     self.type = 'Projectile';
     self.stats = param.stats;
     self.parentType = param.parentType;

@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '010f4a';
+var VERSION = '011f1a';
 
 var DEBUG = false;
 
@@ -468,6 +468,8 @@ Img.playerHair.longHair = new Image();
 Img.playerHair.longHair.src = '/client/img/Player Map Hair Long.png';
 Img.playerHair.bald = new Image();
 Img.playerHair.bald.src = '/client/img/Player Map Bald.png';
+Img.playerHair.mohawkHair = new Image();
+Img.playerHair.mohawkHair.src = '/client/img/Player Map Hair Mohawk.png';
 Img.playerHair.shortHat = new Image();
 Img.playerHair.shortHat.src = '/client/img/Player Map Hat Short.png';
 Img.playerHair.longHat = new Image();
