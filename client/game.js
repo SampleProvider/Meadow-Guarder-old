@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f1a';
+var VERSION = '011f1b';
 
 var DEBUG = false;
 
@@ -300,13 +300,13 @@ var renderPlayer = function(img,shadeValues){
         }
         else{
             if(shadeValues[0] !== -1){
-                rgba[i] = (rgba[i] + shadeValues[0]) * shadeValues[3];
+                rgba[i] = rgba[i] + (shadeValues[0] - rgba[i]) * shadeValues[3];
             }
             if(shadeValues[1] !== -1){
-                rgba[i + 1] = (rgba[i + 1] + shadeValues[1]) * shadeValues[3];
+                rgba[i + 1] = rgba[i + 1] + (shadeValues[1] - rgba[i + 1]) * shadeValues[3];
             }
             if(shadeValues[2] !== -1){
-                rgba[i + 2] = (rgba[i + 2] + shadeValues[2]) * shadeValues[3];
+                rgba[i + 2] = rgba[i + 2] + (shadeValues[2] - rgba[i + 2]) * shadeValues[3];
             }
         }
     }
@@ -1057,7 +1057,7 @@ var Monster = function(initPack){
         if(DEBUG){
             ctx1.strokeStyle = '#ff0000';
             ctx1.lineWidth = 4;
-            ctx1.strokeRect(Math.floor(self.x / 64) * 64 - 8 * 64,Math.floor(self.y / 64) * 64 - 8 * 64,33 * 64,33 * 64)
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64 - 16 * 64,Math.floor(self.y / 64) * 64 - 16 * 64,33 * 64,33 * 64)
             ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64)
         }
     }

@@ -178,10 +178,10 @@ var spawnMonster = function(spawner,spawnId){
             }
             for(var j in Player.list){
                 if(Player.list[j].map === spawner.map){
-                    monsterHp += Player.list[j].hpMax / 2;
-                    monsterStats.attack += Player.list[j].stats.attack / 2;
-                    monsterStats.defense += Player.list[j].stats.defense / 2;
-                    monsterStats.heal += Player.list[j].stats.heal / 2;
+                    monsterHp += Player.list[j].hpMax / 3;
+                    monsterStats.attack += Player.list[j].stats.attack / 3;
+                    monsterStats.defense += Player.list[j].stats.defense / 3;
+                    monsterStats.heal += Player.list[j].stats.heal / 3;
                 }
             }
             monsterHp = monsterHp / playerMap[spawner.map];
