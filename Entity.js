@@ -64,14 +64,14 @@ s = {
         }
     },
     spawnMonster:function(param,pt){
-        var monsterHp = 200;
-        var monsterStats = {
-            attack:1,
-            defense:1,
-            heal:1,
-        }
         for(var i in monsterData){
             if(i === param){
+                var monsterHp = 200;
+                var monsterStats = {
+                    attack:1,
+                    defense:1,
+                    heal:1,
+                }
                 monsterHp *= monsterData[i].hp;
                 monsterStats.attack *= monsterData[i].stats.attack;
                 monsterStats.defense *= monsterData[i].stats.defense;
@@ -81,7 +81,7 @@ s = {
                     x:pt.x + Math.random() * 128 - 64,
                     y:pt.y + Math.random() * 128 - 64,
                     map:pt.map,
-                    moveSpeed:2,
+                    moveSpeed:monsterData[i].moveSpeed,
                     stats:monsterStats,
                     hp:Math.round(monsterHp),
                     monsterType:i,

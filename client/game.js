@@ -775,40 +775,40 @@ var Player = function(initPack){
     self.spdY = initPack.spdY;
     self.img = initPack.img;
     if(self.img.body[2] === 0){
-        document.getElementById('bodySlider').value = Math.round(self.img.body[1] / 255 * 50);
+        document.getElementById('bodySlider').value = Math.round(self.img.body[1] / 250 * 50);
     }
     else if(self.img.body[0] === 0){
-        document.getElementById('bodySlider').value = Math.round(self.img.body[2] / 255 * 50 + 50);
+        document.getElementById('bodySlider').value = Math.round(self.img.body[2] / 250 * 50 + 50);
     }
     else if(self.img.body[1] === 0){
-        document.getElementById('bodySlider').value = Math.round(self.img.body[0] / 255 * 50 + 100);
+        document.getElementById('bodySlider').value = Math.round(self.img.body[0] / 250 * 50 + 100);
     }
     if(self.img.shirt[2] === 0){
-        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[1] / 255 * 50);
+        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[1] / 250 * 50);
     }
     else if(self.img.shirt[0] === 0){
-        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[2] / 255 * 50 + 50);
+        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[2] / 250 * 50 + 50);
     }
     else if(self.img.shirt[1] === 0){
-        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[0] / 255 * 50 + 100);
+        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[0] / 250 * 50 + 100);
     }
     if(self.img.pants[2] === 0){
-        document.getElementById('pantsSlider').value = Math.round(self.img.pants[1] / 255 * 50);
+        document.getElementById('pantsSlider').value = Math.round(self.img.pants[1] / 250 * 50);
     }
     else if(self.img.pants[0] === 0){
-        document.getElementById('pantsSlider').value = Math.round(self.img.pants[2] / 255 * 50 + 50);
+        document.getElementById('pantsSlider').value = Math.round(self.img.pants[2] / 250 * 50 + 50);
     }
     else if(self.img.pants[1] === 0){
-        document.getElementById('pantsSlider').value = Math.round(self.img.pants[0] / 255 * 50 + 100);
+        document.getElementById('pantsSlider').value = Math.round(self.img.pants[0] / 250 * 50 + 100);
     }
     if(self.img.hair[2] === 0){
-        document.getElementById('hairSlider').value = Math.round(self.img.hair[1] / 255 * 50);
+        document.getElementById('hairSlider').value = Math.round(self.img.hair[1] / 250 * 50);
     }
     else if(self.img.hair[0] === 0){
-        document.getElementById('hairSlider').value = Math.round(self.img.hair[2] / 255 * 50 + 50);
+        document.getElementById('hairSlider').value = Math.round(self.img.hair[2] / 250 * 50 + 50);
     }
     else if(self.img.hair[1] === 0){
-        document.getElementById('hairSlider').value = Math.round(self.img.hair[0] / 255 * 50 + 100);
+        document.getElementById('hairSlider').value = Math.round(self.img.hair[0] / 250 * 50 + 100);
     }
     document.getElementById('bodyOpacity').value = Math.round(self.img.body[3] * 10);
     document.getElementById('shirtOpacity').value = Math.round(self.img.shirt[3] * 10);
