@@ -536,7 +536,7 @@ Actor = function(param){
                 var trackY = Math.floor(self.trackingEntity.y / 64) - dy;
                 self.trackTime += 1;
                 if(trackX !== self.trackingPos.x || trackY !== self.trackingPos.y){
-                    if(self.trackTime > 60){
+                    if(self.trackTime > 50 + 50 * Math.random()){
                         self.trackTime = 0;
                         self.trackingPos.x = trackX;
                         self.trackingPos.y = trackY;
@@ -551,8 +551,8 @@ Actor = function(param){
                             }
                         }
                         if(self.trackingPath.length > 2){
-                            var nx = self.trackingPath[self.trackingPath.length - 2][0] - dx;
-                            var ny = self.trackingPath[self.trackingPath.length - 2][1] - dy;
+                            var nx = self.trackingPath[self.trackingPath.length - 1][0] - dx;
+                            var ny = self.trackingPath[self.trackingPath.length - 1][1] - dy;
                             if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
                                 var path = finder.findPath(nx,ny,trackX,trackY,grid);
                                 self.trackingPath = PF.Util.compressPath(path);
@@ -3257,8 +3257,8 @@ Monster = function(param){
                 }
                 self.animation += 0.2;
                 if(self.animation > 4){
-                    self.width = 18 * 16;
-                    self.height = 18 * 16;
+                    self.width = 18 * 8;
+                    self.height = 18 * 8;
                     self.pushPower = 300;
                 }
                 if(self.animation > 5){
