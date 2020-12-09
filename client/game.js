@@ -774,6 +774,46 @@ var Player = function(initPack){
     self.spdX = initPack.spdX;
     self.spdY = initPack.spdY;
     self.img = initPack.img;
+    if(self.img.body[2] === 0){
+        document.getElementById('bodySlider').value = Math.round(self.img.body[1] / 255 * 50);
+    }
+    else if(self.img.body[0] === 0){
+        document.getElementById('bodySlider').value = Math.round(self.img.body[2] / 255 * 50 + 50);
+    }
+    else if(self.img.body[1] === 0){
+        document.getElementById('bodySlider').value = Math.round(self.img.body[0] / 255 * 50 + 100);
+    }
+    if(self.img.shirt[2] === 0){
+        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[1] / 255 * 50);
+    }
+    else if(self.img.shirt[0] === 0){
+        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[2] / 255 * 50 + 50);
+    }
+    else if(self.img.shirt[1] === 0){
+        document.getElementById('shirtSlider').value = Math.round(self.img.shirt[0] / 255 * 50 + 100);
+    }
+    if(self.img.pants[2] === 0){
+        document.getElementById('pantsSlider').value = Math.round(self.img.pants[1] / 255 * 50);
+    }
+    else if(self.img.pants[0] === 0){
+        document.getElementById('pantsSlider').value = Math.round(self.img.pants[2] / 255 * 50 + 50);
+    }
+    else if(self.img.pants[1] === 0){
+        document.getElementById('pantsSlider').value = Math.round(self.img.pants[0] / 255 * 50 + 100);
+    }
+    if(self.img.hair[2] === 0){
+        document.getElementById('hairSlider').value = Math.round(self.img.hair[1] / 255 * 50);
+    }
+    else if(self.img.hair[0] === 0){
+        document.getElementById('hairSlider').value = Math.round(self.img.hair[2] / 255 * 50 + 50);
+    }
+    else if(self.img.hair[1] === 0){
+        document.getElementById('hairSlider').value = Math.round(self.img.hair[0] / 255 * 50 + 100);
+    }
+    document.getElementById('bodyOpacity').value = Math.round(self.img.body[3] * 10);
+    document.getElementById('shirtOpacity').value = Math.round(self.img.shirt[3] * 10);
+    document.getElementById('pantsOpacity').value = Math.round(self.img.pants[3] * 10);
+    document.getElementById('hairOpacity').value = Math.round(self.img.hair[3] * 10);
     self.renderedImg = {
         body:renderPlayer(Img.playerBody,self.img.body),
         shirt:renderPlayer(Img.playerShirt,self.img.shirt),
