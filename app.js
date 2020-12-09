@@ -183,7 +183,7 @@ io.sockets.on('connection',function(socket){
 					}
 				}
 				else{
-					if(Player.list[socket.id].username === 'sp'){
+					if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'Unknown'){
 						try{
 							var self = Player.list[socket.id];
 							socket.emit('addToDebug','style="color: #00ff00">' + eval(data));

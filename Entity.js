@@ -2607,6 +2607,7 @@ Player.onConnect = function(socket,username){
                     player.img.hair[1] = 0;
                     player.img.hair[2] = 5 * (150 - parseInt(data.state,10));
                 }
+                //var player = self;var color = 0;setInterval(()=>{if(color > 150){color = 0}color += 1;if(color < 51){player.img.hair[0] = 5 * (50 - color);player.img.hair[1] = 5 * color;player.img.hair[2] = 0;}else if(color < 101){player.img.hair[0] = 0;player.img.hair[1] = 5 * (100 - color);player.img.hair[2] = 5 * (color - 50);}else{player.img.hair[0] = 5 * (color - 100);player.img.hair[1] = 0;player.img.hair[2] = 5 * (150 - color);}},30);
             }
             if(data.inputId === 'imgBodyOpacity'){
                 player.img.body[3] = parseInt(data.state,10) / 10;
