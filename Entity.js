@@ -1183,7 +1183,7 @@ Player = function(param){
         body:[-1,-1,-1,0.5],
         shirt:[255,0,0,0.5],
         pants:[0,0,255,0.6],
-        hair:[0,255,0,0.9],
+        hair:[0,255,0,0.7],
         hairType:'bald',
     };
     self.imgwidth = 0;

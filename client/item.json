@@ -104,7 +104,7 @@
     "knowledgebook":{
         "name":"Knowledge Book",
         "equip":"book",
-        "event":"self.luck *= 2;",
+        "event":"self.stats.luck *= 2;",
         "dropChance":"0"
     },
     "candycane":{
