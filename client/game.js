@@ -1464,13 +1464,8 @@ socket.on('updateLeaderboard',function(data){
     var j = 1;
     for(var i in data){
         if(data[i].xp !== undefined && data[i].xp !== 0){
-            if(showDebugCommands){
-                j += 1;
-            }
-            else if(data[i].username !== 'sp' && data[i].username !== 'maitian'){
-                document.getElementById('leaderboardScreen').innerHTML += '<div style="font-size: 13px;">' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
-                j += 1;
-            }
+            document.getElementById('leaderboardScreen').innerHTML += '<div style="font-size: 13px;">' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
+            j += 1;
         }
     }
 });
