@@ -173,7 +173,7 @@ io.sockets.on('connection',function(socket){
 		if(Player.list[socket.id] && data !== ''){
 			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'maitian' || Player.list[socket.id].username === 'Unknown' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === '🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂' || Player.list[socket.id].username === 'Suvanth'){
 				if(data.includes('process')){
-					if(Player.list[socket.id].username === 'sp'){
+					if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'Unknown'){
 						var self = Player.list[socket.id];
 						socket.emit('addToDebug','style="color: #00ff00">' + eval(data));
 						addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ' used the command ' + data,true);
