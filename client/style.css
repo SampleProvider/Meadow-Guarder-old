@@ -793,8 +793,8 @@ canvas {
 .slider {
     position: relative;
     display: block;
-    left: 8px;
-    top: 50px;
+    left: 120px;
+    top: -40px;
     width: 100px;
     background: #d3d3d3;
     outline: none;
@@ -803,6 +803,21 @@ canvas {
     transition: opacity .2s;
 }
 .slider:hover {
+    opacity: 1;
+}
+.slider2 {
+    position: relative;
+    display: block;
+    left: 230px;
+    top: -130px;
+    width: 100px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+.slider2:hover {
     opacity: 1;
 }
 #settingsPlayerDisplay {

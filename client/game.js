@@ -513,14 +513,26 @@ var mapCropY = 0;
 document.getElementById('bodySlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgBody',state:this.value});
 }
+document.getElementById('bodyOpacity').oninput = function(){
+    socket.emit('keyPress',{inputId:'imgBodyOpacity',state:this.value});
+}
 document.getElementById('shirtSlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgShirt',state:this.value});
+}
+document.getElementById('shirtOpacity').oninput = function(){
+    socket.emit('keyPress',{inputId:'imgShirtOpacity',state:this.value});
 }
 document.getElementById('pantsSlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgPants',state:this.value});
 }
+document.getElementById('pantsOpacity').oninput = function(){
+    socket.emit('keyPress',{inputId:'imgPantsOpacity',state:this.value});
+}
 document.getElementById('hairSlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgHair',state:this.value});
+}
+document.getElementById('hairOpacity').oninput = function(){
+    socket.emit('keyPress',{inputId:'imgHairOpacity',state:this.value});
 }
 document.getElementById('hairTypeSlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgHairType',state:this.value});

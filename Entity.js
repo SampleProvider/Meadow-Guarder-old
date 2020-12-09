@@ -2608,6 +2608,18 @@ Player.onConnect = function(socket,username){
                     player.img.hair[2] = 5 * (150 - parseInt(data.state,10));
                 }
             }
+            if(data.inputId === 'imgBodyOpacity'){
+                player.img.body[3] = parseInt(data.state,10) / 10;
+            }
+            if(data.inputId === 'imgShirtOpacity'){
+                player.img.shirt[3] = parseInt(data.state,10) / 10;
+            }
+            if(data.inputId === 'imgPantsOpacity'){
+                player.img.pants[3] = parseInt(data.state,10) / 10;
+            }
+            if(data.inputId === 'imgHairOpacity'){
+                player.img.hair[3] = parseInt(data.state,10) / 10;
+            }
             if(data.inputId === 'imgHairType'){
                 if(parseInt(data.state,10) === 0){
                     player.img.hairType = 'bald';
