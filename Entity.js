@@ -462,20 +462,20 @@ Actor = function(param){
             if(self.canMove && self.dazed < 1){
                 super_update();
             }
-            if(self.x < self.width / 2){
-                self.x = self.width / 2;
-            }
-            if(self.x > self.mapWidth - self.width / 2){
-                self.x = self.mapWidth - self.width / 2;
-            }
-            if(self.y < self.height / 2){
-                self.y = self.height / 2;
-            }
-            if(self.y > self.mapHeight - self.height / 2){
-                self.y = self.mapHeight - self.height / 2;
-            }
             self.dazed -= 1;
             self.updateCollisions();
+        }
+        if(self.x < self.width / 2){
+            self.x = self.width / 2;
+        }
+        if(self.x > self.mapWidth - self.width / 2){
+            self.x = self.mapWidth - self.width / 2;
+        }
+        if(self.y < self.height / 2){
+            self.y = self.height / 2;
+        }
+        if(self.y > self.mapHeight - self.height / 2){
+            self.y = self.mapHeight - self.height / 2;
         }
         if(self.mapChange === 5){
             self.map = self.transporter.teleport;
@@ -550,19 +550,6 @@ Actor = function(param){
                                 grid.setWalkableAt(Math.floor(Collision.list[i].x / 64) - dx,Math.floor(Collision.list[i].y / 64) - dy,false);
                             }
                         }
-                        /*if(self.trackingPath.length > 2){
-                            var nx = self.trackingPath[self.trackingPath.length - 1][0] - dx;
-                            var ny = self.trackingPath[self.trackingPath.length - 1][1] - dy;
-                            if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
-                                var path = finder.findPath(nx,ny,trackX,trackY,grid);
-                                self.trackingPath = PF.Util.compressPath(path);
-                                for(var i in self.trackingPath){
-                                    self.trackingPath[i][0] += dx;
-                                    self.trackingPath[i][1] += dy;
-                                }
-                            }
-                        }
-                        else{*/
                         var nx = Math.floor(self.x / 64) - dx;
                         var ny = Math.floor(self.y / 64) - dy;
                         if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
@@ -573,7 +560,6 @@ Actor = function(param){
                                 self.trackingPath[i][1] += dy;
                             }
                         }
-                        //}
                     }
                 }
                 if(self.trackingPath[0]){
@@ -666,7 +652,7 @@ Actor = function(param){
                 }
             }
         }
-        if(self.pushPt){
+        if(self.pushPt !== undefined && self.isDead !== true){
             var pushPower = self.pushPt.pushPower * (Math.random() + 1);
             self.moveSpeed = 50 - self.getDistance(self.pushPt) + pushPower;
             if(self.x > self.pushPt.x){
@@ -761,6 +747,7 @@ Actor = function(param){
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
         self.trackingPath = [];
+        self.trackingPos = {x:undefined,y:undefined};
     }
     self.onHit = function(pt){
     }
@@ -1147,6 +1134,9 @@ Actor = function(param){
             return;
         }
         if(self.isDead || self.toRemove){
+            return;
+        }
+        if(self.hp < 1){
             return;
         }
         if(self.isColliding(transporter)){
@@ -2105,11 +2095,11 @@ Player = function(param){
         }
     }
     self.updateMap = function(){
-        if(self.mapChange === 0 && self.state !== 'dead'){
+        if(self.mapChange === 0){
             self.canMove = false;
             socket.emit('changeMap',self.transporter);
         }
-        if(self.mapChange === 5 && self.state !== 'dead'){
+        if(self.mapChange === 5){
             var map = self.map;
             playerMap[self.map] -= 1;
             self.map = self.transporter.teleport;
@@ -2158,7 +2148,7 @@ Player = function(param){
                 }
             }
         }
-        if(self.mapChange === 10 && self.state !== 'dead'){
+        if(self.mapChange === 10){
             self.canMove = true;
             self.invincible = false;
         }
