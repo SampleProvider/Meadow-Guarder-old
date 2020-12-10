@@ -443,7 +443,6 @@ Actor = function(param){
     self.type = 'Actor';
     self.animationDirection = 'up';
     self.animation = 0;
-    self.state = 'none';
     self.mapChange = 100;
     self.toRemove = false;
     self.isHostile = false;
@@ -463,19 +462,19 @@ Actor = function(param){
                 super_update();
             }
             self.dazed -= 1;
+            if(self.x < self.width / 2){
+                self.x = self.width / 2;
+            }
+            if(self.x > self.mapWidth - self.width / 2){
+                self.x = self.mapWidth - self.width / 2;
+            }
+            if(self.y < self.height / 2){
+                self.y = self.height / 2;
+            }
+            if(self.y > self.mapHeight - self.height / 2){
+                self.y = self.mapHeight - self.height / 2;
+            }
             self.updateCollisions();
-        }
-        if(self.x < self.width / 2){
-            self.x = self.width / 2;
-        }
-        if(self.x > self.mapWidth - self.width / 2){
-            self.x = self.mapWidth - self.width / 2;
-        }
-        if(self.y < self.height / 2){
-            self.y = self.height / 2;
-        }
-        if(self.y > self.mapHeight - self.height / 2){
-            self.y = self.mapHeight - self.height / 2;
         }
         if(self.mapChange === 5){
             self.map = self.transporter.teleport;
@@ -652,7 +651,7 @@ Actor = function(param){
                 }
             }
         }
-        if(self.pushPt !== undefined){
+        if(self.pushPt !== undefined && self.invincible === false){
             var pushPower = self.pushPt.pushPower * (Math.random() + 1);
             self.moveSpeed = 50 - self.getDistance(self.pushPt) + pushPower;
             if(self.x > self.pushPt.x){
@@ -1309,19 +1308,19 @@ Player = function(param){
                 self.updatePosition();
             }
             self.dazed -= 1;
+            if(self.x < self.width / 2){
+                self.x = self.width / 2;
+            }
+            if(self.x > self.mapWidth - self.width / 2){
+                self.x = self.mapWidth - self.width / 2;
+            }
+            if(self.y < self.height / 2){
+                self.y = self.height / 2;
+            }
+            if(self.y > self.mapHeight - self.height / 2){
+                self.y = self.mapHeight - self.height / 2;
+            }
             self.updateCollisions();
-        }
-        if(self.x < self.width / 2){
-            self.x = self.width / 2;
-        }
-        if(self.x > self.mapWidth - self.width / 2){
-            self.x = self.mapWidth - self.width / 2;
-        }
-        if(self.y < self.height / 2){
-            self.y = self.height / 2;
-        }
-        if(self.y > self.mapHeight - self.height / 2){
-            self.y = self.mapHeight - self.height / 2;
         }
         if(self.animation === -1){
             self.animation = 0;
