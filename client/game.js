@@ -824,6 +824,26 @@ var Player = function(initPack){
     else if(self.img.hair[1] === 0){
         document.getElementById('hairSlider').value = Math.round(self.img.hair[0] / 250 * 50 + 100);
     }
+    switch(self.img.hairType){
+        case "hairShort":
+            document.getElementById('hairTypeSlider').value = 1;
+            break;
+        case "hairLong":
+            document.getElementById('hairTypeSlider').value = 2;
+            break;
+        case "hatShort":
+            document.getElementById('hairTypeSlider').value = 3;
+            break;
+        case "hatLong":
+            document.getElementById('hairTypeSlider').value = 4;
+            break;
+        case "hatViking":
+            document.getElementById('hairTypeSlider').value = 5;
+            break;
+        case "hairMohawk":
+            document.getElementById('hairTypeSlider').value = 6;
+            break;
+    }
     document.getElementById('bodyOpacity').value = Math.round(self.img.body[3] * 10);
     document.getElementById('shirtOpacity').value = Math.round(self.img.shirt[3] * 10);
     document.getElementById('pantsOpacity').value = Math.round(self.img.pants[3] * 10);

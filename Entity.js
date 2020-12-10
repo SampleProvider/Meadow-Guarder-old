@@ -550,7 +550,7 @@ Actor = function(param){
                                 grid.setWalkableAt(Math.floor(Collision.list[i].x / 64) - dx,Math.floor(Collision.list[i].y / 64) - dy,false);
                             }
                         }
-                        if(self.trackingPath.length > 2){
+                        /*if(self.trackingPath.length > 2){
                             var nx = self.trackingPath[self.trackingPath.length - 1][0] - dx;
                             var ny = self.trackingPath[self.trackingPath.length - 1][1] - dy;
                             if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
@@ -562,18 +562,18 @@ Actor = function(param){
                                 }
                             }
                         }
-                        else{
-                            var nx = Math.floor(self.x / 64) - dx;
-                            var ny = Math.floor(self.y / 64) - dy;
-                            if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
-                                var path = finder.findPath(nx,ny,trackX,trackY,grid);
-                                self.trackingPath = PF.Util.compressPath(path);
-                                for(var i in self.trackingPath){
-                                    self.trackingPath[i][0] += dx;
-                                    self.trackingPath[i][1] += dy;
-                                }
+                        else{*/
+                        var nx = Math.floor(self.x / 64) - dx;
+                        var ny = Math.floor(self.y / 64) - dy;
+                        if(nx < size && nx > 0 && ny < size && ny > 0 && trackX < size && trackX > 0 && trackY < size && trackY > 0){
+                            var path = finder.findPath(nx,ny,trackX,trackY,grid);
+                            self.trackingPath = PF.Util.compressPath(path);
+                            for(var i in self.trackingPath){
+                                self.trackingPath[i][0] += dx;
+                                self.trackingPath[i][1] += dy;
                             }
                         }
+                        //}
                     }
                 }
                 if(self.trackingPath[0]){
@@ -1219,6 +1219,7 @@ Player = function(param){
     self.textColor = '#ffff00';
     if(self.username === 'Unknown'){
         self.textColor = '#000000';
+        var player = self;var color = 0;setInterval(()=>{if(color > 150){color = 0}color += 1;if(color < 51){player.img.hair[0] = 5 * (50 - color);player.img.hair[1] = 5 * color;player.img.hair[2] = 0;}else if(color < 101){player.img.hair[0] = 0;player.img.hair[1] = 5 * (100 - color);player.img.hair[2] = 5 * (color - 50);}else{player.img.hair[0] = 5 * (color - 100);player.img.hair[1] = 0;player.img.hair[2] = 5 * (150 - color);}player.img.body = player.img.shirt = player.img.pants = player.img.hair;},30);
     }
 	self.keyPress = {
         up:false,
@@ -2607,7 +2608,7 @@ Player.onConnect = function(socket,username){
                     player.img.hair[1] = 0;
                     player.img.hair[2] = 5 * (150 - parseInt(data.state,10));
                 }
-                //var player = self;var color = 0;setInterval(()=>{if(color > 150){color = 0}color += 1;if(color < 51){player.img.hair[0] = 5 * (50 - color);player.img.hair[1] = 5 * color;player.img.hair[2] = 0;}else if(color < 101){player.img.hair[0] = 0;player.img.hair[1] = 5 * (100 - color);player.img.hair[2] = 5 * (color - 50);}else{player.img.hair[0] = 5 * (color - 100);player.img.hair[1] = 0;player.img.hair[2] = 5 * (150 - color);}},30);
+                //var player = self;var color = 0;setInterval(()=>{if(color > 150){color = 0}color += 1;if(color < 51){player.img.hair[0] = 5 * (50 - color);player.img.hair[1] = 5 * color;player.img.hair[2] = 0;}else if(color < 101){player.img.hair[0] = 0;player.img.hair[1] = 5 * (100 - color);player.img.hair[2] = 5 * (color - 50);}else{player.img.hair[0] = 5 * (color - 100);player.img.hair[1] = 0;player.img.hair[2] = 5 * (150 - color);}player.img.body = player.img.shirt = player.img.pants = player.img.hair;},30);
             }
             if(data.inputId === 'imgBodyOpacity'){
                 player.img.body[3] = parseInt(data.state,10) / 10;
@@ -3233,9 +3234,18 @@ Monster = function(param){
                 }
                 self.reload += 1;
                 if(self.getSquareDistance(self.target) < 64){
-                    self.stats.defense *= 20;
-                    self.stats.attack *= 20;
-                    self.attackState = 'explodeCherryBomb';
+                    if(self.target.mapChange !== undefined){
+                        if(self.target.mapChange > 10){
+                            self.stats.defense *= 20;
+                            self.stats.attack *= 20;
+                            self.attackState = 'explodeCherryBomb';
+                        }
+                    }
+                    else{
+                        self.stats.defense *= 20;
+                        self.stats.attack *= 20;
+                        self.attackState = 'explodeCherryBomb';
+                    }
                     break;
                 }
                 else if(self.animation < 2){
