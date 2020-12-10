@@ -760,6 +760,7 @@ Actor = function(param){
     }
     self.trackEntity = function(pt){
         self.trackingEntity = pt;
+        self.trackingPath = [];
     }
     self.onHit = function(pt){
     }

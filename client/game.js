@@ -825,22 +825,22 @@ var Player = function(initPack){
         document.getElementById('hairSlider').value = Math.round(self.img.hair[0] / 250 * 50 + 100);
     }
     switch(self.img.hairType){
-        case "hairShort":
+        case "shortHair":
             document.getElementById('hairTypeSlider').value = 1;
             break;
-        case "hairLong":
+        case "longHair":
             document.getElementById('hairTypeSlider').value = 2;
             break;
-        case "hatShort":
+        case "shortHat":
             document.getElementById('hairTypeSlider').value = 3;
             break;
-        case "hatLong":
+        case "longHat":
             document.getElementById('hairTypeSlider').value = 4;
             break;
-        case "hatViking":
+        case "vikingHat":
             document.getElementById('hairTypeSlider').value = 5;
             break;
-        case "hairMohawk":
+        case "mohawkHair":
             document.getElementById('hairTypeSlider').value = 6;
             break;
     }
@@ -1549,7 +1549,16 @@ socket.on('updateLeaderboard',function(data){
     document.getElementById('leaderboardScreen').innerHTML = '<div style="font-size:18px;">Leaderboards update every five minutes.</div><br>';
     var j = 1;
     for(var i in data){
-        if(data[i].xp !== undefined && data[i].xp !== 0){
+        if(data[i].level === 0){
+
+        }
+        else if(data[i].xp === 0){
+            
+        }
+        else if(data[i].xp === undefined){
+
+        }
+        else{
             document.getElementById('leaderboardScreen').innerHTML += '<div style="font-size: 13px;">' + j + ': ' + data[i].username + '<br>Level ' + data[i].level + ' ' + data[i].xp + ' XP</div>';
             j += 1;
         }
