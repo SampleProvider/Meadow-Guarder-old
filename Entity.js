@@ -652,7 +652,7 @@ Actor = function(param){
                 }
             }
         }
-        if(self.pushPt !== undefined && self.isDead !== true){
+        if(self.pushPt !== undefined){
             var pushPower = self.pushPt.pushPower * (Math.random() + 1);
             self.moveSpeed = 50 - self.getDistance(self.pushPt) + pushPower;
             if(self.x > self.pushPt.x){
@@ -1956,7 +1956,7 @@ Player = function(param){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'ask',
-                message:'Mark keeps complaining about Monsters attacking him while he is collecting wood. I don\'t have a weapon or anything. If you defeated the Monsters on that weird tower, you should be able to defeat all the Monsters in the map The River. Remember, Monsters will spawn natually.',
+                message:'Mark keeps complaining about Monsters attacking him while he is collecting wood. I don\'t have a weapon or anything, just a wooden fishing pole. And how do I fight monsters with that? Anyway, if you defeated the Monsters on that weird tower, you should be able to defeat all the Monsters in the map The River. Remember, Monsters will spawn natually.',
                 response1:'Ok, I can defeat all the Monsters in the map The River.',
             });
             self.currentResponse = 0;
