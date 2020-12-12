@@ -18,8 +18,8 @@
     "speed":{
         "name":"Speed",
         "maxLevel":20,
-        "averageLevel":5,
-        "deviation":3,
+        "averageLevel":3,
+        "deviation":5,
         "dropChance":0.1,
         "event":"self.attackReload *= 0.9;self.secondReload *= 0.9;self.healReload *= 0.9;"
     },

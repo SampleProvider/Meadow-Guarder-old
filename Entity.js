@@ -2262,10 +2262,38 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
+        var isFireMap = false;
+        for(var i in worldMap){
+            if(worldMap[i].fileName.slice(0,-4) === self.map){
+                isFireMap = true;
+            }
+        }
+        if(self.map === 'The Village'){
+            isFireMap = false;
+        }
         for(var i = 0;i < self.eventQ.length;i++){
             if(self.eventQ[i] !== undefined){
                 if(self.eventQ[i].time === 0){
-                    eval(self.eventQ[i].event);
+                    switch(self.eventQ[i].event){
+                        case "heal":
+                            self.hp += 200 * self.stats.heal;
+                            break;
+                        case "attack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);
+                            }
+                            break;
+                        case "second":
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                    }
                     self.eventQ.splice(i,1);
                     i -= 1;
                 }
@@ -2276,33 +2304,24 @@ Player = function(param){
         }
         if(self.keyPress.heal === true && self.healTick > self.healReload){
             self.healTick = 0;
-            self.addToEventQ('self.hp += 200 * self.stats.heal;',0);
-            self.addToEventQ('self.hp += 200 * self.stats.heal;',40);
-            self.addToEventQ('self.hp += 200 * self.stats.heal;',80);
-            self.addToEventQ('self.hp += 200 * self.stats.heal;',120);
+            self.addToEventQ('heal',0);
+            self.addToEventQ('heal',40);
+            self.addToEventQ('heal',80);
+            self.addToEventQ('heal',120);
         }
-        var isFireMap = false;
-        for(var i in worldMap){
-            if(worldMap[i].fileName.slice(0,-4) === self.map){
-                isFireMap = true;
-            }
-        }
-        if(isFireMap === false || self.map === 'The Village'){
+        if(isFireMap === false){
             return;
         }
         if(self.keyPress.attack === true && self.attackTick > self.attackReload){
             self.attackTick = 0;
-            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);",0);
-            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);",0);
-            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);",0);
-            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);",0);
+            self.addToEventQ("attack",0);
         }
         if(self.keyPress.second === true && self.secondTick > self.secondReload){
             self.secondTick = 0;
-            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",0);
-            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",20);
-            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",40);
-            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",60);
+            self.addToEventQ("second",0);
+            self.addToEventQ("second",20);
+            self.addToEventQ("second",40);
+            self.addToEventQ("second",60);
         }
     }
     self.getUpdatePack = function(){
