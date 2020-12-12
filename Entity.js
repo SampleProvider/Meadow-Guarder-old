@@ -178,10 +178,10 @@ var spawnMonster = function(spawner,spawnId){
             }
             for(var j in Player.list){
                 if(Player.list[j].map === spawner.map){
-                    monsterHp += Player.list[j].hpMax / 3;
-                    monsterStats.attack += Player.list[j].stats.attack / 3;
-                    monsterStats.defense += Player.list[j].stats.defense / 3;
-                    monsterStats.heal += Player.list[j].stats.heal / 3;
+                    monsterHp += Player.list[j].hpMax / 6;
+                    monsterStats.attack += Player.list[j].stats.attack / 6;
+                    monsterStats.defense += Player.list[j].stats.defense / 6;
+                    monsterStats.heal += Player.list[j].stats.heal / 6;
                 }
             }
             monsterHp = monsterHp / playerMap[spawner.map];
@@ -451,6 +451,7 @@ Actor = function(param){
     self.pushPower = 3;
     self.dazed = 0;
     self.animate = true;
+    self.eventQ = [];
     var super_update = self.update;
     self.update = function(){
         self.mapChange += 1;
@@ -558,6 +559,7 @@ Actor = function(param){
                                 self.trackingPath[i][0] += dx;
                                 self.trackingPath[i][1] += dy;
                             }
+                            self.trackingPath.shift();
                         }
                     }
                 }
@@ -758,23 +760,23 @@ Actor = function(param){
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
             if(pt.parentType === 'Player' && self.type === 'Monster'){
                 if(Player.list[pt.parent].isDead === false){
-                    var items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                    var items = Player.list[pt.parent].inventory.addRandomizedEnchantments(Player.list[pt.parent].stats.luck);
                     while(items.length > 0){
                         for(var i in items){
                             addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + items[i].name + ".");
                         }
-                        items = Player.list[pt.parent].inventory.addRandomizedItem(Player.list[pt.parent].stats.luck);
+                        items = Player.list[pt.parent].inventory.addRandomizedEnchantments(Player.list[pt.parent].stats.luck);
                     }
                     Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
                 }
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
-                var items = pt.inventory.addRandomizedItem(pt.stats.luck);
+                var items = pt.inventory.addRandomizedEnchantments(pt.stats.luck);
                 while(items.length > 0){
                     for(var i in items){
                         addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + items[i].name + ".");
                     }
-                    items = pt.inventory.addRandomizedItem(pt.stats.luck);
+                    items = pt.inventory.addRandomizedEnchantments(pt.stats.luck);
                 }
                 pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
             }
@@ -809,6 +811,21 @@ Actor = function(param){
                 self.toRemove = true;
             }
 		});
+    }
+    self.addToEventQ = function(event,time){
+        self.eventQ.push({event:event,time:time});
+        var sortByTime = function(a,b){
+            if(a.time === b.time){
+                return 0;
+            }
+            else{
+                if(a.time < b.time){
+                    return -1;
+                }
+                return 1;
+            }
+        }
+        self.eventQ.sort(sortByTime);
     }
     self.updateCollisions = function(){
         var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
@@ -1238,25 +1255,24 @@ Player = function(param){
         second:'second',
         heal:'Shift',
     };
-    self.attackReload = 25;
-    self.secondReload = 250;
-    self.healReload = 500;
-    self.attackTick = 40;
-    self.secondTick = 160;
-    self.healTick = 160;
+    self.attackReload = 20;
+    self.secondReload = 200;
+    self.healReload = 400;
+    self.attackTick = self.attackReload;
+    self.secondTick = self.secondReload;
+    self.healTick = self.healReload;
     self.attackDirection = 0;
     self.secondDirection = 0;
     self.currentResponse = 0;
-	self.questInventory = new QuestInventory(socket,true);
     self.inventory = new Inventory(socket,true);
     if(param.param.inventory){
         for(var i in param.param.inventory){
-            self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].amount);
+            self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].enchantments);
         }
     }
-    if(param.param.equip){
-        for(var i in param.param.equip){
-            self.inventory.currentEquip[i] = param.param.equip[i];
+    if(param.param.currentEquip){
+        for(var i in param.param.currentEquip){
+            self.inventory.currentEquip[i] = param.param.currentEquip[i];
         }
     }
     if(param.param.xp){
@@ -1289,6 +1305,7 @@ Player = function(param){
         heal:1,
         xp:1,
         luck:1,
+        projectileRange:1,
     }
     self.permStats = {
         attack:1,
@@ -1296,6 +1313,7 @@ Player = function(param){
         heal:1,
         xp:1,
         luck:1,
+        projectileRange:1,
     }
     var lastSelf = {};
     self.update = function(){
@@ -1331,9 +1349,6 @@ Player = function(param){
                 self.animation = 0;
             }
         }
-        self.attackReload += 1;
-        self.secondReload += 1;
-        self.healReload += 1;
         self.attackTick += 1;
         self.secondTick += 1;
         self.healTick += 1;
@@ -1351,7 +1366,7 @@ Player = function(param){
                 self.hp = self.hpMax;
             }
             else{
-                if(self.healReload % 10 === 0){
+                if(self.healTick % 10 === 0){
                     self.hp += Math.round(self.stats.heal * (10 + Math.random() * 15));
                 }
             }
@@ -2061,21 +2076,19 @@ Player = function(param){
             self.stats = JSON.parse(JSON.stringify(self.permStats));
             self.textColor = '#ffff00';
             self.hpMax = 1000;
+            self.attackReload = 20;
+            self.secondReload = 200;
+            self.healReload = 400;
+            self.maxSpeed = 20;
             for(var i in self.inventory.currentEquip){
-                if(self.inventory.currentEquip[i] !== ''){
+                if(self.inventory.currentEquip[i].id !== undefined){
                     try{
-                        eval(Item.list[self.inventory.currentEquip[i]].event);
-                    }
-                    catch(err){
-                        console.log(err);
-                    }
-                }
-            }
-            for(var i in self.inventory.items){
-                if(self.inventory.items[i].id === 'xpgem'){
-                    try{
-                        for(var j = 0;j < self.inventory.items[i].amount;j++){
-                            eval(Item.list[self.inventory.items[i].id].event);
+                        eval(Item.list[self.inventory.currentEquip[i].id].event);
+                        for(var j in self.inventory.currentEquip[i].enchantments){
+                            var enchantment = Enchantment.list[self.inventory.currentEquip[i].enchantments[j].id];
+                            for(var k = 0;k < self.inventory.currentEquip[i].enchantments[j].level;k++){
+                                eval(enchantment.event);
+                            }
                         }
                     }
                     catch(err){
@@ -2249,21 +2262,24 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
-        if(self.keyPress.heal === true && self.healReload > 500){
-            self.healReload = 1;
+        for(var i = 0;i < self.eventQ.length;i++){
+            if(self.eventQ[i] !== undefined){
+                if(self.eventQ[i].time === 0){
+                    eval(self.eventQ[i].event);
+                    self.eventQ.splice(i,1);
+                    i -= 1;
+                }
+                else{
+                    self.eventQ[i].time -= 1;
+                }
+            }
+        }
+        if(self.keyPress.heal === true && self.healTick > self.healReload){
             self.healTick = 0;
-        }
-        if(self.healTick === 0){
-            self.hp += Math.round(self.stats.heal * 200);
-        }
-        if(self.healTick === 40){
-            self.hp += Math.round(self.stats.heal * 200);
-        }
-        if(self.healTick === 80){
-            self.hp += Math.round(self.stats.heal * 200);
-        }
-        if(self.healTick === 120){
-            self.hp += Math.round(self.stats.heal * 200);
+            self.addToEventQ('self.hp += 200 * self.stats.heal;',0);
+            self.addToEventQ('self.hp += 200 * self.stats.heal;',40);
+            self.addToEventQ('self.hp += 200 * self.stats.heal;',80);
+            self.addToEventQ('self.hp += 200 * self.stats.heal;',120);
         }
         var isFireMap = false;
         for(var i in worldMap){
@@ -2274,39 +2290,19 @@ Player = function(param){
         if(isFireMap === false || self.map === 'The Village'){
             return;
         }
-        if(self.keyPress.attack === true && self.attackReload > 15){
-            self.attackReload = 1;
+        if(self.keyPress.attack === true && self.attackTick > self.attackReload){
             self.attackTick = 0;
+            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);",0);
+            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);",0);
+            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);",0);
+            self.addToEventQ("self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);",0);
         }
-        if(self.keyPress.second === true && self.secondReload > 250){
-            self.secondReload = 1;
+        if(self.keyPress.second === true && self.secondTick > self.secondReload){
             self.secondTick = 0;
-        }
-        if(self.attackTick === 0){
-            self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);
-            self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);
-        }
-        if(self.secondTick === 0){
-            for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
-            }
-        }
-        if(self.secondTick === 20){
-            for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
-            }
-        }
-        if(self.secondTick === 40){
-            for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
-            }
-        }
-        if(self.secondTick === 60){
-            for(var i = 0;i < 10;i++){
-                self.shootProjectile(self.id,'Player',i * 36,i * 36,'playerBullet',0,self.stats);
-            }
+            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",0);
+            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",20);
+            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",40);
+            self.addToEventQ("for(var j = 0;j < 10;j++){self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);}",60);
         }
     }
     self.getUpdatePack = function(){
@@ -2396,6 +2392,18 @@ Player = function(param){
             pack.animation = self.animation;
             lastSelf.animation = self.animation;
         }
+        if(lastSelf.attackTick !== self.attackTick){
+            pack.attackTick = self.attackTick;
+            lastSelf.attackTick = self.attackTick;
+        }
+        if(lastSelf.secondTick !== self.secondTick){
+            pack.secondTick = self.secondTick;
+            lastSelf.secondTick = self.secondTick;
+        }
+        if(lastSelf.healTick !== self.healTick){
+            pack.healTick = self.healTick;
+            lastSelf.healTick = self.healTick;
+        }
         if(lastSelf.attackReload !== self.attackReload){
             pack.attackReload = self.attackReload;
             lastSelf.attackReload = self.attackReload;
@@ -2463,6 +2471,9 @@ Player = function(param){
         pack.direction = self.direction;
         pack.animationDirection = self.animationDirection;
         pack.animation = self.animation;
+        pack.attackTick = self.attackTick;
+        pack.secondTick = self.secondTick;
+        pack.healTick = self.healTick;
         pack.attackReload = self.attackReload;
         pack.secondReload = self.secondReload;
         pack.healReload = self.healReload;
@@ -2961,9 +2972,12 @@ Monster = function(param){
         attack:1,
         defense:1,
         heal:1,
+        projectileRange:1,
     }
     if(param.stats){
-        self.stats = param.stats;
+        for(var i in param.stats){
+            self.stats[i] = param.stats[i];
+        }
     }
     self.hp = 200;
     self.hpMax = 200;
@@ -3407,8 +3421,15 @@ Projectile = function(param){
 	self.update = function(){
         super_update();
         self.timer += 1;
-        if(self.timer > 30){
-            self.toRemove = true;
+        if(param.stats.projectileRange){
+            if(self.timer > 20 * param.stats.projectileRange){
+                self.toRemove = true;
+            }
+        }
+        else{
+            if(self.timer > 20){
+                self.toRemove = true;
+            }
         }
         if(self.x < self.width / 2){
             self.x = self.width / 2;

@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f1c';
+var VERSION = '011f2a';
 
 var DEBUG = false;
 
@@ -698,11 +698,6 @@ var respawn = function(){
         pageDiv.style.display = 'none';
     },50);
 }
-var questInventory = new QuestInventory(socket,false);
-socket.on('updateQuestInventory',function(items){
-    questInventory.items = items;
-    questInventory.refreshRender();
-});
 var inventory = new Inventory(socket,false);
 socket.on('updateInventory',function(pack){
     inventory.items = pack.items;
@@ -869,6 +864,9 @@ var Player = function(initPack){
     self.xpMax = initPack.xpMax;
     self.level = initPack.level;
     self.map = initPack.map;
+    self.attackTick = initPack.attackTick;
+    self.secondTick = initPack.secondTick;
+    self.healTick = initPack.healTick;
     self.attackReload = initPack.attackReload;
     self.secondReload = initPack.secondReload;
     self.healReload = initPack.healReload;
@@ -923,30 +921,30 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        if(self.attackReload > 14){
-            self.attackReload = 25;
+        if(self.attackTick >= self.attackReload){
+            self.attackTick = self.attackReload;
             mainAttackDiv.style.color = "#25ff25";
         }
         else{
             mainAttackDiv.style.color = "#ff2525";
         }
-        if(self.secondReload > 249){
-            self.secondReload = 250;
+        if(self.secondTick >= self.secondReload){
+            self.secondTick = self.secondReload;
             secondaryAttackDiv.style.color = "#25ff25";
         }
         else{
             secondaryAttackDiv.style.color = "#ff2525";
         }
-        if(self.healReload > 449){
-            self.healReload = 500;
+        if(self.healReload >= self.healReload){
+            self.healTick = self.healReload;
             healDiv.style.color = "#25ff25";
         }
         else{
             healDiv.style.color = "#ff2525";
         }
-        mainAttackDiv.innerHTML = "Main Attack: " + self.attackReload / 25;
-        secondaryAttackDiv.innerHTML = "Secondary Attack: " + self.secondReload / 25;
-        healDiv.innerHTML = "Heal: " + self.healReload / 25;
+        mainAttackDiv.innerHTML = "Main Attack: " + Math.round(self.attackReload - self.attackTick) / 20;
+        secondaryAttackDiv.innerHTML = "Secondary Attack: " + Math.round(self.secondReload - self.secondTick) / 20;
+        healDiv.innerHTML = "Heal: " + Math.round(self.healReload - self.healTick) / 20;
         healthBarText.innerHTML = self.hp + " / " + self.hpMax;
         healthBarValue.style.width = "" + 150 * self.hp / self.hpMax + "px";
         var xpText = self.xp + " ";
@@ -1311,6 +1309,15 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].map !== undefined){
                         Player.list[data.player[i].id].map = data.player[i].map;
+                    }
+                    if(data.player[i].attackTick !== undefined){
+                        Player.list[data.player[i].id].attackTick = data.player[i].attackTick;
+                    }
+                    if(data.player[i].secondTick !== undefined){
+                        Player.list[data.player[i].id].secondTick = data.player[i].secondTick;
+                    }
+                    if(data.player[i].healTick !== undefined){
+                        Player.list[data.player[i].id].healTick = data.player[i].healTick;
                     }
                     if(data.player[i].attackReload !== undefined){
                         Player.list[data.player[i].id].attackReload = data.player[i].attackReload;

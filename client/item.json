@@ -3,114 +3,133 @@
         "name":"Simple Wooden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.1;",
-        "dropChance":"0.1"
+        "dropChance":0.1,
+        "enchantments":["speed"]
     },
     "simplesteelbow":{
         "name":"Simple Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.4;",
-        "dropChance":"0.01"
+        "dropChance":0.01,
+        "enchantments":["speed"]
     },
     "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.7;",
-        "dropChance":"0.005"
+        "dropChance":0.005,
+        "enchantments":["speed"]
     },
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 2;self.stats.xp *= 2;",
-        "dropChance":"0.003"
+        "dropChance":0.003,
+        "enchantments":["speed"]
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
-        "dropChance":"0.001"
+        "dropChance":0.001,
+        "enchantments":["speed"]
     },
     "advancedwoodenbow":{
         "name":"Advanced Wooden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.7;",
-        "dropChance":"0.005"
+        "dropChance":0.005,
+        "enchantments":["speed","range"]
     },
     "advancedsteelbow":{
         "name":"Advanced Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 2;self.stats.xp *= 2;",
-        "dropChance":"0.003"
+        "dropChance":0.003,
+        "enchantments":["speed","range"]
     },
     "advanceddarksteelbow":{
         "name":"Advanced Dark Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
-        "dropChance":"0.001"
+        "dropChance":0.001,
+        "enchantments":["speed","range"]
     },
     "advancedgoldenbow":{
         "name":"Advanced Golden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 7;self.stats.xp *= 7;",
-        "dropChance":"0.0003"
+        "dropChance":0.0003,
+        "enchantments":["speed","range"]
     },
     "advancedrubybow":{
         "name":"Advanced Ruby Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 10;self.stats.xp *= 10;",
-        "dropChance":"0.0001"
+        "dropChance":0.0001,
+        "enchantments":["speed","range"]
     },
     "developerbow":{
         "name":"Developer Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 7;self.stats.xp *= 10;",
-        "dropChance":"0"
+        "dropChance":0,
+        "enchantments":["speed","range"]
     },
     "spbow":{
         "name":"SP Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 3;",
-        "dropChance":"0"
+        "dropChance":0,
+        "enchantments":["speed","range"]
     },
     "bronzekey":{
         "name":"Bronze Key",
         "equip":"key",
         "event":"self.textColor = '#904000';",
-        "dropChance":"0.05"
+        "dropChance":0.05,
+        "enchantments":["unlocking"]
     },
     "silverkey":{
         "name":"Silver Key",
         "equip":"key",
         "event":"self.textColor = '#909090';",
-        "dropChance":"0.01"
+        "dropChance":0.01,
+        "enchantments":["unlocking"]
     },
     "goldenkey":{
         "name":"Golden Key",
         "equip":"key",
         "event":"self.textColor = '#dd9000';",
-        "dropChance":"0.003"
+        "dropChance":0.003,
+        "enchantments":["unlocking"]
     },
     "developerkey":{
         "name":"Developer Key",
         "equip":"key",
         "event":"self.textColor = '#0090ff';",
-        "dropChance":"0"
+        "dropChance":0,
+        "enchantments":["unlocking"]
     },
     "spkey":{
         "name":"SP Key",
         "equip":"key",
         "event":"self.textColor = '#ff0090';",
-        "dropChance":"0"
+        "dropChance":0,
+        "enchantments":["unlocking"]
     },
     "knowledgebook":{
         "name":"Knowledge Book",
         "equip":"book",
         "event":"self.stats.luck *= 2;",
-        "dropChance":"0"
+        "dropChance":0,
+        "enchantments":["health"]
     },
     "candycane":{
         "name":"Candy Cane",
         "equip":"special",
         "event":"self.hpMax *= 1.2;self.stats.heal *= 2;",
-        "dropChance":"0.005"
+        "dropChance":0.005,
+        "enchantments":["health"]
     }
 }

@@ -1,0 +1,34 @@
+{
+    "health":{
+        "name":"Health",
+        "maxLevel":5,
+        "averageLevel":2,
+        "deviation":1,
+        "dropChance":0.1,
+        "event":"self.hpMax += 100;"
+    },
+    "unlocking":{
+        "name":"Unlocking",
+        "maxLevel":3,
+        "averageLevel":1,
+        "deviation":0,
+        "dropChance":0.02,
+        "event":"self.maxSpeed += 2;"
+    },
+    "speed":{
+        "name":"Speed",
+        "maxLevel":20,
+        "averageLevel":5,
+        "deviation":3,
+        "dropChance":0.1,
+        "event":"self.attackReload *= 0.9;self.secondReload *= 0.9;self.healReload *= 0.9;"
+    },
+    "range":{
+        "name":"Range",
+        "maxLevel":7,
+        "averageLevel":4,
+        "deviation":3,
+        "dropChance":0.1,
+        "event":"self.stats.projectileRange *= 1.1;"
+    }
+}

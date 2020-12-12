@@ -383,6 +383,8 @@ canvas {
     left: 120px;
     top: 40px;
     width: 345px;
+    height: 170px;
+    overflow-y: scroll;
 }
 #inventoryExit {
     position: absolute;

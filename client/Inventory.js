@@ -1,164 +1,119 @@
 
-QuestInventory = function(socket,server){
-    var self = {
-        socket:socket,
-        server:server,
-        items:[], //{id:"itemId",amount:1}
-        materials:[],
-    };
-    self.addQuestItem = function(id,amount){
-		for(var i = 0;i < self.items.length;i++){
-			if(self.items[i].id === id){
-				self.items[i].amount += amount;
-				self.refreshRender();
-				return;
-			}
-		}
-		self.items.push({id:id,amount:amount});
-		self.refreshRender();
-    }
-    self.removeQuestItem = function(id,amount){
-		for(var i = 0;i < self.items.length;i++){
-			if(self.items[i].id === id){
-				self.items[i].amount -= amount;
-				if(self.items[i].amount <= 0){
-                    self.items.splice(i,1);
-                }
-				self.refreshRender();
-				return;
-			}
-		}    
-    }
-    self.hasQuestItem = function(id,amount){
-		for(var i = 0 ; i < self.items.length; i++){
-			if(self.items[i].id === id){
-				return self.items[i].amount >= amount;
-			}
-		}  
-		return false;
-    }
-	self.refreshRender = function(){
-        if(self.server){
-            for(var i = 0;i < self.items.length;i++){
-                self.items[i].index = i;
-            }
-            if(self.socket !== undefined){
-                self.socket.emit('updateQuestInventory',self.items);
-            }
-            return;
-        }
-        var questInventory = document.getElementById("questInventoryDiv");
-        questInventory.innerHTML = "";
-        var addButton = function(data,index){
-            let questItem = QuestItem.list[data.id]
-            let button = document.createElement('button');
-            let image = document.createElement('img');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            image.className = "item";
-            button.onclick = function(){
-                self.socket.emit("useQuestItem",questItem.id);
-            }
-            button.onmouseover = function(event){
-                mouseUp(event);
-            }
-            button.innerHTML = questItem.name + " x" + data.amount + " ";
-            button.style.top = index * 30 + 5;
-            button.style.textAlign = "center";
-            questInventory.appendChild(button);
-            button.appendChild(image);
-        }
-		for(var i = 0;i < self.items.length;i++){
-			addButton(self.items[i],i);
-		}
-    }
-    if(self.server && self.socket){
-        self.socket.on("useQuestItem",function(itemId){
-            if(!self.hasQuestItem(itemId,1)){
-                console.log('cheater');
-                return;
-            }
-
-            let questItem = QuestItem.list[itemId];
-            questItem.event(Player.list[self.socket.id]);
-        });
-    }
-
-
-	return self;
-}
-
-
-QuestItem = function(id,name,event){
-	var self = {
-		id:id,
-		name:name,
-        event:event,
-	}
-	QuestItem.list[self.id] = self;
-	return self;
-}
-QuestItem.list = {};
-
-QuestItem("potion","Potion",function(player){
-	player.hp += 500;
-	player.questInventory.removeQuestItem("potion",1);
-});
+var enchantName = {
+    1:'I',
+    2:'II',
+    3:'III',
+    4:'IV',
+    5:'V',
+    6:'VI',
+    7:'VII',
+    8:'VIII',
+    9:'IX',
+    10:'X',
+    11:'XI',
+    12:'XII',
+    13:'XIII',
+    14:'XIV',
+    15:'XV',
+    16:'XVI',
+    17:'XVII',
+    18:'XVIII',
+    19:'IXX',
+    20:'XX',
+};
 
 Inventory = function(socket,server){
     var self = {
         socket:socket,
         server:server,
         items:[], //{id:"itemId",amount:1}
-        currentEquip:{helmet:'',boost:'',weapon:'',key:'',book:'',special:''},
+        currentEquip:{helmet:{},boost:{},weapon:{},key:{},book:{},special:{}},
         materials:[],
         refresh:true,
         spawn:true,
     };
-    self.addItem = function(id,amount){
-		for(var i = 0;i < self.items.length;i++){
-			if(self.items[i].id === id){
-				self.items[i].amount += amount;
-				self.refreshRender();
-				return;
-			}
-		}
-        self.items.push({id:id,amount:amount});
+    self.addItem = function(id,enchantments){
+        self.items.push({id:id,enchantments:enchantments || []});
 		self.refreshRender();
     }
-    self.removeItem = function(id,amount){
-		for(var i = 0;i < self.items.length;i++){
-			if(self.items[i].id === id){
-				self.items[i].amount -= amount;
-				if(self.items[i].amount <= 0){
-                    self.items.splice(i,1);
+    self.removeItem = function(index){
+        self.items.splice(index,1);
+        self.refreshRender();
+    }
+    self.enchantItem = function(index,enchantment,level){
+        var item = self.items[index];
+        for(var i in Item.list[item.id].enchantments){
+            if(Item.list[item.id].enchantments[i] === enchantment){
+                for(var j in item.enchantments){
+                    if(item.enchantments[j].id === enchantment){
+                        if(level <= Enchantment.list[enchantment].maxLevel){
+                            item.enchantments[j].level = level;
+                            self.refreshRender();
+                            return true;
+                        }
+                        return false;
+                    }
                 }
-				self.refreshRender();
-				return;
-			}
-		}    
+                if(level <= Enchantment.list[enchantment].maxLevel){
+                    item.enchantments.push({id:enchantment,level:level});
+                    self.refreshRender();
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+    self.removeEnchant = function(index,enchantment){
+        var item = self.items[index];
+        for(var i in item.enchantments){
+            if(item.enchantments[i].id === enchantment){
+                item.enchantments.splice(i,1);
+                self.refreshRender();
+                return true;
+            }
+        }
+        return false;
     }
     self.addRandomizedItem = function(luck){
         var obtainedItems = [];
         for(var i in Item.list){
             if(Math.random() < Item.list[i].dropChance * luck){
-                self.addItem(i,1);
+                self.addItem(i,[]);
                 obtainedItems.push(Item.list[i]);
             }
         }
         return obtainedItems;
     }
-    self.hasItem = function(id,amount){
-		for(var i = 0;i < self.items.length;i++){
-			if(self.items[i].id === id){
-				return self.items[i].amount >= amount;
-			}
-		}  
-		return false;
+    self.addRandomizedEnchantments = function(luck){
+        var obtainedItems = [];
+        for(var i in Item.list){
+            if(Math.random() < Item.list[i].dropChance * luck){
+                var enchantments = [];
+                for(var j in Item.list[i].enchantments){
+                    for(var k in Enchantment.list){
+                        if(k === Item.list[i].enchantments[j]){
+                            var enchantment = Enchantment.list[k];
+                            if(Math.random() < enchantment.dropChance * luck){
+                                enchantments.push({id:k,level:Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)});
+                            }
+                        }
+                    }
+                }
+                self.addItem(i,enchantments);
+                obtainedItems.push(Item.list[i]);
+            }
+        }
+        return obtainedItems;
+    }
+    self.hasItem = function(index){
+        if(self.items[index] !== undefined){
+            return true;
+        }
+        return false;
     }
     self.equippedItem = function(id){
         for(var i in self.currentEquip){
-            if(self.currentEquip[i] === id){
+            if(self.currentEquip[i].id === id){
                 return true;
             }
         }
@@ -186,6 +141,7 @@ Inventory = function(socket,server){
             let dismantle = document.createElement('button');
             let div = document.createElement('div');
             let image = document.createElement('img');
+            let enchantments = document.createElement('div');
             image.src = "/client/img/" + data.id + ".png";
             button.className = "UI-button-light";
             div.className = "UI-display-light";
@@ -194,30 +150,29 @@ Inventory = function(socket,server){
             image.className = "item";
             equip.innerHTML = "Equip";
             dismantle.innerHTML = "Dismantle";
-            button.onclick = function(){
-                if(equip.style.display === 'none'){
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
+            enchantments.className = "UI-text-light";
+            var enchantDisplayName = '';
+            for(var i in self.items[index].enchantments){
+                if(enchantDisplayName === ''){
+                    enchantDisplayName = 'Enchantments:<br>';
                 }
-                else{
-                    equip.style.display = 'none';
-                    dismantle.style.display = 'none';
-                }
-                //self.socket.emit("useItem",item.id);
+                enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
             }
+            enchantments.innerHTML = enchantDisplayName;
+            enchantments.style.padding = '0px';
             dismantle.onclick = function(){
-                self.socket.emit("dismantleItem",item.id);
+                self.socket.emit("dismantleItem",index);
                 dismantle.style.display = 'inline-block';
             }
             equip.onclick = function(){
-                if(item.id !== 'xpgem'){
-                    self.socket.emit("equipItem",item.id);
-                    equip.style.display = 'inline-block';
-                }
+                self.socket.emit("equipItem",index);
+                equip.style.display = 'inline-block';
             }
-            button.innerHTML = item.name + " x" + data.amount + " ";
+            button.innerHTML = item.name + " ";
             button.style.display = 'inline-block';
             button.style.position = 'relative';
+            enchantments.style.position = 'relative';
+            enchantments.style.color = '#ffffff';
             div.style.display = 'inline-block';
             div.style.position = 'relative';
             div.style.margin = '0px';
@@ -226,30 +181,44 @@ Inventory = function(socket,server){
             div.appendChild(button);
             div.appendChild(equip);
             div.appendChild(dismantle);
+            div.appendChild(enchantments);
             button.appendChild(image);
         }
         var addEquip = function(data,index){
-            if(data === ''){
+            if(data.id === undefined){
                 return;
             }
-            let item = Item.list[data];
+            let item = Item.list[data.id];
             let button = document.createElement('button');
             let unequip = document.createElement('button');
             let div = document.createElement('div');
             let image = document.createElement('img');
-            image.src = "/client/img/" + data + ".png";
+            let enchantments = document.createElement('div');
+            image.src = "/client/img/" + data.id + ".png";
             button.className = "UI-button-light";
             div.className = "UI-display-light";
             unequip.className = "itemUnequip";
             image.className = "item";
             unequip.innerHTML = "Unequip";
+            enchantments.className = "UI-text-light";
+            var enchantDisplayName = '';
+            for(var i in self.currentEquip[index].enchantments){
+                if(enchantDisplayName === ''){
+                    enchantDisplayName = 'Enchantments:<br>';
+                }
+                enchantDisplayName += '' + Enchantment.list[self.currentEquip[index].enchantments[i].id].name + ' ' + enchantName[self.currentEquip[index].enchantments[i].level] + '<br>';
+            }
+            enchantments.innerHTML = enchantDisplayName;
+            enchantments.style.padding = '0px';
             unequip.onclick = function(){
-                self.socket.emit("unequipItem",item.id);
+                self.socket.emit("unequipItem",index);
                 unequip.style.display = 'inline-block';
             }
             button.innerHTML = item.name + " ";
             button.style.display = 'inline-block';
             button.style.position = 'relative';
+            enchantments.style.position = 'relative';
+            enchantments.style.color = '#ffffff';
             div.style.display = 'inline-block';
             div.style.position = 'relative';
             div.style.margin = '0px';
@@ -257,6 +226,7 @@ Inventory = function(socket,server){
             currentEquip.appendChild(div);
             div.appendChild(button);
             div.appendChild(unequip);
+            div.appendChild(enchantments);
             button.appendChild(image);
         }
 		for(var i = 0;i < self.items.length;i++){
@@ -267,60 +237,65 @@ Inventory = function(socket,server){
 		}
     }
     if(self.server && self.socket){
-        self.socket.on("useItem",function(itemId){
-            if(!self.hasItem(itemId,1)){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item use.');
-                return;
-            }
-
-            let item = Item.list[itemId];
-            item.eventClick(Player.list[self.socket.id]);
-        });
-        self.socket.on("dismantleItem",function(itemId){
-            if(!self.hasItem(itemId,1)){
+        self.socket.on("dismantleItem",function(index){
+            if(!self.hasItem(index)){
                 addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
                 return;
             }
-
-            self.removeItem(itemId,1);
+            self.removeItem(index);
             Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200);
         });
-        self.socket.on("equipItem",function(itemId){
-            if(!self.hasItem(itemId,1)){
+        self.socket.on("equipItem",function(index){
+            if(!self.hasItem(index)){
                 addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item equip.');
                 return;
             }
-
-            self.removeItem(itemId,1);
-            if(self.currentEquip[Item.list[itemId].equip] !== ''){
-                self.addItem(self.currentEquip[Item.list[itemId].equip],1);
+            var item = self.items[index];
+            if(self.currentEquip[Item.list[item.id].equip].id !== undefined){
+                self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
             }
-            self.currentEquip[Item.list[itemId].equip] = itemId;
+            self.currentEquip[Item.list[item.id].equip] = self.items[index];
+            self.removeItem(index);
             self.refreshRender();
         });
-        self.socket.on("unequipItem",function(itemId){
-            if(self.currentEquip[Item.list[itemId].equip] !== itemId){
+        self.socket.on("unequipItem",function(index){
+            var item = self.currentEquip[index];
+            if(self.currentEquip[Item.list[item.id].equip].id !== item.id){
                 addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item unequip.');
                 return;
             }
-            self.addItem(self.currentEquip[Item.list[itemId].equip],1);
-            self.currentEquip[Item.list[itemId].equip] = '';
+            self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
+            self.currentEquip[Item.list[item.id].equip] = {};
             self.refreshRender();
         });
     }
-
-
 	return self;
 }
 
+Enchantment = function(id,name,maxLevel,averageLevel,deviation,dropChance,event){
+	var self = {
+		id:id,
+        name:name,
+        maxLevel:maxLevel,
+        averageLevel:averageLevel,
+        deviation:deviation,
+        dropChance:dropChance,
+        event:event,
+    }
+	Enchantment.list[self.id] = self;
+	return self;
+}
 
-Item = function(id,name,equip,event,dropChance){
+Enchantment.list = {};
+
+Item = function(id,name,equip,event,dropChance,enchantments){
 	var self = {
 		id:id,
         name:name,
         equip:equip,
         event:event,
         dropChance:dropChance,
+        enchantments:enchantments,
     }
 	Item.list[self.id] = self;
 	return self;
@@ -330,7 +305,7 @@ Item.list = {};
 try{
     var items = require('./item.json');
     for(var i in items){
-        Item(i,items[i].name,items[i].equip,items[i].event,parseFloat(items[i].dropChance,10));
+        Item(i,items[i].name,items[i].equip,items[i].event,items[i].dropChance,items[i].enchantments);
     }
 }
 catch(err){
@@ -342,7 +317,36 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event,parseFloat(items[i].dropChance,10));
+                Item(i,items[i].name,items[i].equip,items[i].event,items[i].dropChance,items[i].enchantments);
+            }
+        }
+        else{
+            // We reached our target server, but it returned an error
+        }
+    };
+
+    request.onerror = function(){
+        // There was a connection error of some sort
+    };
+
+    request.send();
+}
+try{
+    var enchantments = require('./enchantment.json');
+    for(var i in enchantments){
+        Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].dropChance,enchantments[i].event);
+    }
+}
+catch(err){
+    var request = new XMLHttpRequest();
+    request.open('GET',"/client/enchantment.json",true);
+
+    request.onload = function(){
+        if(this.status >= 200 && this.status < 400){
+            // Success!
+            var enchantments = JSON.parse(this.response);
+            for(var i in enchantments){
+                Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].dropChance,enchantments[i].event);
             }
         }
         else{

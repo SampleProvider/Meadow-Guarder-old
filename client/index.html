@@ -63,6 +63,20 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							12/12/2020
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Added better pathfinding for monsters.
+							<br>
+							Released 011f2a.
+							<br>
+							Added Enchantments and revamped inventory system.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
 							12/8/2020
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
@@ -215,14 +229,20 @@
 				</div>
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							Credits
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 2px">
+							(I have no idea how to do this.)
+						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
-							Ad for random things. Click <a class="UI-link-light" href="javascript:history.back(0)">here</a>!
+							Map Tilesets: Kinney | <a href="https://www.kenney.nl/" class="UI-link-light">Link</a>
 							<br>
-							Also contains a random image.
+							Item Images: Kyrise | <a href="https://kyrise.itch.io/kyrises-free-16x16-rpg-icon-pack?download" class="UI-link-light">Link</a>
 							<br>
-							<img src="/client/img/ninjaStar.png"></img>
-							<img src="/client/img/ninjaStar.png"></img>
-							<img src="/client/img/ninjaStar.png"></img>
+							Potions: Bonsaiheldin | <a href="http://bonsaiheld.org" class="UI-link-light">Link</a>
+							<br>
+							Player Sprites: Based on CouchFerret Makes Games | <a href="https://www.youtube.com/channel/UCp5WDvPDLCkSZWp9hP5xIvQ" class="UI-link-light">Link</a>
 						</div>
 					</div>
 				</div>
@@ -257,7 +277,6 @@
 			<button class="respawn" onclick="respawn()">Respawn</button>
 		</div>
 		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">Starter House</div>
-		<div id="questInventoryDiv" class="UI-text-light" onmouseover="mouseUp(event)"></div>
 		<div id="fps" class="UI-text-light"></div>
 		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
 			
@@ -392,8 +411,6 @@
 			<button id="interactMenuButton4" class="interactMenuButton UI-button-light" onclick="response(4)"></button>
 		</div>
 
-
-		<div id="htmlDebug" style="position: absolute; right: 15px; bottom: 15px;"></div>
 
 		<div id="disconnected" style="display:none;" onmouseover="mouseUp(event)">
 			<button class="disconnected">Disconnected</button>
