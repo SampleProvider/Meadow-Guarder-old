@@ -935,7 +935,7 @@ var Player = function(initPack){
         else{
             secondaryAttackDiv.style.color = "#ff2525";
         }
-        if(self.healReload >= self.healReload){
+        if(self.healTick >= self.healReload){
             self.healTick = self.healReload;
             healDiv.style.color = "#25ff25";
         }
