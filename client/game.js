@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f2a';
+var VERSION = '011f3a';
 
 var DEBUG = false;
 

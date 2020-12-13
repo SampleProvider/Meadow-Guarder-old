@@ -30,5 +30,21 @@
         "deviation":3,
         "dropChance":0.1,
         "event":"self.stats.projectileRange *= 1.1;"
+    },
+    "burst":{
+        "name":"Burst",
+        "maxLevel":1,
+        "averageLevel":1,
+        "deviation":0,
+        "dropChance":0.0001,
+        "event":"self.attackReload *= 0.01;self.secondReload *= 0.01;self.healReload *= 0.01;self.stats.attack *= 100;self.stats.defense *= 100;self.stats.heal *= 100;self.stats.xp *= 100;self.maxSpeed *= 0.1;"
+    },
+    "smashing":{
+        "name":"Smashing",
+        "maxLevel":3,
+        "averageLevel":1,
+        "deviation":2,
+        "dropChance":0.01,
+        "event":"self.pushPower *= 1.5;"
     }
 }

@@ -4,84 +4,84 @@
         "equip":"weapon",
         "event":"self.stats.attack *= 1.1;",
         "dropChance":0.1,
-        "enchantments":["speed"]
+        "enchantments":["speed","burst"]
     },
     "simplesteelbow":{
         "name":"Simple Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.4;",
         "dropChance":0.01,
-        "enchantments":["speed"]
+        "enchantments":["speed","burst"]
     },
     "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.7;",
         "dropChance":0.005,
-        "enchantments":["speed"]
+        "enchantments":["speed","burst"]
     },
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 2;self.stats.xp *= 2;",
         "dropChance":0.003,
-        "enchantments":["speed"]
+        "enchantments":["speed","burst"]
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
         "dropChance":0.001,
-        "enchantments":["speed"]
+        "enchantments":["speed","burst"]
     },
     "advancedwoodenbow":{
         "name":"Advanced Wooden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 1.7;",
         "dropChance":0.005,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "advancedsteelbow":{
         "name":"Advanced Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 2;self.stats.xp *= 2;",
         "dropChance":0.003,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "advanceddarksteelbow":{
         "name":"Advanced Dark Steel Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 5;self.stats.xp *= 5;",
         "dropChance":0.001,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "advancedgoldenbow":{
         "name":"Advanced Golden Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 7;self.stats.xp *= 7;",
         "dropChance":0.0003,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "advancedrubybow":{
         "name":"Advanced Ruby Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 10;self.stats.xp *= 10;",
         "dropChance":0.0001,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "developerbow":{
         "name":"Developer Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 7;self.stats.xp *= 10;",
         "dropChance":0,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "spbow":{
         "name":"SP Bow",
         "equip":"weapon",
         "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 3;",
         "dropChance":0,
-        "enchantments":["speed","range"]
+        "enchantments":["speed","range","burst"]
     },
     "bronzekey":{
         "name":"Bronze Key",
@@ -131,5 +131,75 @@
         "event":"self.hpMax *= 1.2;self.stats.heal *= 2;",
         "dropChance":0.005,
         "enchantments":["health"]
+    },
+    "woodenarmor":{
+        "name":"Wooden Armor",
+        "equip":"armor",
+        "event":"self.stats.defense *= 1.1;",
+        "dropChance":0.1,
+        "enchantments":["smashing"]
+    },
+    "steelarmor":{
+        "name":"Steel Armor",
+        "equip":"armor",
+        "event":"self.stats.defense *= 1.4;",
+        "dropChance":0.01,
+        "enchantments":["smashing"]
+    },
+    "darksteelarmor":{
+        "name":"Dark Steel Armor",
+        "equip":"armor",
+        "event":"self.stats.defense *= 1.7;",
+        "dropChance":0.005,
+        "enchantments":["smashing"]
+    },
+    "goldenarmor":{
+        "name":"Golden Armor",
+        "equip":"armor",
+        "event":"self.stats.defense *= 2;",
+        "dropChance":0.003,
+        "enchantments":["smashing"]
+    },
+    "rubyarmor":{
+        "name":"Ruby Armor",
+        "equip":"armor",
+        "event":"self.stats.defense *= 5;",
+        "dropChance":0.001,
+        "enchantments":["smashing"]
+    },
+    "simplewoodenhelmet":{
+        "name":"Simple Wooden Helmet",
+        "equip":"helmet",
+        "event":"self.stats.defense *= 1.1;",
+        "dropChance":0.1,
+        "enchantments":["smashing"]
+    },
+    "simplesteelhelmet":{
+        "name":"Simple Steel Helmet",
+        "equip":"helmet",
+        "event":"self.stats.defense *= 1.4;",
+        "dropChance":0.01,
+        "enchantments":["smashing"]
+    },
+    "simpledarksteelhelmet":{
+        "name":"Simple Dark Steel Helmet",
+        "equip":"helmet",
+        "event":"self.stats.defense *= 1.7;",
+        "dropChance":0.005,
+        "enchantments":["smashing"]
+    },
+    "simplegoldenhelmet":{
+        "name":"Simple Golden Helmet",
+        "equip":"helmet",
+        "event":"self.stats.defense *= 2;",
+        "dropChance":0.003,
+        "enchantments":["smashing"]
+    },
+    "simplerubyhelmet":{
+        "name":"Simple Ruby Helmet",
+        "equip":"helmet",
+        "event":"self.stats.defense *= 5;",
+        "dropChance":0.001,
+        "enchantments":["smashing"]
     }
 }

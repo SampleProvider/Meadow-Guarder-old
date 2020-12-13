@@ -27,7 +27,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",amount:1}
-        currentEquip:{helmet:{},boost:{},weapon:{},key:{},book:{},special:{}},
+        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{}},
         materials:[],
         refresh:true,
         spawn:true,
@@ -94,7 +94,7 @@ Inventory = function(socket,server){
                         if(k === Item.list[i].enchantments[j]){
                             var enchantment = Enchantment.list[k];
                             if(Math.random() < enchantment.dropChance * luck){
-                                enchantments.push({id:k,level:Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation))});
+                                enchantments.push({id:k,level:Math.min(Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)),enchantment.maxLevel)});
                             }
                         }
                     }

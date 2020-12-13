@@ -720,7 +720,7 @@ Actor = function(param){
     self.onPush = function(pt,pushPower){
         if(self.dazed < 1){
             self.pushPt = pt;
-            self.onCollision(pt,pushPower * self.pushPower);
+            self.onCollision(pt,pushPower * self.pushPower / 10);
         }
     }
     self.randomWalk = function(walking,waypoint,x,y){
@@ -2080,6 +2080,7 @@ Player = function(param){
             self.secondReload = 200;
             self.healReload = 400;
             self.maxSpeed = 20;
+            self.pushPower = 3;
             for(var i in self.inventory.currentEquip){
                 if(self.inventory.currentEquip[i].id !== undefined){
                     try{
