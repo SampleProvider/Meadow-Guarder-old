@@ -3263,8 +3263,8 @@ Monster = function(param){
                 if(self.getSquareDistance(self.target) < 64){
                     if(self.target.mapChange !== undefined){
                         if(self.target.mapChange > 10){
-                            self.stats.defense *= 20;
-                            self.stats.attack *= 20;
+                            self.stats.defense *= 200;
+                            self.stats.attack *= 200;
                             self.attackState = 'explodeCherryBomb';
                         }
                     }
