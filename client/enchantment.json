@@ -29,7 +29,7 @@
         "averageLevel":4,
         "deviation":3,
         "dropChance":0.1,
-        "event":"self.stats.projectileRange *= 1.1;"
+        "event":"self.stats.range *= 1.05;self.stats.speed *= 1.05;"
     },
     "burst":{
         "name":"Burst",

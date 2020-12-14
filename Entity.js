@@ -1305,7 +1305,8 @@ Player = function(param){
         heal:1,
         xp:1,
         luck:1,
-        projectileRange:1,
+        range:1,
+        speed:1,
     }
     self.permStats = {
         attack:1,
@@ -1313,7 +1314,8 @@ Player = function(param){
         heal:1,
         xp:1,
         luck:1,
-        projectileRange:1,
+        range:1,
+        speed:1,
     }
     var lastSelf = {};
     self.update = function(){
@@ -2992,7 +2994,8 @@ Monster = function(param){
         attack:1,
         defense:1,
         heal:1,
-        projectileRange:1,
+        range:1,
+        speed:1,
     }
     if(param.stats){
         for(var i in param.stats){
@@ -3422,9 +3425,15 @@ Pet.list = {};
 Projectile = function(param){
 	var self = Entity(param);
 	self.id = Math.random();
-	self.parent = param.id;
-	self.spdX = Math.cos(param.angle/180 * Math.PI) * 50;
-    self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
+    self.parent = param.id;
+    if(param.stats.speed !== undefined){
+        self.spdX = Math.cos(param.angle/180 * Math.PI) * 50 * param.stats.speed;
+        self.spdY = Math.sin(param.angle/180 * Math.PI) * 50 * param.stats.speed;
+    }
+    else{
+        self.spdX = Math.cos(param.angle/180 * Math.PI) * 50;
+        self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
+    }
     self.mapWidth = param.mapWidth;
     self.mapHeight = param.mapHeight;
 	self.direction = param.direction;
@@ -3441,8 +3450,8 @@ Projectile = function(param){
 	self.update = function(){
         super_update();
         self.timer += 1;
-        if(param.stats.projectileRange){
-            if(self.timer > 20 * param.stats.projectileRange){
+        if(param.stats.range !== undefined){
+            if(self.timer > 20 * param.stats.range){
                 self.toRemove = true;
             }
         }
