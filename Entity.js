@@ -156,6 +156,14 @@ s = {
             s.smite(Player.list[i].username);
         }
     },
+    kill:function(param){
+        var player = s.findPlayer(param);
+        player.invincible = false;
+        player.hp = 0;
+        player.isDead = true;
+        player.willBeDead = true;
+        player.toRemove = true;
+    },
 };
 
 var monsterData = require('./monsters.json');
@@ -582,23 +590,9 @@ Actor = function(param){
                 }
             }
         }
-        else if(self.randomPos.walking){
+        if(self.randomPos.walking){
             if(self.randomPos.waypoint){
                 if(self.randomPos.currentWaypoint){
-                    self.spdX = 0;
-                    self.spdY = 0;
-                    if(self.x < self.randomPos.currentWaypoint.x){
-                        self.spdX = 1;
-                    }
-                    if(self.x > self.randomPos.currentWaypoint.x){
-                        self.spdX = -1;
-                    }
-                    if(self.y < self.randomPos.currentWaypoint.y){
-                        self.spdY = 1;
-                    }
-                    if(self.y > self.randomPos.currentWaypoint.y){
-                        self.spdY = -1;
-                    }
                     if(self.x === self.randomPos.currentWaypoint.x && self.y === self.randomPos.currentWaypoint.y){
                         self.randomPos.currentWaypoint = undefined;
                         self.randomPos.waypointAttemptTime = 0;
@@ -619,6 +613,7 @@ Actor = function(param){
                         }
                     }
                     self.randomPos.currentWaypoint = waypoints[Math.floor(Math.random() * waypoints.length)];
+                    self.trackEntity(self.randomPos.currentWaypoint);
                 }
                 self.randomPos.waypointAttemptTime += 1;
             }
@@ -1261,41 +1256,49 @@ Player = function(param){
     self.attackTick = self.attackReload;
     self.secondTick = self.secondReload;
     self.healTick = self.healReload;
-    self.attackDirection = 0;
-    self.secondDirection = 0;
+    self.ability = {
+        attackAbility:'baseAttack',
+        secondAbility:'baseSecond',
+        healAbility:'baseHeal',
+    }
     self.currentResponse = 0;
     self.inventory = new Inventory(socket,true);
-    if(param.param.inventory){
+    if(param.param.inventory !== undefined){
         for(var i in param.param.inventory){
             self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].enchantments);
         }
     }
-    if(param.param.currentEquip){
+    if(param.param.currentEquip !== undefined){
         for(var i in param.param.currentEquip){
             self.inventory.currentEquip[i] = param.param.currentEquip[i];
         }
     }
-    if(param.param.xp){
+    if(param.param.xp !== undefined){
         self.xp = param.param.xp;
     }
-    if(param.param.level){
+    if(param.param.level !== undefined){
         self.level = param.param.level;
         if(self.level < xpLevels.length){
             self.xpMax = xpLevels[self.level];
         }
     }
-    if(param.param.questStats){
+    if(param.param.questStats !== undefined){
         for(var i in param.param.questStats){
             if(self.questStats[i] !== undefined){
                 self.questStats[i] = param.param.questStats[i];
             }
         }
     }
-    if(param.param.img){
+    if(param.param.img !== undefined){
         for(var i in param.param.img){
             if(self.img[i] !== undefined){
                 self.img[i] = param.param.img[i];
             }
+        }
+    }
+    if(param.param.ability !== undefined){
+        for(var i in param.param.ability){
+            self.ability[i] = param.param.ability[i];
         }
     }
     self.inventory.refreshRender();
@@ -1356,24 +1359,22 @@ Player = function(param){
         self.healTick += 1;
         if(self.hp < 1){
             self.hp = 0;
-            if(self.state !== 'dead'){
+            if(self.willBeDead){
                 Player.spectate(socket);
                 addToChat('style="color: #ff0000">',self.displayName + ' died.');
-                self.state = 'dead';
             }
         }
         else{
-            self.state = 'none';
             if(self.hp > self.hpMax){
                 self.hp = self.hpMax;
             }
             else{
                 if(self.healTick % 10 === 0){
-                    self.hp += Math.round(self.stats.heal * (10 + Math.random() * 15));
+                    self.hp += Math.round(self.stats.heal * (5 + Math.random() * 10));
                 }
             }
         }
-        if(!self.invincible && self.state !== 'dead'){
+        if(!self.invincible && self.isDead === false){
             self.updateAttack();
         }
         self.updateQuest();
@@ -2185,7 +2186,7 @@ Player = function(param){
         if(self.keyPress.right){
             self.spdX = 1;
         }
-        if(self.state === 'dead'){
+        if(self.isDead){
             self.spdX = 0;
             self.spdY = 0;
         }
@@ -2278,10 +2279,10 @@ Player = function(param){
             if(self.eventQ[i] !== undefined){
                 if(self.eventQ[i].time === 0){
                     switch(self.eventQ[i].event){
-                        case "heal":
-                            self.hp += 200 * self.stats.heal;
+                        case "baseHeal":
+                            self.hp += 50 * self.stats.heal;
                             break;
-                        case "attack":
+                        case "baseAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
@@ -2289,7 +2290,7 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);
                             }
                             break;
-                        case "second":
+                        case "baseSecond":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
@@ -2307,24 +2308,24 @@ Player = function(param){
         }
         if(self.keyPress.heal === true && self.healTick > self.healReload){
             self.healTick = 0;
-            self.addToEventQ('heal',0);
-            self.addToEventQ('heal',40);
-            self.addToEventQ('heal',80);
-            self.addToEventQ('heal',120);
+            self.addToEventQ(self.ability.healAbility,0);
+            self.addToEventQ(self.ability.healAbility,40);
+            self.addToEventQ(self.ability.healAbility,80);
+            self.addToEventQ(self.ability.healAbility,120);
         }
         if(isFireMap === false){
             return;
         }
         if(self.keyPress.attack === true && self.attackTick > self.attackReload){
             self.attackTick = 0;
-            self.addToEventQ("attack",0);
+            self.addToEventQ(self.ability.attackAbility,0);
         }
         if(self.keyPress.second === true && self.secondTick > self.secondReload){
             self.secondTick = 0;
-            self.addToEventQ("second",0);
-            self.addToEventQ("second",20);
-            self.addToEventQ("second",40);
-            self.addToEventQ("second",60);
+            self.addToEventQ(self.ability.secondAbility,0);
+            self.addToEventQ(self.ability.secondAbility,20);
+            self.addToEventQ(self.ability.secondAbility,40);
+            self.addToEventQ(self.ability.secondAbility,60);
         }
     }
     self.getUpdatePack = function(){
@@ -2631,7 +2632,6 @@ Player.onConnect = function(socket,username){
                     player.img.hair[1] = 0;
                     player.img.hair[2] = 5 * (150 - parseInt(data.state,10));
                 }
-                //var player = self;var color = 0;setInterval(()=>{if(color > 150){color = 0}color += 1;if(color < 51){player.img.hair[0] = 5 * (50 - color);player.img.hair[1] = 5 * color;player.img.hair[2] = 0;}else if(color < 101){player.img.hair[0] = 0;player.img.hair[1] = 5 * (100 - color);player.img.hair[2] = 5 * (color - 50);}else{player.img.hair[0] = 5 * (color - 100);player.img.hair[1] = 0;player.img.hair[2] = 5 * (150 - color);}player.img.body = player.img.shirt = player.img.pants = player.img.hair;},30);
             }
             if(data.inputId === 'imgBodyOpacity'){
                 player.img.body[3] = parseInt(data.state,10) / 10;
@@ -2675,7 +2675,7 @@ Player.onConnect = function(socket,username){
         });
 
         socket.on('respawn',function(data){
-            if(player.state !== 'dead'){
+            if(player.isDead === false){
                 addToChat('style="color: #ff0000">',player.displayName + ' cheated using respawn.');
                 Player.onDisconnect(SOCKET_LIST[player.id]);
                 return;
@@ -2684,7 +2684,6 @@ Player.onConnect = function(socket,username){
             player.isDead = false;
             player.willBeDead = false;
             player.toRemove = false;
-            player.state = 'none';
             player.dazed = 0;
             addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
@@ -2757,7 +2756,7 @@ Player.spectate = function(socket){
     }
 	socket.emit("spectator");
     if(Player.list[socket.id]){
-        Player.list[socket.id].state = 'dead';
+        Player.list[socket.id].isDead = true;
     }
 }
 Player.onDisconnect = function(socket){
@@ -3070,7 +3069,7 @@ Monster = function(param){
                 self.spdY = 0;
                 self.animate = true;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveBird";
                         self.target = Player.list[i];
                     }
@@ -3092,7 +3091,7 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.target.state === 'dead'){
+                if(self.target.isDead){
                     self.target = undefined;
                     self.attackState = 'passiveBird';
                     self.damagedEntity = false;
@@ -3121,7 +3120,7 @@ Monster = function(param){
                     }
                     break;
                 }
-                if(self.getSquareDistance(self.target) > 512 || self.target.state === 'dead'){
+                if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
                     if(!self.damaged){
                         self.target = undefined;
                         self.trackingEntity = undefined;
@@ -3168,7 +3167,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveBall";
                         self.target = Player.list[i];
                     }
@@ -3189,7 +3188,7 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.target.state === 'dead'){
+                if(self.target.isDead){
                     self.target = undefined;
                     self.attackState = 'passiveBall';
                     self.damagedEntity = false;
@@ -3213,7 +3212,7 @@ Monster = function(param){
                     }
                 }
                 self.reload += 1;
-                if(self.getSquareDistance(self.target) > 512 || self.target.state === 'dead'){
+                if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
                     if(!self.damaged){
                         self.target = undefined;
                         self.attackState = 'passiveBall';
@@ -3224,7 +3223,7 @@ Monster = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].state !== "dead" && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveCherryBomb";
                         self.target = Player.list[i];
                     }
@@ -3245,7 +3244,7 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.target.state === 'dead'){
+                if(self.target.isDead){
                     self.target = undefined;
                     self.attackState = 'passiveCherryBomb';
                     self.damagedEntity = false;
@@ -4177,7 +4176,7 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].state !== 'dead' && Projectile.list[j].map === Player.list[i].map){
+                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
                     Player.list[i].onCollision(Projectile.list[j],50);
                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                 }

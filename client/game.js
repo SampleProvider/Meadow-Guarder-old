@@ -712,10 +712,6 @@ var disableAllMenu = function(){
     }
 }
 
-document.getElementById('debugButton').onclick = function(){
-    disableAllMenu();
-    document.getElementById('debugScreen').style.display = 'inline-block';
-}
 document.getElementById('inventoryButton').onclick = function(){
     disableAllMenu();
     document.getElementById('inventoryScreen').style.display = 'inline-block';
@@ -1825,6 +1821,7 @@ window.onclick = function(event){
 }
 document.onkeydown = function(event){
     if(chatPress){
+        
     }
     else{
         if(!event.isTrusted){
@@ -1839,6 +1836,12 @@ document.onkeydown = function(event){
         }
         if(!talking){
             socket.emit('keyPress',{inputId:key,state:true});
+        }
+        if(key === 'i' && event.ctrlKey){
+            disableAllMenu();
+            document.getElementById('debugScreen').style.display = 'inline-block';
+            document.getElementById('window').style.display = 'inline-block';
+            state.isHidden = false;
         }
     }
 }
