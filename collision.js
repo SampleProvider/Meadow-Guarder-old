@@ -28,6 +28,20 @@ Collision2 = function(param){
 }
 
 Collision2.list = {};
+Collision3 = function(param){
+    var self = Entity(param);
+    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
+    self.toRemove = false;
+    self.type = 'Collision3';
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+    }
+    Collision3.list[self.id] = self;
+    return self;
+}
+
+Collision3.list = {};
 
 
 ProjectileCollision = function(param){

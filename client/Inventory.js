@@ -27,7 +27,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",amount:1}
-        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{}},
+        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{},ability:{}},
         materials:[],
         refresh:true,
         spawn:true,
@@ -238,35 +238,50 @@ Inventory = function(socket,server){
     }
     if(self.server && self.socket){
         self.socket.on("dismantleItem",function(index){
-            if(!self.hasItem(index)){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
-                return;
+            try{
+                if(!self.hasItem(index)){
+                    addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
+                    return;
+                }
+                self.removeItem(index);
+                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200);
             }
-            self.removeItem(index);
-            Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200);
+            catch(err){
+                console.error(err);
+            }
         });
         self.socket.on("equipItem",function(index){
-            if(!self.hasItem(index)){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item equip.');
-                return;
+            try{
+                if(!self.hasItem(index)){
+                    addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item equip.');
+                    return;
+                }
+                var item = self.items[index];
+                if(self.currentEquip[Item.list[item.id].equip].id !== undefined){
+                    self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
+                }
+                self.currentEquip[Item.list[item.id].equip] = self.items[index];
+                self.removeItem(index);
+                self.refreshRender();
             }
-            var item = self.items[index];
-            if(self.currentEquip[Item.list[item.id].equip].id !== undefined){
-                self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
+            catch(err){
+                console.error(err);
             }
-            self.currentEquip[Item.list[item.id].equip] = self.items[index];
-            self.removeItem(index);
-            self.refreshRender();
         });
         self.socket.on("unequipItem",function(index){
-            var item = self.currentEquip[index];
-            if(self.currentEquip[Item.list[item.id].equip].id !== item.id){
-                addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item unequip.');
-                return;
+            try{
+                var item = self.currentEquip[index];
+                if(self.currentEquip[Item.list[item.id].equip].id !== item.id){
+                    addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item unequip.');
+                    return;
+                }
+                self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
+                self.currentEquip[Item.list[item.id].equip] = {};
+                self.refreshRender();
             }
-            self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
-            self.currentEquip[Item.list[item.id].equip] = {};
-            self.refreshRender();
+            catch(err){
+                console.error(err);
+            }
         });
     }
 	return self;

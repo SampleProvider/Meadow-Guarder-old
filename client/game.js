@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f3a';
+var VERSION = '011f4a';
 
 var DEBUG = false;
 
@@ -484,13 +484,11 @@ Img.bird.src = '/client/img/bird.png';
 Img.ball = new Image();
 Img.ball.src = '/client/img/ball.png';
 Img.cherryBomb = new Image();
-Img.cherryBomb.src = '/client/img/CherryBomb.png';
+Img.cherryBomb.src = '/client/img/cherryBomb.png';
 Img.healthBar = new Image();
 Img.healthBar.src = '/client/img/Health0.png';
 Img.healthBarEnemy = new Image();
 Img.healthBarEnemy.src = '/client/img/HealthEnemy.png';
-Img.playericon = new Image();
-Img.playericon.src = '/client/img/playericon.png';
 var mouseX = 0;
 var mouseY = 0;
 var mapMouseX = mouseX + WIDTH / 2;
@@ -1571,7 +1569,22 @@ socket.on('drawTile',function(data){
     tempMap[data.map].push(data);
 });
 socket.on('removeTile',function(data){
+    for(var i in tempMap[data.map]){
+        if(tempMap[data.map][i].x === data.x && tempMap[data.map][i].y === data.y && tempMap[data.map][i].canvas === data.canvas && tempMap[data.map][i].tile_idx === data.tile_idx){
+            tempMap[data.map].splice(i,1);
+        }
+    }
+});
+socket.on('removeAllTiles',function(data){
     tempMap[data.map] = [];
+});
+socket.on('removeSameTiles',function(data){
+    for(var i in tempMap[data.map]){
+        if(tempMap[data.map][i].tile_idx === data.tile_idx){
+            tempMap[data.map].splice(i,1);
+            i -= 1;
+        }
+    }
 });
 
 startQuest = function(){
@@ -1702,10 +1715,6 @@ setInterval(function(){
         entities[i].draw();
     }
 
-    ctx0.clearRect(0,-HEIGHT,WIDTH + 3200,HEIGHT);
-    ctx0.clearRect(-WIDTH,-HEIGHT,WIDTH,3200 + HEIGHT);
-    ctx0.clearRect(-WIDTH,3200 + HEIGHT,WIDTH + 3200,HEIGHT);
-    ctx0.clearRect(3200,0,WIDTH,3200 + HEIGHT);
     ctx0.restore();
     map1.save();
     map1.translate(Math.round(cameraX),Math.round(cameraY));
@@ -1757,10 +1766,6 @@ setInterval(function(){
         Player.list[i].update();
     }
     
-    ctx1.clearRect(0,-HEIGHT,WIDTH + 3200,HEIGHT);
-    ctx1.clearRect(-WIDTH,-HEIGHT,WIDTH,3200 + HEIGHT);
-    ctx1.clearRect(-WIDTH,3200 + HEIGHT,WIDTH + 3200,HEIGHT);
-    ctx1.clearRect(3200,0,WIDTH,3200 + HEIGHT);
     ctx1.restore();
     if(mapShadeAmount >= 2){
         mapShadeSpeed = -0.12;

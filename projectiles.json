@@ -25,5 +25,14 @@
             "defense":1,
             "heal":1
         }
+    },
+    "fireBullet":{
+        "width":42,
+        "height":42,
+        "stats":{
+            "attack":2,
+            "defense":1,
+            "heal":1
+        }
     }
 }

@@ -83,6 +83,13 @@
         "dropChance":0,
         "enchantments":["speed","range","burst"]
     },
+    "tianmubow":{
+        "name":"Tianmu Bow",
+        "equip":"weapon",
+        "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 3;",
+        "dropChance":0,
+        "enchantments":["speed","range","burst"]
+    },
     "bronzekey":{
         "name":"Bronze Key",
         "equip":"key",
@@ -201,5 +208,75 @@
         "event":"self.stats.defense *= 5;",
         "dropChance":0.001,
         "enchantments":["smashing"]
+    },
+    "earthbook1":{
+        "name":"Earth Book 1",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'earthAttack1';self.ability.secondAbility = 'earthSecond1';self.ability.healAbility = 'earthHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0,20];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.1,
+        "enchantments":[]
+    },
+    "earthbook2":{
+        "name":"Earth Book 2",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'earthAttack2';self.ability.secondAbility = 'earthSecond2';self.ability.healAbility = 'earthHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0,20,40];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.01,
+        "enchantments":[]
+    },
+    "earthbook3":{
+        "name":"Earth Book 3",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'earthAttack3';self.ability.secondAbility = 'earthSecond3';self.ability.healAbility = 'earthHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0,20,40,60];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.005,
+        "enchantments":[]
+    },
+    "earthbook4":{
+        "name":"Earth Book 4",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'earthAttack4';self.ability.secondAbility = 'earthSecond4';self.ability.healAbility = 'earthHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0,20,40,60];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.003,
+        "enchantments":[]
+    },
+    "firebook1":{
+        "name":"Fire Book 1",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'fireAttack1';self.ability.secondAbility = 'fireSecond1';self.ability.healAbility = 'fireHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.1,
+        "enchantments":[]
+    },
+    "firebook2":{
+        "name":"Fire Book 2",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'fireAttack2';self.ability.secondAbility = 'fireSecond2';self.ability.healAbility = 'fireHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.01,
+        "enchantments":[]
+    },
+    "firebook3":{
+        "name":"Fire Book 3",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'fireAttack3';self.ability.secondAbility = 'fireSecond3';self.ability.healAbility = 'fireHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.005,
+        "enchantments":[]
+    },
+    "firebook4":{
+        "name":"Fire Book 4",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'fireAttack4';self.ability.secondAbility = 'fireSecond4';self.ability.healAbility = 'fireHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.003,
+        "enchantments":[]
+    },
+    "firebook5":{
+        "name":"Fire Book 5",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'fireAttack5';self.ability.secondAbility = 'fireSecond5';self.ability.healAbility = 'fireHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.001,
+        "enchantments":[]
+    },
+    "firebook6":{
+        "name":"Fire Book 6",
+        "equip":"ability",
+        "event":"self.ability.attackAbility = 'fireAttack6';self.ability.secondAbility = 'fireSecond6';self.ability.healAbility = 'fireHeal6';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "dropChance":0.0003,
+        "enchantments":[]
     }
 }

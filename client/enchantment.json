@@ -21,7 +21,7 @@
         "averageLevel":3,
         "deviation":5,
         "dropChance":0.1,
-        "event":"self.attackReload *= 0.9;self.secondReload *= 0.9;self.healReload *= 0.9;"
+        "event":"self.attackReload *= 0.95;self.secondReload *= 0.95;self.healReload *= 0.95;"
     },
     "range":{
         "name":"Range",
@@ -29,7 +29,7 @@
         "averageLevel":4,
         "deviation":3,
         "dropChance":0.1,
-        "event":"self.stats.range *= 1.05;self.stats.speed *= 1.05;"
+        "event":"self.stats.range *= 1.01;self.stats.speed *= 1.01;"
     },
     "burst":{
         "name":"Burst",
@@ -37,7 +37,7 @@
         "averageLevel":1,
         "deviation":0,
         "dropChance":0.0001,
-        "event":"self.maxSpeed *= 2;self.stats.speed *= 2;"
+        "event":"self.maxSpeed *= 1.1;self.stats.speed *= 1.1;"
     },
     "smashing":{
         "name":"Smashing",

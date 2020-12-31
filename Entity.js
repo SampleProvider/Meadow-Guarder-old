@@ -54,6 +54,7 @@ var fs = require('fs');
 var PF = require('pathfinding');
 
 worldMap = [];
+PVP = true;
 
 s = {
     findPlayer:function(param){
@@ -854,6 +855,18 @@ Actor = function(param){
                 if(Collision2.list[firstTile]){
                     self.doCollision(Collision2.list[firstTile]);
                 }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
             }
             else if(self.spdY > 0){
                 if(Collision.list[thirdTile]){
@@ -880,6 +893,18 @@ Actor = function(param){
                 if(Collision2.list[secondTile]){
                     self.doCollision(Collision2.list[secondTile]);
                 }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
             }
             else{
                 if(Collision.list[fourthTile]){
@@ -905,6 +930,18 @@ Actor = function(param){
                 }
                 if(Collision2.list[firstTile]){
                     self.doCollision(Collision2.list[firstTile]);
+                }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
                 }
             }
         }
@@ -934,6 +971,18 @@ Actor = function(param){
                 if(Collision2.list[thirdTile]){
                     self.doCollision(Collision2.list[thirdTile]);
                 }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
             }
             else if(self.spdY > 0){
                 if(Collision.list[firstTile]){
@@ -960,6 +1009,18 @@ Actor = function(param){
                 if(Collision2.list[fourthTile]){
                     self.doCollision(Collision2.list[fourthTile]);
                 }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
             }
             else{
                 if(Collision.list[secondTile]){
@@ -985,6 +1046,18 @@ Actor = function(param){
                 }
                 if(Collision2.list[thirdTile]){
                     self.doCollision(Collision2.list[thirdTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
                 }
             }
         }
@@ -1014,6 +1087,18 @@ Actor = function(param){
                 if(Collision2.list[firstTile]){
                     self.doCollision(Collision2.list[firstTile]);
                 }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
             }
             else if(self.spdY > 0){
                 if(Collision.list[thirdTile]){
@@ -1039,6 +1124,18 @@ Actor = function(param){
                 }
                 if(Collision2.list[secondTile]){
                     self.doCollision(Collision2.list[secondTile]);
+                }
+                if(Collision3.list[thirdTile]){
+                    self.doCollision(Collision3.list[thirdTile]);
+                }
+                if(Collision3.list[fourthTile]){
+                    self.doCollision(Collision3.list[fourthTile]);
+                }
+                if(Collision3.list[firstTile]){
+                    self.doCollision(Collision3.list[firstTile]);
+                }
+                if(Collision3.list[secondTile]){
+                    self.doCollision(Collision3.list[secondTile]);
                 }
             }
             else{
@@ -1260,6 +1357,9 @@ Player = function(param){
         attackAbility:'baseAttack',
         secondAbility:'baseSecond',
         healAbility:'baseHeal',
+        attackPattern:[0],
+        secondPattern:[0],
+        healPattern:[0,20,40,60],
     }
     self.currentResponse = 0;
     self.inventory = new Inventory(socket,true);
@@ -1855,8 +1955,9 @@ Player = function(param){
                 state:'remove',
             });
             for(var i in SOCKET_LIST){
-                SOCKET_LIST[i].emit('removeTile',{
+                SOCKET_LIST[i].emit('removeSameTiles',{
                     map:self.map,
+                    tile_idx:3547,
                 });
             }
             var newTiles = [];
@@ -1865,7 +1966,7 @@ Player = function(param){
                     newTiles.push(tiles[i]);
                 }
             }
-            tiles = JSON.parse(JSON.stringify(newTiles));
+            tiles = newTiles;
             for(var i in self.questDependent){
                 if(self.questDependent[i].type === 'Collision2'){
                     self.questDependent[i].toRemove = true;
@@ -2076,12 +2177,20 @@ Player = function(param){
     self.updateStats = function(){
         if(self.inventory.refresh){
             self.inventory.refresh = false;
-            self.stats = JSON.parse(JSON.stringify(self.permStats));
+            self.stats = Object.create(self.permStats);
             self.textColor = '#ffff00';
             self.hpMax = 1000;
             self.attackReload = 20;
             self.secondReload = 200;
             self.healReload = 400;
+            self.ability = {
+                attackAbility:'baseAttack',
+                secondAbility:'baseSecond',
+                healAbility:'baseHeal',
+                attackPattern:[0],
+                secondPattern:[0],
+                healPattern:[0,20,40,60],
+            }
             self.maxSpeed = 20;
             self.pushPower = 3;
             for(var i in self.inventory.currentEquip){
@@ -2280,20 +2389,490 @@ Player = function(param){
                 if(self.eventQ[i].time === 0){
                     switch(self.eventQ[i].event){
                         case "baseHeal":
-                            self.hp += 50 * self.stats.heal;
+                            self.hp += 100 * self.stats.heal;
+                            break;
+                        case "earthHeal1":
+                            self.hp += 110 * self.stats.heal;
+                            break;
+                        case "earthHeal2":
+                            self.hp += 120 * self.stats.heal;
+                            break;
+                        case "earthHeal3":
+                            self.hp += 130 * self.stats.heal;
+                            break;
+                        case "earthHeal4":
+                            self.hp += 135 * self.stats.heal;
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                        case "earthHeal5":
+                            self.hp += 140 * self.stats.heal;
+                            if(isFireMap){
+                                for(var j = 0;j < 15;j++){
+                                    self.shootProjectile(self.id,'Player',j * 24,j * 24,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireHeal1":
+                            self.hp += 75 * self.stats.heal;
+                            break;
+                        case "fireHeal2":
+                            self.hp += 85 * self.stats.heal;
+                            break;
+                        case "fireHeal3":
+                            self.hp += 95 * self.stats.heal;
+                            break;
+                        case "fireHeal4":
+                            self.hp += 105 * self.stats.heal;
                             break;
                         case "baseAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction - 15,self.direction - 15,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'playerBullet',0,self.stats);
+                            }
+                            break;
+                        case "earthAttack1":
+                            if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);
-                                self.shootProjectile(self.id,'Player',self.direction + 15,self.direction + 15,'playerBullet',0,self.stats);
+                            }
+                            break;
+                        case "earthAttack2":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);
+                            }
+                            break;
+                        case "earthAttack3":
+                            if(isFireMap){
+                                for(var j = -5;j < 6;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                        case "earthAttack4":
+                            if(isFireMap){
+                                for(var j = -7;j < 8;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireAttack1":
+                            if(isFireMap){
+                                for(var j = -1;j < 2;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireAttack2":
+                            if(isFireMap){
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireAttack3":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireAttack4":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireAttack5":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireAttack6":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 90,self.direction + j * 10 + 90,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,self.stats);
+                                }
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 270,self.direction + j * 10 + 270,'fireBullet',-20,self.stats);
+                                }
                             }
                             break;
                         case "baseSecond":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                        case "earthSecond1":
+                            if(isFireMap){
+                                var tile = new Collision3({
+                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
+                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
+                                    width:64,
+                                    height:64,
+                                    map:self.map,
+                                });
+                                var tile_idx = Math.round(56.5 + Math.random() * 3);
+                                tile.tile_idx = tile_idx;
+                                tiles.push({
+                                    x:Math.floor(self.mouseX / 64) * 64,
+                                    y:Math.floor(self.mouseY / 64) * 64,
+                                    map:self.map,
+                                    tile_idx:tile_idx,
+                                    canvas:'lower',
+                                    parent:self.id,
+                                });
+                                for(var j in SOCKET_LIST){
+                                    SOCKET_LIST[j].emit('drawTile',{
+                                        x:Math.floor(self.mouseX / 64) * 64,
+                                        y:Math.floor(self.mouseY / 64) * 64,
+                                        map:self.map,
+                                        tile_idx:tile_idx,
+                                        canvas:'lower',
+                                    });
+                                }
+                                setTimeout(function(){
+                                    var newTiles = [];
+                                    for(var j in tiles){
+                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map){
+                                            
+                                        }
+                                        else{
+                                            newTiles.push(tiles[j]);
+                                        }
+                                    }
+                                    tiles = newTiles;
+                                    for(var j in SOCKET_LIST){
+                                        SOCKET_LIST[j].emit('removeTile',{
+                                            x:tile.x - 32,
+                                            y:tile.y - 32,
+                                            map:tile.map,
+                                            tile_idx:tile.tile_idx,
+                                            canvas:'lower',
+                                        });
+                                    }
+                                    delete Collision3.list[tile.id];
+                                },5000);
+                            }
+                            break;
+                        case "earthSecond2":
+                            if(isFireMap){
+                                var tile = new Collision3({
+                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
+                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
+                                    width:64,
+                                    height:64,
+                                    map:self.map,
+                                });
+                                var tile_idx = Math.round(56.5 + Math.random() * 3);
+                                tile.tile_idx = tile_idx;
+                                tiles.push({
+                                    x:Math.floor(self.mouseX / 64) * 64,
+                                    y:Math.floor(self.mouseY / 64) * 64,
+                                    map:self.map,
+                                    tile_idx:tile_idx,
+                                    canvas:'lower',
+                                    parent:self.id,
+                                });
+                                for(var j in SOCKET_LIST){
+                                    SOCKET_LIST[j].emit('drawTile',{
+                                        x:Math.floor(self.mouseX / 64) * 64,
+                                        y:Math.floor(self.mouseY / 64) * 64,
+                                        map:self.map,
+                                        tile_idx:tile_idx,
+                                        canvas:'lower',
+                                    });
+                                }
+                                setTimeout(function(){
+                                    var newTiles = [];
+                                    for(var j in tiles){
+                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map){
+                                            
+                                        }
+                                        else{
+                                            newTiles.push(tiles[j]);
+                                        }
+                                    }
+                                    tiles = newTiles;
+                                    for(var j in SOCKET_LIST){
+                                        SOCKET_LIST[j].emit('removeTile',{
+                                            x:tile.x - 32,
+                                            y:tile.y - 32,
+                                            map:tile.map,
+                                            tile_idx:tile.tile_idx,
+                                            canvas:'lower',
+                                        });
+                                    }
+                                    delete Collision3.list[tile.id];
+                                },10000);
+                            }
+                            break;
+                        case "earthSecond3":
+                            if(isFireMap){
+                                var tile = new Collision3({
+                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
+                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
+                                    width:64,
+                                    height:64,
+                                    map:self.map,
+                                });
+                                var tile_idx = Math.round(56.5 + Math.random() * 3);
+                                tile.tile_idx = tile_idx;
+                                tiles.push({
+                                    x:Math.floor(self.mouseX / 64) * 64,
+                                    y:Math.floor(self.mouseY / 64) * 64,
+                                    map:self.map,
+                                    tile_idx:tile_idx,
+                                    canvas:'lower',
+                                    parent:self.id,
+                                });
+                                for(var j in SOCKET_LIST){
+                                    SOCKET_LIST[j].emit('drawTile',{
+                                        x:Math.floor(self.mouseX / 64) * 64,
+                                        y:Math.floor(self.mouseY / 64) * 64,
+                                        map:self.map,
+                                        tile_idx:tile_idx,
+                                        canvas:'lower',
+                                    });
+                                }
+                                setTimeout(function(){
+                                    var newTiles = [];
+                                    for(var j in tiles){
+                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map){
+                                            
+                                        }
+                                        else{
+                                            newTiles.push(tiles[j]);
+                                        }
+                                    }
+                                    tiles = newTiles;
+                                    for(var j in SOCKET_LIST){
+                                        SOCKET_LIST[j].emit('removeTile',{
+                                            x:tile.x - 32,
+                                            y:tile.y - 32,
+                                            map:tile.map,
+                                            tile_idx:tile.tile_idx,
+                                            canvas:'lower',
+                                        });
+                                    }
+                                    delete Collision3.list[tile.id];
+                                },20000);
+                            }
+                            break;
+                        case "earthSecond4":
+                            if(isFireMap){
+                                var tile = new Collision3({
+                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
+                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
+                                    width:64,
+                                    height:64,
+                                    map:self.map,
+                                });
+                                var tile_idx = Math.round(56.5 + Math.random() * 3);
+                                tile.tile_idx = tile_idx;
+                                tiles.push({
+                                    x:Math.floor(self.mouseX / 64) * 64,
+                                    y:Math.floor(self.mouseY / 64) * 64,
+                                    map:self.map,
+                                    tile_idx:tile_idx,
+                                    canvas:'lower',
+                                    parent:self.id,
+                                });
+                                for(var j in SOCKET_LIST){
+                                    SOCKET_LIST[j].emit('drawTile',{
+                                        x:Math.floor(self.mouseX / 64) * 64,
+                                        y:Math.floor(self.mouseY / 64) * 64,
+                                        map:self.map,
+                                        tile_idx:tile_idx,
+                                        canvas:'lower',
+                                    });
+                                }
+                                setTimeout(function(){
+                                    var newTiles = [];
+                                    for(var j in tiles){
+                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map){
+                                            
+                                        }
+                                        else{
+                                            newTiles.push(tiles[j]);
+                                        }
+                                    }
+                                    tiles = newTiles;
+                                    for(var j in SOCKET_LIST){
+                                        SOCKET_LIST[j].emit('removeTile',{
+                                            x:tile.x - 32,
+                                            y:tile.y - 32,
+                                            map:tile.map,
+                                            tile_idx:tile.tile_idx,
+                                            canvas:'lower',
+                                        });
+                                    }
+                                    delete Collision3.list[tile.id];
+                                },20000);
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireSecond1":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                self.stats.speed = speed;
+                            }
+                            break;
+                        case "fireSecond2":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                            }
+                            break;
+                        case "fireSecond3":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 30;j++){
+                                    self.shootProjectile(self.id,'Player',j * 12,j * 12,'fireBullet',192,self.stats);
+                                }
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                            }
+                            break;
+                        case "fireSecond4":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 30;j++){
+                                    self.shootProjectile(self.id,'Player',j * 12,j * 12,'fireBullet',192,self.stats);
+                                }
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireSecond5":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 30;j++){
+                                    self.shootProjectile(self.id,'Player',j * 12,j * 12,'fireBullet',192,self.stats);
+                                }
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,self.stats);
+                                }
+                            }
+                            break;
+                        case "fireSecond6":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                for(var j = 0;j < 40;j++){
+                                    self.shootProjectile(self.id,'Player',j * 9,j * 9,'fireBullet',256,self.stats);
+                                }
+                                for(var j = 0;j < 30;j++){
+                                    self.shootProjectile(self.id,'Player',j * 12,j * 12,'fireBullet',192,self.stats);
+                                }
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                }
+                                self.stats.speed = speed;
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,self.stats);
                                 }
                             }
                             break;
@@ -2308,24 +2887,24 @@ Player = function(param){
         }
         if(self.keyPress.heal === true && self.healTick > self.healReload){
             self.healTick = 0;
-            self.addToEventQ(self.ability.healAbility,0);
-            self.addToEventQ(self.ability.healAbility,40);
-            self.addToEventQ(self.ability.healAbility,80);
-            self.addToEventQ(self.ability.healAbility,120);
+            for(var i in self.ability.healPattern){
+                self.addToEventQ(self.ability.healAbility,self.ability.healPattern[i]);
+            }
         }
         if(isFireMap === false){
             return;
         }
         if(self.keyPress.attack === true && self.attackTick > self.attackReload){
             self.attackTick = 0;
-            self.addToEventQ(self.ability.attackAbility,0);
+            for(var i in self.ability.attackPattern){
+                self.addToEventQ(self.ability.attackAbility,self.ability.attackPattern[i]);
+            }
         }
         if(self.keyPress.second === true && self.secondTick > self.secondReload){
             self.secondTick = 0;
-            self.addToEventQ(self.ability.secondAbility,0);
-            self.addToEventQ(self.ability.secondAbility,20);
-            self.addToEventQ(self.ability.secondAbility,40);
-            self.addToEventQ(self.ability.secondAbility,60);
+            for(var i in self.ability.secondPattern){
+                self.addToEventQ(self.ability.secondAbility,self.ability.secondPattern[i]);
+            }
         }
     }
     self.getUpdatePack = function(){
@@ -2386,25 +2965,25 @@ Player = function(param){
                         for(var j in lastSelf.img[i]){
                             if(self.img[i][j] !== lastSelf.img[i][j]){
                                 pack.img = self.img;
-                                lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                                lastSelf.img = Object.create(self.img);
                             }
                         }
                     }
                     else{
                         if(self.img[i] !== lastSelf.img[i]){
                             pack.img = self.img;
-                            lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                            lastSelf.img = Object.create(self.img);
                         }
                     }
                 }
                 else{
                     pack.img = self.img;
-                    lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                    lastSelf.img = Object.create(self.img);
                 }
             }
             else{
                 pack.img = self.img;
-                lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                lastSelf.img = Object.create(self.img);
             }
         }
         if(lastSelf.animationDirection !== self.animationDirection){
@@ -2460,17 +3039,17 @@ Player = function(param){
                 if(lastSelf.stats[i]){
                     if(self.stats[i] !== lastSelf.stats[i]){
                         pack.stats = self.stats;
-                        lastSelf.stats = JSON.parse(JSON.stringify(self.stats));
+                        lastSelf.stats = Object.create(self.stats);
                     }
                 }
                 else{
                     pack.stats = self.stats;
-                    lastSelf.stats = JSON.parse(JSON.stringify(self.stats));
+                    lastSelf.stats = Object.create(self.stats);
                 }
             }
             else{
                 pack.stats = self.stats;
-                lastSelf.stats = JSON.parse(JSON.stringify(self.stats));
+                lastSelf.stats = Object.create(self.stats);
             }
         }
         return pack;
@@ -2785,7 +3364,7 @@ Player.onDisconnect = function(socket){
                 newTiles.push(tiles[i]);
             }
         }
-        tiles = JSON.parse(JSON.stringify(newTiles));
+        tiles = newTiles;
         addToChat('style="color: #ff0000">',Player.list[socket.id].displayName + " logged off.");
         playerMap[Player.list[socket.id].map] -= 1;
         delete Player.list[socket.id];
@@ -2931,25 +3510,25 @@ Npc = function(param){
                         for(var j in lastSelf.img[i]){
                             if(self.img[i][j] !== lastSelf.img[i][j]){
                                 pack.img = self.img;
-                                lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                                lastSelf.img = Object.create(self.img);
                             }
                         }
                     }
                     else{
                         if(self.img[i] !== lastSelf.img[i]){
                             pack.img = self.img;
-                            lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                            lastSelf.img = Object.create(self.img);
                         }
                     }
                 }
                 else{
                     pack.img = self.img;
-                    lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                    lastSelf.img = Object.create(self.img);
                 }
             }
             else{
                 pack.img = self.img;
-                lastSelf.img = JSON.parse(JSON.stringify(self.img));
+                lastSelf.img = Object.create(self.img);
             }
         }
         return pack;
@@ -3358,7 +3937,7 @@ Monster.list = {};
 
 
 Pet = function(param){
-	var self = Npc(param);
+	var self = Actor(param);
 	self.id = Math.random();
     self.map = 'The Village';
     self.parent = param.parent;
@@ -3479,6 +4058,9 @@ Projectile = function(param){
         self.updateCollisions();
     }
     self.updateCollisions = function(){
+        if(self.spdX === 0 && self.spdY === 0){
+            return;
+        }
         var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
@@ -3527,6 +4109,30 @@ Projectile = function(param){
         }
         if(Collision2.list[fourthTile]){
             if(self.isColliding(Collision2.list[fourthTile])){
+                self.toRemove = true;
+                self.updateNextFrame = false;
+            }
+        }
+        if(Collision3.list[firstTile]){
+            if(self.isColliding(Collision3.list[firstTile])){
+                self.toRemove = true;
+                self.updateNextFrame = false;
+            }
+        }
+        if(Collision3.list[secondTile]){
+            if(self.isColliding(Collision3.list[secondTile])){
+                self.toRemove = true;
+                self.updateNextFrame = false;
+            }
+        }
+        if(Collision3.list[thirdTile]){
+            if(self.isColliding(Collision3.list[thirdTile])){
+                self.toRemove = true;
+                self.updateNextFrame = false;
+            }
+        }
+        if(Collision3.list[fourthTile]){
+            if(self.isColliding(Collision3.list[fourthTile])){
                 self.toRemove = true;
                 self.updateNextFrame = false;
             }
@@ -4176,9 +4782,15 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Player' && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
-                    Player.list[i].onCollision(Projectile.list[j],50);
-                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
+                    if(PVP){
+                        Player.list[i].onCollision(Projectile.list[j],50);
+                        Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                    }
+                    else if(Projectile.list[j].parentType !== 'Player'){
+                        Player.list[i].onCollision(Projectile.list[j],50);
+                        Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                    }
                 }
             }
         }
