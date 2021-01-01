@@ -763,6 +763,18 @@ var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
     return canvas;
 }
 
+var arrayIsEqual = function(arr1,arr2){
+	if(arr1.length !== arr2.length){
+        return false;
+    }
+	for(var i = 0;i < arr1.length;i++){
+		if(arr1[i] !== arr2[i]){
+            return false;
+        }
+	}
+	return true;
+};
+
 var Player = function(initPack){
     var self = {};
     self.id = initPack.id;
@@ -871,7 +883,6 @@ var Player = function(initPack){
     self.animationDirection = initPack.animationDirection;
     self.stats = initPack.stats;
     self.type = initPack.type;
-    self.moveSpeed = 15;
     self.update = function(){
         if(talking && self.id === selfId){
             socket.emit('keyPress',{inputId:'releaseAll'});
@@ -889,15 +900,9 @@ var Player = function(initPack){
         
         if(self.id === selfId){
             inventoryPlayerDisplay.clearRect(0,0,10,17);
-            drawPlayer(self.renderedImg.body,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.shirt,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.pants,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.hair,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.render,inventoryPlayerDisplay,self.animationDirection,self.animation,5,15,1);
             settingsPlayerDisplay.clearRect(0,0,10,17);
-            drawPlayer(self.renderedImg.body,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.shirt,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.pants,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-            drawPlayer(self.renderedImg.hair,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+            drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
         }
     }
     self.drawName = function(){
@@ -1257,19 +1262,19 @@ socket.on('update',function(data){
                         Player.list[data.player[i].id].spdY = data.player[i].spdY;
                     }
                     if(data.player[i].img !== undefined){
-                        if(data.player[i].img.body !== Player.list[data.player[i].id].img.body){
+                        if(!arrayIsEqual(data.player[i].img.body,Player.list[data.player[i].id].img.body)){
                             Player.list[data.player[i].id].renderedImg.body = renderPlayer(Img.playerBody,data.player[i].img.body);
                         }
-                        if(data.player[i].img.shirt !== Player.list[data.player[i].id].img.shirt){
+                        if(!arrayIsEqual(data.player[i].img.shirt,Player.list[data.player[i].id].img.shirt)){
                             Player.list[data.player[i].id].renderedImg.shirt = renderPlayer(Img.playerShirt,data.player[i].img.shirt);
                         }
-                        if(data.player[i].img.pants !== Player.list[data.player[i].id].img.pants){
+                        if(!arrayIsEqual(data.player[i].img.pants,Player.list[data.player[i].id].img.pants)){
                             Player.list[data.player[i].id].renderedImg.pants = renderPlayer(Img.playerPants,data.player[i].img.pants);
                         }
-                        if(data.player[i].img.hair !== Player.list[data.player[i].id].img.hair){
+                        if(!arrayIsEqual(data.player[i].img.hair,Player.list[data.player[i].id].img.hair)){
                             Player.list[data.player[i].id].renderedImg.hair = renderPlayer(Img.playerHair[data.player[i].img.hairType],data.player[i].img.hair);
                         }
-                        if(data.player[i].img.hairType !== Player.list[data.player[i].id].img.hairType){
+                        if(!arrayIsEqual(data.player[i].img.hairType,Player.list[data.player[i].id].img.hairType)){
                             Player.list[data.player[i].id].renderedImg.hair = renderPlayer(Img.playerHair[data.player[i].img.hairType],data.player[i].img.hair);
                         }
                         var ctx = Player.list[data.player[i].id].render.getContext('2d');
@@ -1278,7 +1283,6 @@ socket.on('update',function(data){
                         ctx.drawImage(Player.list[data.player[i].id].renderedImg.shirt,0,0);
                         ctx.drawImage(Player.list[data.player[i].id].renderedImg.pants,0,0);
                         ctx.drawImage(Player.list[data.player[i].id].renderedImg.hair,0,0);
-                        Player.list[data.player[i].id].img = data.player[i].img;
                     }
                     if(data.player[i].animationDirection !== undefined){
                         Player.list[data.player[i].id].animationDirection = data.player[i].animationDirection;

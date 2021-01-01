@@ -2969,10 +2969,8 @@ Player = function(param){
                         }
                     }
                     else{
-                        if(self.img[i] !== lastSelf.img[i]){
-                            pack.img = self.img;
-                            lastSelf.img = Object.create(self.img);
-                        }
+                        pack.img = self.img;
+                        lastSelf.img = Object.create(self.img);
                     }
                 }
                 else{
@@ -3514,10 +3512,8 @@ Npc = function(param){
                         }
                     }
                     else{
-                        if(self.img[i] !== lastSelf.img[i]){
-                            pack.img = self.img;
-                            lastSelf.img = Object.create(self.img);
-                        }
+                        pack.img = self.img;
+                        lastSelf.img = Object.create(self.img);
                     }
                 }
                 else{
