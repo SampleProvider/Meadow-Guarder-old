@@ -1576,6 +1576,7 @@ socket.on('removeTile',function(data){
     for(var i in tempMap[data.map]){
         if(tempMap[data.map][i].x === data.x && tempMap[data.map][i].y === data.y && tempMap[data.map][i].canvas === data.canvas && tempMap[data.map][i].tile_idx === data.tile_idx){
             tempMap[data.map].splice(i,1);
+            return;
         }
     }
 });
@@ -1583,12 +1584,13 @@ socket.on('removeAllTiles',function(data){
     tempMap[data.map] = [];
 });
 socket.on('removeSameTiles',function(data){
+    var newMap = [];
     for(var i in tempMap[data.map]){
-        if(tempMap[data.map][i].tile_idx === data.tile_idx){
-            tempMap[data.map].splice(i,1);
-            i -= 1;
+        if(tempMap[data.map][i].tile_idx !== data.tile_idx){
+            newMap.push(tempMap[data.map][i]);
         }
     }
+    tempMap[data.map] = Object.create(newMap);
 });
 
 startQuest = function(){

@@ -54,7 +54,7 @@ var fs = require('fs');
 var PF = require('pathfinding');
 
 worldMap = [];
-PVP = true;
+require('./env.js');
 
 s = {
     findPlayer:function(param){
@@ -3323,6 +3323,12 @@ Player.onConnect = function(socket,username){
     });
 }
 Player.spectate = function(socket){
+    if(ENV.Hardcore){
+        setTimeout(function(){
+            Player.onDisconnect(socket);
+        },1);
+        return;
+    }
     for(var i in Projectile.list){
         if(socket && Projectile.list[i].parent === socket.id){
             delete Projectile.list[i];
@@ -3608,6 +3614,7 @@ Monster = function(param){
             self.damaged = true;
         }
     }
+    self.randomWalk(true,false,self.x,self.y);
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -4779,7 +4786,7 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
-                    if(PVP){
+                    if(ENV.PVP){
                         Player.list[i].onCollision(Projectile.list[j],50);
                         Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                     }
