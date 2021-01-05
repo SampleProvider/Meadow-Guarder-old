@@ -2384,6 +2384,9 @@ Player = function(param){
         if(self.map === 'The Village'){
             isFireMap = false;
         }
+        if(PVP){
+            isFireMap = true;
+        }
         for(var i = 0;i < self.eventQ.length;i++){
             if(self.eventQ[i] !== undefined){
                 if(self.eventQ[i].time === 0){
