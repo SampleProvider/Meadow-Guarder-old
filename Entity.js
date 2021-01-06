@@ -341,9 +341,10 @@ Entity.getFrameUpdateData = function(){
             }
             else{
                 if(!pack[Monster.list[i].map]){
-                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
                 }
-                pack[Monster.list[i].map].monster.push(Monster.list[i].getUpdatePack());
+                var updatePack = Monster.list[i].getUpdatePack();
+                pack[Monster.list[i].map].monster.push(updatePack);
             }
         }
     }
@@ -351,9 +352,10 @@ Entity.getFrameUpdateData = function(){
         if(Player.list[i]){
             Player.list[i].update();
             if(!pack[Player.list[i].map]){
-                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
             }
-            pack[Player.list[i].map].player.push(Player.list[i].getUpdatePack());
+            var updatePack = Player.list[i].getUpdatePack();
+            pack[Player.list[i].map].player.push(updatePack);
         }
     }
     for(var i in Projectile.list){
@@ -362,15 +364,31 @@ Entity.getFrameUpdateData = function(){
     for(var i in Npc.list){
         if(playerMap[Npc.list[i].map] > 0){
             Npc.list[i].update();
-            if(!pack[Npc.list[i].map]){
-                pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+            if(playerMap[Npc.list[i].map] > 0){
+                if(!pack[Npc.list[i].map]){
+                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+                }
+                if(Npc.list[i].toRemove){
+                    delete Npc.list[i];
+                }
+                else{
+                    var updatePack = Npc.list[i].getUpdatePack();
+                    pack[Npc.list[i].map].npc.push(updatePack);
+                }
             }
-            if(Npc.list[i].toRemove){
-                delete Npc.list[i];
-            }
-            else{
-                pack[Npc.list[i].map].npc.push(Npc.list[i].getUpdatePack());
-            }
+        }
+    }
+    for(var i in Pet.list){
+        Pet.list[i].update();
+        if(!pack[Pet.list[i].map]){
+            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+        }
+        if(Pet.list[i].toRemove){
+            delete Pet.list[i];
+        }
+        else{
+            var updatePack = Pet.list[i].getUpdatePack();
+            pack[Pet.list[i].map].pet.push(updatePack);
         }
     }
     for(var i in Player.list){
@@ -391,6 +409,12 @@ Entity.getFrameUpdateData = function(){
             Npc.list[i].willBeDead = false;
         }
     }
+    for(var i in Pet.list){
+        if(Pet.list[i].willBeDead){
+            Pet.list[i].isDead = true;
+            Pet.list[i].willBeDead = false;
+        }
+    }
     for(var i in Collision.list){
         if(Collision.list[i].toRemove){
             delete Collision.list[i];
@@ -404,7 +428,7 @@ Entity.getFrameUpdateData = function(){
 	updateCrashes();
     for(var i in Projectile.list){
         if(!pack[Projectile.list[i].map]){
-            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[]};
+            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
         }
         if(Projectile.list[i].updateNextFrame){
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
@@ -497,6 +521,11 @@ Actor = function(param){
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
             self.canMove = false;
+            for(var i in Player.list){
+                if(Player.list[i]){
+                    SOCKET_LIST[i].emit('initEntity',self.getInitPack());
+                }
+            }
         }
         if(self.mapChange === 10){
             self.canMove = true;
@@ -554,9 +583,22 @@ Actor = function(param){
                             dontCrossCorners:true,
                         });
                         var grid = new PF.Grid(size,size);
-                        for(var i in Collision.list){
-                            if(Collision.list[i].map === self.map && Collision.list[i].x > dx * 64 && Collision.list[i].x < dx * 64 + size * 64 && Collision.list[i].y > dy * 64 && Collision.list[i].y < dy * 64 + size * 64){
-                                grid.setWalkableAt(Math.floor(Collision.list[i].x / 64) - dx,Math.floor(Collision.list[i].y / 64) - dy,false);
+                        for(var i = 0;i < size;i++){
+                            for(var j = 0;j < size;j++){
+                                var x = dx * 64 + i * 64;
+                                var y = dy * 64 + j * 64;
+                                if(Collision.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
+                                    grid.setWalkableAt(i,j,false);
+                                }
+                                if(Collision2.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
+                                    grid.setWalkableAt(i,j,false);
+                                }
+                                if(Collision3.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
+                                    grid.setWalkableAt(i,j,false);
+                                }
+                                if(x < 0 || x > self.mapWidth || y < 0 || y > self.mapHeight){
+                                    grid.setWalkableAt(i,j,false);
+                                }
                             }
                         }
                         var nx = Math.floor(self.x / 64) - dx;
@@ -591,7 +633,7 @@ Actor = function(param){
                 }
             }
         }
-        if(self.randomPos.walking){
+        else if(self.randomPos.walking){
             if(self.randomPos.waypoint){
                 if(self.randomPos.currentWaypoint){
                     if(self.x === self.randomPos.currentWaypoint.x && self.y === self.randomPos.currentWaypoint.y){
@@ -1274,6 +1316,8 @@ Player = function(param){
     self.spdY = 0;
     self.mouseX = 0;
     self.mouseY = 0;
+    self.rawMouseX = 0;
+    self.rawMouseY = 0;
     self.width = 32;
     self.height = 28;
     self.moveSpeed = 20;
@@ -1445,6 +1489,8 @@ Player = function(param){
             }
             self.updateCollisions();
         }
+        self.mouseX = self.rawMouseX + self.x;
+        self.mouseY = self.rawMouseY + self.y;
         if(self.animation === -1){
             self.animation = 0;
         }
@@ -2245,7 +2291,7 @@ Player = function(param){
                 }
                 addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
             }
-            var pack = {player:[],projectile:[],monster:[],npc:[]};
+            var pack = {player:[],projectile:[],monster:[],npc:[],pet:[]};
             for(var i in Player.list){
                 if(Player.list[i] && Player.list[i].map === self.map){
                     pack.player.push(Player.list[i].getInitPack());
@@ -2264,6 +2310,11 @@ Player = function(param){
             for(var i in Npc.list){
                 if(Npc.list[i] && Npc.list[i].map === self.map){
                     pack.npc.push(Npc.list[i].getInitPack());
+                }
+            }
+            for(var i in Pet.list){
+                if(Pet.list[i] && Pet.list[i].map === self.map){
+                    pack.pet.push(Pet.list[i].getInitPack());
                 }
             }
             socket.emit('update',pack);
@@ -2972,10 +3023,6 @@ Player = function(param){
                             }
                         }
                     }
-                    else{
-                        pack.img = self.img;
-                        lastSelf.img = Object.create(self.img);
-                    }
                 }
                 else{
                     pack.img = self.img;
@@ -3100,6 +3147,17 @@ Player.onConnect = function(socket,username){
             moveSpeed:0,
             param:param,
         });
+        var pet = Pet({
+            parent:player.id,
+            x:player.x,
+            y:player.y,
+            name:'Kiol Lvl.' + player.level,
+            moveSpeed:5 + player.level / 5,
+        });
+        for(var i in SOCKET_LIST){
+            SOCKET_LIST[i].emit('initEntity',player.getInitPack());
+            SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+        }
         socket.emit('selfId',{id:socket.id});
 
         socket.on('keyPress',function(data){
@@ -3126,6 +3184,8 @@ Player.onConnect = function(socket,username){
             }
             if(data.inputId === 'direction'){
                 player.direction = (Math.atan2(data.state.y,data.state.x) / Math.PI * 180);
+                player.rawMouseX = data.state.x;
+                player.rawMouseY = data.state.y;
                 player.mouseX = data.state.x + player.x;
                 player.mouseY = data.state.y + player.y;
             }
@@ -3274,7 +3334,7 @@ Player.onConnect = function(socket,username){
 
 
         socket.on('init',function(data){
-            var pack = {player:[],projectile:[],monster:[],npc:[]};
+            var pack = {player:[],projectile:[],monster:[],npc:[],pet:[]};
             for(var i in Player.list){
                 if(Player.list[i].map === player.map){
                     pack.player.push(Player.list[i].getInitPack());
@@ -3295,9 +3355,14 @@ Player.onConnect = function(socket,username){
                     pack.npc.push(Npc.list[i].getInitPack());
                 }
             }
+            for(var i in Pet.list){
+                if(Pet.list[i].map === player.map){
+                    pack.pet.push(Pet.list[i].getInitPack());
+                }
+            }
             socket.emit('update',pack);
         });
-        var pack = {player:[],projectile:[],monster:[],npc:[]};
+        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[]};
         for(var i in Player.list){
             if(Player.list[i].map === player.map){
                 pack.player.push(Player.list[i].getInitPack());
@@ -3316,6 +3381,11 @@ Player.onConnect = function(socket,username){
         for(var i in Npc.list){
             if(Npc.list[i].map === player.map){
                 pack.npc.push(Npc.list[i].getInitPack());
+            }
+        }
+        for(var i in Pet.list){
+            if(Pet.list[i].map === player.map){
+                pack.pet.push(Pet.list[i].getInitPack());
             }
         }
         socket.emit('update',pack);
@@ -3521,10 +3591,6 @@ Npc = function(param){
                             }
                         }
                     }
-                    else{
-                        pack.img = self.img;
-                        lastSelf.img = Object.create(self.img);
-                    }
                 }
                 else{
                     pack.img = self.img;
@@ -3650,8 +3716,6 @@ Monster = function(param){
         }
         switch(self.attackState){
             case "passiveBird":
-                self.spdX = 0;
-                self.spdY = 0;
                 self.animate = true;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
@@ -3666,6 +3730,7 @@ Monster = function(param){
             case "moveBird":
                 self.trackEntity(self.target);
                 self.reload = 0;
+                self.animation = 0;
                 self.attackState = "attackBird";
                 break;
             case "attackBird":
@@ -3749,13 +3814,15 @@ Monster = function(param){
                 }
                 break;
             case "passiveBall":
-                self.spdX = 0;
-                self.spdY = 0;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveBall";
                         self.target = Player.list[i];
+                        self.damaged = false;
                     }
+                }
+                if(self.damaged){
+                    self.attackState = "moveBall";
                 }
                 break;
             case "moveBall":
@@ -3763,7 +3830,6 @@ Monster = function(param){
                 self.reload = 0;
                 self.animation = 0;
                 self.attackState = "attackBall";
-                self.damaged = false;
                 break;
             case "attackBall":
                 if(!self.target){
@@ -3805,13 +3871,15 @@ Monster = function(param){
                 }
                 break;
             case "passiveCherryBomb":
-                self.spdX = 0;
-                self.spdY = 0;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveCherryBomb";
                         self.target = Player.list[i];
+                        self.damaged = false;
                     }
+                }
+                if(self.damaged){
+                    self.attackState = "moveCherryBomb";
                 }
                 break;
             case "moveCherryBomb":
@@ -3819,7 +3887,6 @@ Monster = function(param){
                 self.reload = 0;
                 self.animation = 0;
                 self.attackState = "attackCherryBomb";
-                self.damaged = false;
                 break;
             case "attackCherryBomb":
                 if(!self.target){
@@ -3853,8 +3920,8 @@ Monster = function(param){
                         }
                     }
                     else{
-                        self.stats.defense *= 20;
-                        self.stats.attack *= 20;
+                        self.stats.defense *= 200;
+                        self.stats.attack *= 200;
                         self.attackState = 'explodeCherryBomb';
                     }
                     break;
@@ -3868,8 +3935,8 @@ Monster = function(param){
                     }
                 }
                 if(self.damaged && self.damagedEntity.type === 'Player'){
-                    self.stats.defense *= 20;
-                    self.stats.attack *= 20;
+                    self.stats.defense *= 200;
+                    self.stats.attack *= 200;
                     self.attackState = 'explodeCherryBomb';
                 }
                 break;
@@ -3950,17 +4017,46 @@ Pet = function(param){
     self.reload = 0;
 	var super_update = self.update;
     self.type = 'Pet';
+    self.name = param.name;
+    self.width = 40;
+    self.height = 28;
+    self.canChangeMap = false;
+    self.trackEntity(Player.list[self.parent]);
     var lastSelf = {};
 	self.update = function(){
         super_update();
+        if(self.map !== Player.list[self.parent].map){
+            self.x = Player.list[self.parent].x;
+            self.y = Player.list[self.parent].y;
+            self.map = Player.list[self.parent].map;
+            for(var i in Player.list){
+                if(Player.list[i]){
+                    SOCKET_LIST[i].emit('initEntity',self.getInitPack());
+                }
+            }
+        }
         self.updateAttack();
     }
     self.updateAttack = function(){
+        var isFireMap = false;
+        for(var i in worldMap){
+            if(worldMap[i].fileName.slice(0,-4) === self.map){
+                isFireMap = true;
+            }
+        }
+        if(self.map === 'The Village'){
+            isFireMap = false;
+        }
+        if(ENV.PVP){
+            isFireMap = true;
+        }
         self.reload += 1;
-        if(self.reload > 10){
+        if(self.reload > 10 && isFireMap === true){
             self.reload = 0;
-            var direction = (Math.atan2(Player.list[self.parent].mouseY - Player.list[self.parent].y + self.y,Player.list[self.parent].mouseX - Player.list[self.parent].x + self.x) / Math.PI * 180);
-            self.shootProjectile(self.parent,'Pet',direction,direction,'Bullet',35);
+            var direction = (Math.atan2(Player.list[self.parent].mouseY - self.y,Player.list[self.parent].mouseX - self.x) / Math.PI * 180);
+            for(var i = -5;i < 6;i++){
+                self.shootProjectile(self.parent,'Player',direction + i * 5,direction + i * 5,'sword',0,Player.list[self.parent].stats);
+            }
         }
     }
 	self.getUpdatePack = function(){
@@ -3974,14 +4070,6 @@ Pet = function(param){
             pack.y = self.y;
             lastSelf.y = self.y;
         }
-        if(lastSelf.hp !== self.hp){
-            pack.hp = self.hp;
-            lastSelf.hp = self.hp;
-        }
-        if(lastSelf.hpMax !== self.hpMax){
-            pack.hpMax = self.hpMax;
-            lastSelf.hpMax = self.hpMax;
-        }
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
@@ -3993,9 +4081,8 @@ Pet = function(param){
         pack.id = self.id;
         pack.x = self.x;
         pack.y = self.y;
-        pack.hp = self.hp;
-        pack.hpMax = self.hpMax;
         pack.map = self.map;
+        pack.name = self.name;
         pack.type = self.type;
         return pack;
     }
@@ -4003,7 +4090,6 @@ Pet = function(param){
 	return self;
 }
 Pet.list = {};
-
 
 
 Projectile = function(param){

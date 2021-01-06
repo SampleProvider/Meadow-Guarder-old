@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f4a';
+var VERSION = '011f5a';
 
 var DEBUG = false;
 
@@ -485,6 +485,8 @@ Img.ball = new Image();
 Img.ball.src = '/client/img/ball.png';
 Img.cherryBomb = new Image();
 Img.cherryBomb.src = '/client/img/cherryBomb.png';
+Img.kiol = new Image();
+Img.kiol.src = '/client/img/kiol.png';
 Img.healthBar = new Image();
 Img.healthBar.src = '/client/img/Health0.png';
 Img.healthBarEnemy = new Image();
@@ -1221,6 +1223,45 @@ var Npc = function(initPack){
     return self;
 }
 Npc.list = {};
+var Pet = function(initPack){
+    var self = {};
+    self.id = initPack.id;
+    self.x = initPack.x;
+    self.y = initPack.y;
+    self.nextX = initPack.x;
+    self.nextY = initPack.y;
+    self.moveX = 0;
+    self.moveY = 0;
+    self.map = initPack.map;
+    self.name = initPack.name;
+    self.type = initPack.type;
+    self.updated = true;
+    self.update = function(){
+        if(self.x !== self.nextX){
+            self.x += self.moveX;
+        }
+        if(self.y !== self.nextY){
+            self.y += self.moveY;
+        }
+    }
+    self.draw = function(){
+        ctx0.drawImage(Img.kiol,self.x - 20,self.y - 14,40,28);
+    }
+    self.drawName = function(){
+        ctx1.font = "15px pixel";
+        ctx1.fillStyle = '#ff7700';
+        ctx1.textAlign = "center";
+        ctx1.fillText(self.name,self.x,self.y - 22);
+        if(DEBUG){
+            ctx1.strokeStyle = '#ff0000';
+            ctx1.lineWidth = 4;
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64);
+        }
+    }
+    Pet.list[self.id] = self;
+    return self;
+}
+Pet.list = {};
 window.onoffline = function(event){
     socket.emit('timeout');
 };
@@ -1242,6 +1283,9 @@ socket.on('update',function(data){
     }
     for(var i in Npc.list){
         Npc.list[i].updated = false;
+    }
+    for(var i in Pet.list){
+        Pet.list[i].updated = false;
     }
     if(data){
         if(data.player.length > 0){
@@ -1439,6 +1483,36 @@ socket.on('update',function(data){
                 }
             }
         }
+        if(data.pet.length > 0){
+            for(var i = 0;i < data.pet.length;i++){
+                if(Pet.list[data.pet[i].id]){
+                    if(data.pet[i].x !== undefined){
+                        Pet.list[data.pet[i].id].nextX = data.pet[i].x;
+                    }
+                    Pet.list[data.pet[i].id].moveX = (Pet.list[data.pet[i].id].nextX - Pet.list[data.pet[i].id].x) / 4;
+                    if(data.pet[i].y !== undefined){
+                        Pet.list[data.pet[i].id].nextY = data.pet[i].y;
+                    }
+                    Pet.list[data.pet[i].id].moveY = (Pet.list[data.pet[i].id].nextY - Pet.list[data.pet[i].id].y) / 4;
+                    if(data.pet[i].animationDirection !== undefined){
+                        Pet.list[data.pet[i].id].animationDirection = data.pet[i].animationDirection;
+                    }
+                    if(data.pet[i].hp !== undefined){
+                        Pet.list[data.pet[i].id].hp = data.pet[i].hp;
+                    }
+                    if(data.pet[i].hpMax !== undefined){
+                        Pet.list[data.pet[i].id].hpMax = data.pet[i].hpMax;
+                    }
+                    if(data.pet[i].animation !== undefined){
+                        Pet.list[data.pet[i].id].animation = data.pet[i].animation;
+                    }
+                    Pet.list[data.pet[i].id].updated = true;
+                }
+                else{
+                    new Pet(data.pet[i]);
+                }
+            }
+        }
     }
     for(var i in Player.list){
         if(Player.list[i].updated === false){
@@ -1460,6 +1534,11 @@ socket.on('update',function(data){
             delete Npc.list[i];
         }
     }
+    for(var i in Pet.list){
+        if(Pet.list[i].updated === false){
+            delete Pet.list[i];
+        }
+    }
 });
 socket.on('initEntity',function(data){
     if(data.type === "Player"){
@@ -1473,6 +1552,9 @@ socket.on('initEntity',function(data){
     }
     if(data.type === "Npc"){
         new Npc(data);
+    }
+    if(data.type === "Pet"){
+        new Pet(data);
     }
 });
 socket.on('disconnected',function(data){
@@ -1699,6 +1781,9 @@ setInterval(function(){
     for(var i in Npc.list){
         entities.push(Npc.list[i]);
     }
+    for(var i in Pet.list){
+        entities.push(Pet.list[i]);
+    }
     function compare(a,b){
         var ay = a.y;
         var by = b.y;
@@ -1756,12 +1841,18 @@ setInterval(function(){
         Monster.list[i].update();
     }
     for(var i in Npc.list){
-        Npc.list[i].update();
-    }
-    
-    for(var i in Npc.list){
         Npc.list[i].drawName();
     }
+    for(var i in Pet.list){
+        Pet.list[i].drawName();
+    }
+    for(var i in Npc.list){
+        Npc.list[i].update();
+    }
+    for(var i in Pet.list){
+        Pet.list[i].update();
+    }
+    
     for(var i in Player.list){
         Player.list[i].drawName();
     }

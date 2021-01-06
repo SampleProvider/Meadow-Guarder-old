@@ -79,7 +79,7 @@
     "spbow":{
         "name":"SP Bow",
         "equip":"weapon",
-        "event":"self.stats.attack *= 10;self.stats.xp *= 50;self.stats.defense *= 3;",
+        "event":"self.stats.attack *= 20;self.stats.xp *= 500;self.stats.defense *= 3;",
         "dropChance":0,
         "enchantments":["speed","range","burst"]
     },
