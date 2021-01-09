@@ -341,7 +341,7 @@ Entity.getFrameUpdateData = function(){
             }
             else{
                 if(!pack[Monster.list[i].map]){
-                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
                 }
                 var updatePack = Monster.list[i].getUpdatePack();
                 pack[Monster.list[i].map].monster.push(updatePack);
@@ -352,7 +352,7 @@ Entity.getFrameUpdateData = function(){
         if(Player.list[i]){
             Player.list[i].update();
             if(!pack[Player.list[i].map]){
-                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
             }
             var updatePack = Player.list[i].getUpdatePack();
             pack[Player.list[i].map].player.push(updatePack);
@@ -366,7 +366,7 @@ Entity.getFrameUpdateData = function(){
             Npc.list[i].update();
             if(playerMap[Npc.list[i].map] > 0){
                 if(!pack[Npc.list[i].map]){
-                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
                 }
                 if(Npc.list[i].toRemove){
                     delete Npc.list[i];
@@ -378,10 +378,27 @@ Entity.getFrameUpdateData = function(){
             }
         }
     }
+    for(var i in Particle.list){
+        if(playerMap[Particle.list[i].map] > 0){
+            Particle.list[i].update();
+            if(playerMap[Particle.list[i].map] > 0){
+                if(!pack[Particle.list[i].map]){
+                    pack[Particle.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+                }
+                if(Particle.list[i].toRemove){
+                    delete Particle.list[i];
+                }
+                else{
+                    var updatePack = Particle.list[i].getUpdatePack();
+                    pack[Particle.list[i].map].particle.push(updatePack);
+                }
+            }
+        }
+    }
     for(var i in Pet.list){
         Pet.list[i].update();
         if(!pack[Pet.list[i].map]){
-            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
         }
         if(Pet.list[i].toRemove){
             delete Pet.list[i];
@@ -428,7 +445,7 @@ Entity.getFrameUpdateData = function(){
 	updateCrashes();
     for(var i in Projectile.list){
         if(!pack[Projectile.list[i].map]){
-            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[]};
+            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
         }
         if(Projectile.list[i].updateNextFrame){
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
@@ -792,8 +809,16 @@ Actor = function(param){
     }
     self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false){
-            self.hp -= Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
+            var damage = Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
+            self.hp -= damage;
             self.onHit(pt);
+            var particle = new Particle({
+                x:self.x + Math.random() * 64 - 32,
+                y:self.y + Math.random() * 64 - 32,
+                map:self.map,
+                particleType:'redDamage',
+                value:'-' + damage,
+            });
         }
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
             if(pt.parentType === 'Player' && self.type === 'Monster'){
@@ -1345,6 +1370,7 @@ Player = function(param){
     playerMap[self.map] += 1;
     self.mapHeight = 3200;
     self.mapWidth = 3200;
+    self.pet = undefined;
     self.quest = false;
     self.questStage = 0;
     self.questInfo = {
@@ -1516,7 +1542,18 @@ Player = function(param){
             }
             else{
                 if(self.healTick % 10 === 0){
-                    self.hp += Math.round(self.stats.heal * (5 + Math.random() * 10));
+                    var heal = Math.round(self.stats.heal * (5 + Math.random() * 10));
+                    heal = Math.min(self.hpMax - self.hp,heal);
+                    self.hp += heal;
+                    if(heal){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:'greenDamage',
+                            value:'+' + heal,
+                        });
+                    }
                 }
             }
         }
@@ -2291,33 +2328,7 @@ Player = function(param){
                 }
                 addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
             }
-            var pack = {player:[],projectile:[],monster:[],npc:[],pet:[]};
-            for(var i in Player.list){
-                if(Player.list[i] && Player.list[i].map === self.map){
-                    pack.player.push(Player.list[i].getInitPack());
-                }
-            }
-            for(var i in Projectile.list){
-                if(Projectile.list[i] && Projectile.list[i].map === self.map){
-                    pack.projectile.push(Projectile.list[i].getInitPack());
-                }
-            }
-            for(var i in Monster.list){
-                if(Monster.list[i] && Monster.list[i].map === self.map){
-                    pack.monster.push(Monster.list[i].getInitPack());
-                }
-            }
-            for(var i in Npc.list){
-                if(Npc.list[i] && Npc.list[i].map === self.map){
-                    pack.npc.push(Npc.list[i].getInitPack());
-                }
-            }
-            for(var i in Pet.list){
-                if(Pet.list[i] && Pet.list[i].map === self.map){
-                    pack.pet.push(Pet.list[i].getInitPack());
-                }
-            }
-            socket.emit('update',pack);
+            Player.getAllInitPack(socket);
             for(var i in Player.list){
                 if(Player.list[i]){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
@@ -2423,6 +2434,10 @@ Player = function(param){
             self.level += 1;
             self.xpMax = xpLevels[self.level];
             addToChat('style="color: #00ff00">',self.displayName + ' is now level ' + self.level + '.');
+            if(Pet.list[self.pet]){
+                Pet.list[self.pet].name = 'Kiol Lvl.' + self.level;
+                Pet.list[self.pet].maxSpeed = 5 + self.level / 5;
+            }
         }
     }
     self.updateAttack = function(){
@@ -2443,19 +2458,74 @@ Player = function(param){
                 if(self.eventQ[i].time === 0){
                     switch(self.eventQ[i].event){
                         case "baseHeal":
-                            self.hp += 100 * self.stats.heal;
+                            var heal = 100 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "earthHeal1":
-                            self.hp += 110 * self.stats.heal;
+                            var heal = 110 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "earthHeal2":
-                            self.hp += 120 * self.stats.heal;
+                            var heal = 120 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "earthHeal3":
-                            self.hp += 130 * self.stats.heal;
+                            var heal = 130 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "earthHeal4":
-                            self.hp += 135 * self.stats.heal;
+                            var heal = 135 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
@@ -2463,7 +2533,18 @@ Player = function(param){
                             }
                             break;
                         case "earthHeal5":
-                            self.hp += 140 * self.stats.heal;
+                            var heal = 140 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             if(isFireMap){
                                 for(var j = 0;j < 15;j++){
                                     self.shootProjectile(self.id,'Player',j * 24,j * 24,'playerBullet',0,self.stats);
@@ -2471,16 +2552,88 @@ Player = function(param){
                             }
                             break;
                         case "fireHeal1":
-                            self.hp += 75 * self.stats.heal;
+                            var heal = 75 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "fireHeal2":
-                            self.hp += 85 * self.stats.heal;
+                            var heal = 85 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "fireHeal3":
-                            self.hp += 95 * self.stats.heal;
+                            var heal = 95 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "fireHeal4":
-                            self.hp += 105 * self.stats.heal;
+                            var heal = 105 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "fireHeal5":
+                            var heal = 110 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "fireHeal6":
+                            var heal = 115 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
                             break;
                         case "baseAttack":
                             if(isFireMap){
@@ -3154,6 +3307,7 @@ Player.onConnect = function(socket,username){
             name:'Kiol Lvl.' + player.level,
             moveSpeed:5 + player.level / 5,
         });
+        player.pet = pet.id;
         for(var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('initEntity',player.getInitPack());
             SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
@@ -3334,61 +3488,9 @@ Player.onConnect = function(socket,username){
 
 
         socket.on('init',function(data){
-            var pack = {player:[],projectile:[],monster:[],npc:[],pet:[]};
-            for(var i in Player.list){
-                if(Player.list[i].map === player.map){
-                    pack.player.push(Player.list[i].getInitPack());
-                }
-            }
-            for(var i in Projectile.list){
-                if(Projectile.list[i].map === player.map){
-                    pack.projectile.push(Projectile.list[i].getInitPack());
-                }
-            }
-            for(var i in Monster.list){
-                if(Monster.list[i].map === player.map){
-                    pack.monster.push(Monster.list[i].getInitPack());
-                }
-            }
-            for(var i in Npc.list){
-                if(Npc.list[i].map === player.map){
-                    pack.npc.push(Npc.list[i].getInitPack());
-                }
-            }
-            for(var i in Pet.list){
-                if(Pet.list[i].map === player.map){
-                    pack.pet.push(Pet.list[i].getInitPack());
-                }
-            }
-            socket.emit('update',pack);
+            Player.getAllInitPack(socket);
         });
-        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[]};
-        for(var i in Player.list){
-            if(Player.list[i].map === player.map){
-                pack.player.push(Player.list[i].getInitPack());
-            }
-        }
-        for(var i in Projectile.list){
-            if(Projectile.list[i].map === player.map){
-                pack.projectile.push(Projectile.list[i].getInitPack());
-            }
-        }
-        for(var i in Monster.list){
-            if(Monster.list[i].map === player.map){
-                pack.monster.push(Monster.list[i].getInitPack());
-            }
-        }
-        for(var i in Npc.list){
-            if(Npc.list[i].map === player.map){
-                pack.npc.push(Npc.list[i].getInitPack());
-            }
-        }
-        for(var i in Pet.list){
-            if(Pet.list[i].map === player.map){
-                pack.pet.push(Pet.list[i].getInitPack());
-            }
-        }
-        socket.emit('update',pack);
+        Player.getAllInitPack(socket);
         addToChat('style="color: #00ff00">',player.displayName + " just logged on.");
         for(var i in tiles){
             socket.emit('drawTile',tiles[i]);
@@ -3447,7 +3549,41 @@ Player.onDisconnect = function(socket){
         delete Player.list[socket.id];
     }
 }
-
+Player.getAllInitPack = function(socket){
+    var player = Player.list[socket.id];
+    var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+    for(var i in Player.list){
+        if(Player.list[i].map === player.map){
+            pack.player.push(Player.list[i].getInitPack());
+        }
+    }
+    for(var i in Projectile.list){
+        if(Projectile.list[i].map === player.map){
+            pack.projectile.push(Projectile.list[i].getInitPack());
+        }
+    }
+    for(var i in Monster.list){
+        if(Monster.list[i].map === player.map){
+            pack.monster.push(Monster.list[i].getInitPack());
+        }
+    }
+    for(var i in Npc.list){
+        if(Npc.list[i].map === player.map){
+            pack.npc.push(Npc.list[i].getInitPack());
+        }
+    }
+    for(var i in Pet.list){
+        if(Pet.list[i].map === player.map){
+            pack.pet.push(Pet.list[i].getInitPack());
+        }
+    }
+    for(var i in Particle.list){
+        if(Particle.list[i].map === player.map){
+            pack.particle.push(Particle.list[i].getInitPack());
+        }
+    }
+    socket.emit('update',pack);
+}
 
 
 Npc = function(param){
@@ -3702,7 +3838,18 @@ Monster = function(param){
         }
         else{
             if(self.healReload % 10 === 0){
-                self.hp += Math.round(self.stats.heal * (10 + Math.random() * 15));
+                var heal = Math.round(self.stats.heal * (10 + Math.random() * 15));
+                heal = Math.min(self.hpMax - self.hp,heal);
+                if(heal){
+                    self.hp += heal;
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:'greenDamage',
+                        value:'+' + heal,
+                    });
+                }
             }
         }
         self.healReload += 1;
@@ -4051,7 +4198,7 @@ Pet = function(param){
             isFireMap = true;
         }
         self.reload += 1;
-        if(self.reload > 10 && isFireMap === true){
+        if(self.reload > 10 && isFireMap === true && Player.list[self.parent].isDead === false){
             self.reload = 0;
             var direction = (Math.atan2(Player.list[self.parent].mouseY - self.y,Player.list[self.parent].mouseX - self.x) / Math.PI * 180);
             for(var i = -5;i < 6;i++){
@@ -4073,6 +4220,10 @@ Pet = function(param){
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
+        }
+        if(lastSelf.name !== self.name){
+            pack.name = self.name;
+            lastSelf.name = self.name;
         }
         return pack;
 	}

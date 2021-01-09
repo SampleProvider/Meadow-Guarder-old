@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f5a';
+var VERSION = '011f6a';
 
 var DEBUG = false;
 
@@ -1262,6 +1262,47 @@ var Pet = function(initPack){
     return self;
 }
 Pet.list = {};
+var Particle = function(initPack){
+    var self = {};
+    self.id = initPack.id;
+    self.x = initPack.x;
+    self.y = initPack.y;
+    self.nextX = initPack.x;
+    self.nextY = initPack.y;
+    self.moveX = 0;
+    self.moveY = 0;
+    self.map = initPack.map;
+    self.value = initPack.value;
+    self.particleType = initPack.particleType;
+    self.timer = initPack.timer;
+    self.type = initPack.type;
+    self.updated = true;
+    self.update = function(){
+        if(self.x !== self.nextX){
+            self.x += self.moveX;
+        }
+        if(self.y !== self.nextY){
+            self.y += self.moveY;
+        }
+    }
+    self.draw = function(){
+        if(self.particleType === 'redDamage'){
+            ctx1.font = "30px pixel";
+            ctx1.fillStyle = 'rgba(255,0,0,' + (self.timer / 5) + ')';
+            ctx1.textAlign = "center";
+            ctx1.fillText(self.value,self.x,self.y);
+        }
+        else if(self.particleType === 'greenDamage'){
+            ctx1.font = "30px pixel";
+            ctx1.fillStyle = 'rgba(0,255,0,' + (self.timer / 5) + ')';
+            ctx1.textAlign = "center";
+            ctx1.fillText(self.value,self.x,self.y);
+        }
+    }
+    Particle.list[self.id] = self;
+    return self;
+}
+Particle.list = {};
 window.onoffline = function(event){
     socket.emit('timeout');
 };
@@ -1286,6 +1327,9 @@ socket.on('update',function(data){
     }
     for(var i in Pet.list){
         Pet.list[i].updated = false;
+    }
+    for(var i in Particle.list){
+        Particle.list[i].updated = false;
     }
     if(data){
         if(data.player.length > 0){
@@ -1506,10 +1550,37 @@ socket.on('update',function(data){
                     if(data.pet[i].animation !== undefined){
                         Pet.list[data.pet[i].id].animation = data.pet[i].animation;
                     }
+                    if(data.pet[i].name !== undefined){
+                        Pet.list[data.pet[i].id].name = data.pet[i].name;
+                    }
                     Pet.list[data.pet[i].id].updated = true;
                 }
                 else{
                     new Pet(data.pet[i]);
+                }
+            }
+        }
+        if(data.particle.length > 0){
+            for(var i = 0;i < data.particle.length;i++){
+                if(Particle.list[data.particle[i].id]){
+                    if(data.particle[i].x !== undefined){
+                        Particle.list[data.particle[i].id].nextX = data.particle[i].x;
+                    }
+                    Particle.list[data.particle[i].id].moveX = (Particle.list[data.particle[i].id].nextX - Particle.list[data.particle[i].id].x) / 4;
+                    if(data.particle[i].y !== undefined){
+                        Particle.list[data.particle[i].id].nextY = data.particle[i].y;
+                    }
+                    Particle.list[data.particle[i].id].moveY = (Particle.list[data.particle[i].id].nextY - Particle.list[data.particle[i].id].y) / 4;
+                    if(data.particle[i].particleType !== undefined){
+                        Particle.list[data.particle[i].id].particleType = data.particle[i].particleType;
+                    }
+                    if(data.particle[i].timer !== undefined){
+                        Particle.list[data.particle[i].id].timer = data.particle[i].timer;
+                    }
+                    Particle.list[data.particle[i].id].updated = true;
+                }
+                else{
+                    new Particle(data.particle[i]);
                 }
             }
         }
@@ -1539,6 +1610,11 @@ socket.on('update',function(data){
             delete Pet.list[i];
         }
     }
+    for(var i in Particle.list){
+        if(Particle.list[i].updated === false){
+            delete Particle.list[i];
+        }
+    }
 });
 socket.on('initEntity',function(data){
     if(data.type === "Player"){
@@ -1555,6 +1631,9 @@ socket.on('initEntity',function(data){
     }
     if(data.type === "Pet"){
         new Pet(data);
+    }
+    if(data.type === "Particle"){
+        new Particle(data);
     }
 });
 socket.on('disconnected',function(data){
@@ -1851,6 +1930,12 @@ setInterval(function(){
     }
     for(var i in Pet.list){
         Pet.list[i].update();
+    }
+    for(var i in Particle.list){
+        Particle.list[i].draw();
+    }
+    for(var i in Particle.list){
+        Particle.list[i].update();
     }
     
     for(var i in Player.list){

@@ -87,7 +87,7 @@
         "attackState":"passiveCherryBomb",
         "hp":2,
         "stats":{
-            "attack":2,
+            "attack":5,
             "defense":1,
             "heal":0.5
         },
@@ -107,7 +107,7 @@
         "attackState":"passiveCherryBomb",
         "hp":2,
         "stats":{
-            "attack":2,
+            "attack":5,
             "defense":1,
             "heal":0.5
         },
