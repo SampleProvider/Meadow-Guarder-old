@@ -262,6 +262,7 @@ addToChat = function(style,message,debug){
     }
 }
 
+
 var playerMap = {};
 
 Maps = {};
@@ -3176,6 +3177,10 @@ Player = function(param){
                             }
                         }
                     }
+                    else{
+                        pack.img = self.img;
+                        lastSelf.img = Object.create(self.img);
+                    }
                 }
                 else{
                     pack.img = self.img;
@@ -3726,6 +3731,10 @@ Npc = function(param){
                                 lastSelf.img = Object.create(self.img);
                             }
                         }
+                    }
+                    else{
+                        pack.img = self.img;
+                        lastSelf.img = Object.create(self.img);
                     }
                 }
                 else{
