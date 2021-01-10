@@ -3311,17 +3311,21 @@ Player.onConnect = function(socket,username){
             moveSpeed:0,
             param:param,
         });
-        var pet = Pet({
-            parent:player.id,
-            x:player.x,
-            y:player.y,
-            name:'Kiol Lvl.' + player.level,
-            moveSpeed:5 + player.level / 5,
-        });
-        player.pet = pet.id;
+        if(!ENV.Peaceful){
+            var pet = Pet({
+                parent:player.id,
+                x:player.x,
+                y:player.y,
+                name:'Kiol Lvl.' + player.level,
+                moveSpeed:5 + player.level / 5,
+            });
+            player.pet = pet.id;
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+            }
+        }
         for(var i in SOCKET_LIST){
             SOCKET_LIST[i].emit('initEntity',player.getInitPack());
-            SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
         }
         socket.emit('selfId',{id:socket.id});
 
