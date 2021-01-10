@@ -5061,6 +5061,16 @@ updateCrashes = function(){
                 }
             }
         }
+        for(var j in Player.list){
+            if(Player.list[i] && Player.list[j]){
+                if(Player.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Player.list[i].invincible === false){
+                    if(ENV.PVP){
+                        Player.list[j].onPush(Player.list[i],20);
+                        Player.list[i].onPush(Player.list[j],20);
+                    }
+                }
+            }
+        }
     }
     for(var i in Monster.list){
         for(var j in Projectile.list){
