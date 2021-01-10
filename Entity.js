@@ -811,15 +811,18 @@ Actor = function(param){
     self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false){
             var damage = Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
+            damage = Math.min(self.hp,damage);
             self.hp -= damage;
             self.onHit(pt);
-            var particle = new Particle({
-                x:self.x + Math.random() * 64 - 32,
-                y:self.y + Math.random() * 64 - 32,
-                map:self.map,
-                particleType:'redDamage',
-                value:'-' + damage,
-            });
+            if(damage){
+                var particle = new Particle({
+                    x:self.x + Math.random() * 64 - 32,
+                    y:self.y + Math.random() * 64 - 32,
+                    map:self.map,
+                    particleType:'redDamage',
+                    value:'-' + damage,
+                });
+            }
         }
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
             if(pt.parentType === 'Player' && self.type === 'Monster'){
