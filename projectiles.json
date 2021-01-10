@@ -39,7 +39,7 @@
         "width":32,
         "height":32,
         "stats":{
-            "attack":1.5,
+            "attack":0.5,
             "defense":1,
             "heal":1
         }

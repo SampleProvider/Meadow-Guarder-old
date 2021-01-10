@@ -1885,6 +1885,11 @@ setInterval(function(){
         entities[i].draw();
     }
 
+    for(var i in Projectile.list){
+        if(Projectile.list[i].spdX === 0 && Projectile.list[i].spdY === 0){
+            Projectile.list[i].draw();
+        }
+    }
     ctx0.restore();
     map1.save();
     map1.translate(Math.round(cameraX),Math.round(cameraY));
