@@ -645,13 +645,13 @@ Actor = function(param){
                     if(self.y / 64 > self.trackingPath[0][1] + 0.5){
                         self.spdY = -1;
                     }
-                    if(self.spdX === 0 && self.spdY === 0){
+                    if(64 * Math.abs(self.x / 64 - self.trackingPath[0][0] - 0.5) < 2 && 64 * Math.abs(self.y / 64 - self.trackingPath[0][1] - 0.5) < 2){
                         self.trackingPath.shift();
                     }
                 }
             }
         }
-        else if(self.randomPos.walking){
+        if(self.randomPos.walking){
             if(self.randomPos.waypoint){
                 if(self.randomPos.currentWaypoint){
                     if(self.x === self.randomPos.currentWaypoint.x && self.y === self.randomPos.currentWaypoint.y){
@@ -678,7 +678,7 @@ Actor = function(param){
                 }
                 self.randomPos.waypointAttemptTime += 1;
             }
-            else{
+            else if(self.trackingEntity === undefined){
                 if(self.spdX === 0 && self.randomPos.timeX > self.randomPos.walkTimeX){
                     self.spdX = Math.round(Math.random() * 2 - 1);
                     self.randomPos.timeX = 0;
