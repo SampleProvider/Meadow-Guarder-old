@@ -1063,6 +1063,15 @@ var Projectile = function(initPack){
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
+    self.draw = function(){
+        ctx1.translate(self.x,self.y);
+        ctx1.rotate(self.direction * Math.PI / 180);
+        var i = new Image();
+        i.src = '/client/img/' + self.projectileType + '.png';
+        ctx1.drawImage(i,-24,-24);
+        ctx1.rotate(-self.direction * Math.PI / 180);
+        ctx1.translate(-self.x,-self.y);
+    }
     self.drawHp = function(){
         if(DEBUG){
             ctx1.strokeStyle = '#ff0000';
@@ -1885,11 +1894,6 @@ setInterval(function(){
         entities[i].draw();
     }
 
-    for(var i in Projectile.list){
-        if(Projectile.list[i].spdX === 0 && Projectile.list[i].spdY === 0){
-            Projectile.list[i].draw();
-        }
-    }
     ctx0.restore();
     map1.save();
     map1.translate(Math.round(cameraX),Math.round(cameraY));
@@ -1916,6 +1920,11 @@ setInterval(function(){
     map1.restore();
     ctx1.save();
     ctx1.translate(cameraX,cameraY);
+    for(var i in Projectile.list){
+        if(Projectile.list[i].spdX === 0 && Projectile.list[i].spdY === 0){
+            Projectile.list[i].drawCtx1();
+        }
+    }
     for(var i in Projectile.list){
         Projectile.list[i].drawHp();
         Projectile.list[i].update();
