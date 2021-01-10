@@ -491,6 +491,16 @@ Img.healthBar = new Image();
 Img.healthBar.src = '/client/img/Health0.png';
 Img.healthBarEnemy = new Image();
 Img.healthBarEnemy.src = '/client/img/HealthEnemy.png';
+Img.ninjaStar = new Image();
+Img.ninjaStar.src = '/client/img/ninjaStar.png';
+Img.playerBullet = new Image();
+Img.playerBullet.src = '/client/img/playerBullet.png';
+Img.ballBullet = new Image();
+Img.ballBullet.src = '/client/img/ballBullet.png';
+Img.fireBullet = new Image();
+Img.fireBullet.src = '/client/img/fireBullet.png';
+Img.sword = new Image();
+Img.sword.src = '/client/img/sword.png';
 var mouseX = 0;
 var mouseY = 0;
 var mapMouseX = mouseX + WIDTH / 2;
@@ -1057,20 +1067,9 @@ var Projectile = function(initPack){
     self.draw = function(){
         ctx0.translate(self.x,self.y);
         ctx0.rotate(self.direction * Math.PI / 180);
-        var i = new Image();
-        i.src = '/client/img/' + self.projectileType + '.png';
-        ctx0.drawImage(i,-24,-24);
+        ctx0.drawImage(Img[self.projectileType],-24,-24);
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
-    }
-    self.drawCtx1= function(){
-        ctx1.translate(self.x,self.y);
-        ctx1.rotate(self.direction * Math.PI / 180);
-        var i = new Image();
-        i.src = '/client/img/' + self.projectileType + '.png';
-        ctx1.drawImage(i,-24,-24);
-        ctx1.rotate(-self.direction * Math.PI / 180);
-        ctx1.translate(-self.x,-self.y);
     }
     self.drawHp = function(){
         if(DEBUG){
@@ -1920,11 +1919,6 @@ setInterval(function(){
     map1.restore();
     ctx1.save();
     ctx1.translate(cameraX,cameraY);
-    for(var i in Projectile.list){
-        if(Projectile.list[i].spdX === 0 && Projectile.list[i].spdY === 0){
-            Projectile.list[i].drawCtx1();
-        }
-    }
     for(var i in Projectile.list){
         Projectile.list[i].drawHp();
         Projectile.list[i].update();
