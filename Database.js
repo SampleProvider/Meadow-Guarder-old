@@ -105,7 +105,12 @@ Database.removeUser = function(data,cb){
 		if(err){
 			throw err;
 		}
-		return cb();
+		client.query('DELETE FROM progress WHERE qusername=\'' + data.username + '\';', (err, res) => {
+			if(err){
+				throw err;
+			}
+			return cb();
+		});
 	});
 }
 Database.changePassword = function(data,cb){
