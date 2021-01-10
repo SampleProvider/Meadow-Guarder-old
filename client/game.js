@@ -1063,7 +1063,7 @@ var Projectile = function(initPack){
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
-    self.draw = function(){
+    self.drawCtx1= function(){
         ctx1.translate(self.x,self.y);
         ctx1.rotate(self.direction * Math.PI / 180);
         var i = new Image();
