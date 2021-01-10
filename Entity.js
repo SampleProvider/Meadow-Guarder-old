@@ -3558,39 +3558,44 @@ Player.onDisconnect = function(socket){
     }
 }
 Player.getAllInitPack = function(socket){
-    var player = Player.list[socket.id];
-    var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
-    for(var i in Player.list){
-        if(Player.list[i].map === player.map){
-            pack.player.push(Player.list[i].getInitPack());
+    try{
+        var player = Player.list[socket.id];
+        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+        for(var i in Player.list){
+            if(Player.list[i].map === player.map){
+                pack.player.push(Player.list[i].getInitPack());
+            }
         }
-    }
-    for(var i in Projectile.list){
-        if(Projectile.list[i].map === player.map){
-            pack.projectile.push(Projectile.list[i].getInitPack());
+        for(var i in Projectile.list){
+            if(Projectile.list[i].map === player.map){
+                pack.projectile.push(Projectile.list[i].getInitPack());
+            }
         }
-    }
-    for(var i in Monster.list){
-        if(Monster.list[i].map === player.map){
-            pack.monster.push(Monster.list[i].getInitPack());
+        for(var i in Monster.list){
+            if(Monster.list[i].map === player.map){
+                pack.monster.push(Monster.list[i].getInitPack());
+            }
         }
-    }
-    for(var i in Npc.list){
-        if(Npc.list[i].map === player.map){
-            pack.npc.push(Npc.list[i].getInitPack());
+        for(var i in Npc.list){
+            if(Npc.list[i].map === player.map){
+                pack.npc.push(Npc.list[i].getInitPack());
+            }
         }
-    }
-    for(var i in Pet.list){
-        if(Pet.list[i].map === player.map){
-            pack.pet.push(Pet.list[i].getInitPack());
+        for(var i in Pet.list){
+            if(Pet.list[i].map === player.map){
+                pack.pet.push(Pet.list[i].getInitPack());
+            }
         }
-    }
-    for(var i in Particle.list){
-        if(Particle.list[i].map === player.map){
-            pack.particle.push(Particle.list[i].getInitPack());
+        for(var i in Particle.list){
+            if(Particle.list[i].map === player.map){
+                pack.particle.push(Particle.list[i].getInitPack());
+            }
         }
+        socket.emit('update',pack);
     }
-    socket.emit('update',pack);
+    catch(err){
+        console.error(err);
+    }
 }
 
 
