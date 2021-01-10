@@ -1,4 +1,5 @@
 ENV = {
-    PVP:false,
-    Hardcore:true,
+    PVP:true,
+    Hardcore:false,
+    Peaceful:true,
 }

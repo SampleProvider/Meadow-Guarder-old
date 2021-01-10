@@ -171,6 +171,9 @@ var monsterData = require('./monsters.json');
 var projectileData = require('./projectiles.json');
 
 var spawnMonster = function(spawner,spawnId){
+    if(ENV.Peaceful){
+        return;
+    }
     var monsterSeed = Math.random();
     var monsterTotal = 0;
     for(var i in monsterData){
