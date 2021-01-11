@@ -75,19 +75,30 @@ Inventory = function(socket,server){
         return false;
     }
     self.addRandomizedItem = function(luck){
-        var obtainedItems = [];
+        var totalChance = 1/luck;
         for(var i in Item.list){
-            if(Math.random() < Item.list[i].dropChance * luck){
+            totalChance += Item.list[i].dropChance;
+        }
+        var value = Math.random() * totalChance;
+        for(var i in Item.list){
+            if(value < Item.list[i].dropChance){
                 self.addItem(i,[]);
-                obtainedItems.push(Item.list[i]);
+                return Item.list[i];
+            }
+            else{
+                value -= Item.list[i].dropChance;
             }
         }
-        return obtainedItems;
+        return false;
     }
     self.addRandomizedEnchantments = function(luck){
-        var obtainedItems = [];
+        var totalChance = 1/luck;
         for(var i in Item.list){
-            if(Math.random() < Item.list[i].dropChance * luck){
+            totalChance += Item.list[i].dropChance;
+        }
+        var value = Math.random() * totalChance;
+        for(var i in Item.list){
+            if(value < Item.list[i].dropChance){
                 var enchantments = [];
                 for(var j in Item.list[i].enchantments){
                     for(var k in Enchantment.list){
@@ -100,10 +111,13 @@ Inventory = function(socket,server){
                     }
                 }
                 self.addItem(i,enchantments);
-                obtainedItems.push(Item.list[i]);
+                return Item.list[i];
+            }
+            else{
+                value -= Item.list[i].dropChance;
             }
         }
-        return obtainedItems;
+        return false;
     }
     self.hasItem = function(index){
         if(self.items[index] !== undefined){

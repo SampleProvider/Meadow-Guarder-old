@@ -226,14 +226,14 @@
     "earthbook3":{
         "name":"Earth Book 3",
         "equip":"ability",
-        "event":"self.ability.attackAbility = 'earthAttack3';self.ability.secondAbility = 'earthSecond3';self.ability.healAbility = 'earthHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0,20,40,60];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackAbility = 'earthAttack3';self.ability.secondAbility = 'earthSecond3';self.ability.healAbility = 'earthHeal3';self.ability.attackPattern = [0,2];self.ability.secondPattern = [0,20,40,60];self.ability.healPattern = [0,20,40,60];",
         "dropChance":0.005,
         "enchantments":[]
     },
     "earthbook4":{
         "name":"Earth Book 4",
         "equip":"ability",
-        "event":"self.ability.attackAbility = 'earthAttack4';self.ability.secondAbility = 'earthSecond4';self.ability.healAbility = 'earthHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0,20,40,60];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackAbility = 'earthAttack4';self.ability.secondAbility = 'earthSecond4';self.ability.healAbility = 'earthHeal4';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0,20,40,60];self.ability.healPattern = [0,20,40,60];",
         "dropChance":0.003,
         "enchantments":[]
     },

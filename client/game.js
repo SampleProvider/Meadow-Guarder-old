@@ -973,7 +973,7 @@ var Player = function(initPack){
             xpText = Math.round(self.xp / 100000) / 10 + "M ";
         }
         else if(self.xp > 9999){
-            xpText = Math.round(self.xp / 1000) + "K ";
+            xpText = Math.round(self.xp / 100) / 10 + "K ";
         }
         if(self.xpMax > 999999999999999){
             xpMaxText = "/ " + Math.round(self.xpMax / 100000000000000) / 10 + "Q";
@@ -988,7 +988,7 @@ var Player = function(initPack){
             xpMaxText = "/ " + Math.round(self.xpMax / 100000) / 10 + "M";
         }
         else if(self.xpMax > 9999){
-            xpMaxText = "/ " + Math.round(self.xpMax / 1000) + "K";
+            xpMaxText = "/ " + Math.round(self.xpMax / 100) / 10 + "K";
         }
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";

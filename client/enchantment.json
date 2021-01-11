@@ -12,7 +12,7 @@
         "maxLevel":3,
         "averageLevel":1,
         "deviation":0,
-        "dropChance":0.02,
+        "dropChance":0.2,
         "event":"self.maxSpeed += 2;"
     },
     "speed":{
@@ -36,7 +36,7 @@
         "maxLevel":1,
         "averageLevel":1,
         "deviation":0,
-        "dropChance":0.0001,
+        "dropChance":0.1,
         "event":"self.maxSpeed *= 1.1;self.stats.speed *= 1.1;"
     },
     "smashing":{
@@ -44,7 +44,7 @@
         "maxLevel":3,
         "averageLevel":1,
         "deviation":2,
-        "dropChance":0.03,
+        "dropChance":0.3,
         "event":"self.pushPower *= 1.5;"
     }
 }
