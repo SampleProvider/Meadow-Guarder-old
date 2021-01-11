@@ -53,6 +53,7 @@ var xpLevels = [
 var fs = require('fs');
 var PF = require('pathfinding');
 
+
 worldMap = [];
 require('./env.js');
 
@@ -4165,11 +4166,25 @@ Pet = function(param){
             isFireMap = true;
         }
         self.reload += 1;
-        if(self.reload > 10 && isFireMap === true && Player.list[self.parent].isDead === false){
-            self.reload = 0;
-            var direction = (Math.atan2(Player.list[self.parent].mouseY - self.y,Player.list[self.parent].mouseX - self.x) / Math.PI * 180);
-            for(var i = -1;i < 2;i++){
-                self.shootProjectile(self.parent,'Player',direction + i * 5,direction + i * 5,'sword',0,Player.list[self.parent].stats);
+        if(self.reload > 200 && Player.list[self.parent].isDead === false){
+            if(Player.list[self.parent].hp < Player.list[self.parent].hpMax / 20){
+                var heal = 200 * Player.list[self.parent].stats.heal;
+                heal = Math.min(Player.list[self.parent].hpMax - Player.list[self.parent].hp,heal);
+                Player.list[self.parent].hp += heal;
+                if(heal){
+                    var particle = new Particle({
+                        x:Player.list[self.parent].x + Math.random() * 64 - 32,
+                        y:Player.list[self.parent].y + Math.random() * 64 - 32,
+                        map:Player.list[self.parent].map,
+                        particleType:'greenDamage',
+                        value:'+' + heal,
+                    });
+                }
+                var direction = (Math.atan2(Player.list[self.parent].mouseY - self.y,Player.list[self.parent].mouseX - self.x) / Math.PI * 180);
+                for(var i = -18;i < 19;i++){
+                    self.shootProjectile(self.parent,'Player',direction + i * 10,direction + i * 10,'sword',0,Player.list[self.parent].stats);
+                }
+                reload = 0;
             }
         }
     }
