@@ -8,8 +8,10 @@ Particle = function(param){
     self.direction = Math.random() * 2 - 1;
     var lastSelf = [];
     self.update = function(){
-        self.x += 5 * self.direction;
-        self.y += -self.timer * 2 + 10;
+        if(self.particleType === 'redDamage' || self.particleType === 'greenDamage'){
+            self.x += 5 * self.direction;
+            self.y += -self.timer * 2 + 10;
+        }
         self.timer -= 1;
         if(self.timer < 0){
             self.toRemove = true;

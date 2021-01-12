@@ -1,7 +1,7 @@
 {
     "health":{
         "name":"Health",
-        "maxLevel":5,
+        "maxLevel":50,
         "averageLevel":2,
         "deviation":1,
         "dropChance":0.5,
@@ -9,7 +9,7 @@
     },
     "unlocking":{
         "name":"Unlocking",
-        "maxLevel":3,
+        "maxLevel":50,
         "averageLevel":1,
         "deviation":0,
         "dropChance":0.2,
@@ -17,7 +17,7 @@
     },
     "speed":{
         "name":"Speed",
-        "maxLevel":20,
+        "maxLevel":50,
         "averageLevel":3,
         "deviation":5,
         "dropChance":0.2,
@@ -25,7 +25,7 @@
     },
     "range":{
         "name":"Range",
-        "maxLevel":7,
+        "maxLevel":50,
         "averageLevel":4,
         "deviation":3,
         "dropChance":0.2,
@@ -33,7 +33,7 @@
     },
     "burst":{
         "name":"Burst",
-        "maxLevel":1,
+        "maxLevel":50,
         "averageLevel":1,
         "deviation":0,
         "dropChance":0.1,
@@ -41,7 +41,7 @@
     },
     "smashing":{
         "name":"Smashing",
-        "maxLevel":3,
+        "maxLevel":50,
         "averageLevel":1,
         "deviation":2,
         "dropChance":0.3,
