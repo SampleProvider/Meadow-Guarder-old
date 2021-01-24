@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f6a';
+var VERSION = '011f7a';
 
 var DEBUG = false;
 
@@ -206,7 +206,9 @@ socket.on('addToChat',function(data){
     if(m === '0'){
         m = '00';
     }
-    chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + m + "] " + data.message + '</div>';
+    var message = data.message.replace(/</gi,'&lt;');
+    message = message.replace(/>/gi,'&gt;');
+    chat += '<div class="text"' + data.style + "[" + d.getHours() + ":" + m + "] " + message + '</div>';
     chatText.innerHTML = chat;
     if(scroll){
         chatText.scrollTop = chatText.scrollHeight;
@@ -618,12 +620,12 @@ var talking = false;
 var selfId = null;
 
 var state = {
-isDragging: false,
-isHidden: true,
-xDiff: 0,
-yDiff: 0,
-x: 50,
-y: 50
+    isDragging:false,
+    isHidden:true,
+    xDiff:0,
+    yDiff:0,
+    x:50,
+    y:50,
 };
 
 // hehe: http://youmightnotneedjquery.com/

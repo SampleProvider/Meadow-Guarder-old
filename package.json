@@ -1,8 +1,8 @@
 {
-  "name": "project",
+  "name": "meadowguarder",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "NodeJs RPG game",
+  "main": "app.js",
   "dependencies": {
     "colors": "^1.4.0",
     "express": "^4.17.1",
