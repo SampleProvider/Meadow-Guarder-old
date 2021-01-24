@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f7a';
+var VERSION = '011f8a';
 
 var DEBUG = false;
 
@@ -1277,22 +1277,21 @@ var Particle = function(initPack){
     self.id = initPack.id;
     self.x = initPack.x;
     self.y = initPack.y;
-    self.nextX = initPack.x;
-    self.nextY = initPack.y;
-    self.moveX = 0;
-    self.moveY = 0;
     self.map = initPack.map;
     self.value = initPack.value;
     self.particleType = initPack.particleType;
     self.timer = initPack.timer;
+    self.direction = initPack.direction;
     self.type = initPack.type;
-    self.updated = true;
+    self.toRemove = false;
     self.update = function(){
-        if(self.x !== self.nextX){
-            self.x += self.moveX;
+        if(self.particleType === 'redDamage' || self.particleType === 'greenDamage'){
+            self.x += 5 * self.direction / 4;
+            self.y += -self.timer / 2 + 10 / 4;
         }
-        if(self.y !== self.nextY){
-            self.y += self.moveY;
+        self.timer -= 1 / 4;
+        if(self.timer < 0){
+            self.toRemove = true;
         }
     }
     self.draw = function(){
@@ -1337,9 +1336,6 @@ socket.on('update',function(data){
     }
     for(var i in Pet.list){
         Pet.list[i].updated = false;
-    }
-    for(var i in Particle.list){
-        Particle.list[i].updated = false;
     }
     if(data){
         if(data.player.length > 0){
@@ -1572,26 +1568,7 @@ socket.on('update',function(data){
         }
         if(data.particle.length > 0){
             for(var i = 0;i < data.particle.length;i++){
-                if(Particle.list[data.particle[i].id]){
-                    if(data.particle[i].x !== undefined){
-                        Particle.list[data.particle[i].id].nextX = data.particle[i].x;
-                    }
-                    Particle.list[data.particle[i].id].moveX = (Particle.list[data.particle[i].id].nextX - Particle.list[data.particle[i].id].x) / 4;
-                    if(data.particle[i].y !== undefined){
-                        Particle.list[data.particle[i].id].nextY = data.particle[i].y;
-                    }
-                    Particle.list[data.particle[i].id].moveY = (Particle.list[data.particle[i].id].nextY - Particle.list[data.particle[i].id].y) / 4;
-                    if(data.particle[i].particleType !== undefined){
-                        Particle.list[data.particle[i].id].particleType = data.particle[i].particleType;
-                    }
-                    if(data.particle[i].timer !== undefined){
-                        Particle.list[data.particle[i].id].timer = data.particle[i].timer;
-                    }
-                    Particle.list[data.particle[i].id].updated = true;
-                }
-                else{
-                    new Particle(data.particle[i]);
-                }
+                new Particle(data.particle[i]);
             }
         }
     }
@@ -1618,11 +1595,6 @@ socket.on('update',function(data){
     for(var i in Pet.list){
         if(Pet.list[i].updated === false){
             delete Pet.list[i];
-        }
-    }
-    for(var i in Particle.list){
-        if(Particle.list[i].updated === false){
-            delete Particle.list[i];
         }
     }
 });
@@ -1945,7 +1917,12 @@ setInterval(function(){
         Particle.list[i].draw();
     }
     for(var i in Particle.list){
-        Particle.list[i].update();
+        if(Particle.list[i].toRemove){
+            delete Particle.list[i];
+        }
+        else{
+            Particle.list[i].update();
+        }
     }
     
     for(var i in Player.list){

@@ -390,13 +390,9 @@ Entity.getFrameUpdateData = function(){
                 if(!pack[Particle.list[i].map]){
                     pack[Particle.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
                 }
-                if(Particle.list[i].toRemove){
-                    delete Particle.list[i];
-                }
-                else{
-                    var updatePack = Particle.list[i].getUpdatePack();
-                    pack[Particle.list[i].map].particle.push(updatePack);
-                }
+                var updatePack = Particle.list[i].getInitPack();
+                pack[Particle.list[i].map].particle.push(updatePack);
+                delete Particle.list[i];
             }
         }
     }
