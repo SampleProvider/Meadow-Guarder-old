@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '011f8a';
+var VERSION = '0.2.0';
 
 var DEBUG = false;
 
@@ -52,6 +52,8 @@ var healthBarText = document.getElementById('healthBarText');
 var healthBarValue = document.getElementById('healthBarValue');
 var xpBarText = document.getElementById('xpBarText');
 var xpBarValue = document.getElementById('xpBarValue');
+var manaBarText = document.getElementById('manaBarText');
+var manaBarValue = document.getElementById('manaBarValue');
 var interactMenu = document.getElementById('interactMenu');
 var signDivUsername = document.getElementById('username');
 var signDivPassword = document.getElementById('password');
@@ -490,9 +492,11 @@ Img.cherryBomb.src = '/client/img/cherryBomb.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.healthBar = new Image();
-Img.healthBar.src = '/client/img/Health0.png';
+Img.healthBar.src = '/client/img/healthBar.png';
 Img.healthBarEnemy = new Image();
-Img.healthBarEnemy.src = '/client/img/HealthEnemy.png';
+Img.healthBarEnemy.src = '/client/img/healthBarEnemy.png';
+Img.manaBar = new Image();
+Img.manaBar.src = '/client/img/manaBar.png';
 Img.ninjaStar = new Image();
 Img.ninjaStar.src = '/client/img/ninjaStar.png';
 Img.playerBullet = new Image();
@@ -882,14 +886,20 @@ var Player = function(initPack){
     self.hpMax = initPack.hpMax;
     self.xp = initPack.xp;
     self.xpMax = initPack.xpMax;
+    self.mana = Math.round(initPack.mana);
+    self.manaMax = initPack.manaMax;
+    self.stats = initPack.stats;
     self.level = initPack.level;
     self.map = initPack.map;
     self.attackTick = initPack.attackTick;
     self.secondTick = initPack.secondTick;
     self.healTick = initPack.healTick;
-    self.attackReload = initPack.attackReload;
-    self.secondReload = initPack.secondReload;
-    self.healReload = initPack.healReload;
+    self.attackCost = initPack.attackCost;
+    self.secondCost = initPack.secondCost;
+    self.healCost = initPack.healCost;
+    self.attackCooldown = initPack.attackCooldown;
+    self.secondCooldown = initPack.secondCooldown;
+    self.healCooldown = initPack.healCooldown;
     self.mapHeight = initPack.mapWidth;
     self.mapWidth = initPack.mapHeight;
     self.updated = true;
@@ -934,32 +944,10 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        if(self.attackTick >= self.attackReload){
-            self.attackTick = self.attackReload;
-            mainAttackDiv.style.color = "#25ff25";
-        }
-        else{
-            mainAttackDiv.style.color = "#ff2525";
-        }
-        if(self.secondTick >= self.secondReload){
-            self.secondTick = self.secondReload;
-            secondaryAttackDiv.style.color = "#25ff25";
-        }
-        else{
-            secondaryAttackDiv.style.color = "#ff2525";
-        }
-        if(self.healTick >= self.healReload){
-            self.healTick = self.healReload;
-            healDiv.style.color = "#25ff25";
-        }
-        else{
-            healDiv.style.color = "#ff2525";
-        }
-        mainAttackDiv.innerHTML = "Main Attack: " + Math.round(self.attackReload - self.attackTick) / 20;
-        secondaryAttackDiv.innerHTML = "Secondary Attack: " + Math.round(self.secondReload - self.secondTick) / 20;
-        healDiv.innerHTML = "Heal: " + Math.round(self.healReload - self.healTick) / 20;
         healthBarText.innerHTML = self.hp + " / " + self.hpMax;
         healthBarValue.style.width = "" + 150 * self.hp / self.hpMax + "px";
+        manaBarText.innerHTML = self.mana + " / " + self.manaMax;
+        manaBarValue.style.width = "" + 150 * self.mana / self.manaMax + "px";
         var xpText = self.xp + " ";
         var xpMaxText = "/ " + self.xpMax;
         if(self.xp > 999999999999999){
@@ -994,8 +982,7 @@ var Player = function(initPack){
         }
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
-        document.getElementById('stat-attack').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.';
-        document.getElementById('stat-defense').innerHTML = 'Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.<br>You are level ' + self.level + '.<br>You will get ' + Math.round(self.stats.xp * 10) + ' xp per monster killed.';
+        document.getElementById('stat-text').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.<br>Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.<br>You are level ' + self.level + '.<br>You will get ' + Math.round(self.stats.xp * 10) + ' xp per monster killed.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana and has a cooldown of ' + self.attackCooldown + '  ticks. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana and has a cooldown of ' + self.secondCooldown + ' ticks. Your heal spends ' + Math.round(self.healCost) + ' mana and has a cooldown of ' + self.healCooldown + ' ticks.';
     }
     self.drawLight = function(){
         if(self.id !== selfId){
@@ -1244,6 +1231,8 @@ var Pet = function(initPack){
     self.moveY = 0;
     self.map = initPack.map;
     self.name = initPack.name;
+    self.mana = initPack.mana;
+    self.manaMax = initPack.manaMax;
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){
@@ -1261,7 +1250,9 @@ var Pet = function(initPack){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.name,self.x,self.y - 22);
+        ctx1.fillText(self.name,self.x,self.y - 52);
+        ctx1.drawImage(Img.manaBar,0,0,42,5,self.x - 63,self.y - 36,126,15);
+        ctx1.drawImage(Img.manaBar,0,6,Math.round(42 * self.mana / self.manaMax),5,self.x - 63,self.y - 36,Math.round(126 * self.mana / self.manaMax),15);
         if(DEBUG){
             ctx1.strokeStyle = '#ff0000';
             ctx1.lineWidth = 4;
@@ -1396,6 +1387,12 @@ socket.on('update',function(data){
                     if(data.player[i].xpMax !== undefined){
                         Player.list[data.player[i].id].xpMax = data.player[i].xpMax;
                     }
+                    if(data.player[i].mana !== undefined){
+                        Player.list[data.player[i].id].mana = Math.round(data.player[i].mana);
+                    }
+                    if(data.player[i].manaMax !== undefined){
+                        Player.list[data.player[i].id].manaMax = data.player[i].manaMax;
+                    }
                     if(data.player[i].level !== undefined){
                         Player.list[data.player[i].id].level = data.player[i].level;
                     }
@@ -1411,14 +1408,23 @@ socket.on('update',function(data){
                     if(data.player[i].healTick !== undefined){
                         Player.list[data.player[i].id].healTick = data.player[i].healTick;
                     }
-                    if(data.player[i].attackReload !== undefined){
-                        Player.list[data.player[i].id].attackReload = data.player[i].attackReload;
+                    if(data.player[i].attackCost !== undefined){
+                        Player.list[data.player[i].id].attackCost = data.player[i].attackCost;
                     }
-                    if(data.player[i].secondReload !== undefined){
-                        Player.list[data.player[i].id].secondReload = data.player[i].secondReload;
+                    if(data.player[i].secondCost !== undefined){
+                        Player.list[data.player[i].id].secondCost = data.player[i].secondCost;
                     }
-                    if(data.player[i].healReload !== undefined){
-                        Player.list[data.player[i].id].healReload = data.player[i].healReload;
+                    if(data.player[i].healCost !== undefined){
+                        Player.list[data.player[i].id].healCost = data.player[i].healCost;
+                    }
+                    if(data.player[i].attackCooldown !== undefined){
+                        Player.list[data.player[i].id].attackCooldown = data.player[i].attackCooldown;
+                    }
+                    if(data.player[i].secondCooldown !== undefined){
+                        Player.list[data.player[i].id].secondCooldown = data.player[i].secondCooldown;
+                    }
+                    if(data.player[i].healCooldown !== undefined){
+                        Player.list[data.player[i].id].healCooldown = data.player[i].healCooldown;
                     }
                     if(data.player[i].mapWidth !== undefined){
                         Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
@@ -1489,6 +1495,7 @@ socket.on('update',function(data){
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
                     if(data.monster[i].hp !== undefined){
                         Monster.list[data.monster[i].id].hp = data.monster[i].hp;
+                        console.log(Monster.list[data.monster[i].id].moveX);
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
@@ -1514,6 +1521,7 @@ socket.on('update',function(data){
                         Npc.list[data.npc[i].id].nextY = data.npc[i].y;
                     }
                     Npc.list[data.npc[i].id].moveY = (Npc.list[data.npc[i].id].nextY - Npc.list[data.npc[i].id].y) / 4;
+                    console.log(data.npc[i].x,data.npc[i].y)
                     if(data.npc[i].animationDirection !== undefined){
                         Npc.list[data.npc[i].id].animationDirection = data.npc[i].animationDirection;
                     }
@@ -1547,11 +1555,11 @@ socket.on('update',function(data){
                     if(data.pet[i].animationDirection !== undefined){
                         Pet.list[data.pet[i].id].animationDirection = data.pet[i].animationDirection;
                     }
-                    if(data.pet[i].hp !== undefined){
-                        Pet.list[data.pet[i].id].hp = data.pet[i].hp;
+                    if(data.pet[i].mana !== undefined){
+                        Pet.list[data.pet[i].id].mana = data.pet[i].mana;
                     }
-                    if(data.pet[i].hpMax !== undefined){
-                        Pet.list[data.pet[i].id].hpMax = data.pet[i].hpMax;
+                    if(data.pet[i].manaMax !== undefined){
+                        Pet.list[data.pet[i].id].manaMax = data.pet[i].manaMax;
                     }
                     if(data.pet[i].animation !== undefined){
                         Pet.list[data.pet[i].id].animation = data.pet[i].animation;
@@ -1719,7 +1727,6 @@ socket.on('removeTile',function(data){
     for(var i in tempMap[data.map]){
         if(tempMap[data.map][i].x === data.x && tempMap[data.map][i].y === data.y && tempMap[data.map][i].canvas === data.canvas && tempMap[data.map][i].tile_idx === data.tile_idx){
             tempMap[data.map].splice(i,1);
-            return;
         }
     }
 });

@@ -254,23 +254,8 @@ canvas {
     background: rgba(255,0,0,0.3);
 }
 
-#mainAttack {
-    bottom: 75px;
-    left: 10px;
-    user-select: none;
-}
-#secondaryAttack {
-    bottom: 45px;
-    left: 10px;
-    user-select: none;
-}
-#heal {
-    bottom: 15px;
-    left: 10px;
-    user-select: none;
-}
 #fps {
-    bottom: 150px;
+    bottom: 15px;
     left: 10px;
     user-select: none;
     color: white;
@@ -480,7 +465,7 @@ canvas {
     text-align: center;
     color: #ffffff;
 }
-#magicBar {
+#manaBar {
     position: absolute;
     left: 5px;
     top: 55px;
@@ -491,15 +476,15 @@ canvas {
     color: #ffffff;
     background-color: #000000;
 }
-#magicBarValue {
+#manaBarValue {
     position: absolute;
     left: 0px;
     top: 0px;
     width: 150px;
     height: 20px;
-    background-color: #cc00cc;
+    background-color: #ff9900;
 }
-#magicBarText {
+#manaBarText {
     position: absolute;
     left: 0px;
     top: -2px;

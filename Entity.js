@@ -68,16 +68,10 @@ s = {
     spawnMonster:function(param,pt){
         for(var i in monsterData){
             if(i === param){
-                var monsterHp = 200;
-                var monsterStats = {
-                    attack:1,
-                    defense:1,
-                    heal:1,
-                }
-                monsterHp *= monsterData[i].hp;
-                monsterStats.attack *= monsterData[i].stats.attack;
-                monsterStats.defense *= monsterData[i].stats.defense;
-                monsterStats.heal *= monsterData[i].stats.heal;
+                var monsterHp = monsterData[i].hp;
+                var monsterStats = monsterData[i].stats;
+                monsterHp *= ENV.MonsterStrength;
+                monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
                     spawnId:false,
                     x:pt.x + Math.random() * 128 - 64,
@@ -183,32 +177,10 @@ var spawnMonster = function(spawner,spawnId){
     monsterSeed *= monsterTotal;
     for(var i in monsterData){
         if(monsterSeed > 0 && monsterSeed < monsterData[i].spawnChance){
-            var monsterHp = 0;
-            var monsterStats = {
-                attack:0,
-                defense:0,
-                heal:0,
-            }
-            for(var j in Player.list){
-                if(Player.list[j].map === spawner.map){
-                    monsterHp += Player.list[j].hpMax / 4;
-                    monsterStats.attack += Player.list[j].stats.attack / 4;
-                    monsterStats.defense += Player.list[j].stats.defense / 4;
-                    monsterStats.heal += Player.list[j].stats.heal / 4;
-                }
-            }
-            monsterHp = monsterHp / playerMap[spawner.map];
-            monsterStats.attack = monsterStats.attack / playerMap[spawner.map];
-            monsterStats.defense = monsterStats.defense / playerMap[spawner.map];
-            monsterStats.heal = monsterStats.heal / playerMap[spawner.map];
-            monsterHp *= monsterData[i].hp;
-            monsterStats.attack *= monsterData[i].stats.attack;
-            monsterStats.defense *= monsterData[i].stats.defense;
-            monsterStats.heal *= monsterData[i].stats.heal;
-            monsterHp += monsterData[i].baseHp;
-            monsterStats.attack += monsterData[i].baseStats.attack;
-            monsterStats.defense += monsterData[i].baseStats.defense;
-            monsterStats.heal += monsterData[i].baseStats.heal;
+            var monsterHp = monsterData[i].hp;
+            var monsterStats = Object.create(monsterData[i].stats);
+            monsterHp *= ENV.MonsterStrength;
+            monsterStats.attack *= ENV.MonsterStrength;
             var monster = new Monster({
                 spawnId:spawnId,
                 x:spawner.x,
@@ -216,7 +188,7 @@ var spawnMonster = function(spawner,spawnId){
                 map:spawner.map,
                 moveSpeed:monsterData[i].moveSpeed,
                 stats:monsterStats,
-                hp:Math.round(monsterHp),
+                hp:monsterHp,
                 monsterType:i,
                 attackState:monsterData[i].attackState,
                 width:monsterData[i].width,
@@ -483,10 +455,14 @@ Actor = function(param){
     self.trackingEntity = undefined;
     self.trackingPos = {x:undefined,y:undefined};
     self.trackingPath = [];
+    self.trackDistance = 0;
+    self.trackCircleDirection = 1;
+    self.trackingEntityReached = false;
     self.trackTime = 100;
     self.entityId = undefined;
     self.canMove = true;
     self.canChangeMap = true;
+    self.justCollided = false;
     self.transporter = {};
     self.invincible = false;
     self.mapWidth = Maps[self.map].width;
@@ -516,15 +492,19 @@ Actor = function(param){
             self.dazed -= 1;
             if(self.x < self.width / 2){
                 self.x = self.width / 2;
+                self.justCollided = true;
             }
             if(self.x > self.mapWidth - self.width / 2){
                 self.x = self.mapWidth - self.width / 2;
+                self.justCollided = true;
             }
             if(self.y < self.height / 2){
                 self.y = self.height / 2;
+                self.justCollided = true;
             }
             if(self.y > self.mapHeight - self.height / 2){
                 self.y = self.mapHeight - self.height / 2;
+                self.justCollided = true;
             }
             self.updateCollisions();
         }
@@ -584,14 +564,14 @@ Actor = function(param){
             if(self.trackingEntity.hp < 1){
 
             }
-            else{
+            else if(self.getDistance(self.trackingEntity) > self.trackDistance * 1.2){
                 var size = 33;
                 var dx = Math.floor(self.x / 64) - size / 2 + 0.5;
                 var dy = Math.floor(self.y / 64) - size / 2 + 0.5;
                 var trackX = Math.floor(self.trackingEntity.x / 64) - dx;
                 var trackY = Math.floor(self.trackingEntity.y / 64) - dy;
                 self.trackTime += 1;
-                if(trackX !== self.trackingPos.x || trackY !== self.trackingPos.y){
+                if(trackX !== self.trackingPos.x || trackY !== self.trackingPos.y || self.justCollided){
                     if(self.trackTime > 50 + 50 * Math.random()){
                         self.trackTime = 0;
                         self.trackingPos.x = trackX;
@@ -650,11 +630,24 @@ Actor = function(param){
                     }
                 }
             }
+            else{
+                var angle = Math.atan2(self.y - self.trackingEntity.y,self.x - self.trackingEntity.x);
+                self.spdX = -Math.sin(angle);
+                self.spdY = Math.cos(angle);
+                if(self.justCollided === true){
+                    self.trackCircleDirection *= -1;
+                }
+                self.spdX *= self.trackCircleDirection;
+                self.spdY *= self.trackCircleDirection;
+                self.spdX += Math.cos(angle) * (self.trackDistance - self.getDistance(self.trackingEntity)) / self.trackDistance * 2;
+                self.spdY += Math.sin(angle) * (self.trackDistance - self.getDistance(self.trackingEntity)) / self.trackDistance * 2;
+                self.trackingEntityReached = true;
+            }
         }
         if(self.randomPos.walking){
             if(self.randomPos.waypoint){
                 if(self.randomPos.currentWaypoint){
-                    if(self.x === self.randomPos.currentWaypoint.x && self.y === self.randomPos.currentWaypoint.y){
+                    if(self.trackingEntityReached){
                         self.randomPos.currentWaypoint = undefined;
                         self.randomPos.waypointAttemptTime = 0;
                     }
@@ -674,7 +667,7 @@ Actor = function(param){
                         }
                     }
                     self.randomPos.currentWaypoint = waypoints[Math.floor(Math.random() * waypoints.length)];
-                    self.trackEntity(self.randomPos.currentWaypoint);
+                    self.trackEntity(self.randomPos.currentWaypoint,1);
                 }
                 self.randomPos.waypointAttemptTime += 1;
             }
@@ -731,6 +724,7 @@ Actor = function(param){
                 self.spdY = 0;
             }
         }
+        self.justCollided = false;
     }
     self.updateAnimation = function(){
         if(!self.animate){
@@ -801,10 +795,13 @@ Actor = function(param){
             mapy:Maps[map].height,
         };
     }
-    self.trackEntity = function(pt){
+    self.trackEntity = function(pt,distance){
         self.trackingEntity = pt;
         self.trackingPath = [];
+        self.trackDistance = distance;
         self.trackingPos = {x:undefined,y:undefined};
+        self.trackCircleDirection = 1;
+        self.trackingEntityReached = false;
     }
     self.onHit = function(pt){
     }
@@ -1221,6 +1218,43 @@ Actor = function(param){
             self.doSlowDown(SlowDown.list[fourthTile]);
         }
 
+        if(Collision.list[firstTile]){
+            self.justCollided = true;
+        }
+        if(Collision.list[secondTile]){
+            self.justCollided = true;
+        }
+        if(Collision.list[thirdTile]){
+            self.justCollided = true;
+        }
+        if(Collision.list[fourthTile]){
+            self.justCollided = true;
+        }
+        if(Collision2.list[firstTile]){
+            self.justCollided = true;
+        }
+        if(Collision2.list[secondTile]){
+            self.justCollided = true;
+        }
+        if(Collision2.list[thirdTile]){
+            self.justCollided = true;
+        }
+        if(Collision2.list[fourthTile]){
+            self.justCollided = true;
+        }
+        if(Collision3.list[firstTile]){
+            self.justCollided = true;
+        }
+        if(Collision3.list[secondTile]){
+            self.justCollided = true;
+        }
+        if(Collision3.list[thirdTile]){
+            self.justCollided = true;
+        }
+        if(Collision3.list[fourthTile]){
+            self.justCollided = true;
+        }
+
         if(Transporter.list[firstTile] && self.canMove){
             var direction = Transporter.list[firstTile].teleportdirection;
             if(direction === "up" && self.spdY < 0){
@@ -1357,8 +1391,9 @@ Player = function(param){
     self.animation = 0;
     self.hp = 1000;
     self.hpMax = 1000;
-    self.mg = 1000;
-    self.mgMax = 1000;
+    self.mana = 0;
+    self.manaMax = 200;
+    self.manaRefresh = 0;
     self.xp = 0;
     self.xpMax = 100;
     self.level = 0;
@@ -1415,12 +1450,13 @@ Player = function(param){
         second:'second',
         heal:'Shift',
     };
-    self.attackReload = 20;
-    self.secondReload = 200;
-    self.healReload = 400;
-    self.attackTick = self.attackReload;
-    self.secondTick = self.secondReload;
-    self.healTick = self.healReload;
+    self.attackCost = 20;
+    self.secondCost = 100;
+    self.healCost = 200;
+    self.attackCooldown = 5;
+    self.secondCooldown = 5;
+    self.healCooldown = 5;
+    self.regenTick = 0;
     self.ability = {
         attackAbility:'baseAttack',
         secondAbility:'baseSecond',
@@ -1501,15 +1537,19 @@ Player = function(param){
             self.dazed -= 1;
             if(self.x < self.width / 2){
                 self.x = self.width / 2;
+                self.justCollided = true;
             }
             if(self.x > self.mapWidth - self.width / 2){
                 self.x = self.mapWidth - self.width / 2;
+                self.justCollided = true;
             }
             if(self.y < self.height / 2){
                 self.y = self.height / 2;
+                self.justCollided = true;
             }
             if(self.y > self.mapHeight - self.height / 2){
                 self.y = self.mapHeight - self.height / 2;
+                self.justCollided = true;
             }
             self.updateCollisions();
         }
@@ -1524,9 +1564,17 @@ Player = function(param){
                 self.animation = 0;
             }
         }
-        self.attackTick += 1;
-        self.secondTick += 1;
-        self.healTick += 1;
+        self.regenTick += 1;
+        self.manaRefresh = Math.max(self.manaRefresh - 1,-10);
+        if(!self.invincible && self.isDead === false){
+            if(self.manaRefresh <= -10){
+                self.mana += 2;
+            }
+            self.mana += 0.1;
+        }
+        if(Math.round(self.mana) >= self.manaMax){
+            self.mana = self.manaMax;
+        }
         if(self.hp < 1){
             self.hp = 0;
             if(self.willBeDead){
@@ -1539,7 +1587,7 @@ Player = function(param){
                 self.hp = self.hpMax;
             }
             else{
-                if(self.healTick % 10 === 0){
+                if(self.regenTick % 10 === 0){
                     var heal = Math.round(self.stats.heal * (5 + Math.random() * 10));
                     heal = Math.min(self.hpMax - self.hp,heal);
                     self.hp += heal;
@@ -2258,12 +2306,20 @@ Player = function(param){
     self.updateStats = function(){
         if(self.inventory.refresh){
             self.inventory.refresh = false;
-            self.stats = Object.create(self.permStats);
+            self.stats = {
+                attack:1,
+                defense:1,
+                heal:1,
+                xp:1,
+                luck:1,
+                range:1,
+                speed:1,
+            }
             self.textColor = '#ffff00';
             self.hpMax = 1000;
-            self.attackReload = 20;
-            self.secondReload = 200;
-            self.healReload = 400;
+            self.attackCost = 20;
+            self.secondCost = 100;
+            self.healCost = 200;
             self.ability = {
                 attackAbility:'baseAttack',
                 secondAbility:'baseSecond',
@@ -2317,6 +2373,8 @@ Player = function(param){
             }
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
+            Pet.list[self.pet].mapWidth = self.transporter.mapx;
+            Pet.list[self.pet].mapHeight = self.transporter.mapy;
             playerMap[self.map] += 1;
             if(map !== self.map){
                 for(var i in Spawner.list){
@@ -3039,8 +3097,9 @@ Player = function(param){
                 }
             }
         }
-        if(self.keyPress.heal === true && self.healTick > self.healReload){
-            self.healTick = 0;
+        if(self.keyPress.heal === true && self.mana >= self.healCost && self.manaRefresh <= 0){
+            self.mana -= self.healCost;
+            self.manaRefresh = self.healCooldown;
             for(var i in self.ability.healPattern){
                 self.addToEventQ(self.ability.healAbility,self.ability.healPattern[i]);
             }
@@ -3048,14 +3107,16 @@ Player = function(param){
         if(isFireMap === false){
             return;
         }
-        if(self.keyPress.attack === true && self.attackTick > self.attackReload){
-            self.attackTick = 0;
+        if(self.keyPress.attack === true && self.mana >= self.attackCost && self.manaRefresh <= 0){
+            self.mana -= self.attackCost;
+            self.manaRefresh = self.attackCooldown;
             for(var i in self.ability.attackPattern){
                 self.addToEventQ(self.ability.attackAbility,self.ability.attackPattern[i]);
             }
         }
-        if(self.keyPress.second === true && self.secondTick > self.secondReload){
-            self.secondTick = 0;
+        if(self.keyPress.second === true && self.mana >= self.secondCost && self.manaRefresh <= 0){
+            self.mana -= self.secondCost;
+            self.manaRefresh = self.secondCooldown;
             for(var i in self.ability.secondPattern){
                 self.addToEventQ(self.ability.secondAbility,self.ability.secondPattern[i]);
             }
@@ -3095,6 +3156,14 @@ Player = function(param){
         if(lastSelf.xpMax !== self.xpMax){
             pack.xpMax = self.xpMax;
             lastSelf.xpMax = self.xpMax;
+        }
+        if(lastSelf.mana !== self.mana){
+            pack.mana = self.mana;
+            lastSelf.mana = self.mana;
+        }
+        if(lastSelf.manaMax !== self.manaMax){
+            pack.manaMax = self.manaMax;
+            lastSelf.manaMax = self.manaMax;
         }
         if(lastSelf.level !== self.level){
             pack.level = self.level;
@@ -3146,29 +3215,29 @@ Player = function(param){
             pack.animation = self.animation;
             lastSelf.animation = self.animation;
         }
-        if(lastSelf.attackTick !== self.attackTick){
-            pack.attackTick = self.attackTick;
-            lastSelf.attackTick = self.attackTick;
+        if(lastSelf.attackCost !== self.attackCost){
+            pack.attackCost = self.attackCost;
+            lastSelf.attackCost = self.attackCost;
         }
-        if(lastSelf.secondTick !== self.secondTick){
-            pack.secondTick = self.secondTick;
-            lastSelf.secondTick = self.secondTick;
+        if(lastSelf.secondCost !== self.secondCost){
+            pack.secondCost = self.secondCost;
+            lastSelf.secondCost = self.secondCost;
         }
-        if(lastSelf.healTick !== self.healTick){
-            pack.healTick = self.healTick;
-            lastSelf.healTick = self.healTick;
+        if(lastSelf.healCost !== self.healCost){
+            pack.healCost = self.healCost;
+            lastSelf.healCost = self.healCost;
         }
-        if(lastSelf.attackReload !== self.attackReload){
-            pack.attackReload = self.attackReload;
-            lastSelf.attackReload = self.attackReload;
+        if(lastSelf.attackCooldown !== self.attackCooldown){
+            pack.attackCooldown = self.attackCooldown;
+            lastSelf.attackCooldown = self.attackCooldown;
         }
-        if(lastSelf.secondReload !== self.secondReload){
-            pack.secondReload = self.secondReload;
-            lastSelf.secondReload = self.secondReload;
+        if(lastSelf.secondCooldown !== self.secondCooldown){
+            pack.secondCooldown = self.secondCooldown;
+            lastSelf.secondCooldown = self.secondCooldown;
         }
-        if(lastSelf.healReload !== self.healReload){
-            pack.healReload = self.healReload;
-            lastSelf.healReload = self.healReload;
+        if(lastSelf.healCooldown !== self.healCooldown){
+            pack.healCooldown = self.healCooldown;
+            lastSelf.healCooldown = self.healCooldown;
         }
         if(lastSelf.mapWidth !== self.mapWidth){
             pack.mapWidth = self.mapWidth;
@@ -3217,6 +3286,8 @@ Player = function(param){
         pack.hpMax = self.hpMax;
         pack.xp = self.xp;
         pack.xpMax = self.xpMax;
+        pack.mana = self.mana;
+        pack.manaMax = self.manaMax;
         pack.level = self.level;
         pack.map = self.map;
         pack.username = self.username;
@@ -3225,12 +3296,12 @@ Player = function(param){
         pack.direction = self.direction;
         pack.animationDirection = self.animationDirection;
         pack.animation = self.animation;
-        pack.attackTick = self.attackTick;
-        pack.secondTick = self.secondTick;
-        pack.healTick = self.healTick;
-        pack.attackReload = self.attackReload;
-        pack.secondReload = self.secondReload;
-        pack.healReload = self.healReload;
+        pack.attackCost = self.attackCost;
+        pack.secondCost = self.secondCost;
+        pack.healCost = self.healCost;
+        pack.attackCooldown = self.attackCooldown;
+        pack.secondCooldown = self.secondCooldown;
+        pack.healCooldown = self.healCooldown;
         pack.mapWidth = self.mapWidth;
         pack.mapHeight = self.mapHeight;
         pack.stats = self.stats;
@@ -3254,8 +3325,8 @@ Player.onConnect = function(socket,username){
         if(!ENV.Peaceful){
             var pet = Pet({
                 parent:player.id,
-                x:player.x,
-                y:player.y,
+                x:player.x + 128 * (Math.random() - 0.5),
+                y:player.y + 128 * (Math.random() - 0.5),
                 name:'Kiol Lvl.' + player.level,
                 moveSpeed:5 + player.level / 5,
             });
@@ -3461,7 +3532,7 @@ Player.spectate = function(socket){
     }
     for(var i in Projectile.list){
         if(socket && Projectile.list[i].parent === socket.id){
-            delete Projectile.list[i];
+            //delete Projectile.list[i];
         }
     }
     if(!socket){
@@ -3600,6 +3671,22 @@ Npc = function(param){
                 self.x += self.spdX;
                 self.y += self.spdY;
             }
+            if(self.x < self.width / 2){
+                self.x = self.width / 2;
+                self.justCollided = true;
+            }
+            if(self.x > self.mapWidth - self.width / 2){
+                self.x = self.mapWidth - self.width / 2;
+                self.justCollided = true;
+            }
+            if(self.y < self.height / 2){
+                self.y = self.height / 2;
+                self.justCollided = true;
+            }
+            if(self.y > self.mapHeight - self.height / 2){
+                self.y = self.mapHeight - self.height / 2;
+                self.justCollided = true;
+            }
             self.updateCollisions();
         }
         if(self.mapChange === 5){
@@ -3622,18 +3709,6 @@ Npc = function(param){
         if(self.mapChange === 10){
             self.canMove = true;
             self.invincible = false;
-        }
-        if(self.x < self.width / 2){
-            self.x = self.width / 2;
-        }
-        if(self.x > self.mapWidth - self.width / 2){
-            self.x = self.mapWidth - self.width / 2;
-        }
-        if(self.y < self.height / 2){
-            self.y = self.height / 2;
-        }
-        if(self.y > self.mapHeight - self.height / 2){
-            self.y = self.mapHeight - self.height / 2;
         }
         if(self.animation === -1){
             self.animation = 0;
@@ -3839,7 +3914,7 @@ Monster = function(param){
                 }
                 break;
             case "moveBird":
-                self.trackEntity(self.target);
+                self.trackEntity(self.target,128 + 64 * Math.random());
                 self.reload = 0;
                 self.animation = 0;
                 self.attackState = "attackBird";
@@ -3914,7 +3989,7 @@ Monster = function(param){
                 }
                 if(bestSpawner !== undefined){
                     if(self.trackingEntity.id !== bestSpawner.id){
-                        self.trackEntity(bestSpawner);
+                        self.trackEntity(bestSpawner,128);
                     }
                 }
                 if(self.hp > 0.8 * self.hpMax){
@@ -3937,7 +4012,7 @@ Monster = function(param){
                 }
                 break;
             case "moveBall":
-                self.trackEntity(self.target);
+                self.trackEntity(self.target,128 + 64 * Math.random());
                 self.reload = 0;
                 self.animation = 0;
                 self.attackState = "attackBall";
@@ -3994,7 +4069,7 @@ Monster = function(param){
                 }
                 break;
             case "moveCherryBomb":
-                self.trackEntity(self.target);
+                self.trackEntity(self.target,0);
                 self.reload = 0;
                 self.animation = 0;
                 self.attackState = "attackCherryBomb";
@@ -4131,8 +4206,17 @@ Pet = function(param){
     self.name = param.name;
     self.width = 40;
     self.height = 28;
+    self.mana = 0;
+    self.manaMax = 200;
+    self.hp = 1000000;
+    self.hpMax = 1000000;
+    self.stats = {
+        attack:0,
+        defense:1,
+        heal:1,
+    }
     self.canChangeMap = false;
-    self.trackEntity(Player.list[self.parent]);
+    self.trackEntity(Player.list[self.parent],128);
     var lastSelf = {};
 	self.update = function(){
         super_update();
@@ -4161,9 +4245,9 @@ Pet = function(param){
         if(ENV.PVP){
             isFireMap = true;
         }
-        self.reload += 1;
-        if(self.reload > 200 && Player.list[self.parent].isDead === false){
-            if(Player.list[self.parent].hp < Player.list[self.parent].hpMax / 20){
+        self.mana = Math.min(self.mana + 1,self.manaMax);
+        if(self.mana >= 100 && Player.list[self.parent].isDead === false){
+            if(Player.list[self.parent].hp < Player.list[self.parent].hpMax / 3){
                 var heal = 200 * Player.list[self.parent].stats.heal;
                 heal = Math.min(Player.list[self.parent].hpMax - Player.list[self.parent].hp,heal);
                 Player.list[self.parent].hp += heal;
@@ -4180,7 +4264,7 @@ Pet = function(param){
                 for(var i = -18;i < 19;i++){
                     self.shootProjectile(self.parent,'Player',direction + i * 10,direction + i * 10,'sword',0,Player.list[self.parent].stats);
                 }
-                reload = 0;
+                self.mana -= 100;
             }
         }
     }
@@ -4203,6 +4287,14 @@ Pet = function(param){
             pack.name = self.name;
             lastSelf.name = self.name;
         }
+        if(lastSelf.mana !== self.mana){
+            pack.mana = self.mana;
+            lastSelf.mana = self.mana;
+        }
+        if(lastSelf.manaMax !== self.manaMax){
+            pack.manaMax = self.manaMax;
+            lastSelf.manaMax = self.manaMax;
+        }
         return pack;
 	}
     self.getInitPack = function(){
@@ -4212,6 +4304,8 @@ Pet = function(param){
         pack.y = self.y;
         pack.map = self.map;
         pack.name = self.name;
+        pack.mana = self.mana;
+        pack.manaMax = self.manaMax;
         pack.type = self.type;
         return pack;
     }
@@ -5022,6 +5116,16 @@ updateCrashes = function(){
                         Player.list[j].onPush(Player.list[i],20);
                         Player.list[i].onPush(Player.list[j],20);
                     }
+                }
+            }
+        }
+    }
+    for(var i in Pet.list){
+        for(var j in Player.list){
+            if(Pet.list[i] && Player.list[j]){
+                if(Pet.list[i].isColliding(Player.list[j]) && "" + Player.list[j].parent !== i && Pet.list[i].isDead === false && Player.list[j].map === Pet.list[i].map){
+                    Pet.list[i].onPush(Player.list[j],0);
+                    //Player.list[j].onPush(Pet.list[i],0);
                 }
             }
         }

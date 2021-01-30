@@ -21,7 +21,7 @@
         "averageLevel":3,
         "deviation":5,
         "dropChance":0.2,
-        "event":"self.attackReload *= 0.95;self.secondReload *= 0.95;self.healReload *= 0.95;"
+        "event":"self.attackCooldown *= 0.95;self.secondCooldown *= 0.95;self.healCooldown *= 0.95;"
     },
     "range":{
         "name":"Range",
@@ -46,5 +46,13 @@
         "deviation":2,
         "dropChance":0.3,
         "event":"self.pushPower *= 1.5;"
+    },
+    "cost":{
+        "name":"Cost",
+        "maxLevel":50,
+        "averageLevel":3,
+        "deviation":5,
+        "dropChance":0.2,
+        "event":"self.attackCost *= 0.95;self.secondCost *= 0.95;self.healCost *= 0.95;"
     }
 }

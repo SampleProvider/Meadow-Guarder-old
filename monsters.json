@@ -5,17 +5,11 @@
         "width":44,
         "height":40,
         "attackState":"passiveBird",
-        "hp":1,
+        "hp":350,
         "stats":{
             "attack":1,
             "defense":1,
             "heal":0.2
-        },
-        "baseHp":100,
-        "baseStats":{
-            "attack":1,
-            "defense":1,
-            "heal":0
         },
         "moveSpeed":5
     },
@@ -25,17 +19,11 @@
         "width":44,
         "height":40,
         "attackState":"passiveBird",
-        "hp":1,
+        "hp":350,
         "stats":{
             "attack":1,
             "defense":1,
             "heal":0.2
-        },
-        "baseHp":100,
-        "baseStats":{
-            "attack":1,
-            "defense":1,
-            "heal":0
         },
         "moveSpeed":5
     },
@@ -45,16 +33,10 @@
         "width":44,
         "height":44,
         "attackState":"passiveBall",
-        "hp":1,
+        "hp":500,
         "stats":{
             "attack":1,
             "defense":2,
-            "heal":0.2
-        },
-        "baseHp":200,
-        "baseStats":{
-            "attack":1,
-            "defense":1,
             "heal":0
         },
         "moveSpeed":5
@@ -65,16 +47,10 @@
         "width":44,
         "height":44,
         "attackState":"passiveBall",
-        "hp":2,
+        "hp":1000,
         "stats":{
             "attack":1,
             "defense":2,
-            "heal":0
-        },
-        "baseHp":200,
-        "baseStats":{
-            "attack":1,
-            "defense":1,
             "heal":0
         },
         "moveSpeed":10
@@ -85,15 +61,9 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":2,
+        "hp":350,
         "stats":{
             "attack":5,
-            "defense":1,
-            "heal":0.5
-        },
-        "baseHp":300,
-        "baseStats":{
-            "attack":1,
             "defense":1,
             "heal":0
         },
@@ -105,17 +75,11 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":2,
+        "hp":500,
         "stats":{
             "attack":5,
             "defense":1,
             "heal":0.5
-        },
-        "baseHp":300,
-        "baseStats":{
-            "attack":1,
-            "defense":1,
-            "heal":0
         },
         "moveSpeed":15
     }

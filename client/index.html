@@ -63,7 +63,7 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
-							1/24/2020
+							1/24/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							We released 011f7a, which fixes a major security vulnerability.
@@ -75,7 +75,7 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
-							1/9/2020
+							1/9/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							Added Particle Effects.
@@ -89,7 +89,7 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
-							1/6/2020
+							1/6/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							Added Pets. Pets are still very in development, and if you find a bug please post it on our Github Page.
@@ -281,7 +281,7 @@
 							Announcements:
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 20px">
-							1/24:
+							1/24/2021:
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							Thanks to the help of Suvanth, we fixed a major security vulnerability where html tags could be added in chat and could potentially expose player passwords.
@@ -348,9 +348,6 @@
 			<source src="/client/websiteAssets/2003042901_04.mp3" type="audio/mpeg">
 		</audio>
 		<div id="blackShade" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
-		<div id="mainAttack" class="UI-text-light"></div>
-		<div id="secondaryAttack" class="UI-text-light"></div>
-		<div id="heal" class="UI-text-light"></div>
 		<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
 			<div class="death-screen"></div>
 			<button class="respawn" onclick="respawn()">Respawn</button>
@@ -401,10 +398,7 @@
 					</form>
 				</div>
 				<div id="statScreen" class="menuText menuDisplay" style="display: none;">
-					<div id="stat-text" class="UI-text-light">
-						<div id="stat-attack">Attack Power:</div>
-						<div id="stat-defense">Defense Power:</div>
-					</div>
+					<div id="stat-text" class="UI-text-light"></div>
 				</div>
 				<div id="questScreen" class="menuDisplay" style="display: none;">
 					<div id="questName"></div>
@@ -467,9 +461,9 @@
 				<div id="xpBarValue"></div>
 				<div id="xpBarText"></div>
 			</div>
-			<div id="magicBar">
-				<div id="magicBarValue"></div>
-				<div id="magicBarText"></div>
+			<div id="manaBar">
+				<div id="manaBarValue"></div>
+				<div id="manaBarText"></div>
 			</div>
 		</div>
 		<div id="menu" onmouseover="mouseUp(event)">
