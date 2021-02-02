@@ -1640,6 +1640,7 @@ socket.on('spectator',function(data){
     respawnTimer = 15;
     document.getElementById('respawnTimer').innerHTML = respawnTimer;
     document.getElementById('respawn').style.display = 'none';
+    updateRespawn();
 });
 socket.on('changeMap',function(data){
     if(shadeAmount < 0){
@@ -1987,19 +1988,21 @@ setInterval(function(){
         }
     }
     worldMap.restore();
-},1000/80);
-var updateRespawn = function(){
     if(respawnTimer === 0){
         document.getElementById('respawn').style.display = 'inline-block';
     }
     else{
         document.getElementById('respawn').style.display = 'none';
     }
+},1000/80);
+var updateRespawn = function(){
+    if(spectatorDiv.style.display === 'none'){
+        return;
+    }
     document.getElementById('respawnTimer').innerHTML = respawnTimer;
     respawnTimer = Math.max(respawnTimer - 1,0);
-    setTimeout(updateRespawn,(15 - respawnTimer) / 6 * 500 + 1500);
+    setTimeout(updateRespawn,(15 - respawnTimer) / 7.5 * 500 + 1500);
 }
-updateRespawn();
 
 function useMenuDropdown(){
     var dropdowns = document.getElementsByClassName("UI-dropdown-light");
