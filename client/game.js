@@ -1999,8 +1999,8 @@ var updateRespawn = function(){
     if(spectatorDiv.style.display === 'none'){
         return;
     }
-    document.getElementById('respawnTimer').innerHTML = respawnTimer;
     respawnTimer = Math.max(respawnTimer - 1,0);
+    document.getElementById('respawnTimer').innerHTML = respawnTimer;
     setTimeout(updateRespawn,(15 - respawnTimer) / 7.5 * 500 + 1500);
 }
 
