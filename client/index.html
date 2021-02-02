@@ -350,7 +350,8 @@
 		<div id="blackShade" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
 		<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
 			<div class="death-screen"></div>
-			<button class="respawn" onclick="respawn()">Respawn</button>
+			<div id="respawnTimer"></div>
+			<button id="respawn" onclick="respawn()" style="display:none;">Respawn</button>
 		</div>
 		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">Starter House</div>
 		<div id="fps" class="UI-text-light"></div>
@@ -381,12 +382,10 @@
 			</div>
 			<div id="windowMain">
 				<div id="inventoryScreen" class="menuDisplay">
-					<div id="inventoryPlayer" class="UI-text-light">
-						<div id="inventoryPlayerName"></div>
-						<canvas id="inventoryPlayerDisplay"></canvas>
-					</div>
 					<div id="currentEquip"></div>
 					<div id="inventoryItem"></div>
+					<div id="currentEquipHeader" class="UI-display-light">Equipped Items</div>
+					<div id="inventoryItemHeader" class="UI-display-light">Items</div>
 				</div>
 				<div id="debugScreen" class="menuDisplay" style="display: none;">
 					<div id="debug-text" class="UI-text-light">

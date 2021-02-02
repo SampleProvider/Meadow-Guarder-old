@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="10" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="10" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="9" nextobjectid="1">
  <editorsettings>
   <export target="Town Hall.json" format="json"/>
  </editorsettings>
@@ -128,6 +128,27 @@
 0,2122,2122,2122,0,0,2122,2122,2122,0,
 0,0,0,2122,0,0,2122,0,0,0,
 0,0,0,2122,0,0,2122,0,0,0
+</data>
+ </layer>
+ <layer id="8" name="Npc:wizard:Wizard:{&quot;randomWalk&quot;:&quot;wander&quot;,&quot;canChangeMap&quot;:false}:" width="10" height="17" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,1950,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
  <layer id="7" name="The Village:2080:1632:down:" width="10" height="17" visible="0">

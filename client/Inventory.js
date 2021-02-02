@@ -61,6 +61,7 @@ Inventory = function(socket,server){
         materials:[],
         refresh:true,
         spawn:true,
+        select:false,
     };
     self.addItem = function(id,enchantments){
         self.items.push({id:id,enchantments:enchantments || []});
@@ -78,7 +79,12 @@ Inventory = function(socket,server){
                 for(var j in item.enchantments){
                     if(item.enchantments[j].id === enchantment){
                         if(level <= Enchantment.list[enchantment].maxLevel){
-                            item.enchantments[j].level = level;
+                            if(item.enchantments[j].level === level && level + 1 <= Enchantment.list[enchantment].maxLevel){
+                                item.enchantments[j].level = level + 1;
+                            }
+                            else if(item.enchantments[j].level < level){
+                                item.enchantments[j].level = level;
+                            }
                             self.refreshRender();
                             return true;
                         }
@@ -184,6 +190,7 @@ Inventory = function(socket,server){
             let button = document.createElement('button');
             let equip = document.createElement('button');
             let dismantle = document.createElement('button');
+            let select = document.createElement('button');
             let div = document.createElement('div');
             let image = document.createElement('img');
             let enchantments = document.createElement('div');
@@ -192,9 +199,11 @@ Inventory = function(socket,server){
             div.className = "UI-display-light";
             equip.className = "itemEquip";
             dismantle.className = "itemDismantle";
+            select.className = "itemSelect";
             image.className = "item";
             equip.innerHTML = "Equip";
             dismantle.innerHTML = "Dismantle";
+            select.innerHTML = "Select";
             enchantments.className = "UI-text-light";
             var enchantDisplayName = '';
             for(var i in self.items[index].enchantments){
@@ -213,11 +222,18 @@ Inventory = function(socket,server){
                 self.socket.emit("equipItem",index);
                 equip.style.display = 'inline-block';
             }
+            select.onclick = function(){
+                self.socket.emit("selectItem",index);
+                select.style.display = 'inline-block';
+            }
             button.innerHTML = item.name + " ";
             button.style.display = 'inline-block';
             button.style.position = 'relative';
             enchantments.style.position = 'relative';
             enchantments.style.color = '#ffffff';
+            if(!self.select){
+                select.style.display = 'none';
+            }
             div.style.display = 'inline-block';
             div.style.position = 'relative';
             div.style.margin = '0px';
@@ -226,8 +242,41 @@ Inventory = function(socket,server){
             div.appendChild(button);
             div.appendChild(equip);
             div.appendChild(dismantle);
+            div.appendChild(select);
             div.appendChild(enchantments);
+            if(item.displayButtons === undefined){
+                equip.style.display = 'none';
+                dismantle.style.display = 'none';
+                item.displayButtons = false;
+            }
+            else if(item.displayButtons === false){
+                equip.style.display = 'none';
+                dismantle.style.display = 'none';
+            }
+            else{
+                equip.style.display = 'inline-block';
+                dismantle.style.display = 'inline-block';
+            }
+            button.onclick = function(){
+                if(Item.list[data.id].displayButtons === undefined){
+                    equip.style.display = 'inline-block';
+                    dismantle.style.display = 'inline-block';
+                    Item.list[data.id].displayButtons = true;
+                }
+                else if(Item.list[data.id].displayButtons === false){
+                    equip.style.display = 'inline-block';
+                    dismantle.style.display = 'inline-block';
+                    Item.list[data.id].displayButtons = true;
+                }
+                else{
+                    equip.style.display = 'none';
+                    dismantle.style.display = 'none';
+                    Item.list[data.id].displayButtons = false;
+                }
+            }
             button.appendChild(image);
+            var spacing = document.createElement('div');
+            inventory.appendChild(spacing);
         }
         var addEquip = function(data,index){
             if(data.id === undefined){
@@ -273,6 +322,8 @@ Inventory = function(socket,server){
             div.appendChild(unequip);
             div.appendChild(enchantments);
             button.appendChild(image);
+            var spacing = document.createElement('div');
+            currentEquip.appendChild(spacing);
         }
 		for(var i = 0;i < self.items.length;i++){
 			addButton(self.items[i],i);
@@ -323,6 +374,20 @@ Inventory = function(socket,server){
                 self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
                 self.currentEquip[Item.list[item.id].equip] = {};
                 self.refreshRender();
+            }
+            catch(err){
+                console.error(err);
+            }
+        });
+        self.socket.on("selectItem",function(index){
+            try{
+                if(!self.hasItem(index)){
+                    addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item select.');
+                    return;
+                }
+                var item = self.items[index];
+                self.socket.emit('hideInventory');
+                Player.list[self.socket.id].selectedItem = index;
             }
             catch(err){
                 console.error(err);

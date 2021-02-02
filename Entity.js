@@ -807,7 +807,7 @@ Actor = function(param){
     }
     self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false){
-            var damage = Math.round(pt.stats.attack * (strength + Math.random() * strength) / self.stats.defense);
+            var damage = Math.max(Math.round((pt.stats.attack - self.stats.defense) * strength * (1 + Math.random() / 5)),0);
             damage = Math.min(self.hp,damage);
             self.hp -= damage;
             self.onHit(pt);
@@ -1467,10 +1467,14 @@ Player = function(param){
     }
     self.currentResponse = 0;
     self.inventory = new Inventory(socket,true);
+    self.selectedItem = false;
     if(param.param.inventory !== undefined){
         for(var i in param.param.inventory){
             self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].enchantments);
         }
+    }
+    if(self.inventory.items.length === 0){
+        self.inventory.addItem('simplewoodenbow',[])
     }
     if(param.param.currentEquip !== undefined){
         for(var i in param.param.currentEquip){
@@ -1507,17 +1511,8 @@ Player = function(param){
     }
     self.inventory.refreshRender();
     self.stats = {
-        attack:1,
-        defense:1,
-        heal:1,
-        xp:1,
-        luck:1,
-        range:1,
-        speed:1,
-    }
-    self.permStats = {
-        attack:1,
-        defense:1,
+        attack:0,
+        defense:0,
         heal:1,
         xp:1,
         luck:1,
@@ -1620,7 +1615,7 @@ Player = function(param){
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false){
                     self.questStage = 1;
                     self.invincible = true;
@@ -1650,9 +1645,9 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                self.keyPress.attack = false;
+                self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
                     self.questStage = 1;
                     self.invincible = true;
@@ -1695,9 +1690,9 @@ Player = function(param){
                         response3:'Nothing.',
                     });
                 }
-                self.keyPress.attack = false;
+                self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fisherman' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.attack === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fisherman' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === false){
                     self.questStage = 1;
                     self.invincible = true;
@@ -1737,7 +1732,28 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                self.keyPress.attack = false;
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wizard' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === true){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.quest = 'Enchanter';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You seem worthy enough to enchant an item. Do you want me to help you enchant an item?',
+                        response1:'Yes, please.',
+                        response2:'No, I\'m good.',
+                    });
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] This NPC doesn\'t want to talk to you right now.',
+                        debug:false,
+                    });
+                }
+                self.keyPress.second = false;
             }
         }
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
@@ -2302,13 +2318,125 @@ Player = function(param){
             self.currentResponse = 0;
             self.xp += Math.round(5000 * self.stats.xp);
         }
+        
+        if(self.currentResponse === 1 && self.questStage === 1 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Okay, now select an item you want to enchant.',
+                response1:'...',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 1 && self.quest === 'Enchanter'){
+            self.quest = false;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('showInventory');
+            socket.emit('toggleSelect');
+            self.currentResponse = 0;
+        }
+        if(self.selectedItem !== false && self.questStage === 3 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            self.invincible = true;
+            var item = Item.list[self.inventory.items[self.selectedItem].id];
+            if(item.enchantments.length === 0){
+                socket.emit('dialougeLine',{
+                    state:'ask',
+                    message:'This item has no possible enchants. Choose another item.',
+                    response1:'...',
+                });
+                socket.emit('toggleSelect');
+                self.selectedItem = false;
+                self.questStage = 2;
+                self.currentResponse = 0;
+            }
+            else{
+                self.questInfo.enchant1 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
+                self.questInfo.enchant2 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
+                self.questInfo.enchant3 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
+                self.questInfo.enchant4 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
+                socket.emit('dialougeLine',{
+                    state:'ask',
+                    message:'Good, now choose an enchantment.',
+                    response1:Enchantment.list[self.questInfo.enchant1].name + ' I',
+                    response2:Enchantment.list[self.questInfo.enchant2].name + ' I',
+                    response3:Enchantment.list[self.questInfo.enchant3].name + ' I',
+                    response4:Enchantment.list[self.questInfo.enchant4].name + ' II',
+                });
+                socket.emit('toggleSelect');
+                self.currentResponse = 0;
+            }
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant1].name + ' I enchantment!',
+                response1:'Thank you.',
+            });
+            self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant1,1);
+            self.selectedItem = false;
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 4 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant2].name + ' I enchantment!',
+                response1:'Thank you.',
+            });
+            self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant2,1);
+            self.selectedItem = false;
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 3 && self.questStage === 4 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant3].name + ' I enchantment!',
+                response1:'Thank you.',
+            });
+            self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant3,1);
+            self.selectedItem = false;
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 4 && self.questStage === 4 && self.quest === 'Enchanter'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant4].name + ' II enchantment!',
+                response1:'Thank you.',
+            });
+            self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant4,2);
+            self.selectedItem = false;
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Enchanter'){
+            self.quest = false;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
     }
     self.updateStats = function(){
         if(self.inventory.refresh){
             self.inventory.refresh = false;
             self.stats = {
-                attack:1,
-                defense:1,
+                attack:0,
+                defense:0,
                 heal:1,
                 xp:1,
                 luck:1,
@@ -3015,7 +3143,7 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,self.stats);
                                 }
                                 self.stats.speed = speed;
                             }
@@ -4100,14 +4228,14 @@ Monster = function(param){
                 if(self.getSquareDistance(self.target) < 64){
                     if(self.target.mapChange !== undefined){
                         if(self.target.mapChange > 10){
-                            self.stats.defense *= 200;
-                            self.stats.attack *= 200;
+                            self.stats.defense += 2000000;
+                            self.stats.attack += 2000000;
                             self.attackState = 'explodeCherryBomb';
                         }
                     }
                     else{
-                        self.stats.defense *= 200;
-                        self.stats.attack *= 200;
+                        self.stats.defense += 2000000;
+                        self.stats.attack += 2000000;
                         self.attackState = 'explodeCherryBomb';
                     }
                     break;
@@ -5099,11 +5227,11 @@ updateCrashes = function(){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
                     if(ENV.PVP){
-                        Player.list[i].onCollision(Projectile.list[j],50);
+                        Player.list[i].onCollision(Projectile.list[j],1);
                         Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                     }
                     else if(Projectile.list[j].parentType !== 'Player'){
-                        Player.list[i].onCollision(Projectile.list[j],50);
+                        Player.list[i].onCollision(Projectile.list[j],1);
                         Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                     }
                 }
@@ -5113,8 +5241,8 @@ updateCrashes = function(){
             if(Player.list[i] && Player.list[j]){
                 if(Player.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Player.list[i].invincible === false && i !== j){
                     if(ENV.PVP){
-                        Player.list[j].onPush(Player.list[i],20);
-                        Player.list[i].onPush(Player.list[j],20);
+                        Player.list[j].onPush(Player.list[i],0.05);
+                        Player.list[i].onPush(Player.list[j],0.05);
                     }
                 }
             }
@@ -5134,7 +5262,7 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
                 if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
-                    Monster.list[i].onCollision(Projectile.list[j],50);
+                    Monster.list[i].onCollision(Projectile.list[j],1);
                     Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                 }
             }
@@ -5142,8 +5270,8 @@ updateCrashes = function(){
         for(var j in Player.list){
             if(Monster.list[i] && Player.list[j]){
                 if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
-                    Player.list[j].onPush(Monster.list[i],20);
-                    Monster.list[i].onPush(Player.list[j],20);
+                    Player.list[j].onPush(Monster.list[i],0.05);
+                    Monster.list[i].onPush(Player.list[j],0.05);
                 }
             }
         }

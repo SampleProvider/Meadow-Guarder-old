@@ -7,8 +7,8 @@
         "attackState":"passiveBird",
         "hp":350,
         "stats":{
-            "attack":1,
-            "defense":1,
+            "attack":20,
+            "defense":0,
             "heal":0.2
         },
         "moveSpeed":5
@@ -21,8 +21,8 @@
         "attackState":"passiveBird",
         "hp":350,
         "stats":{
-            "attack":1,
-            "defense":1,
+            "attack":20,
+            "defense":0,
             "heal":0.2
         },
         "moveSpeed":5
@@ -64,7 +64,7 @@
         "hp":350,
         "stats":{
             "attack":5,
-            "defense":1,
+            "defense":0,
             "heal":0
         },
         "moveSpeed":15
@@ -78,7 +78,7 @@
         "hp":500,
         "stats":{
             "attack":5,
-            "defense":1,
+            "defense":0,
             "heal":0.5
         },
         "moveSpeed":15
