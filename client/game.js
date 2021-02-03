@@ -1640,7 +1640,7 @@ socket.on('spectator',function(data){
     respawnTimer = 15;
     document.getElementById('respawnTimer').innerHTML = respawnTimer;
     document.getElementById('respawn').style.display = 'none';
-    updateRespawn();
+    setTimeout(updateRespawn,1500);
 });
 socket.on('changeMap',function(data){
     if(shadeAmount < 0){
