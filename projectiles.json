@@ -17,6 +17,24 @@
             "heal":1
         }
     },
+    "stoneArrow":{
+        "width":14,
+        "height":14,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1
+        }
+    },
+    "earthTower":{
+        "width":48,
+        "height":108,
+        "stats":{
+            "attack":5,
+            "defense":1,
+            "heal":1
+        }
+    },
     "ballBullet":{
         "width":42,
         "height":42,

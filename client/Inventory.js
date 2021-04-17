@@ -57,7 +57,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",amount:1}
-        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{},ability:{}},
+        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{}},
         materials:[],
         refresh:true,
         spawn:true,
@@ -111,50 +111,20 @@ Inventory = function(socket,server){
         }
         return false;
     }
-    self.addRandomizedItem = function(luck){
-        var totalChance = 1/luck;
-        for(var i in Item.list){
-            totalChance += Item.list[i].dropChance;
-        }
-        var value = Math.random() * totalChance;
-        for(var i in Item.list){
-            if(value < Item.list[i].dropChance){
-                self.addItem(i,[]);
-                return Item.list[i];
-            }
-            else{
-                value -= Item.list[i].dropChance;
-            }
-        }
-        return false;
-    }
-    self.addRandomizedEnchantments = function(luck){
-        var totalChance = 1/luck;
-        for(var i in Item.list){
-            totalChance += Item.list[i].dropChance;
-        }
-        var value = Math.random() * totalChance;
-        for(var i in Item.list){
-            if(value < Item.list[i].dropChance){
-                var enchantments = [];
-                for(var j in Item.list[i].enchantments){
-                    for(var k in Enchantment.list){
-                        if(k === Item.list[i].enchantments[j]){
-                            var enchantment = Enchantment.list[k];
-                            if(Math.random() < enchantment.dropChance * luck){
-                                enchantments.push({id:k,level:Math.min(Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)),enchantment.maxLevel)});
-                            }
-                        }
+    self.addRandomizedEnchantments = function(i,luck){
+        var enchantments = [];
+        for(var j in Item.list[i].enchantments){
+            for(var k in Enchantment.list){
+                if(k === Item.list[i].enchantments[j]){
+                    var enchantment = Enchantment.list[k];
+                    if(Math.random() < enchantment.dropChance * luck){
+                        enchantments.push({id:k,level:Math.min(Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)),enchantment.maxLevel)});
                     }
                 }
-                self.addItem(i,enchantments);
-                return Item.list[i];
-            }
-            else{
-                value -= Item.list[i].dropChance;
             }
         }
-        return false;
+        self.addItem(i,enchantments);
+        return Item.list[i];
     }
     self.hasItem = function(index){
         if(self.items[index] !== undefined){
@@ -209,6 +179,9 @@ Inventory = function(socket,server){
             for(var i in self.items[index].enchantments){
                 if(enchantDisplayName === ''){
                     enchantDisplayName = 'Enchantments:<br>';
+                }
+                if(enchantName[self.items[index].enchantments[i].level] === undefined){
+                    enchantName[self.items[index].enchantments[i].level] = 'enchantment.level.' + self.items[index].enchantments[i].level;
                 }
                 enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
             }
@@ -299,6 +272,9 @@ Inventory = function(socket,server){
             for(var i in self.currentEquip[index].enchantments){
                 if(enchantDisplayName === ''){
                     enchantDisplayName = 'Enchantments:<br>';
+                }
+                if(enchantName[self.currentEquip[index].enchantments[i].level] === undefined){
+                    enchantName[self.currentEquip[index].enchantments[i].level] = 'enchantment.level.' + self.currentEquip[index].enchantments[i].level;
                 }
                 enchantDisplayName += '' + Enchantment.list[self.currentEquip[index].enchantments[i].id].name + ' ' + enchantName[self.currentEquip[index].enchantments[i].level] + '<br>';
             }
@@ -397,14 +373,13 @@ Inventory = function(socket,server){
 	return self;
 }
 
-Enchantment = function(id,name,maxLevel,averageLevel,deviation,dropChance,event){
+Enchantment = function(id,name,maxLevel,averageLevel,deviation,event){
 	var self = {
 		id:id,
         name:name,
         maxLevel:maxLevel,
         averageLevel:averageLevel,
         deviation:deviation,
-        dropChance:dropChance,
         event:event,
     }
 	Enchantment.list[self.id] = self;
@@ -413,13 +388,12 @@ Enchantment = function(id,name,maxLevel,averageLevel,deviation,dropChance,event)
 
 Enchantment.list = {};
 
-Item = function(id,name,equip,event,dropChance,enchantments){
+Item = function(id,name,equip,event,enchantments){
 	var self = {
 		id:id,
         name:name,
         equip:equip,
         event:event,
-        dropChance:dropChance,
         enchantments:enchantments,
     }
 	Item.list[self.id] = self;
@@ -430,7 +404,7 @@ Item.list = {};
 try{
     var items = require('./item.json');
     for(var i in items){
-        Item(i,items[i].name,items[i].equip,items[i].event,items[i].dropChance,items[i].enchantments);
+        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments);
     }
 }
 catch(err){
@@ -442,7 +416,7 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event,items[i].dropChance,items[i].enchantments);
+                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments);
             }
         }
         else{
@@ -459,7 +433,7 @@ catch(err){
 try{
     var enchantments = require('./enchantment.json');
     for(var i in enchantments){
-        Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].dropChance,enchantments[i].event);
+        Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].event);
     }
 }
 catch(err){
@@ -471,7 +445,7 @@ catch(err){
             // Success!
             var enchantments = JSON.parse(this.response);
             for(var i in enchantments){
-                Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].dropChance,enchantments[i].event);
+                Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].event);
             }
         }
         else{

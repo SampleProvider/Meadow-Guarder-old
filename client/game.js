@@ -272,9 +272,9 @@ worldMap.canvas.height = 1130;
 settingsPlayerDisplay.canvas.width = 10;
 settingsPlayerDisplay.canvas.height = 17;
 var resetCanvas = function(ctx){
-ctx.webkitImageSmoothingEnabled = false;
-ctx.filter = 'url(#remove-alpha)';
-ctx.imageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.filter = 'url(#remove-alpha)';
+    ctx.imageSmoothingEnabled = false;
 }
 resetCanvas(ctx0);
 resetCanvas(ctx1);
@@ -493,16 +493,6 @@ Img.healthBarEnemy = new Image();
 Img.healthBarEnemy.src = '/client/img/healthBarEnemy.png';
 Img.manaBar = new Image();
 Img.manaBar.src = '/client/img/manaBar.png';
-Img.ninjaStar = new Image();
-Img.ninjaStar.src = '/client/img/ninjaStar.png';
-Img.playerBullet = new Image();
-Img.playerBullet.src = '/client/img/playerBullet.png';
-Img.ballBullet = new Image();
-Img.ballBullet.src = '/client/img/ballBullet.png';
-Img.fireBullet = new Image();
-Img.fireBullet.src = '/client/img/fireBullet.png';
-Img.sword = new Image();
-Img.sword.src = '/client/img/sword.png';
 var mouseX = 0;
 var mouseY = 0;
 var mapMouseX = mouseX + WIDTH / 2;
@@ -1008,6 +998,7 @@ var Projectile = function(initPack){
     self.spdY = initPack.spdY;
     self.direction = initPack.direction;
     self.projectileType = initPack.projectileType;
+    self.canCollide = initPack.canCollide;
     self.type = initPack.type;
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
@@ -1050,7 +1041,9 @@ var Projectile = function(initPack){
     self.draw = function(){
         ctx0.translate(self.x,self.y);
         ctx0.rotate(self.direction * Math.PI / 180);
-        ctx0.drawImage(Img[self.projectileType],-24,-24);
+        var img = new Image();
+        img.src = '/client/img/' + self.projectileType + '.png';
+        ctx0.drawImage(img,-24,-24);
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
@@ -1489,7 +1482,6 @@ socket.on('update',function(data){
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
                     if(data.monster[i].hp !== undefined){
                         Monster.list[data.monster[i].id].hp = data.monster[i].hp;
-                        console.log(Monster.list[data.monster[i].id].moveX);
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;

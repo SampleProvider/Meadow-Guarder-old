@@ -16,7 +16,7 @@ colors.setTheme({
     error: 'red'
 });
 var express = require('express');
-const { setInterval } = require('timers');
+const {setInterval} = require('timers');
 var app = express();
 var serv = require('http').Server(app);
 require('./Database');

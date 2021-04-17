@@ -9,9 +9,21 @@
         "stats":{
             "attack":20,
             "defense":0,
-            "heal":0.2
+            "heal":0
         },
-        "moveSpeed":5
+        "moveSpeed":5,
+        "itemDrops":{
+            "simplewoodenbow":0.1,
+            "simplesteelbow":0.05,
+            "simpledarksteelbow":0.01,
+            "simplegoldenbow":0.005,
+            "simplerubybow":0.001,
+            "advancedwoodenbow":0.01,
+            "advancedsteelbow":0.005,
+            "advanceddarksteelbow":0.001,
+            "advancedgoldenbow":0.0005,
+            "advancedrubybow":0.0001
+        }
     },
     "greenBird":{
         "spawnChance":0.5,
@@ -23,9 +35,21 @@
         "stats":{
             "attack":20,
             "defense":0,
-            "heal":0.2
+            "heal":0
         },
-        "moveSpeed":5
+        "moveSpeed":5,
+        "itemDrops":{
+            "simplewoodenbow":0.1,
+            "simplesteelbow":0.05,
+            "simpledarksteelbow":0.01,
+            "simplegoldenbow":0.005,
+            "simplerubybow":0.001,
+            "advancedwoodenbow":0.01,
+            "advancedsteelbow":0.005,
+            "advanceddarksteelbow":0.001,
+            "advancedgoldenbow":0.0005,
+            "advancedrubybow":0.0001
+        }
     },
     "blueBall":{
         "spawnChance":0.1,
@@ -35,11 +59,29 @@
         "attackState":"passiveBall",
         "hp":500,
         "stats":{
-            "attack":1,
+            "attack":50,
             "defense":2,
             "heal":0
         },
-        "moveSpeed":5
+        "moveSpeed":5,
+        "itemDrops":{
+            "simplewoodenhelmet":0.1,
+            "simplesteelhelmet":0.05,
+            "simpledarksteelhelmet":0.01,
+            "simplegoldenhelmet":0.005,
+            "simplerubyhelmet":0.001,
+            "woodenarmor":0.1,
+            "steelarmor":0.05,
+            "darksteelarmor":0.01,
+            "goldenarmor":0.005,
+            "rubyarmor":0.001,
+            "earthbook1":0.1,
+            "earthbook2":0.05,
+            "earthbook3":0.01,
+            "earthbook4":0.005,
+            "earthbook5":0.001,
+            "earthbook6":0.0005
+        }
     },
     "snowBall":{
         "spawnChance":0.05,
@@ -49,11 +91,24 @@
         "attackState":"passiveBall",
         "hp":1000,
         "stats":{
-            "attack":1,
+            "attack":200,
             "defense":2,
             "heal":0
         },
-        "moveSpeed":10
+        "moveSpeed":10,
+        "itemDrops":{
+            "simplewoodenhelmet":0.1,
+            "simplesteelhelmet":0.05,
+            "simpledarksteelhelmet":0.01,
+            "simplegoldenhelmet":0.005,
+            "simplerubyhelmet":0.001,
+            "woodenarmor":0.1,
+            "steelarmor":0.05,
+            "darksteelarmor":0.01,
+            "goldenarmor":0.005,
+            "rubyarmor":0.001,
+            "candycane":0.5
+        }
     },
     "redCherryBomb":{
         "spawnChance":0.05,
@@ -63,11 +118,19 @@
         "attackState":"passiveCherryBomb",
         "hp":350,
         "stats":{
-            "attack":5,
+            "attack":5000,
             "defense":0,
             "heal":0
         },
-        "moveSpeed":15
+        "moveSpeed":15,
+        "itemDrops":{
+            "firebook1":0.1,
+            "firebook2":0.05,
+            "firebook3":0.01,
+            "firebook4":0.005,
+            "firebook5":0.001,
+            "firebook6":0.0005
+        }
     },
     "blueCherryBomb":{
         "spawnChance":0.05,
@@ -77,10 +140,16 @@
         "attackState":"passiveCherryBomb",
         "hp":500,
         "stats":{
-            "attack":5,
+            "attack":5000,
             "defense":0,
-            "heal":0.5
+            "heal":0
         },
-        "moveSpeed":15
+        "moveSpeed":15,
+        "itemDrops":{
+            "bronzekey":0.1,
+            "silverkey":0.05,
+            "goldenkey":0.01,
+            "knowledgebook":0.05
+        }
     }
 }

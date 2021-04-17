@@ -194,6 +194,7 @@ var spawnMonster = function(spawner,spawnId){
                 width:monsterData[i].width,
                 height:monsterData[i].height,
                 xpGain:monsterData[i].xpGain,
+                itemDrops:monsterData[i].itemDrops,
                 onDeath:function(pt){
                     pt.toRemove = true;
                     if(pt.spawnId){
@@ -806,9 +807,9 @@ Actor = function(param){
     self.onHit = function(pt){
     }
     self.onCollision = function(pt,strength){
-        if(!self.invincible && pt.toRemove === false){
+        if(!self.invincible && pt.toRemove === false && self.isDead === false){
             var damage = Math.max(Math.round((pt.stats.attack - self.stats.defense) * strength * (1 + Math.random() / 5)),0);
-            damage = Math.min(self.hp,damage);
+            //damage = Math.min(self.hp,damage);
             self.hp -= damage;
             self.onHit(pt);
             if(damage){
@@ -824,17 +825,35 @@ Actor = function(param){
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
             if(pt.parentType === 'Player' && self.type === 'Monster'){
                 if(Player.list[pt.parent].isDead === false){
-                    var item = Player.list[pt.parent].inventory.addRandomizedEnchantments(Player.list[pt.parent].stats.luck);
-                    if(item){
-                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + item.name + ".");
+                    if(self.itemDrops === {}){
+                        
+                    }
+                    else{
+                        for(var i in self.itemDrops){
+                            if(self.itemDrops[i] > Math.random()){
+                                var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
+                                Player.list[pt.parent].inventory.addRandomizedEnchantments(Player.list[pt.parent].inventory.items[itemIndex].id,Player.list[pt.parent].stats.luck);
+                                var item = Player.list[pt.parent].inventory.items[itemIndex];
+                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
+                            }
+                        }
                     }
                     Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
                 }
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
-                var item = pt.inventory.addRandomizedEnchantments(pt.stats.luck);
-                if(item){
-                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + item.name + ".");
+                if(self.itemDrops === {}){
+                        
+                }
+                else{
+                    for(var i in self.itemDrops){
+                        if(self.itemDrops[i] > Math.random()){
+                            var itemIndex = pt.inventory.addItem(i,[]);
+                            pt.inventory.addRandomizedEnchantments(pt.inventory.items[itemIndex].id,pt.stats.luck);
+                            var item = pt.inventory.items[itemIndex];
+                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                        }
+                    }
                 }
                 pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
             }
@@ -842,7 +861,7 @@ Actor = function(param){
             self.toRemove = true;
         }
     }
-    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,stats){
+    self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,spin,stats,projectilePattern){
         var projectileWidth = 0;
         var projectileHeight = 0;
         for(var i in projectileData){
@@ -864,6 +883,8 @@ Actor = function(param){
             mapHeight:self.mapHeight,
             width:projectileWidth,
             height:projectileHeight,
+            spin:spin,
+            projectilePattern:projectilePattern,
             stats:stats,
             onCollision:function(self,pt){
                 self.toRemove = true;
@@ -1394,6 +1415,7 @@ Player = function(param){
     self.mana = 0;
     self.manaMax = 200;
     self.manaRefresh = 0;
+    self.manaRegen = 1;
     self.xp = 0;
     self.xpMax = 100;
     self.level = 0;
@@ -1450,9 +1472,9 @@ Player = function(param){
         second:'second',
         heal:'Shift',
     };
-    self.attackCost = 20;
-    self.secondCost = 100;
-    self.healCost = 200;
+    self.attackCost = 10;
+    self.secondCost = 50;
+    self.healCost = 100;
     self.attackCooldown = 5;
     self.secondCooldown = 5;
     self.healCooldown = 5;
@@ -1478,7 +1500,12 @@ Player = function(param){
     }
     if(param.param.currentEquip !== undefined){
         for(var i in param.param.currentEquip){
-            self.inventory.currentEquip[i] = param.param.currentEquip[i];
+            if(self.inventory.currentEquip[i] === undefined){
+                self.inventory.addItem(param.param.currentEquip[i].id,param.param.currentEquip[i].enchantments);
+            }
+            else{
+                self.inventory.currentEquip[i] = param.param.currentEquip[i];
+            }
         }
     }
     if(param.param.xp !== undefined){
@@ -1563,9 +1590,9 @@ Player = function(param){
         self.manaRefresh = Math.max(self.manaRefresh - 1,-10);
         if(!self.invincible && self.isDead === false){
             if(self.manaRefresh <= -10){
-                self.mana += 2;
+                self.mana += 2 * self.manaRegen;
             }
-            self.mana += 0.1;
+            self.mana += 0.1 * self.manaRegen;
         }
         if(Math.round(self.mana) >= self.manaMax){
             self.mana = self.manaMax;
@@ -1598,10 +1625,10 @@ Player = function(param){
                 }
             }
         }
+        self.updateQuest();
         if(!self.invincible && self.isDead === false){
             self.updateAttack();
         }
-        self.updateQuest();
         self.updateMap();
         self.updateStats();
         self.updateXp();
@@ -2448,6 +2475,11 @@ Player = function(param){
             self.attackCost = 20;
             self.secondCost = 100;
             self.healCost = 200;
+            self.attackCooldown = 5;
+            self.secondCooldown = 5;
+            self.healCooldown = 5;
+            self.manaRegen = 1;
+            self.maxMana = 200;
             self.ability = {
                 attackAbility:'baseAttack',
                 secondAbility:'baseSecond',
@@ -2655,6 +2687,20 @@ Player = function(param){
                                 });
                             }
                             break;
+                        case "bowHeal1":
+                            var heal = 100 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
                         case "earthHeal1":
                             var heal = 110 * self.stats.heal;
                             heal = Math.min(self.hpMax - self.hp,heal);
@@ -2712,7 +2758,7 @@ Player = function(param){
                             }
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,function(t){return 25},self.stats);
                                 }
                             }
                             break;
@@ -2731,7 +2777,7 @@ Player = function(param){
                             }
                             if(isFireMap){
                                 for(var j = 0;j < 15;j++){
-                                    self.shootProjectile(self.id,'Player',j * 24,j * 24,'playerBullet',0,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 24,j * 24,'playerBullet',0,function(t){return 25},self.stats);
                                 }
                             }
                             break;
@@ -2821,321 +2867,633 @@ Player = function(param){
                             break;
                         case "baseAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
+                            }
+                            break;
+                        case "bowAttack1":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
                             }
                             break;
                         case "earthAttack1":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction - 5,self.direction - 5,'playerBullet',0,self.stats);
-                                self.shootProjectile(self.id,'Player',self.direction + 5,self.direction + 5,'playerBullet',0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                             }
                             break;
                         case "earthAttack2":
                             if(isFireMap){
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'playerBullet',0,self.stats);
+                                for(var j = 0;j < 2;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                             }
                             break;
                         case "earthAttack3":
                             if(isFireMap){
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'playerBullet',0,self.stats);
+                                for(var j = 0;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                             }
                             break;
                         case "earthAttack4":
                             if(isFireMap){
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'playerBullet',0,self.stats);
+                                for(var j = 0;j < 5;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                }
+                            }
+                            break;
+                        case "earthAttack5":
+                            if(isFireMap){
+                                for(var j = 0;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                }
+                                for(var j = 0;j < 6;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'playerBullet',100,function(t){return 0},self.stats,'spinAroundPoint');
+                                }
+                            }
+                            break;
+                        case "earthAttack6":
+                            if(isFireMap){
+                                for(var j = 0;j < 5;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',100,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                             }
                             break;
                         case "fireAttack1":
                             if(isFireMap){
                                 for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "fireAttack2":
                             if(isFireMap){
                                 for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "fireAttack3":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "fireAttack4":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "fireAttack5":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "fireAttack6":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 90,self.direction + j * 10 + 90,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 90,self.direction + j * 10 + 90,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 270,self.direction + j * 10 + 270,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 270,self.direction + j * 10 + 270,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "baseSecond":
                             if(isFireMap){
+                                for(var j = 0;j < 5;j++){
+                                    self.shootProjectile(self.id,'Player',j * 72,j * 72,'stoneArrow',0,function(t){return 0},self.stats);
+                                }
+                            }
+                            break;
+                        case "bowSecond1":
+                            if(isFireMap){
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'stoneArrow',0,function(t){return 0},self.stats);
                                 }
                             }
                             break;
                         case "earthSecond1":
-                            if(isFireMap && Collision3.list["" + self.map + ":" + Math.floor(self.mouseX / 64) * 64 + 32 + ":" + Math.floor(self.mouseY / 64) * 64 + 32 + ":"] === undefined){
-                                var tile = Collision3({
-                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
-                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
-                                    width:64,
-                                    height:64,
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'earthTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'earthTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
                                     map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
                                 });
-                                var tile_idx = Math.round(56.5 + Math.random() * 3);
-                                tile.tile_idx = tile_idx;
-                                tiles.push({
-                                    x:Math.floor(self.mouseX / 64) * 64,
-                                    y:Math.floor(self.mouseY / 64) * 64,
-                                    map:self.map,
-                                    tile_idx:tile_idx,
-                                    canvas:'lower',
-                                    parent:self.id,
-                                });
-                                for(var j in SOCKET_LIST){
-                                    SOCKET_LIST[j].emit('drawTile',{
-                                        x:Math.floor(self.mouseX / 64) * 64,
-                                        y:Math.floor(self.mouseY / 64) * 64,
-                                        map:self.map,
-                                        tile_idx:tile_idx,
-                                        canvas:'lower',
-                                    });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                for(var j = 0;j < 2;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                                 setTimeout(function(){
-                                    var newTiles = [];
-                                    for(var j in tiles){
-                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map && tiles[j].tile_idx === tile.tile_idx){
-                                            
-                                        }
-                                        else{
-                                            newTiles.push(tiles[j]);
-                                        }
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 2;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    tiles = newTiles;
-                                    for(var j in SOCKET_LIST){
-                                        SOCKET_LIST[j].emit('removeTile',{
-                                            x:tile.x - 32,
-                                            y:tile.y - 32,
-                                            map:tile.map,
-                                            tile_idx:tile.tile_idx,
-                                            canvas:'lower',
-                                        });
-                                    }
-                                    delete Collision3.list[tile.id];
-                                },5000);
+                                    self.x = x;
+                                    self.y = y;
+                                },250);
+                                self.x = x;
+                                self.y = y;
                             }
                             break;
                         case "earthSecond2":
-                            if(isFireMap && Collision3.list["" + self.map + ":" + Math.floor(self.mouseX / 64) * 64 + 32 + ":" + Math.floor(self.mouseY / 64) * 64 + 32 + ":"] === undefined){
-                                var tile = Collision3({
-                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
-                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
-                                    width:64,
-                                    height:64,
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'earthTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'earthTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
                                     map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
                                 });
-                                var tile_idx = Math.round(56.5 + Math.random() * 3);
-                                tile.tile_idx = tile_idx;
-                                tiles.push({
-                                    x:Math.floor(self.mouseX / 64) * 64,
-                                    y:Math.floor(self.mouseY / 64) * 64,
-                                    map:self.map,
-                                    tile_idx:tile_idx,
-                                    canvas:'lower',
-                                    parent:self.id,
-                                });
-                                for(var j in SOCKET_LIST){
-                                    SOCKET_LIST[j].emit('drawTile',{
-                                        x:Math.floor(self.mouseX / 64) * 64,
-                                        y:Math.floor(self.mouseY / 64) * 64,
-                                        map:self.map,
-                                        tile_idx:tile_idx,
-                                        canvas:'lower',
-                                    });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                for(var j = 0;j < 2;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                                 setTimeout(function(){
-                                    var newTiles = [];
-                                    for(var j in tiles){
-                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map && tiles[j].tile_idx === tile.tile_idx){
-                                            
-                                        }
-                                        else{
-                                            newTiles.push(tiles[j]);
-                                        }
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 2;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    tiles = newTiles;
-                                    for(var j in SOCKET_LIST){
-                                        SOCKET_LIST[j].emit('removeTile',{
-                                            x:tile.x - 32,
-                                            y:tile.y - 32,
-                                            map:tile.map,
-                                            tile_idx:tile.tile_idx,
-                                            canvas:'lower',
-                                        });
+                                    self.x = x;
+                                    self.y = y;
+                                },250);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 2;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    delete Collision3.list[tile.id];
-                                },10000);
+                                    self.x = x;
+                                    self.y = y;
+                                },500);
+                                self.x = x;
+                                self.y = y;
                             }
                             break;
                         case "earthSecond3":
-                            if(isFireMap && Collision3.list["" + self.map + ":" + Math.floor(self.mouseX / 64) * 64 + 32 + ":" + Math.floor(self.mouseY / 64) * 64 + 32 + ":"] === undefined){
-                                var tile = Collision3({
-                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
-                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
-                                    width:64,
-                                    height:64,
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'earthTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'earthTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
                                     map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
                                 });
-                                var tile_idx = Math.round(56.5 + Math.random() * 3);
-                                tile.tile_idx = tile_idx;
-                                tiles.push({
-                                    x:Math.floor(self.mouseX / 64) * 64,
-                                    y:Math.floor(self.mouseY / 64) * 64,
-                                    map:self.map,
-                                    tile_idx:tile_idx,
-                                    canvas:'lower',
-                                    parent:self.id,
-                                });
-                                for(var j in SOCKET_LIST){
-                                    SOCKET_LIST[j].emit('drawTile',{
-                                        x:Math.floor(self.mouseX / 64) * 64,
-                                        y:Math.floor(self.mouseY / 64) * 64,
-                                        map:self.map,
-                                        tile_idx:tile_idx,
-                                        canvas:'lower',
-                                    });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                                 setTimeout(function(){
-                                    var newTiles = [];
-                                    for(var j in tiles){
-                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map && tiles[j].tile_idx === tile.tile_idx){
-                                            
-                                        }
-                                        else{
-                                            newTiles.push(tiles[j]);
-                                        }
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    tiles = newTiles;
-                                    for(var j in SOCKET_LIST){
-                                        SOCKET_LIST[j].emit('removeTile',{
-                                            x:tile.x - 32,
-                                            y:tile.y - 32,
-                                            map:tile.map,
-                                            tile_idx:tile.tile_idx,
-                                            canvas:'lower',
-                                        });
+                                    self.x = x;
+                                    self.y = y;
+                                },250);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    delete Collision3.list[tile.id];
-                                },20000);
+                                    self.x = x;
+                                    self.y = y;
+                                },500);
+                                self.x = x;
+                                self.y = y;
                             }
                             break;
                         case "earthSecond4":
-                            if(isFireMap && Collision3.list["" + self.map + ":" + Math.floor(self.mouseX / 64) * 64 + 32 + ":" + Math.floor(self.mouseY / 64) * 64 + 32 + ":"] === undefined){
-                                var tile = Collision3({
-                                    x:Math.floor(self.mouseX / 64) * 64 + 32,
-                                    y:Math.floor(self.mouseY / 64) * 64 + 32,
-                                    width:64,
-                                    height:64,
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var range = self.stats.range;
+                                self.stats.range = 1.5;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'earthTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'earthTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
                                     map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
                                 });
-                                var tile_idx = Math.round(56.5 + Math.random() * 3);
-                                tile.tile_idx = tile_idx;
-                                tiles.push({
-                                    x:Math.floor(self.mouseX / 64) * 64,
-                                    y:Math.floor(self.mouseY / 64) * 64,
-                                    map:self.map,
-                                    tile_idx:tile_idx,
-                                    canvas:'lower',
-                                    parent:self.id,
-                                });
-                                for(var j in SOCKET_LIST){
-                                    SOCKET_LIST[j].emit('drawTile',{
-                                        x:Math.floor(self.mouseX / 64) * 64,
-                                        y:Math.floor(self.mouseY / 64) * 64,
-                                        map:self.map,
-                                        tile_idx:tile_idx,
-                                        canvas:'lower',
-                                    });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                                 setTimeout(function(){
-                                    var newTiles = [];
-                                    for(var j in tiles){
-                                        if(tiles[j].x === tile.x && tiles[j].y === tile.y && tiles[j].map === tile.map && tiles[j].tile_idx === tile.tile_idx){
-                                            
-                                        }
-                                        else{
-                                            newTiles.push(tiles[j]);
-                                        }
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    tiles = newTiles;
-                                    for(var j in SOCKET_LIST){
-                                        SOCKET_LIST[j].emit('removeTile',{
-                                            x:tile.x - 32,
-                                            y:tile.y - 32,
-                                            map:tile.map,
-                                            tile_idx:tile.tile_idx,
-                                            canvas:'lower',
-                                        });
+                                    self.x = x;
+                                    self.y = y;
+                                },250);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
-                                    delete Collision3.list[tile.id];
-                                },20000);
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,self.stats);
+                                    self.x = x;
+                                    self.y = y;
+                                },500);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },750);
+                                self.x = x;
+                                self.y = y;
+                            }
+                            break;
+                        case "earthSecond5":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var range = self.stats.range;
+                                self.stats.range = 2;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'earthTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
                                 }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'earthTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
+                                    map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
+                                });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                }
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },250);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },500);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },750);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },1000);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },1250);
+                                self.x = x;
+                                self.y = y;
+                            }
+                            break;
+                        case "earthSecond6":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var range = self.stats.range;
+                                self.stats.range = 2.5;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'earthTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'earthTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
+                                    map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
+                                });
+                                self.stats.speed = speed;
+                                self.stats.range = range;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                }
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },250);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },500);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },750);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },1000);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },1250);
+                                setTimeout(function(){
+                                    var x = self.x;
+                                    var y = self.y;
+                                    self.x = mouseX;
+                                    self.y = mouseY;
+                                    for(var j = 0;j < 10;j++){
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    }
+                                    self.x = x;
+                                    self.y = y;
+                                },1500);
+                                self.x = x;
+                                self.y = y;
                             }
                             break;
                         case "fireSecond1":
@@ -3143,7 +3501,7 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
                             }
@@ -3153,7 +3511,7 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
                             }
@@ -3163,10 +3521,10 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,function(t){return 25},self.stats,'stationary');
                                 }
                                 for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',j * 72 + 36,j * 72 + 36,'fireBullet',64,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 72 + 36,j * 72 + 36,'fireBullet',64,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
                             }
@@ -3176,10 +3534,10 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},self.stats,'stationary');
                                 }
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
                             }
@@ -3189,14 +3547,14 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},self.stats);
                                 }
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},self.stats);
                                 }
                                 self.stats.speed = speed;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
@@ -3205,14 +3563,14 @@ Player = function(param){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
                                 for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},self.stats);
                                 }
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},self.stats);
                                 }
                                 self.stats.speed = speed;
                                 for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',-20,self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
                             }
                             break;
@@ -3696,6 +4054,18 @@ Player.onDisconnect = function(socket){
             if(tiles[i].parent !== socket.id){
                 newTiles.push(tiles[i]);
             }
+            else{
+                for(var j in SOCKET_LIST){
+                    console.log(tiles);
+                    SOCKET_LIST[j].emit('removeTile',{
+                        x:tiles[i].x,
+                        y:tiles[i].y,
+                        map:tiles[i].map,
+                        tile_idx:tiles[i].tile_idx,
+                        canvas:tiles[i].canvas,
+                    });
+                }
+            }
         }
         tiles = newTiles;
         addToChat('style="color: #ff0000">',Player.list[socket.id].displayName + " logged off.");
@@ -3970,6 +4340,7 @@ Monster = function(param){
     }
     self.animation = 0;
     self.animate = false;
+    self.itemDrops = param.itemDrops;
     self.healReload = 0;
     self.canChangeMap = false;
     self.damaged = false;
@@ -4070,10 +4441,10 @@ Monster = function(param){
                     break;
                 }
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,function(t){return 25},self.stats);
                 }
                 if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,function(t){return 25},self.stats);
                 }
                 self.reload += 1;
                 if(self.hp < 0.5 * self.hpMax){
@@ -4173,7 +4544,7 @@ Monster = function(param){
                         self.animation = 0;
                     }
                     for(var i = 0;i < 4;i++){
-                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'ballBullet',-20,self.stats);
+                        self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'ballBullet',-20,function(t){return 25},self.stats);
                     }
                 }
                 self.reload += 1;
@@ -4340,7 +4711,7 @@ Pet = function(param){
     self.hpMax = 1000000;
     self.stats = {
         attack:0,
-        defense:1,
+        defense:0,
         heal:1,
     }
     self.canChangeMap = false;
@@ -4390,7 +4761,7 @@ Pet = function(param){
                 }
                 var direction = (Math.atan2(Player.list[self.parent].mouseY - self.y,Player.list[self.parent].mouseX - self.x) / Math.PI * 180);
                 for(var i = -18;i < 19;i++){
-                    self.shootProjectile(self.parent,'Player',direction + i * 10,direction + i * 10,'sword',0,Player.list[self.parent].stats);
+                    self.shootProjectile(self.parent,'Player',direction + i * 10,direction + i * 10,'sword',0,function(t){return 0},Player.list[self.parent].stats);
                 }
                 self.mana -= 100;
             }
@@ -4466,6 +4837,25 @@ Projectile = function(param){
     self.parentType = param.parentType;
     self.projectileType = param.projectileType;
     self.onCollision = param.onCollision;
+    self.canCollide = true;
+    if(param.projectilePattern === 'followPlayerStationary'){
+        self.distanceFromParentX = Player.list[self.parent].x - self.x;
+        self.distanceFromParentY = Player.list[self.parent].y - self.y;
+        self.spdX = 0;
+        self.spdY = 0;
+    }
+    if(param.projectilePattern === 'spinAroundPoint'){
+        self.canCollide = false;
+        self.parentStartX = Player.list[self.parent].x;
+        self.parentStartY = Player.list[self.parent].y;
+        self.spdX = 0;
+        self.spdY = 0;
+    }
+    if(param.projectilePattern === 'stationary'){
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
+    }
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -4497,11 +4887,25 @@ Projectile = function(param){
             self.y = self.mapHeight - self.height / 2;
             self.toRemove = true;
         }
-        self.direction += 25;
+        if(param.projectilePattern === 'followPlayerStationary'){
+            self.x = Player.list[self.parent].x - self.distanceFromParentX;
+            self.y = Player.list[self.parent].y - self.distanceFromParentY;
+        }
+        else if(param.projectilePattern === 'spinAroundPoint'){
+            var angle = Math.atan2(self.y - self.parentStartY,self.x - self.parentStartX);
+            self.x += -Math.sin(angle) * param.stats.speed * 25;
+            self.y += Math.cos(angle) * param.stats.speed * 25;
+            self.timer -= 0.5;
+        }
+        else{
+            if(param.spin !== undefined){
+                self.direction += param.spin(self.timer);
+            }
+        }
         self.updateCollisions();
     }
     self.updateCollisions = function(){
-        if(self.spdX === 0 && self.spdY === 0){
+        if(self.canCollide === false){
             return;
         }
         var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
@@ -4624,6 +5028,7 @@ Projectile = function(param){
         pack.map = self.map;
         pack.type = self.type;
         pack.projectileType = self.projectileType;
+        pack.canCollide = pack.canCollide;
         pack.direction = self.direction;
         return pack;
     }
