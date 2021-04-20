@@ -842,7 +842,7 @@ audio {
     left: 0px;
     top: 0px;
     background-image: url("./maps/Preview.png");
-    background-size: contain;
+    background-size: 100%, 100%;
 }
 #pageShade {
     position: absolute;

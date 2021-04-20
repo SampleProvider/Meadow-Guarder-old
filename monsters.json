@@ -146,6 +146,8 @@
         },
         "moveSpeed":15,
         "itemDrops":{
+            "waterbook1":0.1,
+            "waterbook2":0.05,
             "bronzekey":0.1,
             "silverkey":0.05,
             "goldenkey":0.01,

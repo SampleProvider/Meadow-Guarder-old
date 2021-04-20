@@ -996,6 +996,8 @@ var Projectile = function(initPack){
     self.moveY = 0;
     self.spdX = initPack.spdX;
     self.spdY = initPack.spdY;
+    self.width = initPack.width;
+    self.height = initPack.height;
     self.direction = initPack.direction;
     self.projectileType = initPack.projectileType;
     self.canCollide = initPack.canCollide;
@@ -1043,7 +1045,7 @@ var Projectile = function(initPack){
         ctx0.rotate(self.direction * Math.PI / 180);
         var img = new Image();
         img.src = '/client/img/' + self.projectileType + '.png';
-        ctx0.drawImage(img,-24,-24);
+        ctx0.drawImage(img,-self.width / 2,-self.height / 2);
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
@@ -1189,6 +1191,9 @@ var Npc = function(initPack){
         }
     }
     self.draw = function(){
+        if(self.map !== Player.list[selfId].map){
+            return;
+        }
         self.animation = Math.round(self.animation);
         drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
     }
@@ -1453,6 +1458,12 @@ socket.on('update',function(data){
                     Projectile.list[data.projectile[i].id].moveY = (Projectile.list[data.projectile[i].id].nextY - Projectile.list[data.projectile[i].id].y) / 4;
                     if(data.projectile[i].map !== undefined){
                         Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
+                    }
+                    if(data.projectile[i].width !== undefined){
+                        Projectile.list[data.projectile[i].id].width = data.projectile[i].width;
+                    }
+                    if(data.projectile[i].height !== undefined){
+                        Projectile.list[data.projectile[i].id].height = data.projectile[i].height;
                     }
                     if(data.projectile[i].projectileType !== undefined){
                         Projectile.list[data.projectile[i].id].projectileType = data.projectile[i].projectileType;
@@ -2164,6 +2175,11 @@ document.querySelectorAll("button").forEach(function(item){
         this.blur();
     });
 });
+window.onresize = function(){
+    document.getElementById('pageDiv').style.backgroundSize = window.innerWidth + 'px,' + window.innerHeight + 'px';
+    document.getElementById('pageDiv').style.width = window.innerWidth + 'px';
+    document.getElementById('pageDiv').style.height = window.innerHeight + 'px';
+}
 document.oncontextmenu = function(event){
     event.preventDefault();
 }

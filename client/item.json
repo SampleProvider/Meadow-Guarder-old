@@ -98,13 +98,13 @@
     "developerkey":{
         "name":"Developer Key",
         "equip":"key",
-        "event":"self.textColor = '#0090ff';self.manaRegen *= 2000;",
+        "event":"self.textColor = '#0090ff';self.manaRegen *= 2000;self.attackCooldown = 1;self.secondCooldown = 1;self.healCooldown = 1;",
         "enchantments":["unlocking"]
     },
     "spkey":{
         "name":"SP Key",
         "equip":"key",
-        "event":"self.textColor = '#ff0090';self.manaRegen *= 2000;",
+        "event":"self.textColor = '#ff0090';self.manaRegen *= 2000;self.attackCooldown = 1;self.secondCooldown = 1;self.healCooldown = 1;",
         "enchantments":["unlocking"]
     },
     "knowledgebook":{
@@ -249,6 +249,42 @@
         "name":"Fire Book 6",
         "equip":"weapon",
         "event":"self.stats.attack += 350;self.ability.attackAbility = 'fireAttack6';self.ability.secondAbility = 'fireSecond6';self.ability.healAbility = 'fireHeal6';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":[]
+    },
+    "waterbook1":{
+        "name":"Water Book 1",
+        "equip":"weapon",
+        "event":"self.stats.attack += 50;self.stats.speed *= 0.15;self.stats.range *= 10;self.ability.attackAbility = 'waterAttack1';self.ability.secondAbility = 'waterSecond1';self.ability.healAbility = 'waterHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":[]
+    },
+    "waterbook2":{
+        "name":"Water Book 2",
+        "equip":"weapon",
+        "event":"self.stats.attack += 80;self.stats.speed *= 0.2;self.stats.range *= 12;self.ability.attackAbility = 'waterAttack2';self.ability.secondAbility = 'waterSecond2';self.ability.healAbility = 'waterHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":[]
+    },
+    "waterbook3":{
+        "name":"Water Book 3",
+        "equip":"weapon",
+        "event":"self.stats.attack += 130;self.stats.speed *= 0.3;self.stats.range *= 12;self.ability.attackAbility = 'waterAttack3';self.ability.secondAbility = 'waterSecond3';self.ability.healAbility = 'waterHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":[]
+    },
+    "waterbook4":{
+        "name":"Water Book 4",
+        "equip":"weapon",
+        "event":"self.stats.attack += 170;self.stats.speed *= 0.4;self.stats.range *= 15;self.ability.attackAbility = 'waterAttack4';self.ability.secondAbility = 'waterSecond4';self.ability.healAbility = 'waterHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":[]
+    },
+    "waterbook5":{
+        "name":"Water Book 5",
+        "equip":"weapon",
+        "event":"self.stats.attack += 230;self.stats.speed *= 0.5;self.stats.range *= 20;self.ability.attackAbility = 'waterAttack5';self.ability.secondAbility = 'waterSecond5';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":[]
+    },
+    "waterbook6":{
+        "name":"Water Book 6",
+        "equip":"weapon",
+        "event":"self.stats.attack += 350;self.stats.speed *= 0.75;self.stats.range *= 25;self.ability.attackAbility = 'waterAttack6';self.ability.secondAbility = 'waterSecond6';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":[]
     }
 }

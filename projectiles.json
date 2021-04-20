@@ -61,5 +61,14 @@
             "defense":1,
             "heal":1
         }
+    },
+    "waterBullet":{
+        "width":44,
+        "height":44,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1
+        }
     }
 }

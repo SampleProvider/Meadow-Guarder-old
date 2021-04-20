@@ -424,7 +424,7 @@ Entity.getFrameUpdateData = function(){
         if(Projectile.list[i].updateNextFrame){
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
         }
-        if(Projectile.list[i].toRemove){
+        if(Projectile.list[i].toRemove || playerMap[Projectile.list[i].map] === 0){
             delete Projectile.list[i];
         }
     }
@@ -2012,16 +2012,16 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:1000,
+                        hp:1000 * ENV.MonsterStrength,
                         monsterType:'blueBall',
                         attackState:'passiveBall',
                         width:monsterData['blueBall'].width,
                         height:monsterData['blueBall'].height,
                         xpGain:monsterData['blueBall'].xpGain * 10,
                         stats:{
-                            attack:self.stats.attack * 0.5,
-                            defense:self.stats.defense * 5,
-                            heal:0,
+                            attack:150 * ENV.MonsterStrength,
+                            defense:30,
+                            heal:0 * ENV.MonsterStrength,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -2049,16 +2049,16 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:10,
+                        hp:10 * ENV.MonsterStrength,
                         monsterType:'blueCherryBomb',
                         attackState:'passiveCherryBomb',
                         width:monsterData['blueCherryBomb'].width,
                         height:monsterData['blueCherryBomb'].height,
                         xpGain:monsterData['blueCherryBomb'].xpGain * 10,
                         stats:{
-                            attack:self.stats.attack * 2,
-                            defense:self.stats.defense,
-                            heal:self.stats.heal,
+                            attack:5000 * ENV.MonsterStrength,
+                            defense:0,
+                            heal:0 * ENV.MonsterStrength,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -2865,6 +2865,90 @@ Player = function(param){
                                 });
                             }
                             break;
+                        case "waterHeal1":
+                            var heal = 200 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "waterHeal2":
+                            var heal = 250 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "waterHeal3":
+                            var heal = 275 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "waterHeal4":
+                            var heal = 325 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "waterHeal5":
+                            var heal = 350 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
+                        case "waterHeal6":
+                            var heal = 400 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            break;
                         case "baseAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
@@ -2987,6 +3071,44 @@ Player = function(param){
                                 }
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10 + 270,self.direction + j * 10 + 270,'fireBullet',-20,function(t){return 0},self.stats);
+                                }
+                            }
+                            break;
+                        case "waterAttack1":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                            }
+                            break;
+                        case "waterAttack2":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                            }
+                            break;
+                        case "waterAttack3":
+                            if(isFireMap){
+                                for(var j = 0;j < 2;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterAttack4":
+                            if(isFireMap){
+                                for(var j = 0;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterAttack5":
+                            if(isFireMap){
+                                for(var j = 0;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterAttack6":
+                            if(isFireMap){
+                                for(var j = 0;j < 4;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 90,self.direction + j * 90,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
                             }
                             break;
@@ -3574,6 +3696,48 @@ Player = function(param){
                                 }
                             }
                             break;
+                        case "waterSecond1":
+                            if(isFireMap){
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterSecond2":
+                            if(isFireMap){
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterSecond3":
+                            if(isFireMap){
+                                for(var j = -3;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterSecond4":
+                            if(isFireMap){
+                                for(var j = -4;j < 5;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterSecond5":
+                            if(isFireMap){
+                                for(var j = -4;j < 5;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterSecond6":
+                            if(isFireMap){
+                                for(var j = -5;j < 5;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
                     }
                     self.eventQ.splice(i,1);
                     i -= 1;
@@ -4056,7 +4220,6 @@ Player.onDisconnect = function(socket){
             }
             else{
                 for(var j in SOCKET_LIST){
-                    console.log(tiles);
                     SOCKET_LIST[j].emit('removeTile',{
                         x:tiles[i].x,
                         y:tiles[i].y,
@@ -4431,6 +4594,7 @@ Monster = function(param){
                     self.attackState = 'passiveBird';
                     self.damagedEntity = false;
                     self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
                     break;
                 }
                 if(self.target.toRemove){
@@ -4529,6 +4693,7 @@ Monster = function(param){
                     self.attackState = 'passiveBall';
                     self.damagedEntity = false;
                     self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
                     break;
                 }
                 if(self.target.toRemove){
@@ -4586,6 +4751,7 @@ Monster = function(param){
                     self.attackState = 'passiveCherryBomb';
                     self.damagedEntity = false;
                     self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
                     break;
                 }
                 if(self.target.toRemove){
@@ -4826,6 +4992,8 @@ Projectile = function(param){
         self.spdX = Math.cos(param.angle/180 * Math.PI) * 50;
         self.spdY = Math.sin(param.angle/180 * Math.PI) * 50;
     }
+    self.lastX = self.x;
+    self.lastY = self.y;
     self.mapWidth = param.mapWidth;
     self.mapHeight = param.mapHeight;
 	self.direction = param.direction;
@@ -4859,6 +5027,8 @@ Projectile = function(param){
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
+        self.lastX = self.x;
+        self.lastY = self.y;
         super_update();
         self.timer += 1;
         if(param.stats.range !== undefined){
@@ -4873,19 +5043,39 @@ Projectile = function(param){
         }
         if(self.x < self.width / 2){
             self.x = self.width / 2;
-            self.toRemove = true;
+            if(param.projectilePattern === 'bounceOffCollisions'){
+                self.spdX = -self.spdX;
+            }
+            else{
+                self.toRemove = true;
+            }
         }
         if(self.x > self.mapWidth - self.width / 2){
             self.x = self.mapWidth - self.width / 2;
-            self.toRemove = true;
+            if(param.projectilePattern === 'bounceOffCollisions'){
+                self.spdX = -self.spdX;
+            }
+            else{
+                self.toRemove = true;
+            }
         }
         if(self.y < self.height / 2){
             self.y = self.height / 2;
-            self.toRemove = true;
+            if(param.projectilePattern === 'bounceOffCollisions'){
+                self.spdY = -self.spdY;
+            }
+            else{
+                self.toRemove = true;
+            }
         }
         if(self.y > self.mapHeight - self.height / 2){
             self.y = self.mapHeight - self.height / 2;
-            self.toRemove = true;
+            if(param.projectilePattern === 'bounceOffCollisions'){
+                self.spdY = -self.spdY;
+            }
+            else{
+                self.toRemove = true;
+            }
         }
         if(param.projectilePattern === 'followPlayerStationary'){
             self.x = Player.list[self.parent].x - self.distanceFromParentX;
@@ -4914,74 +5104,386 @@ Projectile = function(param){
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         if(Collision.list[firstTile]){
             if(self.isColliding(Collision.list[firstTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision.list[firstTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision.list[firstTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision.list[secondTile]){
             if(self.isColliding(Collision.list[secondTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision.list[secondTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision.list[secondTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision.list[thirdTile]){
             if(self.isColliding(Collision.list[thirdTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision.list[thirdTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision.list[thirdTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision.list[fourthTile]){
             if(self.isColliding(Collision.list[fourthTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision.list[fourthTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision.list[fourthTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision2.list[firstTile]){
             if(self.isColliding(Collision2.list[firstTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision2.list[firstTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision2.list[firstTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision2.list[secondTile]){
             if(self.isColliding(Collision2.list[secondTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision2.list[secondTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision2.list[secondTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision2.list[thirdTile]){
             if(self.isColliding(Collision2.list[thirdTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision2.list[thirdTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision2.list[thirdTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision2.list[fourthTile]){
             if(self.isColliding(Collision2.list[fourthTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision2.list[fourthTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision2.list[fourthTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision3.list[firstTile]){
             if(self.isColliding(Collision3.list[firstTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision3.list[firstTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision3.list[firstTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision3.list[secondTile]){
             if(self.isColliding(Collision3.list[secondTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision3.list[secondTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision3.list[secondTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision3.list[thirdTile]){
             if(self.isColliding(Collision3.list[thirdTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision3.list[thirdTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision3.list[thirdTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
         if(Collision3.list[fourthTile]){
             if(self.isColliding(Collision3.list[fourthTile])){
-                self.toRemove = true;
-                self.updateNextFrame = false;
+                if(param.projectilePattern === 'bounceOffCollisions'){
+                    var x = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(Collision3.list[fourthTile])){
+                        self.x = x;
+                        self.y = self.lastY;
+                        if(self.isColliding(Collision3.list[fourthTile])){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                        else{
+                            self.spdY = -self.spdY;
+                            self.y += self.spdY;
+                        }
+                    }
+                    else{
+                        self.spdX = -self.spdX;
+                        self.x += self.spdX;
+                    }
+                }
+                else{
+                    self.toRemove = true;
+                    self.updateNextFrame = false;
+                }
             }
         }
     }
@@ -5004,6 +5506,14 @@ Projectile = function(param){
             pack.spdY = self.spdY;
             lastSelf.spdY = self.spdY;
         }
+        if(lastSelf.width !== self.width){
+            pack.width = self.width;
+            lastSelf.width = self.width;
+        }
+        if(lastSelf.height !== self.height){
+            pack.height = self.height;
+            lastSelf.height = self.height;
+        }
         if(lastSelf.map !== self.map){
             pack.map = self.map;
             lastSelf.map = self.map;
@@ -5025,6 +5535,8 @@ Projectile = function(param){
         pack.y = self.y;
         pack.spdX = self.spdX;
         pack.spdY = self.spdY;
+        pack.width = self.width;
+        pack.height = self.height;
         pack.map = self.map;
         pack.type = self.type;
         pack.projectileType = self.projectileType;
