@@ -1,6 +1,6 @@
 {
     "blueBird":{
-        "spawnChance":0.5,
+        "spawnChance":0.2,
         "xpGain":1,
         "width":44,
         "height":40,
@@ -26,7 +26,7 @@
         }
     },
     "greenBird":{
-        "spawnChance":0.5,
+        "spawnChance":0.2,
         "xpGain":1,
         "width":44,
         "height":40,
