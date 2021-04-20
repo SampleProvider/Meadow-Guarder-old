@@ -1081,7 +1081,7 @@ Actor = function(param){
                     self.doCollision(Collision.list[fourthTile]);
                 }
                 if(Collision2.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
+                    self.doCollision(Collision2.list[firstTile]);
                 }
                 if(Collision2.list[secondTile]){
                     self.doCollision(Collision2.list[secondTile]);
