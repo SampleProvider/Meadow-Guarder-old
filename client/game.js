@@ -2004,7 +2004,7 @@ var updateRespawn = function(){
     }
     respawnTimer = Math.max(respawnTimer - 1,0);
     document.getElementById('respawnTimer').innerHTML = respawnTimer;
-    setTimeout(updateRespawn,(15 - respawnTimer) / 7.5 * 500 + 1500);
+    setTimeout(updateRespawn,1000);
 }
 
 function useMenuDropdown(){
