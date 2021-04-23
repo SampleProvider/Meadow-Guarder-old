@@ -163,7 +163,7 @@ s = {
 };
 
 var monsterData = require('./monsters.json');
-var projectileData = require('./projectiles.json');
+var projectileData = require('./client/projectiles.json');
 
 var spawnMonster = function(spawner,spawnId){
     if(ENV.Peaceful){
@@ -830,9 +830,9 @@ Actor = function(param){
                     }
                     else{
                         for(var i in self.itemDrops){
-                            if(self.itemDrops[i] > Math.random()){
+                            if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
                                 var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
-                                Player.list[pt.parent].inventory.addRandomizedEnchantments(Player.list[pt.parent].inventory.items[itemIndex].id,Player.list[pt.parent].stats.luck);
+                                Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,Player.list[pt.parent].stats.luck);
                                 var item = Player.list[pt.parent].inventory.items[itemIndex];
                                 addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
                             }
@@ -847,9 +847,9 @@ Actor = function(param){
                 }
                 else{
                     for(var i in self.itemDrops){
-                        if(self.itemDrops[i] > Math.random()){
+                        if(self.itemDrops[i] * pt.stats.luck > Math.random()){
                             var itemIndex = pt.inventory.addItem(i,[]);
-                            pt.inventory.addRandomizedEnchantments(pt.inventory.items[itemIndex].id,pt.stats.luck);
+                            pt.inventory.addRandomizedEnchantments(itemIndex,pt.stats.luck);
                             var item = pt.inventory.items[itemIndex];
                             addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
                         }
@@ -1473,7 +1473,7 @@ Player = function(param){
         heal:'Shift',
     };
     self.attackCost = 10;
-    self.secondCost = 50;
+    self.secondCost = 40;
     self.healCost = 100;
     self.attackCooldown = 5;
     self.secondCooldown = 5;
@@ -2472,9 +2472,9 @@ Player = function(param){
             }
             self.textColor = '#ffff00';
             self.hpMax = 1000;
-            self.attackCost = 20;
-            self.secondCost = 100;
-            self.healCost = 200;
+            self.attackCost = 10;
+            self.secondCost = 40;
+            self.healCost = 100;
             self.attackCooldown = 5;
             self.secondCooldown = 5;
             self.healCooldown = 5;
@@ -6187,8 +6187,8 @@ updateCrashes = function(){
         for(var j in Player.list){
             if(Monster.list[i] && Player.list[j]){
                 if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
-                    Player.list[j].onPush(Monster.list[i],0.05);
-                    Monster.list[i].onPush(Player.list[j],0.05);
+                    Player.list[j].onPush(Monster.list[i],15);
+                    Monster.list[i].onPush(Player.list[j],3);
                 }
             }
         }

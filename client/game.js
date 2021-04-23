@@ -493,6 +493,29 @@ Img.healthBarEnemy = new Image();
 Img.healthBarEnemy.src = '/client/img/healthBarEnemy.png';
 Img.manaBar = new Image();
 Img.manaBar.src = '/client/img/manaBar.png';
+
+var request = new XMLHttpRequest();
+request.open('GET',"/client/projectiles.json",true);
+
+request.onload = function(){
+    if(this.status >= 200 && this.status < 400){
+        // Success!
+        var json = JSON.parse(this.response);
+        for(var i in json){
+            Img[i] = new Image();
+            Img[i].src = '/client/img/' + i + '.png';
+        }
+    }
+    else{
+        // We reached our target server, but it returned an error
+    }
+};
+
+request.onerror = function(){
+    // There was a connection error of some sort
+};
+
+request.send();
 var mouseX = 0;
 var mouseY = 0;
 var mapMouseX = mouseX + WIDTH / 2;
@@ -1043,9 +1066,7 @@ var Projectile = function(initPack){
     self.draw = function(){
         ctx0.translate(self.x,self.y);
         ctx0.rotate(self.direction * Math.PI / 180);
-        var img = new Image();
-        img.src = '/client/img/' + self.projectileType + '.png';
-        ctx0.drawImage(img,-self.width / 2,-self.height / 2);
+        ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2);
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
@@ -1770,6 +1791,7 @@ startQuest = function(){
 var response = function(data){
     socket.emit('diolougeResponse',data);
 }
+var MGHC = function(){};
 setInterval(function(){
     if(!selfId){
         return;
@@ -1997,6 +2019,7 @@ setInterval(function(){
     else{
         document.getElementById('respawn').style.display = 'none';
     }
+    MGHC();
 },1000/80);
 var updateRespawn = function(){
     if(spectatorDiv.style.display === 'none'){

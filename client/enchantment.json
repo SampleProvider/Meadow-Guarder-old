@@ -1,7 +1,7 @@
 {
     "health":{
         "name":"Health",
-        "maxLevel":5000,
+        "maxLevel":500,
         "averageLevel":2,
         "deviation":1,
         "dropChance":0.5,

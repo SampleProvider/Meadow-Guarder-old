@@ -104,7 +104,7 @@
     "spkey":{
         "name":"SP Key",
         "equip":"key",
-        "event":"self.textColor = '#ff0090';self.manaRegen *= 2000;self.attackCooldown = 1;self.secondCooldown = 1;self.healCooldown = 1;",
+        "event":"self.textColor = '#ff0090';self.manaRegen *= 2000;self.attackCooldown = 1;self.secondCooldown = 1;self.healCooldown = 1;self.stats.luck = -3;",
         "enchantments":["unlocking"]
     },
     "knowledgebook":{
