@@ -199,6 +199,7 @@ freeCam.onclick = function(){
     else{
         freeCam.style.color = '#ffffff';
         freeCam.style.backgroundColor = '#000000';
+        talking = false;
     }
 };
 
@@ -355,6 +356,8 @@ MGHC = function(){
 };
 MGHC1 = function(){
     if(freeCamState){
+        talking = true;
+        socket.emit('keyPress',{inputId:'releaseAll'});
         if(keys['w']){
             freeCamY += 15;
         }

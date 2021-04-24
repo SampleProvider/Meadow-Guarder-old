@@ -920,10 +920,10 @@ var Player = function(initPack){
         if(talking && self.id === selfId){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
-        if(self.x !== self.nextX){
+        if(Math.abs(self.x - self.nextX) > 4){
             self.x += self.moveX;
         }
-        if(self.y !== self.nextY){
+        if(Math.abs(self.y - self.nextY) > 4){
             self.y += self.moveY;
         }
     }
@@ -1032,36 +1032,6 @@ var Projectile = function(initPack){
     self.update = function(){
         self.x += self.moveX;
         self.y += self.moveY;
-        /*if(self.realX - self.x >= 40){
-            self.x = self.realX;
-        }
-        else if(self.realX - self.x >= 5){
-            self.x += 5;
-        }
-        else if(self.realX - self.x <= -40){
-            self.x = self.realX;
-        }
-        else if(self.realX - self.x <= -5){
-            self.x -= 5;
-        }
-        else{
-            self.x = self.realX;
-        }
-        if(self.realY - self.y >= 40){
-            self.y = self.realY;
-        }
-        else if(self.realY - self.y >= 5){
-            self.y += 5;
-        }
-        else if(self.realY - self.y <= -40){
-            self.y = self.realY;
-        }
-        else if(self.realY - self.y <= -5){
-            self.y -= 5;
-        }
-        else{
-            self.y = self.realY;
-        }*/
     }
     self.draw = function(){
         ctx0.translate(self.x,self.y);
@@ -1098,8 +1068,12 @@ var Monster = function(initPack){
     self.animation = initPack.animation;
     self.updated = true;
     self.update = function(){
-        self.x += self.moveX;
-        self.y += self.moveY;
+        if(Math.abs(self.x - self.nextX) > 4){
+            self.x += self.moveX;
+        }
+        if(Math.abs(self.y - self.nextY) > 4){
+            self.y += self.moveY;
+        }
     }
     self.draw = function(){
         if(self.monsterType === 'blueBird'){
@@ -1204,10 +1178,10 @@ var Npc = function(initPack){
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){
-        if(self.x !== self.nextX){
+        if(Math.abs(self.x - self.nextX) > 4){
             self.x += self.moveX;
         }
-        if(self.y !== self.nextY){
+        if(Math.abs(self.y - self.nextY) > 4){
             self.y += self.moveY;
         }
     }
@@ -1249,10 +1223,10 @@ var Pet = function(initPack){
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){
-        if(self.x !== self.nextX){
+        if(Math.abs(self.x - self.nextX) > 4){
             self.x += self.moveX;
         }
-        if(self.y !== self.nextY){
+        if(Math.abs(self.y - self.nextY) > 4){
             self.y += self.moveY;
         }
     }
@@ -2085,8 +2059,8 @@ document.onkeydown = function(event){
 }
 document.onkeyup = function(event){
     chatPress = false;
+    var key = event.key || event.keyCode;
     if(!talking){
-        var key = event.key || event.keyCode;
         socket.emit('keyPress',{inputId:key,state:false});
     }
     keys[key] = false;
