@@ -1792,6 +1792,7 @@ var response = function(data){
     socket.emit('diolougeResponse',data);
 }
 var MGHC = function(){};
+var MGHC1 = function(){};
 setInterval(function(){
     if(!selfId){
         return;
@@ -1848,6 +1849,7 @@ setInterval(function(){
             cameraY = HEIGHT - Player.list[selfId].mapHeight;
         }
     }
+    MGHC1();
 
     map0.save();
     map0.translate(Math.round(cameraX),Math.round(cameraY));
@@ -2053,6 +2055,7 @@ window.onclick = function(event){
         }
     }
 }
+var keys = {};
 document.onkeydown = function(event){
     if(chatPress){
         
@@ -2078,6 +2081,7 @@ document.onkeydown = function(event){
             state.isHidden = false;
         }
     }
+    keys[key] = true;
 }
 document.onkeyup = function(event){
     chatPress = false;
@@ -2085,6 +2089,7 @@ document.onkeyup = function(event){
         var key = event.key || event.keyCode;
         socket.emit('keyPress',{inputId:key,state:false});
     }
+    keys[key] = false;
 }
 mouseDown = function(event){
     if(inChat){

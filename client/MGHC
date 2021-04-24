@@ -18,6 +18,20 @@ hackedCollumn2.style.top = '130px';
 hackedCollumn2.style.backgroundColor = 'rgb(0,0,0,125);';
 hackedCollumn2.style.opacity = 0.6;
 
+var hackedCollumn3 = document.createElement('div');
+hackedCollumn3.className = 'UI-display-light';
+hackedDiv.appendChild(hackedCollumn3);
+hackedCollumn3.style.top = '170px';
+hackedCollumn3.style.backgroundColor = 'rgb(0,0,0,125);';
+hackedCollumn3.style.opacity = 0.6;
+
+var hackedCollumn4 = document.createElement('div');
+hackedCollumn4.className = 'UI-display-light';
+hackedDiv.appendChild(hackedCollumn4);
+hackedCollumn4.style.top = '210px';
+hackedCollumn4.style.backgroundColor = 'rgb(0,0,0,125);';
+hackedCollumn4.style.opacity = 0.6;
+
 var monsterTracers = document.createElement('button');
 monsterTracers.className = 'UI-button-light';
 monsterTracers.style.position = 'static';
@@ -57,10 +71,12 @@ attackMonsters.onclick = function(){
     if(attackMonstersState){
         attackMonsters.style.color = '#000000';
         attackMonsters.style.backgroundColor = '#ffffff';
+        socket.emit('keyPress',{inputId:'attack',state:false});
     }
     else{
         attackMonsters.style.color = '#ffffff';
         attackMonsters.style.backgroundColor = '#000000';
+        socket.emit('keyPress',{inputId:'attack',state:false});
     }
 };
 
@@ -103,10 +119,12 @@ attackPlayers.onclick = function(){
     if(attackPlayersState){
         attackPlayers.style.color = '#000000';
         attackPlayers.style.backgroundColor = '#ffffff';
+        socket.emit('keyPress',{inputId:'attack',state:false});
     }
     else{
         attackPlayers.style.color = '#ffffff';
         attackPlayers.style.backgroundColor = '#000000';
+        socket.emit('keyPress',{inputId:'attack',state:false});
     }
 };
 
@@ -134,30 +152,62 @@ autoRespawn.onclick = function(){
     }
 };
 
+var npcTracers = document.createElement('button');
+npcTracers.className = 'UI-button-light';
+npcTracers.style.position = 'static';
+npcTracers.style.top = '8px';
+npcTracers.innerHTML = 'Npc Tracers';
+hackedCollumn3.appendChild(npcTracers);
+
+npcTracers.style.color = '#ffffff';
+npcTracers.style.backgroundColor = '#000000';
+
+var npcTracersState = false;
+npcTracers.onclick = function(){
+    npcTracersState = !npcTracersState;
+    if(npcTracersState){
+        npcTracers.style.color = '#000000';
+        npcTracers.style.backgroundColor = '#ffffff';
+    }
+    else{
+        npcTracers.style.color = '#ffffff';
+        npcTracers.style.backgroundColor = '#000000';
+    }
+};
+
+var freeCam = document.createElement('button');
+freeCam.className = 'UI-button-light';
+freeCam.style.position = 'static';
+freeCam.style.top = '8px';
+freeCam.innerHTML = 'FreeCam';
+hackedCollumn4.appendChild(freeCam);
+
+freeCam.style.color = '#ffffff';
+freeCam.style.backgroundColor = '#000000';
+
+var freeCamState = false;
+var freeCamX = 0;
+var freeCamY = 0;
+freeCam.onclick = function(){
+    freeCamState = !freeCamState;
+    if(freeCamState){
+        freeCam.style.color = '#000000';
+        freeCam.style.backgroundColor = '#ffffff';
+        freeCamX = cameraX;
+        freeCamY = cameraY;
+    }
+    else{
+        freeCam.style.color = '#ffffff';
+        freeCam.style.backgroundColor = '#000000';
+    }
+};
+
 var getDistance = function(pt1,pt2){
     return (pt1.x - pt2.x)*(pt1.x - pt2.x) + (pt1.y - pt2.y)*(pt1.y - pt2.y);
 };
 
 MGHC = function(){
     if(monsterTracersState){
-        cameraX = WIDTH / 2 - Player.list[selfId].x;
-        cameraY = HEIGHT / 2 - Player.list[selfId].y;
-        if(Player.list[selfId].mapWidth > window.innerWidth){
-            if(cameraX > 0){
-                cameraX = 0;
-            }
-            if(cameraX < WIDTH - Player.list[selfId].mapWidth){
-                cameraX = WIDTH - Player.list[selfId].mapWidth;
-            }
-        }
-        if(Player.list[selfId].mapHeight > window.innerHeight){
-            if(cameraY > 0){
-                cameraY = 0;
-            }
-            if(cameraY < HEIGHT - Player.list[selfId].mapHeight){
-                cameraY = HEIGHT - Player.list[selfId].mapHeight;
-            }
-        }
         ctx1.save();
         ctx1.translate(cameraX,cameraY);
         for(var i in Monster.list){
@@ -193,24 +243,6 @@ MGHC = function(){
         ctx1.restore();
     }
     if(playerTracersState){
-        cameraX = WIDTH / 2 - Player.list[selfId].x;
-        cameraY = HEIGHT / 2 - Player.list[selfId].y;
-        if(Player.list[selfId].mapWidth > window.innerWidth){
-            if(cameraX > 0){
-                cameraX = 0;
-            }
-            if(cameraX < WIDTH - Player.list[selfId].mapWidth){
-                cameraX = WIDTH - Player.list[selfId].mapWidth;
-            }
-        }
-        if(Player.list[selfId].mapHeight > window.innerHeight){
-            if(cameraY > 0){
-                cameraY = 0;
-            }
-            if(cameraY < HEIGHT - Player.list[selfId].mapHeight){
-                cameraY = HEIGHT - Player.list[selfId].mapHeight;
-            }
-        }
         ctx1.save();
         ctx1.translate(cameraX,cameraY);
         for(var i in Player.list){
@@ -222,6 +254,59 @@ MGHC = function(){
             ctx1.stroke();
         }
         ctx1.restore();
+    }
+    if(npcTracersState){
+        ctx1.save();
+        ctx1.translate(cameraX,cameraY);
+        for(var i in Npc.list){
+            ctx1.strokeStyle = '#90ff00';
+            ctx1.lineWidth = 8;
+            ctx1.beginPath();
+            ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
+            ctx1.lineTo(Npc.list[i].x,Npc.list[i].y);
+            ctx1.stroke();
+        }
+        ctx1.restore();
+    }
+    if(autoRespawnState && Player.list[selfId].hp < 1 && !autoRespawning){
+        autoRespawning = true;
+        var lastAttackMonstersState = attackMonstersState;
+        attackMonstersState = false;
+        attackMonsters.style.color = '#ffffff';
+        attackMonsters.style.backgroundColor = '#000000';
+        var lastAttackPlayersState = attackPlayersState;
+        attackPlayersState = false;
+        attackPlayers.style.color = '#ffffff';
+        attackPlayers.style.backgroundColor = '#000000';
+        setTimeout(function(){
+            socket.emit('respawn');
+            gameDiv.style.display = 'inline-block';
+            disconnectedDiv.style.display = 'none';
+            spectatorDiv.style.display = 'none';
+            pageDiv.style.display = 'none';
+            respawnTimer = 0;
+            setTimeout(function(){
+                attackMonstersState = lastAttackMonstersState;
+                if(attackMonstersState){
+                    attackMonsters.style.color = '#000000';
+                    attackMonsters.style.backgroundColor = '#ffffff';
+                }
+                else{
+                    attackMonsters.style.color = '#ffffff';
+                    attackMonsters.style.backgroundColor = '#000000';
+                }
+                attackPlayersState = lastAttackPlayersState;
+                if(attackPlayersState){
+                    attackPlayers.style.color = '#000000';
+                    attackPlayers.style.backgroundColor = '#ffffff';
+                }
+                else{
+                    attackPlayers.style.color = '#ffffff';
+                    attackPlayers.style.backgroundColor = '#000000';
+                }
+                autoRespawning = false;
+            },500);
+        },500);
     }
     if(attackMonstersState){
         if(Monster.list === {}){
@@ -249,28 +334,40 @@ MGHC = function(){
         };
         var closestPlayer = undefined;
         for(var i in Player.list){
-            if(closestPlayer === undefined){
+            if(i === selfId){
+
+            }
+            else if(closestPlayer === undefined){
                 closestPlayer = Player.list[i];
             }
             else if(getDistance(Player.list[selfId],closestPlayer) > getDistance(Player.list[selfId],Player.list[i])){
                 closestPlayer = Player.list[i];
             }
         }
-        socket.emit('keyPress',{inputId:'attack',state:true});
-        socket.emit('keyPress',{inputId:'direction',state:{x:closestPlayer.x - Player.list[selfId].x,y:closestPlayer.y - Player.list[selfId].y}});
+        if(closestPlayer !== undefined){
+            socket.emit('keyPress',{inputId:'attack',state:true});
+            socket.emit('keyPress',{inputId:'direction',state:{x:closestPlayer.x - Player.list[selfId].x,y:closestPlayer.y - Player.list[selfId].y}});
+        }
+        else{
+            socket.emit('keyPress',{inputId:'attack',state:false});
+        }
     }
-    if(autoRespawnState && Player.list[selfId].hp < 1 && !autoRespawning){
-        autoRespawning = true;
-        setTimeout(function(){
-            socket.emit('respawn');
-            gameDiv.style.display = 'inline-block';
-            disconnectedDiv.style.display = 'none';
-            spectatorDiv.style.display = 'none';
-            pageDiv.style.display = 'none';
-            respawnTimer = 0;
-            setTimeout(function(){
-                autoRespawning = false;
-            },1000);
-        },1000);
+};
+MGHC1 = function(){
+    if(freeCamState){
+        if(keys['w']){
+            freeCamY += 15;
+        }
+        if(keys['s']){
+            freeCamY -= 15;
+        }
+        if(keys['a']){
+            freeCamX += 15;
+        }
+        if(keys['d']){
+            freeCamX -= 15;
+        }
+        cameraX = freeCamX;
+        cameraY = freeCamY;
     }
-}
+};
