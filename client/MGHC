@@ -204,7 +204,7 @@ freeCam.onclick = function(){
 };
 
 var getDistance = function(pt1,pt2){
-    return (pt1.x - pt2.x)*(pt1.x - pt2.x) + (pt1.y - pt2.y)*(pt1.y - pt2.y);
+    return (pt1.x - pt2.x)**2 + (pt1.y - pt2.y)**2;
 };
 
 MGHC = function(){
@@ -355,7 +355,7 @@ MGHC = function(){
             socket.emit('keyPress',{inputId:'direction',state:{x:closestPlayer.x - Player.list[selfId].x,y:closestPlayer.y - Player.list[selfId].y}});
         }
         else{
-            socket.emit('keyPress',{inputId:'attack',state:false    });
+            socket.emit('keyPress',{inputId:'attack',state:false});
         }
     }
 };

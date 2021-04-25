@@ -5391,9 +5391,13 @@ Projectile = function(param){
         self.spdY = 0;
     }
     if(param.projectilePattern === 'spinAroundPoint'){
+        self.parentStartX = 0;
+        self.parentStartY = 0;
+        if(Player.list[self.parent]){
+            self.parentStartX = Player.list[self.parent].x;
+            self.parentStartY = Player.list[self.parent].y;
+        }
         self.canCollide = false;
-        self.parentStartX = Player.list[self.parent].x;
-        self.parentStartY = Player.list[self.parent].y;
         self.spdX = 0;
         self.spdY = 0;
     }
