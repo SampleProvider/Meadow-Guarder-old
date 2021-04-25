@@ -51,6 +51,32 @@
             "advancedrubybow":0.0001
         }
     },
+    "redBird":{
+        "spawnChance":0,
+        "xpGain":25,
+        "width":88,
+        "height":80,
+        "attackState":"passiveBird",
+        "hp":350,
+        "stats":{
+            "attack":20,
+            "defense":0,
+            "heal":0
+        },
+        "moveSpeed":5,
+        "itemDrops":{
+            "simplewoodenbow":0.1,
+            "simplesteelbow":0.05,
+            "simpledarksteelbow":0.01,
+            "simplegoldenbow":0.005,
+            "simplerubybow":0.001,
+            "advancedwoodenbow":0.01,
+            "advancedsteelbow":0.005,
+            "advanceddarksteelbow":0.001,
+            "advancedgoldenbow":0.0005,
+            "advancedrubybow":0.0001
+        }
+    },
     "blueBall":{
         "spawnChance":0.1,
         "xpGain":2,

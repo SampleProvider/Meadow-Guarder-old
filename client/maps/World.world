@@ -20,6 +20,13 @@
             "width": 800,
             "x": 0,
             "y": 0
+        },
+        {
+            "fileName": "Lilypad Pathway Part 1.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 0,
+            "y": 800
         }
     ],
     "onlyShowAdjacentMaps": false,

@@ -1436,6 +1436,7 @@ Player = function(param){
         "Missing Person":false,
         "Weird Tower":false,
         "Clear River":false,
+        "Clear Tower":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -1778,6 +1779,49 @@ Player = function(param){
                         style:'style="color: #ff0000">',
                         message:'[!] This NPC doesn\'t want to talk to you right now.',
                         debug:false,
+                    });
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'joe' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Clear Tower';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Rumor is that the last player who helped Fisherman saw a red monster infused with evil in the weird tower. I really don\'t want evil red monsters roaming in the forest, so could you please kill it?',
+                        response1:'Sure! I can help you!',
+                        response2:'No, I\'m good.',
+                    });
+                }
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Clear Tower';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Leave. I\'m already stranded on this island.',
+                        response1:'Fine.',
+                    });
+                }
+                if(self.questStage === 5 && self.quest === 'Clear Tower'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thanks for helping me confirm this rumor.',
+                        response1:'*End conversation*',
+                    });
+                }
+                if(self.questStage === 11 && self.quest === 'Clear Tower'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You found the tower? Were the rumors true?',
+                        response1:'Yes.',
+                        response2:'No.',
                     });
                 }
                 self.keyPress.second = false;
@@ -2451,6 +2495,258 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Enchanter'){
             self.quest = false;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Clear Tower'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Clear Tower'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Clear Tower',
+                questDescription:'Defeat all the monsters in the weird tower in the map The River.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 3 && self.questInfo.quest === 'Clear Tower'){
+            self.quest = 'Clear Tower';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with Joe.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Clear Tower'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Clear Tower'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 7 && self.quest === 'Clear Tower' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 8;
+                    self.questInfo.monstersKilled = 0;
+                    self.questInfo.maxMonsters = 0;
+                }
+            }
+        }
+        if(self.questStage === 8 && self.quest === 'Clear Tower' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:2,
+                        hp:25000 * ENV.MonsterStrength,
+                        monsterType:'snowBall',
+                        attackState:'passiveBall',
+                        width:monsterData['snowBall'].width,
+                        height:monsterData['snowBall'].height,
+                        xpGain:monsterData['snowBall'].xpGain * 10,
+                        stats:{
+                            attack:45 * ENV.MonsterStrength,
+                            defense:0,
+                            heal:0 * ENV.MonsterStrength,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'spawner2'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:2,
+                        hp:500000 * ENV.MonsterStrength,
+                        monsterType:'redBird',
+                        attackState:'passiveBird',
+                        width:monsterData['redBird'].width,
+                        height:monsterData['redBird'].height,
+                        xpGain:monsterData['redBird'].xpGain * 10,
+                        stats:{
+                            attack:350 * ENV.MonsterStrength,
+                            defense:150,
+                            heal:0 * ENV.MonsterStrength,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'collision'){
+                    self.questDependent[i] = new Collision2({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        width:64,
+                        height:64,
+                        map:QuestInfo.list[i].map,
+                    });
+                    tiles.push({
+                        x:QuestInfo.list[i].x - 32,
+                        y:QuestInfo.list[i].y - 32,
+                        map:QuestInfo.list[i].map,
+                        tile_idx:3547,
+                        canvas:'lower',
+                        parent:self.id,
+                    });
+                    for(var j in SOCKET_LIST){
+                        SOCKET_LIST[j].emit('drawTile',{
+                            x:QuestInfo.list[i].x - 32,
+                            y:QuestInfo.list[i].y - 32,
+                            map:QuestInfo.list[i].map,
+                            tile_idx:3547,
+                            canvas:'lower',
+                        });
+                    }
+                }
+            }
+            self.questStage += 1;
+        }
+        if(self.questStage === 9 && self.quest === 'Clear Tower' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I killed the monsters, now I should talk back to Joe.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Clear Tower'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('removeSameTiles',{
+                    map:self.map,
+                    tile_idx:3547,
+                });
+            }
+            var newTiles = [];
+            for(var i in tiles){
+                if(tiles[i].parent !== self.id){
+                    newTiles.push(tiles[i]);
+                }
+            }
+            tiles = newTiles;
+            for(var i in self.questDependent){
+                if(self.questDependent[i].type === 'Collision2'){
+                    self.questDependent[i].toRemove = true;
+                }
+            }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Clear Tower'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'The rumors were true? Here, have a reward!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 12 && self.quest === 'Clear Tower'){
+            self.questStage += 2;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'The rumors weren\'t true? I was gonna give you a reward if they were true.',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Clear Tower'){
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(25000 * self.stats.xp);
+        }
+        if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Clear Tower'){
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
             self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',
