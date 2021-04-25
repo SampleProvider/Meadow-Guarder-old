@@ -864,11 +864,16 @@ Actor = function(param){
     self.shootProjectile = function(id,parentType,angle,direction,projectileType,distance,spin,stats,projectilePattern){
         var projectileWidth = 0;
         var projectileHeight = 0;
+        var projectileStats = {};
         for(var i in projectileData){
             if(i === projectileType){
                 projectileWidth = projectileData[i].width;
                 projectileHeight = projectileData[i].height;
+                projectileStats = Object.create(projectileData[i].stats);
             }
+        }
+        for(var i in projectileStats){
+            projectileStats[i] *= stats[i];
         }
 		var projectile = Projectile({
             id:id,
@@ -885,7 +890,7 @@ Actor = function(param){
             height:projectileHeight,
             spin:spin,
             projectilePattern:projectilePattern,
-            stats:stats,
+            stats:projectileStats,
             onCollision:function(self,pt){
                 self.toRemove = true;
             }
@@ -1479,6 +1484,7 @@ Player = function(param){
     self.attackCooldown = 5;
     self.secondCooldown = 5;
     self.healCooldown = 5;
+    self.passive = '';
     self.regenTick = 0;
     self.ability = {
         attackAbility:'baseAttack',
@@ -2525,6 +2531,16 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Clear Tower'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
         if(self.questInfo.started === true && self.questStage === 3 && self.questInfo.quest === 'Clear Tower'){
             self.quest = 'Clear Tower';
             self.questStage += 1;
@@ -2605,17 +2621,18 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:500000 * ENV.MonsterStrength,
+                        hp:250000 * ENV.MonsterStrength,
                         monsterType:'redBird',
-                        attackState:'passiveBird',
+                        attackState:'passiveRedBird',
                         width:monsterData['redBird'].width,
                         height:monsterData['redBird'].height,
                         xpGain:monsterData['redBird'].xpGain * 10,
                         stats:{
-                            attack:350 * ENV.MonsterStrength,
+                            attack:200 * ENV.MonsterStrength,
                             defense:150,
                             heal:0 * ENV.MonsterStrength,
                         },
+                        itemDrops:monsterData['redBird'].itemDrops,
                         onDeath:function(pt){
                             pt.toRemove = true;
                             if(pt.spawnId){
@@ -4059,6 +4076,9 @@ Player = function(param){
             for(var i in self.ability.attackPattern){
                 self.addToEventQ(self.ability.attackAbility,self.ability.attackPattern[i]);
             }
+            if(self.passive === 'homingFire'){
+                self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',32,function(t){return 25},self.stats,'monsterHoming');
+            }
         }
         if(self.keyPress.second === true && self.mana >= self.secondCost && self.manaRefresh <= 0){
             self.mana -= self.secondCost;
@@ -5101,6 +5121,68 @@ Monster = function(param){
                     param.onDeath(self);
                 }
                 break;
+            case "passiveRedBird":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveRedBird";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveRedBird";
+                }
+                break;
+            case "moveRedBird":
+                self.trackEntity(self.target,128 + 64 * Math.random());
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackRedBird";
+                break;
+            case "attackRedBird":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveRedBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveRedBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveRedBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction - 5,self.direction - 5,'fireBullet',0,function(t){return 0},self.stats);
+                    self.shootProjectile(self.id,'Monster',self.direction + 5,self.direction + 5,'fireBullet',0,function(t){return 0},self.stats);
+                }
+                if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction - 60,self.direction - 60,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
+                    self.shootProjectile(self.id,'Monster',self.direction + 60,self.direction + 60,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
+                }
+                self.reload += 1;
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            
         }
     }
     self.getUpdatePack = function(){
@@ -5320,6 +5402,12 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
     }
+    if(param.projectilePattern === 'playerHoming'){
+        self.canCollide = false;
+    }
+    if(param.projectilePattern === 'monsterHoming'){
+        self.canCollide = false;
+    }
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -5382,6 +5470,46 @@ Projectile = function(param){
             self.x += -Math.sin(angle) * param.stats.speed * 25;
             self.y += Math.cos(angle) * param.stats.speed * 25;
             self.timer -= 0.5;
+        }
+        else if(param.projectilePattern === 'playerHoming'){
+            if(Monster.list[self.parent] === undefined){
+                self.timer = 0;
+            }
+            else if(Monster.list[self.parent].target !== undefined){
+                self.spdX = (Monster.list[self.parent].target.x - self.x) / 10;
+                self.spdY = (Monster.list[self.parent].target.y - self.y) / 10;
+            }
+            else{
+                self.spdX = (Monster.list[self.parent].x - self.x) / 10;
+                self.spdY = (Monster.list[self.parent].y - self.y) / 10;
+            }
+            self.timer -= 0.5;
+            if(param.spin !== undefined){
+                self.direction += param.spin(self.timer);
+            }
+        }
+        else if(param.projectilePattern === 'monsterHoming'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined){
+                    closestMonster = Monster.list[i];
+                }
+                else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
+                    closestMonster = Monster.list[i];
+                }
+            }
+            if(closestMonster){
+                self.spdX = (closestMonster.x - self.x) / 10;
+                self.spdY = (closestMonster.y - self.y) / 10;
+            }
+            else{
+                self.spdX = (Player.list[self.parent].x - self.x) / 10;
+                self.spdY = (Player.list[self.parent].y - self.y) / 10;
+            }
+            self.timer -= 0.5;
+            if(param.spin !== undefined){
+                self.direction += param.spin(self.timer);
+            }
         }
         else{
             if(param.spin !== undefined){

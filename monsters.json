@@ -65,16 +65,7 @@
         },
         "moveSpeed":5,
         "itemDrops":{
-            "simplewoodenbow":0.1,
-            "simplesteelbow":0.05,
-            "simpledarksteelbow":0.01,
-            "simplegoldenbow":0.005,
-            "simplerubybow":0.001,
-            "advancedwoodenbow":0.01,
-            "advancedsteelbow":0.005,
-            "advanceddarksteelbow":0.001,
-            "advancedgoldenbow":0.0005,
-            "advancedrubybow":0.0001
+            "firecrystal":1
         }
     },
     "blueBall":{

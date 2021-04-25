@@ -5,7 +5,9 @@
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "playerBullet":{
@@ -14,7 +16,9 @@
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "stoneArrow":{
@@ -23,7 +27,9 @@
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "earthTower":{
@@ -32,7 +38,9 @@
         "stats":{
             "attack":5,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "ballBullet":{
@@ -41,7 +49,9 @@
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "fireBullet":{
@@ -50,7 +60,9 @@
         "stats":{
             "attack":2,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "sword":{
@@ -59,7 +71,9 @@
         "stats":{
             "attack":0.5,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     },
     "waterBullet":{
@@ -68,7 +82,9 @@
         "stats":{
             "attack":1,
             "defense":1,
-            "heal":1
+            "heal":1,
+            "range":1,
+            "speed":1
         }
     }
 }
