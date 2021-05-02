@@ -163,6 +163,7 @@ s = {
 };
 
 var monsterData = require('./monsters.json');
+var worldData = require('./world.json');
 var projectileData = require('./client/projectiles.json');
 
 var spawnMonster = function(spawner,spawnId){
@@ -171,14 +172,15 @@ var spawnMonster = function(spawner,spawnId){
     }
     var monsterSeed = Math.random();
     var monsterTotal = 0;
-    for(var i in monsterData){
-        monsterTotal += monsterData[i].spawnChance;
+    for(var i in worldData.maps[spawner.map]){
+        monsterTotal += monsterData[worldData.maps[spawner.map][i]].spawnChance;
     }
     monsterSeed *= monsterTotal;
-    for(var i in monsterData){
-        if(monsterSeed > 0 && monsterSeed < monsterData[i].spawnChance){
-            var monsterHp = monsterData[i].hp;
-            var monsterStats = Object.create(monsterData[i].stats);
+    for(var i in worldData.maps[spawner.map]){
+        var currentMonster = monsterData[worldData.maps[spawner.map][i]];
+        if(monsterSeed > 0 && monsterSeed < currentMonster.spawnChance){
+            var monsterHp = currentMonster.hp;
+            var monsterStats = Object.create(currentMonster.stats);
             monsterHp *= ENV.MonsterStrength;
             monsterStats.attack *= ENV.MonsterStrength;
             var monster = new Monster({
@@ -186,15 +188,15 @@ var spawnMonster = function(spawner,spawnId){
                 x:spawner.x,
                 y:spawner.y,
                 map:spawner.map,
-                moveSpeed:monsterData[i].moveSpeed,
+                moveSpeed:currentMonster.moveSpeed,
                 stats:monsterStats,
                 hp:monsterHp,
-                monsterType:i,
-                attackState:monsterData[i].attackState,
-                width:monsterData[i].width,
-                height:monsterData[i].height,
-                xpGain:monsterData[i].xpGain,
-                itemDrops:monsterData[i].itemDrops,
+                monsterType:worldData.maps[spawner.map][i],
+                attackState:currentMonster.attackState,
+                width:currentMonster.width,
+                height:currentMonster.height,
+                xpGain:currentMonster.xpGain,
+                itemDrops:currentMonster.itemDrops,
                 onDeath:function(pt){
                     pt.toRemove = true;
                     if(pt.spawnId){
@@ -210,7 +212,7 @@ var spawnMonster = function(spawner,spawnId){
             spawner.spawned = true;
             return;
         }
-        monsterSeed -= monsterData[i].spawnChance;
+        monsterSeed -= currentMonster.spawnChance;
     }
 }
 
@@ -319,7 +321,7 @@ Entity.getFrameUpdateData = function(){
             }
             else{
                 if(!pack[Monster.list[i].map]){
-                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
                 }
                 var updatePack = Monster.list[i].getUpdatePack();
                 pack[Monster.list[i].map].monster.push(updatePack);
@@ -330,7 +332,7 @@ Entity.getFrameUpdateData = function(){
         if(Player.list[i]){
             Player.list[i].update();
             if(!pack[Player.list[i].map]){
-                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
             }
             var updatePack = Player.list[i].getUpdatePack();
             pack[Player.list[i].map].player.push(updatePack);
@@ -344,7 +346,7 @@ Entity.getFrameUpdateData = function(){
             Npc.list[i].update();
             if(playerMap[Npc.list[i].map] > 0){
                 if(!pack[Npc.list[i].map]){
-                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
                 }
                 if(Npc.list[i].toRemove){
                     delete Npc.list[i];
@@ -361,7 +363,7 @@ Entity.getFrameUpdateData = function(){
             Particle.list[i].update();
             if(playerMap[Particle.list[i].map] > 0){
                 if(!pack[Particle.list[i].map]){
-                    pack[Particle.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+                    pack[Particle.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
                 }
                 var updatePack = Particle.list[i].getInitPack();
                 pack[Particle.list[i].map].particle.push(updatePack);
@@ -369,10 +371,18 @@ Entity.getFrameUpdateData = function(){
             }
         }
     }
+    for(var i in Sound.list){
+        if(!pack[Sound.list[i].map]){
+            pack[Sound.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+        }
+        var updatePack = Sound.list[i].getUpdatePack();
+        pack[Sound.list[i].map].sound.push(updatePack);
+        delete Sound.list[i];
+    }
     for(var i in Pet.list){
         Pet.list[i].update();
         if(!pack[Pet.list[i].map]){
-            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
         }
         if(Pet.list[i].toRemove){
             delete Pet.list[i];
@@ -419,7 +429,7 @@ Entity.getFrameUpdateData = function(){
 	updateCrashes();
     for(var i in Projectile.list){
         if(!pack[Projectile.list[i].map]){
-            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
         }
         if(Projectile.list[i].updateNextFrame){
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
@@ -820,6 +830,50 @@ Actor = function(param){
                     particleType:'redDamage',
                     value:'-' + damage,
                 });
+            }
+            if(pt.projectileType){
+                if(pt.projectileType === 'stoneArrow'){
+                    Sound({
+                        type:'arrowHit',
+                        map:self.map,
+                    });
+                }
+                if(pt.projectileType === 'waterBullet'){
+                    Sound({
+                        type:'waterHit',
+                        map:self.map,
+                    });
+                }
+                if(pt.projectileType === 'fireBullet'){
+                    Sound({
+                        type:'fireHit',
+                        map:self.map,
+                    });
+                }
+                if(pt.projectileType === 'earthBullet'){
+                    Sound({
+                        type:'earthHit',
+                        map:self.map,
+                    });
+                }
+                if(pt.projectilePattern === 'playerHoming'){
+                    Sound({
+                        type:'fireHomingHit',
+                        map:self.map,
+                    });
+                }
+                if(pt.projectilePattern === 'monsterHoming'){
+                    Sound({
+                        type:'fireHomingHit',
+                        map:self.map,
+                    });
+                }
+                if(pt.projectileType === 'playerHit'){
+                    Sound({
+                        type:'playerHit',
+                        map:self.map,
+                    });
+                }
             }
         }
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
@@ -2652,6 +2706,10 @@ Player = function(param){
                         }
                     }
                     self.questInfo.maxMonsters += 1;
+                    Sound({
+                        type:'homingFireBullet',
+                        map:self.map,
+                    });
                 }
             }
             for(var i in QuestInfo.list){
@@ -2783,6 +2841,7 @@ Player = function(param){
                 range:1,
                 speed:1,
             }
+            self.passive = '';
             self.textColor = '#ffff00';
             self.hpMax = 1000;
             self.attackCost = 10;
@@ -3071,8 +3130,12 @@ Player = function(param){
                             }
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'playerBullet',0,function(t){return 25},self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'earthBullet',0,function(t){return 25},self.stats);
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthHeal5":
@@ -3090,8 +3153,35 @@ Player = function(param){
                             }
                             if(isFireMap){
                                 for(var j = 0;j < 15;j++){
-                                    self.shootProjectile(self.id,'Player',j * 24,j * 24,'playerBullet',0,function(t){return 25},self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 24,j * 24,'earthBullet',0,function(t){return 25},self.stats);
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "earthHeal6":
+                            var heal = 150 * self.stats.heal;
+                            heal = Math.min(self.hpMax - self.hp,heal);
+                            self.hp += heal;
+                            if(heal){
+                                var particle = new Particle({
+                                    x:self.x + Math.random() * 64 - 32,
+                                    y:self.y + Math.random() * 64 - 32,
+                                    map:self.map,
+                                    particleType:'greenDamage',
+                                    value:'+' + heal,
+                                });
+                            }
+                            if(isFireMap){
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'earthBullet',0,function(t){return 25},self.stats);
+                                }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireHeal1":
@@ -3265,57 +3355,89 @@ Player = function(param){
                         case "baseAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "bowAttack1":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthAttack1":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthAttack2":
                             if(isFireMap){
                                 for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
-                            }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
+                                }
                             break;
                         case "earthAttack3":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthAttack4":
                             if(isFireMap){
                                 for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthAttack5":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                                 for(var j = 0;j < 6;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'playerBullet',100,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'earthBullet',100,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthAttack6":
                             if(isFireMap){
                                 for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',100,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',100,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireAttack1":
@@ -3323,6 +3445,10 @@ Player = function(param){
                                 for(var j = -1;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireAttack2":
@@ -3333,6 +3459,10 @@ Player = function(param){
                                 for(var j = -1;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireAttack3":
@@ -3343,6 +3473,10 @@ Player = function(param){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireAttack4":
@@ -3356,6 +3490,10 @@ Player = function(param){
                                 for(var j = -1;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireAttack5":
@@ -3369,6 +3507,10 @@ Player = function(param){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireAttack6":
@@ -3385,16 +3527,28 @@ Player = function(param){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10 + 270,self.direction + j * 10 + 270,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterAttack1":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterAttack2":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterAttack3":
@@ -3402,6 +3556,10 @@ Player = function(param){
                                 for(var j = 0;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterAttack4":
@@ -3409,6 +3567,10 @@ Player = function(param){
                                 for(var j = 0;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterAttack5":
@@ -3416,6 +3578,10 @@ Player = function(param){
                                 for(var j = 0;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterAttack6":
@@ -3423,6 +3589,10 @@ Player = function(param){
                                 for(var j = 0;j < 4;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 90,self.direction + j * 90,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "baseSecond":
@@ -3430,6 +3600,10 @@ Player = function(param){
                                 for(var j = 0;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',j * 72,j * 72,'stoneArrow',0,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "bowSecond1":
@@ -3437,6 +3611,10 @@ Player = function(param){
                                 for(var j = 0;j < 10;j++){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'stoneArrow',0,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "earthSecond1":
@@ -3479,18 +3657,26 @@ Player = function(param){
                                 var mouseX = self.mouseX;
                                 var mouseY = self.mouseY;
                                 for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                                 setTimeout(function(){
                                     var x = self.x;
                                     var y = self.y;
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 2;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
                                     self.x = x;
                                     self.y = y;
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                 },250);
                                 self.x = x;
                                 self.y = y;
@@ -3536,18 +3722,26 @@ Player = function(param){
                                 var mouseX = self.mouseX;
                                 var mouseY = self.mouseY;
                                 for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                                 setTimeout(function(){
                                     var x = self.x;
                                     var y = self.y;
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 2;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
                                     self.x = x;
                                     self.y = y;
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                 },250);
                                 setTimeout(function(){
                                     var x = self.x;
@@ -3555,10 +3749,14 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 2;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
                                     self.x = x;
                                     self.y = y;
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                 },500);
                                 self.x = x;
                                 self.y = y;
@@ -3604,16 +3802,24 @@ Player = function(param){
                                 var mouseX = self.mouseX;
                                 var mouseY = self.mouseY;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                                 setTimeout(function(){
                                     var x = self.x;
                                     var y = self.y;
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },250);
@@ -3623,8 +3829,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },500);
@@ -3674,16 +3884,24 @@ Player = function(param){
                                 var mouseX = self.mouseX;
                                 var mouseY = self.mouseY;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                                 setTimeout(function(){
                                     var x = self.x;
                                     var y = self.y;
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },250);
@@ -3693,8 +3911,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },500);
@@ -3704,8 +3926,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },750);
@@ -3755,16 +3981,24 @@ Player = function(param){
                                 var mouseX = self.mouseX;
                                 var mouseY = self.mouseY;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                                 setTimeout(function(){
                                     var x = self.x;
                                     var y = self.y;
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },250);
@@ -3774,8 +4008,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },500);
@@ -3785,8 +4023,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },750);
@@ -3796,8 +4038,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },1000);
@@ -3807,8 +4053,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },1250);
@@ -3859,16 +4109,24 @@ Player = function(param){
                                 var mouseX = self.mouseX;
                                 var mouseY = self.mouseY;
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 }
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
                                 setTimeout(function(){
                                     var x = self.x;
                                     var y = self.y;
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },250);
@@ -3878,8 +4136,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },500);
@@ -3889,8 +4151,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },750);
@@ -3900,8 +4166,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },1000);
@@ -3911,8 +4181,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },1250);
@@ -3922,8 +4196,12 @@ Player = function(param){
                                     self.x = mouseX;
                                     self.y = mouseY;
                                     for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'playerBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
+                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                     }
+                                    Sound({
+                                        type:'earthBullet',
+                                        map:self.map,
+                                    });
                                     self.x = x;
                                     self.y = y;
                                 },1500);
@@ -3939,6 +4217,10 @@ Player = function(param){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireSecond2":
@@ -3949,6 +4231,10 @@ Player = function(param){
                                     self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireSecond3":
@@ -3962,6 +4248,10 @@ Player = function(param){
                                     self.shootProjectile(self.id,'Player',j * 72 + 36,j * 72 + 36,'fireBullet',64,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireSecond4":
@@ -3975,6 +4265,10 @@ Player = function(param){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},self.stats,'stationary');
                                 }
                                 self.stats.speed = speed;
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireSecond5":
@@ -3991,6 +4285,10 @@ Player = function(param){
                                 for(var j = 0;j < 10;j++){
                                     self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "fireSecond6":
@@ -4007,6 +4305,10 @@ Player = function(param){
                                 for(var j = 0;j < 20;j++){
                                     self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',-20,function(t){return 0},self.stats);
                                 }
+                                Sound({
+                                    type:'fireBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterSecond1":
@@ -4014,6 +4316,10 @@ Player = function(param){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterSecond2":
@@ -4021,6 +4327,10 @@ Player = function(param){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterSecond3":
@@ -4028,6 +4338,10 @@ Player = function(param){
                                 for(var j = -3;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterSecond4":
@@ -4035,6 +4349,10 @@ Player = function(param){
                                 for(var j = -4;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterSecond5":
@@ -4042,6 +4360,10 @@ Player = function(param){
                                 for(var j = -4;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                         case "waterSecond6":
@@ -4049,6 +4371,10 @@ Player = function(param){
                                 for(var j = -5;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
                                 }
+                                Sound({
+                                    type:'waterBullet',
+                                    map:self.map,
+                                });
                             }
                             break;
                     }
@@ -4078,6 +4404,10 @@ Player = function(param){
             }
             if(self.passive === 'homingFire'){
                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',32,function(t){return 25},self.stats,'monsterHoming');
+                Sound({
+                    type:'fireBullet',
+                    map:self.map,
+                });
             }
         }
         if(self.keyPress.second === true && self.mana >= self.secondCost && self.manaRefresh <= 0){
@@ -4555,7 +4885,7 @@ Player.onDisconnect = function(socket){
 Player.getAllInitPack = function(socket){
     try{
         var player = Player.list[socket.id];
-        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[]};
+        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
         for(var i in Player.list){
             if(Player.list[i].map === player.map){
                 pack.player.push(Player.list[i].getInitPack());
@@ -4840,6 +5170,8 @@ Monster = function(param){
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
+        self.lastX = self.x;
+        self.lastY = self.y;
         super_update();
         if(self.animate){
             if(self.animation === -1){
@@ -4922,9 +5254,17 @@ Monster = function(param){
                 }
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,function(t){return 25},self.stats);
+                    Sound({
+                        type:'ninjaStar',
+                        map:self.map,
+                    });
                 }
                 if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,function(t){return 25},self.stats);
+                    Sound({
+                        type:'ninjaStar',
+                        map:self.map,
+                    });
                 }
                 self.reload += 1;
                 if(self.hp < 0.5 * self.hpMax){
@@ -5027,6 +5367,12 @@ Monster = function(param){
                     for(var i = 0;i < 4;i++){
                         self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'ballBullet',-20,function(t){return 25},self.stats);
                     }
+                    if(self.reload % 60 === 0 && self.reload > 49 && self.target.invincible === false){
+                        Sound({
+                            type:'ballBullet',
+                            map:self.map,
+                        });
+                    }
                 }
                 self.reload += 1;
                 if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
@@ -5084,6 +5430,15 @@ Monster = function(param){
                             self.stats.defense += 2000000;
                             self.stats.attack += 2000000;
                             self.attackState = 'explodeCherryBomb';
+                            Sound({
+                                type:'cherryBomb',
+                                map:self.map,
+                            });
+                            self.target = undefined;
+                            self.trackingEntity = undefined;
+                            self.randomWalk(false,false,self.x,self.y);
+                            self.spdX = 0;
+                            self.spdY = 0;
                         }
                     }
                     else{
@@ -5108,6 +5463,8 @@ Monster = function(param){
                 }
                 break;
             case "explodeCherryBomb":
+                self.target = undefined;
+                self.trackingEntity = undefined;
                 if(self.animation === 0){
                     self.animation = 1;
                 }
@@ -5120,6 +5477,10 @@ Monster = function(param){
                 if(self.animation > 5){
                     param.onDeath(self);
                 }
+                self.spdX = 0;
+                self.spdY = 0;
+                self.x = self.lastX;
+                self.y = self.lastY;
                 break;
             case "passiveRedBird":
                 self.animate = true;
@@ -5165,11 +5526,19 @@ Monster = function(param){
                 if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction - 5,self.direction - 5,'fireBullet',0,function(t){return 0},self.stats);
                     self.shootProjectile(self.id,'Monster',self.direction + 5,self.direction + 5,'fireBullet',0,function(t){return 0},self.stats);
+                    Sound({
+                        type:'fireBullet',
+                        map:self.map,
+                    });
                 }
                 if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction - 60,self.direction - 60,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
                     self.shootProjectile(self.id,'Monster',self.direction + 60,self.direction + 60,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
+                    Sound({
+                        type:'homingFireBullet',
+                        map:self.map,
+                    });
                 }
                 self.reload += 1;
                 if(self.animation === -1){
@@ -5977,7 +6346,19 @@ Projectile = function(param){
 }
 Projectile.list = {};
 
-
+Sound = function(param){
+    var self = {};
+    self.id = Math.random();
+    self.map = param.map;
+    self.type = param.type;
+    self.getUpdatePack = function(){
+        return {
+            type:param.type,
+        }
+    }
+    Sound.list[self.id] = self;
+}
+Sound.list = {};
 
 var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" && layer.visible === false){

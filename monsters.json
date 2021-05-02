@@ -69,7 +69,7 @@
         }
     },
     "blueBall":{
-        "spawnChance":0.1,
+        "spawnChance":0.15,
         "xpGain":2,
         "width":44,
         "height":44,
@@ -101,7 +101,7 @@
         }
     },
     "snowBall":{
-        "spawnChance":0.05,
+        "spawnChance":0.15,
         "xpGain":5,
         "width":44,
         "height":44,
@@ -128,7 +128,7 @@
         }
     },
     "redCherryBomb":{
-        "spawnChance":0.05,
+        "spawnChance":0.15,
         "xpGain":2,
         "width":48,
         "height":40,
@@ -150,7 +150,7 @@
         }
     },
     "blueCherryBomb":{
-        "spawnChance":0.05,
+        "spawnChance":0.15,
         "xpGain":2,
         "width":48,
         "height":40,

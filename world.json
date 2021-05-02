@@ -1,0 +1,17 @@
+{
+    "maps": {
+        "The Village": [],
+        "The Docks": [
+            "greenBird","blueBird","blueBall","redCherryBomb","blueCherryBomb"
+        ],
+        "The River": [
+            "greenBird","blueBird"
+        ],
+        "Lilypad Pathway Part 1": [
+            "redCherryBomb","blueCherryBomb","snowBall"
+        ],
+        "The Forest": [
+            "greenBird","blueBird","blueBall"
+        ]
+    }
+}

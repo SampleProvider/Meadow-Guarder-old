@@ -53,6 +53,6 @@
         "averageLevel":3,
         "deviation":5,
         "dropChance":0.2,
-        "event":"self.attackCost -= 0.5;self.secondCost -= 0.5;self.healCost -= 0.5;"
+        "event":"self.attackCost -= 1;self.secondCost -= 1;self.healCost -= 1;"
     }
 }

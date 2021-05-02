@@ -10,7 +10,7 @@
             "speed":1
         }
     },
-    "playerBullet":{
+    "earthBullet":{
         "width":36,
         "height":36,
         "stats":{

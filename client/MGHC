@@ -364,16 +364,16 @@ MGHC1 = function(){
         talking = true;
         socket.emit('keyPress',{inputId:'releaseAll'});
         if(keys['w']){
-            freeCamY += 15;
+            freeCamY += 25;
         }
         if(keys['s']){
-            freeCamY -= 15;
+            freeCamY -= 25;
         }
         if(keys['a']){
-            freeCamX += 15;
+            freeCamX += 25;
         }
         if(keys['d']){
-            freeCamX -= 15;
+            freeCamX -= 25;
         }
         cameraX = freeCamX;
         cameraY = freeCamY;

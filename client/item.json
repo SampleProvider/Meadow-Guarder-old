@@ -50,13 +50,13 @@
     "advancedgoldenbow":{
         "name":"Advanced Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 290;self.stats.xp *= 7;",
+        "event":"self.stats.attack += 350;self.stats.xp *= 7;",
         "enchantments":["speed","range","cost","burst"]
     },
     "advancedrubybow":{
         "name":"Advanced Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 350;self.stats.xp *= 10;",
+        "event":"self.stats.attack += 490;self.stats.xp *= 10;",
         "enchantments":["speed","range","cost","burst"]
     },
     "developerbow":{

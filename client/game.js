@@ -104,8 +104,6 @@ signDivChangePassword.onclick = function(){
 socket.on('signInResponse',function(data){
     if(data.success === 3){
         document.getElementById('settingsPlayerName').innerHTML = data.username;
-        audioTense.play();
-        audioTense.loop = true;
         worldMap.save();
         worldMap.fillStyle = '#000000';
         worldMap.fillRect(0,0,1510,1130);
@@ -249,6 +247,7 @@ debugInput.onkeydown = function(e){
 debugInput.onmousedown = function(e){
     inChat = true;
 }
+
 
 var disconnect = function(){
     socket.emit("timeout");
@@ -562,7 +561,7 @@ document.getElementById('hairOpacity').oninput = function(){
 document.getElementById('hairTypeSlider').oninput = function(){
     socket.emit('keyPress',{inputId:'imgHairType',state:this.value});
 }
-var audio = 'tense';
+var audio = 'none';
 document.getElementById('audioSwitch').onclick = function(){
     if(audio === 'tense'){
         audioTense.pause();
@@ -1036,7 +1035,12 @@ var Projectile = function(initPack){
     self.draw = function(){
         ctx0.translate(self.x,self.y);
         ctx0.rotate(self.direction * Math.PI / 180);
-        ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2);
+        if(self.projectileType === 'stoneArrow'){
+            ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
+        }
+        else{
+            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2);
+        }
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
@@ -1290,6 +1294,79 @@ var Particle = function(initPack){
     return self;
 }
 Particle.list = {};
+var Sound = function(initPack){
+    if(initPack.type === 'stoneArrow'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/arrowShoot.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'earthBullet'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/earthBullet.wav";
+        sound.play();
+    }
+    if(initPack.type === 'fireBullet'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/fireBullet.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'homingFireBullet'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/homingFireBullet.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'waterBullet'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/waterBullet.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'ninjaStar'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/ninjaStar.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'ballBullet'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/ballBullet.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'cherryBomb'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/cherryBomb.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'arrowHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/arrowHit.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'waterHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/waterHit.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'fireHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/fireHit.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'earthHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/earthHit.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'fireHomingHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/fireHomingHit.mp3";
+        sound.play();
+    }
+    if(initPack.type === 'playerHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/playerHit.mp3";
+        sound.play();
+    }
+    sound.remove();
+}
 window.onoffline = function(event){
     socket.emit('timeout');
 };
@@ -1568,6 +1645,11 @@ socket.on('update',function(data){
         if(data.particle.length > 0){
             for(var i = 0;i < data.particle.length;i++){
                 new Particle(data.particle[i]);
+            }
+        }
+        if(data.sound.length > 0){
+            for(var i = 0;i < data.sound.length;i++){
+                Sound(data.sound[i]);
             }
         }
     }
