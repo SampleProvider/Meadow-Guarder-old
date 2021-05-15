@@ -4828,8 +4828,7 @@ Player.onConnect = function(socket,username){
             player.willBeDead = false;
             player.toRemove = false;
             player.dazed = 0;
-            player.x = ENV.Spawnpoint.x;
-            player.y = ENV.Spawnpoint.y;
+            player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
             addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
 
