@@ -1534,8 +1534,8 @@ Player = function(param){
     };
     self.thirdKeyMap = {
         up:'W',
-        down:'A',
-        left:'S',
+        down:'S',
+        left:'A',
         right:'D',
         attack:'attack',
         second:'second',
