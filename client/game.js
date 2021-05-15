@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '020f1a';
+var VERSION = '0.2.1';
 
 var DEBUG = false;
 
@@ -73,6 +73,7 @@ var respawnTimer = 0;
 
 var canSignIn = true;
 var changePasswordState = 0;
+var deletePasswordState = 0;
 signDivSignIn.onclick = function(){
     if(canSignIn){
         socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
@@ -86,7 +87,15 @@ signDivCreateAccount.onclick = function(){
     socket.emit('createAccount',{username:signDivUsername.value,password:signDivPassword.value});
 }
 signDivDeleteAccount.onclick = function(){
-    socket.emit('deleteAccount',{username:signDivUsername.value,password:signDivPassword.value});
+    if(deletePasswordState === 0){
+        signDivDeleteAccount.innerHTML = 'Are you sure?';
+        deletePasswordState = 1;
+    }
+    else{
+        signDivDeleteAccount.innerHTML = 'Delete Account';
+        socket.emit('deleteAccount',{username:signDivUsername.value,password:signDivPassword.value});
+        deletePasswordState = 0;
+    }
 }
 signDivChangePassword.onclick = function(){
     if(changePasswordState === 0){
@@ -1044,6 +1053,18 @@ var Projectile = function(initPack){
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
     }
+    self.drawCtx1 = function(){
+        ctx1.translate(self.x,self.y);
+        ctx1.rotate(self.direction * Math.PI / 180);
+        if(self.projectileType === 'stoneArrow'){
+            ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
+        }
+        else{
+            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2);
+        }
+        ctx1.rotate(-self.direction * Math.PI / 180);
+        ctx1.translate(-self.x,-self.y);
+    }
     self.drawHp = function(){
         if(DEBUG){
             ctx1.strokeStyle = '#ff0000';
@@ -1543,6 +1564,9 @@ socket.on('update',function(data){
                     if(data.projectile[i].direction !== undefined){
                         Projectile.list[data.projectile[i].id].direction = data.projectile[i].direction;
                     }
+                    if(data.projectile[i].canCollide !== undefined){
+                        Projectile.list[data.projectile[i].id].canCollide = data.projectile[i].canCollide;
+                    }
                     Projectile.list[data.projectile[i].id].updated = true;
                 }
                 else{
@@ -1711,6 +1735,8 @@ socket.on('disconnected',function(data){
     },5000);
     document.getElementById('window').style.display = 'none';
     state.isHidden = true;
+    socket.emit('disconnect');
+    selfId = null;
 });
 socket.on('spectator',function(data){
     gameDiv.style.display = 'inline-block';
@@ -1999,6 +2025,11 @@ setInterval(function(){
     for(var i in Projectile.list){
         Projectile.list[i].drawHp();
         Projectile.list[i].update();
+    }
+    for(var i in Projectile.list){
+        if(Projectile.list[i].canCollide === false){
+            Projectile.list[i].drawCtx1();
+        }
     }
     for(var i in Monster.list){
         Monster.list[i].drawHp();

@@ -122,97 +122,97 @@
     "woodenarmor":{
         "name":"Wooden Armor",
         "equip":"armor",
-        "event":"self.stats.defense += 1;",
+        "event":"self.stats.defense += 10;",
         "enchantments":["smashing"]
     },
     "steelarmor":{
         "name":"Steel Armor",
         "equip":"armor",
-        "event":"self.stats.defense += 3;",
+        "event":"self.stats.defense += 30;",
         "enchantments":["smashing"]
     },
     "darksteelarmor":{
         "name":"Dark Steel Armor",
         "equip":"armor",
-        "event":"self.stats.defense += 7;",
+        "event":"self.stats.defense += 70;",
         "enchantments":["smashing"]
     },
     "goldenarmor":{
         "name":"Golden Armor",
         "equip":"armor",
-        "event":"self.stats.defense += 10;",
+        "event":"self.stats.defense += 100;",
         "enchantments":["smashing"]
     },
     "rubyarmor":{
         "name":"Ruby Armor",
         "equip":"armor",
-        "event":"self.stats.defense += 15;",
+        "event":"self.stats.defense += 150;",
         "enchantments":["smashing"]
     },
     "simplewoodenhelmet":{
         "name":"Simple Wooden Helmet",
         "equip":"helmet",
-        "event":"self.stats.defense += 0.6;",
+        "event":"self.stats.defense += 6;",
         "enchantments":["smashing"]
     },
     "simplesteelhelmet":{
         "name":"Simple Steel Helmet",
         "equip":"helmet",
-        "event":"self.stats.defense += 2;",
+        "event":"self.stats.defense += 20;",
         "enchantments":["smashing"]
     },
     "simpledarksteelhelmet":{
         "name":"Simple Dark Steel Helmet",
         "equip":"helmet",
-        "event":"self.stats.defense += 4.6;",
+        "event":"self.stats.defense += 46;",
         "enchantments":["smashing"]
     },
     "simplegoldenhelmet":{
         "name":"Simple Golden Helmet",
         "equip":"helmet",
-        "event":"self.stats.defense += 6.6;",
+        "event":"self.stats.defense += 66;",
         "enchantments":["smashing"]
     },
     "simplerubyhelmet":{
         "name":"Simple Ruby Helmet",
         "equip":"helmet",
-        "event":"self.stats.defense += 10;",
+        "event":"self.stats.defense += 100;",
         "enchantments":["smashing"]
     },
     "earthbook1":{
         "name":"Earth Book 1",
         "equip":"weapon",
-        "event":"self.stats.attack += 50;self.attackCooldown = 5;self.ability.attackAbility = 'earthAttack1';self.ability.secondAbility = 'earthSecond1';self.ability.healAbility = 'earthHeal1';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 50;self.attackCooldown = 5;self.secondCooldown = 5;self.ability.attackAbility = 'earthAttack1';self.ability.secondAbility = 'earthSecond1';self.ability.healAbility = 'earthHeal1';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","range","cost","burst"]
     },
     "earthbook2":{
         "name":"Earth Book 2",
         "equip":"weapon",
-        "event":"self.stats.attack += 80;self.attackCooldown = 10;self.ability.attackAbility = 'earthAttack2';self.ability.secondAbility = 'earthSecond2';self.ability.healAbility = 'earthHeal2';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 80;self.attackCooldown = 10;self.secondCooldown = 10;self.ability.attackAbility = 'earthAttack2';self.ability.secondAbility = 'earthSecond2';self.ability.healAbility = 'earthHeal2';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","range","cost","burst"]
     },
     "earthbook3":{
         "name":"Earth Book 3",
         "equip":"weapon",
-        "event":"self.stats.attack += 130;self.attackCooldown = 15;self.ability.attackAbility = 'earthAttack3';self.ability.secondAbility = 'earthSecond3';self.ability.healAbility = 'earthHeal3';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 130;self.attackCooldown = 15;self.secondCooldown = 15;self.ability.attackAbility = 'earthAttack3';self.ability.secondAbility = 'earthSecond3';self.ability.healAbility = 'earthHeal3';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","range","cost","burst"]
     },
     "earthbook4":{
         "name":"Earth Book 4",
         "equip":"weapon",
-        "event":"self.stats.attack += 170;self.attackCooldown = 20;self.ability.attackAbility = 'earthAttack4';self.ability.secondAbility = 'earthSecond4';self.ability.healAbility = 'earthHeal4';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 170;self.attackCooldown = 20;self.secondCooldown = 20;self.ability.attackAbility = 'earthAttack4';self.ability.secondAbility = 'earthSecond4';self.ability.healAbility = 'earthHeal4';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 2;",
         "enchantments":["speed","range","cost","burst"]
     },
     "earthbook5":{
         "name":"Earth Book 5",
         "equip":"weapon",
-        "event":"self.stats.attack += 230;self.attackCooldown = 25;self.ability.attackAbility = 'earthAttack5';self.ability.secondAbility = 'earthSecond5';self.ability.healAbility = 'earthHeal5';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 230;self.attackCooldown = 25;self.secondCooldown = 25;self.ability.attackAbility = 'earthAttack5';self.ability.secondAbility = 'earthSecond5';self.ability.healAbility = 'earthHeal5';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 5;",
         "enchantments":["speed","range","cost","burst"]
     },
     "earthbook6":{
         "name":"Earth Book 6",
         "equip":"weapon",
-        "event":"self.stats.attack += 350;self.attackCooldown = 30;self.ability.attackAbility = 'earthAttack6';self.ability.secondAbility = 'earthSecond6';self.ability.healAbility = 'earthHeal6';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 350;self.attackCooldown = 30;self.secondCooldown = 30;self.ability.attackAbility = 'earthAttack6';self.ability.secondAbility = 'earthSecond6';self.ability.healAbility = 'earthHeal6';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 7;",
         "enchantments":["speed","range","cost","burst"]
     },
     "firebook1":{
@@ -236,55 +236,55 @@
     "firebook4":{
         "name":"Fire Book 4",
         "equip":"weapon",
-        "event":"self.stats.attack += 170;self.ability.attackAbility = 'fireAttack4';self.ability.secondAbility = 'fireSecond4';self.ability.healAbility = 'fireHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 170;self.ability.attackAbility = 'fireAttack4';self.ability.secondAbility = 'fireSecond4';self.ability.healAbility = 'fireHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 2;",
         "enchantments":["speed","range","cost","burst"]
     },
     "firebook5":{
         "name":"Fire Book 5",
         "equip":"weapon",
-        "event":"self.stats.attack += 230;self.ability.attackAbility = 'fireAttack5';self.ability.secondAbility = 'fireSecond5';self.ability.healAbility = 'fireHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 230;self.ability.attackAbility = 'fireAttack5';self.ability.secondAbility = 'fireSecond5';self.ability.healAbility = 'fireHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 5;",
         "enchantments":["speed","range","cost","burst"]
     },
     "firebook6":{
         "name":"Fire Book 6",
         "equip":"weapon",
-        "event":"self.stats.attack += 350;self.ability.attackAbility = 'fireAttack6';self.ability.secondAbility = 'fireSecond6';self.ability.healAbility = 'fireHeal6';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 350;self.ability.attackAbility = 'fireAttack6';self.ability.secondAbility = 'fireSecond6';self.ability.healAbility = 'fireHeal6';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 7;",
         "enchantments":["speed","range","cost","burst"]
     },
     "waterbook1":{
         "name":"Water Book 1",
         "equip":"weapon",
-        "event":"self.stats.attack += 50;self.stats.speed *= 0.15;self.stats.range *= 10;self.ability.attackAbility = 'waterAttack1';self.ability.secondAbility = 'waterSecond1';self.ability.healAbility = 'waterHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 50;self.stats.speed *= 0.15;self.stats.range *= 5;self.ability.attackAbility = 'waterAttack1';self.ability.secondAbility = 'waterSecond1';self.ability.healAbility = 'waterHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","range","cost","burst"]
     },
     "waterbook2":{
         "name":"Water Book 2",
         "equip":"weapon",
-        "event":"self.stats.attack += 80;self.stats.speed *= 0.2;self.stats.range *= 12;self.ability.attackAbility = 'waterAttack2';self.ability.secondAbility = 'waterSecond2';self.ability.healAbility = 'waterHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 80;self.stats.speed *= 0.2;self.stats.range *= 7;self.ability.attackAbility = 'waterAttack2';self.ability.secondAbility = 'waterSecond2';self.ability.healAbility = 'waterHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","range","cost","burst"]
     },
     "waterbook3":{
         "name":"Water Book 3",
         "equip":"weapon",
-        "event":"self.stats.attack += 130;self.stats.speed *= 0.3;self.stats.range *= 12;self.ability.attackAbility = 'waterAttack3';self.ability.secondAbility = 'waterSecond3';self.ability.healAbility = 'waterHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 130;self.stats.speed *= 0.3;self.stats.range *= 10;self.ability.attackAbility = 'waterAttack3';self.ability.secondAbility = 'waterSecond3';self.ability.healAbility = 'waterHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","range","cost","burst"]
     },
     "waterbook4":{
         "name":"Water Book 4",
         "equip":"weapon",
-        "event":"self.stats.attack += 170;self.stats.speed *= 0.4;self.stats.range *= 15;self.ability.attackAbility = 'waterAttack4';self.ability.secondAbility = 'waterSecond4';self.ability.healAbility = 'waterHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 170;self.stats.speed *= 0.4;self.stats.range *= 13;self.ability.attackAbility = 'waterAttack4';self.ability.secondAbility = 'waterSecond4';self.ability.healAbility = 'waterHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 2;",
         "enchantments":["speed","range","cost","burst"]
     },
     "waterbook5":{
         "name":"Water Book 5",
         "equip":"weapon",
-        "event":"self.stats.attack += 230;self.stats.speed *= 0.5;self.stats.range *= 20;self.ability.attackAbility = 'waterAttack5';self.ability.secondAbility = 'waterSecond5';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 230;self.stats.speed *= 0.5;self.stats.range *= 15;self.ability.attackAbility = 'waterAttack5';self.ability.secondAbility = 'waterSecond5';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 5;",
         "enchantments":["speed","range","cost","burst"]
     },
     "waterbook6":{
         "name":"Water Book 6",
         "equip":"weapon",
-        "event":"self.stats.attack += 350;self.stats.speed *= 0.75;self.stats.range *= 25;self.ability.attackAbility = 'waterAttack6';self.ability.secondAbility = 'waterSecond6';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.stats.attack += 350;self.stats.speed *= 0.75;self.stats.range *= 20;self.ability.attackAbility = 'waterAttack6';self.ability.secondAbility = 'waterSecond6';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 7;",
         "enchantments":["speed","range","cost","burst"]
     },
     "firecrystal":{

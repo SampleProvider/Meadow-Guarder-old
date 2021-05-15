@@ -7,7 +7,7 @@
         "attackState":"passiveBird",
         "hp":350,
         "stats":{
-            "attack":20,
+            "attack":50,
             "defense":0,
             "heal":0
         },
@@ -33,7 +33,7 @@
         "attackState":"passiveBird",
         "hp":350,
         "stats":{
-            "attack":20,
+            "attack":50,
             "defense":0,
             "heal":0
         },

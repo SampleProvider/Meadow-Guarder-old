@@ -818,7 +818,7 @@ Actor = function(param){
     }
     self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false && self.isDead === false){
-            var damage = Math.max(Math.round((pt.stats.attack - self.stats.defense) * strength * (1 + Math.random() / 5)),0);
+            var damage = Math.max(Math.round((pt.stats.attack - self.stats.defense) * strength * (1 + Math.random() / 5)),1);
             //damage = Math.min(self.hp,damage);
             self.hp -= damage;
             self.onHit(pt);
@@ -1445,8 +1445,8 @@ Actor = function(param){
 Player = function(param){
     var self = Actor(param);
     var socket = SOCKET_LIST[self.id];
-    self.x = 320;
-    self.y = 320;
+    self.x = ENV.Spawnpoint.x;
+    self.y = ENV.Spawnpoint.y;
     self.lastX = 0;
     self.lastY = 0;
     self.spdX = 0;
@@ -1480,7 +1480,7 @@ Player = function(param){
     self.level = 0;
     self.levelMax = 50;
     self.direction = 0;
-    self.map = 'The Village';
+    self.map = ENV.Spawnpoint.map;
     playerMap[self.map] += 1;
     self.mapHeight = 3200;
     self.mapWidth = 3200;
@@ -1531,6 +1531,15 @@ Player = function(param){
         attack:'attack',
         second:'second',
         heal:'Shift',
+    };
+    self.thirdKeyMap = {
+        up:'W',
+        down:'A',
+        left:'S',
+        right:'D',
+        attack:'attack',
+        second:'second',
+        heal:' ',
     };
     self.attackCost = 10;
     self.secondCost = 40;
@@ -2211,6 +2220,11 @@ Player = function(param){
                             canvas:'lower',
                         });
                     }
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map && Player.list[j].isColliding(self.questDependent[i])){
+                            Player.list[j].teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
+                        }
+                    }
                 }
             }
             self.questStage += 1;
@@ -2477,7 +2491,7 @@ Player = function(param){
             socket.emit('toggleSelect');
             self.currentResponse = 0;
         }
-        if(self.selectedItem !== false && self.questStage === 3 && self.quest === 'Enchanter'){
+        if(self.selectedItem !== false && self.questStage === 3 && self.quest === 'Enchanter' && self.map === 'Town Hall'){
             self.questStage += 1;
             self.invincible = true;
             var item = Item.list[self.inventory.items[self.selectedItem].id];
@@ -2675,15 +2689,15 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:250000 * ENV.MonsterStrength,
+                        hp:100000 * ENV.MonsterStrength,
                         monsterType:'redBird',
                         attackState:'passiveRedBird',
                         width:monsterData['redBird'].width,
                         height:monsterData['redBird'].height,
                         xpGain:monsterData['redBird'].xpGain * 10,
                         stats:{
-                            attack:200 * ENV.MonsterStrength,
-                            defense:150,
+                            attack:75 * ENV.MonsterStrength,
+                            defense:100,
                             heal:0 * ENV.MonsterStrength,
                         },
                         itemDrops:monsterData['redBird'].itemDrops,
@@ -2737,6 +2751,11 @@ Player = function(param){
                             tile_idx:3547,
                             canvas:'lower',
                         });
+                    }
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map && Player.list[j].isColliding(self.questDependent[i])){
+                            Player.list[j].teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
+                        }
                     }
                 }
             }
@@ -2915,6 +2934,7 @@ Player = function(param){
                     }
                 }
                 addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
+                self.inventory.refreshRender();
             }
             Player.getAllInitPack(socket);
             for(var i in Player.list){
@@ -4386,7 +4406,7 @@ Player = function(param){
                 }
             }
         }
-        if(self.keyPress.heal === true && self.mana >= self.healCost && self.manaRefresh <= 0){
+        if(self.keyPress.heal === true && self.mana >= self.healCost && self.manaRefresh <= 0 && self.hp < self.hpMax){
             self.mana -= self.healCost;
             self.manaRefresh = self.healCooldown;
             for(var i in self.ability.healPattern){
@@ -4403,7 +4423,7 @@ Player = function(param){
                 self.addToEventQ(self.ability.attackAbility,self.ability.attackPattern[i]);
             }
             if(self.passive === 'homingFire'){
-                self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',32,function(t){return 25},self.stats,'monsterHoming');
+                self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25},self.stats,'monsterHoming');
                 Sound({
                     type:'fireBullet',
                     map:self.map,
@@ -4415,6 +4435,13 @@ Player = function(param){
             self.manaRefresh = self.secondCooldown;
             for(var i in self.ability.secondPattern){
                 self.addToEventQ(self.ability.secondAbility,self.ability.secondPattern[i]);
+            }
+            if(self.passive === 'homingFire'){
+                self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25},self.stats,'monsterHoming');
+                Sound({
+                    type:'fireBullet',
+                    map:self.map,
+                });
             }
         }
     }
@@ -4637,25 +4664,25 @@ Player.onConnect = function(socket,username){
         socket.emit('selfId',{id:socket.id});
 
         socket.on('keyPress',function(data){
-            if(data.inputId === player.keyMap.left || data.inputId === player.secondKeyMap.left){
+            if(data.inputId === player.keyMap.left || data.inputId === player.secondKeyMap.left || data.inputId === player.thirdKeyMap.left){
                 player.keyPress.left = data.state;
             }
-            if(data.inputId === player.keyMap.right || data.inputId === player.secondKeyMap.right){
+            if(data.inputId === player.keyMap.right || data.inputId === player.secondKeyMap.right || data.inputId === player.thirdKeyMap.right){
                 player.keyPress.right = data.state;
             }
-            if(data.inputId === player.keyMap.up || data.inputId === player.secondKeyMap.up){
+            if(data.inputId === player.keyMap.up || data.inputId === player.secondKeyMap.up || data.inputId === player.thirdKeyMap.up){
                 player.keyPress.up = data.state;
             }
-            if(data.inputId === player.keyMap.down || data.inputId === player.secondKeyMap.down){
+            if(data.inputId === player.keyMap.down || data.inputId === player.secondKeyMap.down || data.inputId === player.thirdKeyMap.down){
                 player.keyPress.down = data.state;
             }
-            if(data.inputId === player.keyMap.attack || data.inputId === player.secondKeyMap.attack){
+            if(data.inputId === player.keyMap.attack || data.inputId === player.secondKeyMap.attack || data.inputId === player.thirdKeyMap.attack){
                 player.keyPress.attack = data.state;
             }
-            if(data.inputId === player.keyMap.second || data.inputId === player.secondKeyMap.second){
+            if(data.inputId === player.keyMap.second || data.inputId === player.secondKeyMap.second || data.inputId === player.thirdKeyMap.second){
                 player.keyPress.second = data.state;
             }
-            if(data.inputId === player.keyMap.heal || data.inputId === player.secondKeyMap.heal){
+            if(data.inputId === player.keyMap.heal || data.inputId === player.secondKeyMap.heal || data.inputId === player.thirdKeyMap.heal){
                 player.keyPress.heal = data.state;
             }
             if(data.inputId === 'direction'){
@@ -4801,6 +4828,8 @@ Player.onConnect = function(socket,username){
             player.willBeDead = false;
             player.toRemove = false;
             player.dazed = 0;
+            player.x = ENV.Spawnpoint.x;
+            player.y = ENV.Spawnpoint.y;
             addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
 
@@ -6322,6 +6351,10 @@ Projectile = function(param){
         if(lastSelf.direction !== self.direction){
             pack.direction = self.direction;
             lastSelf.direction = self.direction;
+        }
+        if(lastSelf.canCollide !== self.canCollide){
+            pack.canCollide = self.canCollide;
+            lastSelf.canCollide = self.canCollide;
         }
         return pack;
 	}
