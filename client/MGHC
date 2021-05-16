@@ -244,6 +244,10 @@ MGHC = function(){
                 ctx1.strokeStyle = '#55ff00';
                 ctx1.lineWidth = 6;
             }
+            if(Monster.list[i].monsterType === 'lightningLizard'){
+                ctx1.strokeStyle = '#ffff00';
+                ctx1.lineWidth = 10;
+            }
             ctx1.beginPath();
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
             ctx1.lineTo(Monster.list[i].x,Monster.list[i].y);

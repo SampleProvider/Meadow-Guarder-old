@@ -64,7 +64,7 @@ Inventory = function(socket,server){
         select:false,
     };
     self.addItem = function(id,enchantments){
-        self.items.push({id:id,enchantments:enchantments || []});
+        self.items.push({id:id,enchantments:enchantments || [],displayButtons:false});
         self.refreshRender();
         return self.items.length - 1;
     }
@@ -373,6 +373,19 @@ Inventory = function(socket,server){
                 var item = self.items[index];
                 self.socket.emit('hideInventory');
                 Player.list[self.socket.id].selectedItem = index;
+            }
+            catch(err){
+                console.error(err);
+            }
+        });
+        self.socket.on("changeTaskBar",function(index){
+            try{
+                if(!self.hasItem(index)){
+                    addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item task bar change.');
+                    return;
+                }
+                var item = self.items[index];
+                item.displayButtons = !item.displayButtons;
             }
             catch(err){
                 console.error(err);

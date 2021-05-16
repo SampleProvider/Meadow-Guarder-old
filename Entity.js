@@ -4436,6 +4436,54 @@ Player = function(param){
                     map:self.map,
                 });
             }
+            if(self.passive === 'lightningShards'){
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined){
+                        closestMonster = Monster.list[i];
+                    }
+                    else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+                if(closestMonster){
+                    for(var i = 0;i < 4;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'lightningSpit'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'lightningSpit',
+                            angle:i * 90,
+                            direction:i * 90,
+                            x:closestMonster.x - Math.cos(i / 2 * Math.PI) * 256,
+                            y:closestMonster.y - Math.sin(i / 2 * Math.PI) * 256,
+                            map:self.map,
+                            parentType:'Player',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 0},
+                            stats:projectileStats,
+                            projectilePattern:'noCollision',
+                            onCollision:function(self,pt){
+                                self.toRemove = true;
+                            }
+                        });
+                    }
+                }
+            }
         }
         if(self.keyPress.second === true && self.mana >= self.secondCost && self.manaRefresh <= 0){
             self.mana -= self.secondCost;
@@ -4449,6 +4497,54 @@ Player = function(param){
                     type:'fireBullet',
                     map:self.map,
                 });
+            }
+            if(self.passive === 'lightningShards'){
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined){
+                        closestMonster = Monster.list[i];
+                    }
+                    else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+                if(closestMonster){
+                    for(var i = 0;i < 4;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'lightningSpit'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'lightningSpit',
+                            angle:i * 90,
+                            direction:i * 90,
+                            x:closestMonster.x - Math.cos(i / 2 * Math.PI) * 256,
+                            y:closestMonster.y - Math.sin(i / 2 * Math.PI) * 256,
+                            map:self.map,
+                            parentType:'Player',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 0},
+                            stats:projectileStats,
+                            projectilePattern:'noCollision',
+                            onCollision:function(self,pt){
+                                self.toRemove = true;
+                            }
+                        });
+                    }
+                }
             }
         }
     }
@@ -5713,6 +5809,121 @@ Monster = function(param){
                     }
                 }
                 break;
+            case "passiveLightningLizard":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveLightningLizard";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveLightningLizard";
+                }
+                break;
+            case "moveLightningLizard":
+                self.trackEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackLightningLizard";
+                break;
+            case "attackLightningLizard":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats);
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                if((self.reload % 100) % 5 === 0 && self.reload % 100 < 20 && self.reload > 50 && self.target.invincible === false){
+                    for(var i = 0;i < 4;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'lightningSpit'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'lightningSpit',
+                            angle:i * 90,
+                            direction:i * 90,
+                            x:self.target.x - Math.cos(i / 2 * Math.PI) * 256,
+                            y:self.target.y - Math.sin(i / 2 * Math.PI) * 256,
+                            map:self.map,
+                            parentType:'Monster',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 0},
+                            stats:projectileStats,
+                            projectilePattern:'noCollision',
+                            onCollision:function(self,pt){
+                                self.toRemove = true;
+                            }
+                        });
+                    }
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                self.reload += 1;
+                if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
+                    if(!self.damaged){
+                        self.target = undefined;
+                        self.trackingEntity = undefined;
+                        self.attackState = 'passiveLightningLizard';
+                    }
+                }
+                if(self.spdX > 0){
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                else{
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                break;
+            
         }
     }
     self.getUpdatePack = function(){
@@ -5940,6 +6151,9 @@ Projectile = function(param){
         self.canCollide = false;
     }
     if(param.projectilePattern === 'monsterHoming'){
+        self.canCollide = false;
+    }
+    if(param.projectilePattern === 'noCollision'){
         self.canCollide = false;
     }
     var lastSelf = {};

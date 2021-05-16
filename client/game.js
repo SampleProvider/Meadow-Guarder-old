@@ -1159,6 +1159,14 @@ var Monster = function(initPack){
                 ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13 - 26,9 * 1,12,8,self.x - 24,self.y - 16,48,32);
             }
         }
+        if(self.monsterType === 'lightningLizard'){
+            if(self.animation < 2){
+                ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13,9 * 2,12,8,self.x - 48,self.y - 32,96,64);
+            }
+            else{
+                ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13 - 26,9 * 3,12,8,self.x - 48,self.y - 32,96,64);
+            }
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){

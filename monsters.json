@@ -193,5 +193,22 @@
             "waterbook5":0.01,
             "waterbook6":0.005
         }
+    },
+    "lightningLizard":{
+        "spawnChance":0.05,
+        "xpGain":25,
+        "width":96,
+        "height":64,
+        "attackState":"passiveLightningLizard",
+        "hp":25000,
+        "stats":{
+            "attack":500,
+            "defense":0,
+            "heal":0
+        },
+        "moveSpeed":20,
+        "itemDrops":{
+            "lightningcrystal":1
+        }
     }
 }

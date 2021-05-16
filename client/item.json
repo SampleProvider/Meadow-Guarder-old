@@ -292,5 +292,11 @@
         "equip":"crystal",
         "event":"self.passive = 'homingFire';",
         "enchantments":[]
+    },
+    "lightningcrystal":{
+        "name":"Lightning Crystal",
+        "equip":"crystal",
+        "event":"self.passive = 'lightningShards';",
+        "enchantments":[]
     }
 }
