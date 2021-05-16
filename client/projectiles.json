@@ -95,7 +95,7 @@
             "defense":1,
             "heal":1,
             "range":3,
-            "speed":0.6
+            "speed":1
         }
     }
 }

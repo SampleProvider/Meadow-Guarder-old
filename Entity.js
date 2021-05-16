@@ -5632,7 +5632,7 @@ Monster = function(param){
                     break;
                 }
                 if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
-                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},self.stats,'playerHoming');
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},self.stats);
                     Sound({
                         type:'lizardSpit',
                         map:self.map,
@@ -5695,6 +5695,22 @@ Monster = function(param){
                     self.maxSpeed = param.moveSpeed;
                     self.target = undefined;
                     self.trackingEntity = undefined;
+                }
+                if(self.spdX > 0){
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                else{
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
                 }
                 break;
         }
@@ -5994,12 +6010,12 @@ Projectile = function(param){
                 self.timer = 0;
             }
             else if(Monster.list[self.parent].target !== undefined){
-                self.spdX = (Monster.list[self.parent].target.x - self.x) / 10;
-                self.spdY = (Monster.list[self.parent].target.y - self.y) / 10;
+                self.spdX = (Monster.list[self.parent].target.x - self.x) / 10 * self.stats.speed;
+                self.spdY = (Monster.list[self.parent].target.y - self.y) / 10 * self.stats.speed;
             }
             else{
-                self.spdX = (Monster.list[self.parent].x - self.x) / 10;
-                self.spdY = (Monster.list[self.parent].y - self.y) / 10;
+                self.spdX = (Monster.list[self.parent].x - self.x) / 10 * self.stats.speed;
+                self.spdY = (Monster.list[self.parent].y - self.y) / 10 * self.stats.speed;
             }
             self.timer -= 0.5;
             if(param.spin !== undefined){
@@ -6017,12 +6033,12 @@ Projectile = function(param){
                 }
             }
             if(closestMonster){
-                self.spdX = (closestMonster.x - self.x) / 10;
-                self.spdY = (closestMonster.y - self.y) / 10;
+                self.spdX = (closestMonster.x - self.x) / 10 * self.stats.speed;
+                self.spdY = (closestMonster.y - self.y) / 10 * self.stats.speed;
             }
             else{
-                self.spdX = (Player.list[self.parent].x - self.x) / 10;
-                self.spdY = (Player.list[self.parent].y - self.y) / 10;
+                self.spdX = (Player.list[self.parent].x - self.x) / 10 * self.stats.speed;
+                self.spdY = (Player.list[self.parent].y - self.y) / 10 * self.stats.speed;
             }
             self.timer -= 0.5;
             if(param.spin !== undefined){
