@@ -832,6 +832,7 @@ Actor = function(param){
                 });
             }
             if(pt.projectileType){
+                /*
                 if(pt.projectileType === 'stoneArrow'){
                     Sound({
                         type:'arrowHit',
@@ -856,7 +857,7 @@ Actor = function(param){
                         map:self.map,
                     });
                 }
-                if(pt.projectilePattern === 'playerHoming'){
+                if(pt.projectilePattern === 'playerHoming' && pt.projectileType === 'fireBullet'){
                     Sound({
                         type:'fireHomingHit',
                         map:self.map,
@@ -874,6 +875,12 @@ Actor = function(param){
                         map:self.map,
                     });
                 }
+                if(pt.projectileType === 'lizardSpit'){
+                    Sound({
+                        type:'lizardHit',
+                        map:self.map,
+                    });
+                }*/
             }
         }
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
@@ -4829,6 +4836,10 @@ Player.onConnect = function(socket,username){
             player.toRemove = false;
             player.dazed = 0;
             player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
+            player.quest = false;
+            player.questInfo = {
+                quest:false,
+            };
             addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
 
@@ -5579,7 +5590,113 @@ Monster = function(param){
                     }
                 }
                 break;
-            
+            case "passiveLizard":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveLizard";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveLizard";
+                }
+                break;
+            case "moveLizard":
+                self.trackEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackLizard";
+                break;
+            case "attackLizard":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},self.stats,'playerHoming');
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                self.reload += 1;
+                if(self.hp < 0.3 * self.hpMax){
+                    if(Spawner.list[self.spawnId]){
+                        self.attackState = 'retreatLizard';
+                        self.maxSpeed *= 1.5;
+                        self.damaged = false;
+                    }
+                    break;
+                }
+                if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
+                    if(!self.damaged){
+                        self.target = undefined;
+                        self.trackingEntity = undefined;
+                        self.attackState = 'passiveLizard';
+                    }
+                }
+                if(self.spdX > 0){
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                else{
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                break;
+            case "retreatLizard":
+                var bestSpawner = undefined;
+                for(var i in Spawner.list){
+                    if(Spawner.list[i].map === self.map){
+                        if(bestSpawner === undefined){
+                            if(Spawner.list[i].getSquareDistance(self.target) < 16 * 64){
+                                bestSpawner = Spawner.list[i];
+                            }
+                        }
+                        else if(Spawner.list[i].getSquareDistance(self.target) > bestSpawner.getSquareDistance(self.target) && Spawner.list[i].getSquareDistance(self.target) < 16 * 64){
+                            bestSpawner = Spawner.list[i];
+                        }
+                    }
+                }
+                if(bestSpawner !== undefined){
+                    if(self.trackingEntity.id !== bestSpawner.id){
+                        self.trackEntity(bestSpawner,128);
+                    }
+                }
+                if(self.hp > 0.8 * self.hpMax){
+                    self.attackState = 'passiveLizard';
+                    self.maxSpeed = param.moveSpeed;
+                    self.target = undefined;
+                    self.trackingEntity = undefined;
+                }
+                break;
         }
     }
     self.getUpdatePack = function(){

@@ -165,10 +165,33 @@
         "itemDrops":{
             "waterbook1":0.1,
             "waterbook2":0.05,
+            "waterbook3":0.01,
+            "waterbook4":0.005,
+            "waterbook5":0.001,
+            "waterbook6":0.0005,
+            "knowledgebook":0.05
+        }
+    },
+    "greenLizard":{
+        "spawnChance":0.5,
+        "xpGain":10,
+        "width":48,
+        "height":32,
+        "attackState":"passiveLizard",
+        "hp":5000,
+        "stats":{
+            "attack":200,
+            "defense":200,
+            "heal":0
+        },
+        "moveSpeed":15,
+        "itemDrops":{
             "bronzekey":0.1,
             "silverkey":0.05,
             "goldenkey":0.01,
-            "knowledgebook":0.05
+            "waterbook4":0.05,
+            "waterbook5":0.01,
+            "waterbook6":0.005
         }
     }
 }

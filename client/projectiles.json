@@ -86,5 +86,16 @@
             "range":1,
             "speed":1
         }
+    },
+    "lizardSpit":{
+        "width":28,
+        "height":28,
+        "stats":{
+            "attack":4,
+            "defense":1,
+            "heal":1,
+            "range":3,
+            "speed":0.6
+        }
     }
 }

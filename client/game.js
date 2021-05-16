@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '0.2.1';
+var VERSION = '021f1a';
 
 var DEBUG = false;
 
@@ -493,6 +493,8 @@ Img.ball = new Image();
 Img.ball.src = '/client/img/ball.png';
 Img.cherryBomb = new Image();
 Img.cherryBomb.src = '/client/img/cherryBomb.png';
+Img.lizard = new Image();
+Img.lizard.src = '/client/img/lizard.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.healthBar = new Image();
@@ -924,16 +926,16 @@ var Player = function(initPack){
     self.animationDirection = initPack.animationDirection;
     self.stats = initPack.stats;
     self.type = initPack.type;
+    self.moveNumber = 4;
     self.update = function(){
         if(talking && self.id === selfId){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
-        if(Math.abs(self.x - self.nextX) > 4){
+        if(self.moveNumber > 0){
             self.x += self.moveX;
-        }
-        if(Math.abs(self.y - self.nextY) > 4){
             self.y += self.moveY;
         }
+        self.moveNumber -= 1;
     }
     self.draw = function(){
         self.animation = Math.round(self.animation);
@@ -1091,14 +1093,14 @@ var Monster = function(initPack){
     self.monsterType = initPack.monsterType;
     self.type = initPack.type;
     self.animation = initPack.animation;
+    self.moveNumber = 4;
     self.updated = true;
     self.update = function(){
-        if(Math.abs(self.x - self.nextX) > 4){
+        if(self.moveNumber > 0){
             self.x += self.moveX;
-        }
-        if(Math.abs(self.y - self.nextY) > 4){
             self.y += self.moveY;
         }
+        self.moveNumber -= 1;
     }
     self.draw = function(){
         if(self.monsterType === 'blueBird'){
@@ -1147,6 +1149,14 @@ var Monster = function(initPack){
             }
             else{
                 ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
+            }
+        }
+        if(self.monsterType === 'greenLizard'){
+            if(self.animation < 2){
+                ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13,9 * 0,12,8,self.x - 24,self.y - 16,48,32);
+            }
+            else{
+                ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13 - 26,9 * 1,12,8,self.x - 24,self.y - 16,48,32);
             }
         }
     }
@@ -1323,7 +1333,7 @@ var Sound = function(initPack){
     }
     if(initPack.type === 'earthBullet'){
         var sound = new Audio();
-        sound.src = "/client/websiteAssets/earthBullet.wav";
+        sound.src = "/client/websiteAssets/earthBullet.mp3";
         sound.play();
     }
     if(initPack.type === 'fireBullet'){
@@ -1356,6 +1366,12 @@ var Sound = function(initPack){
         sound.src = "/client/websiteAssets/cherryBomb.mp3";
         sound.play();
     }
+    if(initPack.type === 'lizardSpit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/lizardSpit.mp3";
+        sound.play();
+    }
+    /*
     if(initPack.type === 'arrowHit'){
         var sound = new Audio();
         sound.src = "/client/websiteAssets/arrowHit.mp3";
@@ -1386,6 +1402,11 @@ var Sound = function(initPack){
         sound.src = "/client/websiteAssets/playerHit.mp3";
         sound.play();
     }
+    if(initPack.type === 'lizardHit'){
+        var sound = new Audio();
+        sound.src = "/client/websiteAssets/lizardHit.mp3";
+        sound.play();
+    }*/
     sound.remove();
 }
 window.onoffline = function(event){
@@ -1425,6 +1446,7 @@ socket.on('update',function(data){
                         Player.list[data.player[i].id].nextY = data.player[i].y;
                     }
                     Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].nextY - Player.list[data.player[i].id].y) / 4;
+                    Player.list[data.player[i].id].moveNumber = 4;
                     if(data.player[i].spdX !== undefined){
                         Player.list[data.player[i].id].spdX = data.player[i].spdX;
                     }
@@ -1587,6 +1609,7 @@ socket.on('update',function(data){
                         Monster.list[data.monster[i].id].nextY = data.monster[i].y;
                     }
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
+                    Monster.list[data.monster[i].id].moveNumber = 4;
                     if(data.monster[i].hp !== undefined){
                         Monster.list[data.monster[i].id].hp = data.monster[i].hp;
                     }
