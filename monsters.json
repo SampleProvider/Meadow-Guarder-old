@@ -200,7 +200,7 @@
         "width":96,
         "height":64,
         "attackState":"passiveLightningLizard",
-        "hp":25000,
+        "hp":35000,
         "stats":{
             "attack":500,
             "defense":0,
