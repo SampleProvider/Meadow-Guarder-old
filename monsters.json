@@ -181,7 +181,7 @@
         "hp":5000,
         "stats":{
             "attack":200,
-            "defense":200,
+            "defense":100,
             "heal":0
         },
         "moveSpeed":15,
@@ -203,7 +203,7 @@
         "hp":35000,
         "stats":{
             "attack":500,
-            "defense":0,
+            "defense":200,
             "heal":0
         },
         "moveSpeed":20,
