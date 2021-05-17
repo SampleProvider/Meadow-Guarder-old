@@ -4931,7 +4931,7 @@ Player.onConnect = function(socket,username){
             player.willBeDead = false;
             player.toRemove = false;
             player.dazed = 0;
-            player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
+            //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
             player.quest = false;
             player.questInfo = {
                 quest:false,
