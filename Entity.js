@@ -5877,7 +5877,7 @@ Monster = function(param){
                         map:self.map,
                     });
                 }
-                if((self.reload % 100) % 5 === 0 && self.reload % 100 < 20 && self.reload > 50 && self.target.invincible === false){
+                if((self.reload % 50) % 5 === 0 && self.reload % 100 < 20 && self.reload > 50 && self.target.invincible === false){
                     for(var i = 0;i < 4;i++){
                         var projectileWidth = 0;
                         var projectileHeight = 0;
