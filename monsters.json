@@ -57,10 +57,10 @@
         "width":88,
         "height":80,
         "attackState":"passiveBird",
-        "hp":350,
+        "hp":25000,
         "stats":{
-            "attack":20,
-            "defense":0,
+            "attack":75,
+            "defense":100,
             "heal":0
         },
         "moveSpeed":5,
@@ -195,14 +195,14 @@
         }
     },
     "lightningLizard":{
-        "spawnChance":0.05,
+        "spawnChance":0,
         "xpGain":25,
         "width":96,
         "height":64,
         "attackState":"passiveLightningLizard",
-        "hp":35000,
+        "hp":200000,
         "stats":{
-            "attack":500,
+            "attack":300,
             "defense":200,
             "heal":0
         },

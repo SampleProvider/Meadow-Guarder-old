@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '021f1a';
+var VERSION = '021f2a';
 
 var DEBUG = false;
 
@@ -1619,7 +1619,11 @@ socket.on('update',function(data){
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
                     Monster.list[data.monster[i].id].moveNumber = 4;
                     if(data.monster[i].hp !== undefined){
-                        Monster.list[data.monster[i].id].hp = data.monster[i].hp;
+                        Monster.list[data.monster[i].id].hp = Math.max(data.monster[i].hp,0);
+                        if(Monster.list[data.monster[i].id].monsterType === 'lightningLizard'){
+                            document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
+                            document.getElementById('bossbar').innerHTML = 'Lightning Lizard ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                        }
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
@@ -1720,6 +1724,10 @@ socket.on('update',function(data){
     }
     for(var i in Monster.list){
         if(Monster.list[i].updated === false){
+            if(Monster.list[i].monsterType === 'lightningLizard'){
+                document.getElementById('bossHealth').style.display = 'none';
+                document.getElementById('bossbar').style.display = 'none';
+            }
             delete Monster.list[i];
         }
     }
@@ -2060,6 +2068,22 @@ setInterval(function(){
     for(var i in Projectile.list){
         if(Projectile.list[i].canCollide === false){
             Projectile.list[i].drawCtx1();
+        }
+    }
+    var bossAlive = false;
+    for(var i in Monster.list){
+        if(Monster.list[i].monsterType === 'lightningLizard'){
+            bossAlive = true;
+        }
+    }
+    if(bossAlive && document.getElementById('bossbar').style.display === 'none'){
+        document.getElementById('bossHealth').style.display = 'inline-block';
+        document.getElementById('bossbar').style.display = 'inline-block';
+        for(var i in Monster.list){
+            if(Monster.list[i].monsterType === 'lightningLizard'){
+                document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
+                document.getElementById('bossbar').innerHTML = 'Lightning Lizard ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+            }
         }
     }
     for(var i in Monster.list){

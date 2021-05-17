@@ -317,6 +317,13 @@ Entity.getFrameUpdateData = function(){
                 if(Monster.list[i].spawnId){
                     Spawner.list[Monster.list[i].spawnId].spawned = false;
                 }
+                if(Monster.list[i].monsterType === 'lightningLizard'){
+                    if(!pack[Monster.list[i].map]){
+                        pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+                    }
+                    var updatePack = Monster.list[i].getUpdatePack();
+                    pack[Monster.list[i].map].monster.push(updatePack);
+                }
                 delete Monster.list[i];
             }
             else{
@@ -1503,6 +1510,7 @@ Player = function(param){
         "Weird Tower":false,
         "Clear River":false,
         "Clear Tower":false,
+        "Lightning Lizard Boss":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -1898,6 +1906,48 @@ Player = function(param){
                         message:'You found the tower? Were the rumors true?',
                         response1:'Yes.',
                         response2:'No.',
+                    });
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'hunter' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Lightning Lizard Boss';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'I came to Lilypad Pathway Part 1 because some guy called Joe said there were strong monsters here for me to fight. I saw this old temple and decided to go in, and there was this huge lizard. You seem strong enough to kill it. Could you kill this lizard?',
+                        response1:'Sure! I will kill this lizard.',
+                        response2:'Nah, sounds too scary.',
+                    });
+                }
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Lightning Lizard Boss';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'I don\'t need help from a weakling like you. Go talk to Joe in The Docks and defeat the red monster first.',
+                        response1:'Ok.',
+                    });
+                }
+                if(self.questStage === 5 && self.quest === 'Lightning Lizard Boss'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Thanks for killing this giant Lizard.',
+                        response1:'*End conversation*',
+                    });
+                }
+                if(self.questStage === 13 && self.quest === 'Lightning Lizard Boss'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Did you kill the Lightning Lizard?',
+                        response1:'Yes I did!',
                     });
                 }
                 self.keyPress.second = false;
@@ -2696,16 +2746,16 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:100000 * ENV.MonsterStrength,
+                        hp:monsterData['redBird'].hp * ENV.MonsterStrength,
                         monsterType:'redBird',
                         attackState:'passiveRedBird',
                         width:monsterData['redBird'].width,
                         height:monsterData['redBird'].height,
                         xpGain:monsterData['redBird'].xpGain * 10,
                         stats:{
-                            attack:75 * ENV.MonsterStrength,
-                            defense:100,
-                            heal:0 * ENV.MonsterStrength,
+                            attack:monsterData['redBird'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['redBird'].stats.defense,
+                            heal:monsterData['redBird'].stats.heal * ENV.MonsterStrength,
                         },
                         itemDrops:monsterData['redBird'].itemDrops,
                         onDeath:function(pt){
@@ -2853,6 +2903,270 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
+        }
+
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Lightning Lizard Boss'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Lightning Lizard Boss'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Lightning Lizard Boss',
+                questDescription:'Defeat the Lightning Lizard.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Lightning Lizard Boss'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 3 && self.questInfo.quest === 'Lightning Lizard Boss'){
+            self.quest = 'Lightning Lizard Boss';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with Hunter.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Lightning Lizard Boss'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Lightning Lizard Boss'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 7 && self.quest === 'Lightning Lizard Boss' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 8;
+                    self.questInfo.monstersKilled = 0;
+                    self.questInfo.maxMonsters = 0;
+                }
+            }
+        }
+        if(self.questStage === 8 && self.quest === 'Lightning Lizard Boss' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:20,
+                        hp:monsterData['lightningLizard'].hp * ENV.MonsterStrength,
+                        monsterType:'lightningLizard',
+                        attackState:'passiveLightningLizard',
+                        width:monsterData['lightningLizard'].width,
+                        height:monsterData['lightningLizard'].height,
+                        xpGain:monsterData['lightningLizard'].xpGain * 10,
+                        stats:{
+                            attack:monsterData['lightningLizard'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['lightningLizard'].stats.defense,
+                            heal:monsterData['lightningLizard'].stats.heal * ENV.MonsterStrength,
+                        },
+                        itemDrops:monsterData['lightningLizard'].itemDrops,
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'collision'){
+                    self.questDependent[i] = new Collision2({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        width:64,
+                        height:64,
+                        map:QuestInfo.list[i].map,
+                    });
+                    tiles.push({
+                        x:QuestInfo.list[i].x - 32,
+                        y:QuestInfo.list[i].y - 32,
+                        map:QuestInfo.list[i].map,
+                        tile_idx:2030,
+                        canvas:'lower',
+                        parent:self.id,
+                    });
+                    for(var j in SOCKET_LIST){
+                        SOCKET_LIST[j].emit('drawTile',{
+                            x:QuestInfo.list[i].x - 32,
+                            y:QuestInfo.list[i].y - 32,
+                            map:QuestInfo.list[i].map,
+                            tile_idx:2030,
+                            canvas:'lower',
+                        });
+                    }
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map && Player.list[j].isColliding(self.questDependent[i])){
+                            Player.list[j].teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
+                        }
+                    }
+                }
+            }
+            self.questStage += 1;
+        }
+        if(self.questStage === 9 && self.quest === 'Lightning Lizard Boss'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Who dares come in here? I will kill you!',
+                response1:'*End conversation*',
+            });
+        }
+        if(self.questStage === 10 && self.quest === 'Lightning Lizard Boss' && self.currentResponse === 1){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'spawner2'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:2,
+                        hp:monsterData['greenLizard'].hp * ENV.MonsterStrength,
+                        monsterType:'greenLizard',
+                        attackState:'passiveLizard',
+                        width:monsterData['greenLizard'].width,
+                        height:monsterData['greenLizard'].height,
+                        xpGain:monsterData['greenLizard'].xpGain,
+                        stats:{
+                            attack:monsterData['greenLizard'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['greenLizard'].stats.defense,
+                            heal:monsterData['greenLizard'].stats.heal * ENV.MonsterStrength,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+        }
+        if(self.questStage === 11 && self.quest === 'Lightning Lizard Boss' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Woo! Lightning Lizard is dead! Let me go tell Hunter!',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Lightning Lizard Boss'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            for(var i in SOCKET_LIST){
+                SOCKET_LIST[i].emit('removeSameTiles',{
+                    map:self.map,
+                    tile_idx:2030,
+                });
+            }
+            var newTiles = [];
+            for(var i in tiles){
+                if(tiles[i].parent !== self.id){
+                    newTiles.push(tiles[i]);
+                }
+            }
+            tiles = newTiles;
+            for(var i in self.questDependent){
+                if(self.questDependent[i].type === 'Collision2'){
+                    self.questDependent[i].toRemove = true;
+                }
+            }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Lightning Lizard Boss'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Here is your reward!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 15 && self.quest === 'Lightning Lizard Boss'){
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(250000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -3064,6 +3378,9 @@ Player = function(param){
         }
         if(self.map === 'The Village'){
             isFireMap = false;
+        }
+        if(self.map.includes('Lilypad')){
+            isFireMap = true;
         }
         if(ENV.PVP){
             isFireMap = true;
@@ -7332,6 +7649,7 @@ load("Town Hall");
 load("Fishing Hut");
 load("House");
 load("Tiny House");
+load("Lilypad Temple Room 0");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

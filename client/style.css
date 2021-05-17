@@ -1009,3 +1009,29 @@ audio {
     left: 120px;
     top: 135px;
 }
+
+#bossbar {
+    position: absolute;
+    font-family: 'pixel';
+    color: #ffffff;
+    border: 2px solid #000000;
+    left: 50%;
+    top: 30px;
+    display: none;
+    transform: translate(-50%, 0%);
+    width: 50%;
+    height: 30px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 30px;
+}
+#bossHealth {
+    position: absolute;
+    background-color: #ee0000;
+    border: 2px solid #ee0000;
+    left: 25%;
+    top: 30px;
+    display: none;
+    width: 50%;
+    height: 30px;
+}
