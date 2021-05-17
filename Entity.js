@@ -4936,6 +4936,26 @@ Player.onConnect = function(socket,username){
             player.questInfo = {
                 quest:false,
             };
+            for(var i in player.questDependent){
+                player.questDependent[i].toRemove = true;
+            }
+            var newTiles = [];
+            for(var i in tiles){
+                if(tiles[i].parent !== player.id){
+                    newTiles.push(tiles[i]);
+                }
+                else{
+                    for(var j in SOCKET_LIST){
+                        SOCKET_LIST[j].emit('removeTile',{
+                            x:tiles[i].x,
+                            y:tiles[i].y,
+                            map:tiles[i].map,
+                            tile_idx:tiles[i].tile_idx,
+                            canvas:tiles[i].canvas,
+                        });
+                    }
+                }
+            }
             addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
 
