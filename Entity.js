@@ -57,6 +57,25 @@ var PF = require('pathfinding');
 worldMap = [];
 require('./env.js');
 
+var firableMap = function(map){
+    var isFireMap = false;
+    for(var i in worldMap){
+        if(worldMap[i].fileName.slice(0,-4) === map){
+            isFireMap = true;
+        }
+    }
+    if(map === 'The Village'){
+        isFireMap = false;
+    }
+    if(map.includes('Lilypad')){
+        isFireMap = true;
+    }
+    if(ENV.PVP){
+        isFireMap = true;
+    }
+    return isFireMap;
+}
+
 s = {
     findPlayer:function(param){
         for(var i in Player.list){
@@ -66,6 +85,22 @@ s = {
         }
     },
     spawnMonster:function(param,pt){
+        if(firableMap(pt.map) === false){
+            return;
+        }
+        var spawners = 0;
+        for(var i in Spawner.list){
+            spawners++;
+        }
+        var spawnerNumber = Math.round(Math.random() * spawners);
+        var currentSpawner = 0;
+        var spawner = undefined;
+        for(var i in Spawner.list){
+            if(currentSpawner === spawnerNumber){
+                spawner = Spawner.list[i];
+            }
+            currentSpawner += 1;
+        }
         for(var i in monsterData){
             if(i === param){
                 var monsterHp = monsterData[i].hp;
@@ -74,8 +109,8 @@ s = {
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
                     spawnId:false,
-                    x:pt.x + Math.random() * 128 - 64,
-                    y:pt.y + Math.random() * 128 - 64,
+                    x:spawner.x,
+                    y:spawner.y,
                     map:pt.map,
                     moveSpeed:monsterData[i].moveSpeed,
                     stats:monsterStats,
@@ -3370,21 +3405,7 @@ Player = function(param){
         }
     }
     self.updateAttack = function(){
-        var isFireMap = false;
-        for(var i in worldMap){
-            if(worldMap[i].fileName.slice(0,-4) === self.map){
-                isFireMap = true;
-            }
-        }
-        if(self.map === 'The Village'){
-            isFireMap = false;
-        }
-        if(self.map.includes('Lilypad')){
-            isFireMap = true;
-        }
-        if(ENV.PVP){
-            isFireMap = true;
-        }
+        var isFireMap = firableMap(self.map);
         for(var i = 0;i < self.eventQ.length;i++){
             if(self.eventQ[i] !== undefined){
                 if(self.eventQ[i].time === 0){

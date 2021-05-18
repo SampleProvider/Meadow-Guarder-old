@@ -298,5 +298,12 @@
         "equip":"crystal",
         "event":"self.passive = 'lightningShards';",
         "enchantments":[]
+    },
+    "yellowfish":{
+        "name":"Yellow Fish",
+        "equip":"consume",
+        "event":"if(self.map === 'The Forest'){s.spawnMonster('lightningLizard',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('yellowfish',[]);",
+        "enchantments":[],
+        "description":"Summons the Lightning Lizard.<br>Used in The Forest."
     }
 }

@@ -57,7 +57,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",enchantments:[]}
-        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{},crystal:{}},
+        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{},crystal:{},consume:{}},
         materials:[],
         refresh:true,
         spawn:true,
@@ -174,6 +174,9 @@ Inventory = function(socket,server){
             select.className = "itemSelect";
             image.className = "item";
             equip.innerHTML = "Equip";
+            if(item.equip === 'consume'){
+                equip.innerHTML = 'Use';
+            }
             dismantle.innerHTML = "Dismantle";
             select.innerHTML = "Select";
             enchantments.className = "UI-text-light";
@@ -187,7 +190,12 @@ Inventory = function(socket,server){
                 }
                 enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
             }
-            enchantments.innerHTML = enchantDisplayName;
+            if(item.description){
+                enchantments.innerHTML = item.description + '<br>' + enchantDisplayName;
+            }
+            else{
+                enchantments.innerHTML = enchantDisplayName;
+            }
             enchantments.style.padding = '0px';
             dismantle.onclick = function(){
                 self.socket.emit("dismantleItem",index);
@@ -410,13 +418,14 @@ Enchantment = function(id,name,maxLevel,averageLevel,deviation,event){
 
 Enchantment.list = {};
 
-Item = function(id,name,equip,event,enchantments){
+Item = function(id,name,equip,event,enchantments,description){
 	var self = {
 		id:id,
         name:name,
         equip:equip,
         event:event,
         enchantments:enchantments,
+        description:description,
     }
 	Item.list[self.id] = self;
 	return self;
@@ -438,7 +447,7 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments);
+                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description);
             }
         }
         else{
