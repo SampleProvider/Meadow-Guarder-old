@@ -4,8 +4,8 @@ ENV = {
     Peaceful:false,
     MonsterStrength:1,
     Spawnpoint:{
-        x:1000,
-        y:480,
-        map:'Lilypad Pathway Part 2',
+        x:320,
+        y:320,
+        map:'The Village',
     },
 }
