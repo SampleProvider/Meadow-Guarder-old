@@ -6283,8 +6283,6 @@ Monster = function(param){
                 if(self.map === 'The Forest'){
                     self.attackState = 'enragedLightningLizard';
                     addToChat('style="color: #ff00ff">','Lightning Lizard has enraged.');
-                    self.stats.defense *= 1.5;
-                    self.stats.attack *= 1.7;
                 }
                 break;
             case "enragedLightningLizard":
