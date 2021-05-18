@@ -1624,6 +1624,10 @@ socket.on('update',function(data){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'Lightning Lizard ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
+                        if(Monster.list[data.monster[i].id].monsterType === 'redBird'){
+                            document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
+                            document.getElementById('bossbar').innerHTML = 'Red Bird ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                        }
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
@@ -1725,6 +1729,10 @@ socket.on('update',function(data){
     for(var i in Monster.list){
         if(Monster.list[i].updated === false){
             if(Monster.list[i].monsterType === 'lightningLizard'){
+                document.getElementById('bossHealth').style.display = 'none';
+                document.getElementById('bossbar').style.display = 'none';
+            }
+            if(Monster.list[i].monsterType === 'redBird'){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
@@ -2075,6 +2083,9 @@ setInterval(function(){
         if(Monster.list[i].monsterType === 'lightningLizard'){
             bossAlive = true;
         }
+        if(Monster.list[i].monsterType === 'redBird'){
+            bossAlive = true;
+        }
     }
     if(bossAlive && document.getElementById('bossbar').style.display === 'none'){
         document.getElementById('bossHealth').style.display = 'inline-block';
@@ -2083,6 +2094,10 @@ setInterval(function(){
             if(Monster.list[i].monsterType === 'lightningLizard'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Lightning Lizard ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+            }
+            if(Monster.list[i].monsterType === 'redBird'){
+                document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
+                document.getElementById('bossbar').innerHTML = 'Red Bird ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
         }
     }
