@@ -4814,7 +4814,7 @@ Player = function(param){
                             height:projectileHeight,
                             spin:function(t){return 0},
                             stats:projectileStats,
-                            projectilePattern:'noCollision',
+                            projectilePattern:'lightningStrike',
                             onCollision:function(self,pt){
                                 self.toRemove = true;
                             }
@@ -4876,7 +4876,7 @@ Player = function(param){
                             height:projectileHeight,
                             spin:function(t){return 0},
                             stats:projectileStats,
-                            projectilePattern:'noCollision',
+                            projectilePattern:'lightningStrike',
                             onCollision:function(self,pt){
                                 self.toRemove = true;
                             }
@@ -6245,7 +6245,7 @@ Monster = function(param){
                             height:projectileHeight,
                             spin:function(t){return 0},
                             stats:projectileStats,
-                            projectilePattern:'noCollision',
+                            projectilePattern:'lightningStrike',
                             onCollision:function(self,pt){
                                 self.toRemove = true;
                             }
@@ -6280,8 +6280,102 @@ Monster = function(param){
                         self.animation += 0.2;
                     }
                 }
+                if(self.map === 'The Forest'){
+                    self.attackState = 'enragedLightningLizard';
+                    addToChat('style="color: #ff00ff">','Lightning Lizard has enraged.');
+                    self.stats.defense *= 1.5;
+                    self.stats.attack *= 1.7;
+                }
                 break;
-            
+            case "enragedLightningLizard":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningLizard';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats);
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                if(self.reload % 3 === 0 && self.reload > 50 && self.target.invincible === false){
+                    for(var i = 0;i < 4;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'lightningSpit'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'lightningSpit',
+                            angle:i * 90,
+                            direction:i * 90,
+                            x:self.target.x - Math.cos(i / 2 * Math.PI) * 256,
+                            y:self.target.y - Math.sin(i / 2 * Math.PI) * 256,
+                            map:self.map,
+                            parentType:'Monster',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 0},
+                            stats:projectileStats,
+                            projectilePattern:'lightningStrike',
+                            onCollision:function(self,pt){
+                                self.toRemove = true;
+                            }
+                        });
+                    }
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                self.reload += 1;
+                if(self.spdX > 0){
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                else{
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                break;
         }
     }
     self.getUpdatePack = function(){
@@ -6514,6 +6608,9 @@ Projectile = function(param){
     if(param.projectilePattern === 'noCollision'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'lightningStrike'){
+        self.canCollide = false;
+    }
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -6616,6 +6713,10 @@ Projectile = function(param){
             if(param.spin !== undefined){
                 self.direction += param.spin(self.timer);
             }
+        }
+        else if(param.projectilePattern === 'lightningStrike' && self.timer < 5){
+            self.x -= self.spdX;
+            self.y -= self.spdY;
         }
         else{
             if(param.spin !== undefined){
