@@ -2,308 +2,584 @@
     "simplewoodenbow":{
         "name":"Simple Wooden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 50;self.ability.attackAbility = 'bowAttack1';self.ability.secondAbility = 'bowSecond1';self.ability.healAbility = 'bowHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0];",
-        "enchantments":["speed","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":5,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":0
     },
     "simplesteelbow":{
         "name":"Simple Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 80;",
-        "enchantments":["speed","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":8,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":0
     },
     "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 130;",
-        "enchantments":["speed","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":13,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":1
     },
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 170;self.stats.xp *= 2;",
-        "enchantments":["speed","burst"]
+        "event":"self.ability.attackPattern = [0,2];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":17,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":2
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 230;self.stats.xp *= 5;",
-        "enchantments":["speed","burst"]
+        "event":"self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":23,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":2
     },
     "advancedwoodenbow":{
         "name":"Advanced Wooden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 130;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":13,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":1
     },
     "advancedsteelbow":{
         "name":"Advanced Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 170;self.stats.xp *= 2;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0,2];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":17,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":2
     },
     "advanceddarksteelbow":{
         "name":"Advanced Dark Steel Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 230;self.stats.xp *= 5;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":23,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":2
     },
     "advancedgoldenbow":{
         "name":"Advanced Golden Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 350;self.stats.xp *= 7;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0,2];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":30,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":3
     },
     "advancedrubybow":{
         "name":"Advanced Ruby Bow",
         "equip":"weapon",
-        "event":"self.stats.attack += 490;self.stats.xp *= 10;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":40,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":3
     },
-    "developerbow":{
-        "name":"Developer Bow",
+    "simplewoodensword":{
+        "name":"Simple Wooden Sword",
         "equip":"weapon",
-        "event":"self.stats.attack += 700;self.stats.xp *= 10;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":12,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":4,
+        "rarity":0
     },
-    "spbow":{
-        "name":"SP Bow",
+    "simplesteelsword":{
+        "name":"Simple Steel Sword",
         "equip":"weapon",
-        "event":"self.stats.attack += 4190;self.stats.xp *= 500;self.stats.defense += 3000;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":18,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":0
     },
-    "tianmubow":{
-        "name":"Tianmu Bow",
+    "simpledarksteelsword":{
+        "name":"Simple Dark Steel Sword",
         "equip":"weapon",
-        "event":"self.stats.attack += 800;self.stats.xp *= 50;self.stats.defense += 1500;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":28,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":4,
+        "rarity":1
+    },
+    "simplegoldensword":{
+        "name":"Simple Golden Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":35,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":2
+    },
+    "simplerubysword":{
+        "name":"Simple Ruby Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":52,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":2
+    },
+    "advancedwoodensword":{
+        "name":"Advanced Wooden Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach"],
+        "damage":28,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":4,
+        "rarity":1
+    },
+    "advancedsteelsword":{
+        "name":"Advanced Steel Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach"],
+        "damage":35,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":2
+    },
+    "advanceddarksteelsword":{
+        "name":"Advanced Dark Steel Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach"],
+        "damage":52,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":2
+    },
+    "advancedgoldensword":{
+        "name":"Advanced Golden Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach"],
+        "damage":75,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":2,
+        "rarity":3
+    },
+    "advancedrubysword":{
+        "name":"Advanced Ruby Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach"],
+        "damage":100,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":2,
+        "rarity":3
+    },
+    "simplewoodenstaff":{
+        "name":"Simple Wooden Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":9,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":0
+    },
+    "simplesteelstaff":{
+        "name":"Simple Steel Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":14,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":0
+    },
+    "simpledarksteelstaff":{
+        "name":"Simple Dark Steel Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":21,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":1
+    },
+    "simplegoldenstaff":{
+        "name":"Simple Golden Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":29,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":2
+    },
+    "simplerubystaff":{
+        "name":"Simple Ruby Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":40,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":2
+    },
+    "advancedwoodenstaff":{
+        "name":"Advanced Wooden Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":21,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":1
+    },
+    "advancedsteelstaff":{
+        "name":"Advanced Steel Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":29,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":2
+    },
+    "advanceddarksteelstaff":{
+        "name":"Advanced Dark Steel Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":40,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":2
+    },
+    "advancedgoldenstaff":{
+        "name":"Advanced Golden Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":66,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":3
+    },
+    "advancedrubystaff":{
+        "name":"Advanced Ruby Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":89,
+        "damageType":"magic",
+        "critChance":0.2,
+        "useTime":10,
+        "rarity":3
+    },
+    "woodenhood":{
+        "name":"Wooden Hood",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.05;}",
+        "enchantments":["smashing"],
+        "defense":1,
+        "rarity":0,
+        "description":"<span style='color: #33ee33'>+5% ranged damage.</span>"
+    },
+    "steelhood":{
+        "name":"Steel Hood",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.08;}self.stats.critChance += 0.05;",
+        "enchantments":["smashing"],
+        "defense":3,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+8% ranged damage.</span><br><span style='color: #33ee33'>+5% ranged critical strike chance.</span>"
+    },
+    "darksteelhood":{
+        "name":"Dark Steel Hood",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.1;self.stats.critChance += 0.1;}",
+        "enchantments":["smashing"],
+        "defense":6,
+        "rarity":2,
+        "description":"<span style='color: #33ee33'>+10% ranged damage.</span><br><span style='color: #33ee33'>+10% ranged critical strike chance.</span>"
+    },
+    "goldenhood":{
+        "name":"Golden Hood",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.2;self.stats.critChance += 0.25;}",
+        "enchantments":["smashing"],
+        "defense":10,
+        "rarity":2,
+        "description":"<span style='color: #33ee33'>+20% ranged damage.</span><br><span style='color: #33ee33'>+25% ranged critical strike chance.</span>"
+    },
+    "rubyhood":{
+        "name":"Ruby Hood",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.35;self.stats.critChance += 0.4;}",
+        "enchantments":["smashing"],
+        "defense":15,
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+35% ranged damage.</span><br><span style='color: #33ee33'>+40% ranged critical strike chance.</span>"
+    },
+    "woodenhelmet":{
+        "name":"Wooden Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.03;}",
+        "enchantments":["smashing"],
+        "defense":4,
+        "rarity":0,
+        "description":"<span style='color: #33ee33'>+3% melee damage.</span>"
+    },
+    "steelhelmet":{
+        "name":"Steel Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.1;}",
+        "enchantments":["smashing"],
+        "defense":10,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+10% melee damage.</span>"
+    },
+    "darksteelhelmet":{
+        "name":"Dark Steel Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.18;self.stats.critChance += 0.05;}",
+        "enchantments":["smashing"],
+        "defense":21,
+        "damageReduction":0.15,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+18% melee damage.</span><br><span style='color: #33ee33'>+5% melee critical strike chance.</span>"
+    },
+    "goldenhelmet":{
+        "name":"Golden Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.27;self.stats.critChance += 0.08;}",
+        "enchantments":["smashing"],
+        "defense":34,
+        "damageReduction":0.35,
+        "rarity":2,
+        "description":"<span style='color: #33ee33'>+27% melee damage.</span><br><span style='color: #33ee33'>+8% melee critical strike chance.</span>"
+    },
+    "rubyhelmet":{
+        "name":"Ruby Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.45;self.stats.critChance += 0.15;}",
+        "enchantments":["smashing"],
+        "defense":52,
+        "damageReduction":0.5,
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+45% melee damage.</span><br><span style='color: #33ee33'>+15% melee critical strike chance.</span>"
+    },
+    "woodenhat":{
+        "name":"Wooden Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){self.stats.critChance += 0.1;}",
+        "enchantments":["smashing"],
+        "defense":1,
+        "rarity":0,
+        "description":"<span style='color: #33ee33'>+10% magic critical strike chance.</span>"
+    },
+    "steelhat":{
+        "name":"Steel Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.05;self.stats.critChance += 0.15;}",
+        "enchantments":["smashing"],
+        "defense":2,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+5% magic damage.</span><br><span style='color: #33ee33'>+15% magic critical strike chance.</span>"
+    },
+    "darksteelhat":{
+        "name":"Dark Steel Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.1;self.stats.critChance += 0.3;}",
+        "enchantments":["smashing"],
+        "defense":4,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+10% magic damage.</span><br><span style='color: #33ee33'>+30% magic critical strike chance.</span>"
+    },
+    "goldenhat":{
+        "name":"Golden Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.18;self.stats.critChance += 0.45;}",
+        "enchantments":["smashing"],
+        "defense":7,
+        "rarity":2,
+        "description":"<span style='color: #33ee33'>+18% magic damage.</span><br><span style='color: #33ee33'>+45% magic critical strike chance.</span>"
+    },
+    "rubyhat":{
+        "name":"Ruby Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.30;self.stats.critChance += 0.65;}",
+        "enchantments":["smashing"],
+        "defense":10,
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+30% magic damage.</span><br><span style='color: #33ee33'>+65% magic critical strike chance.</span>"
+    },
+    "sphat":{
+        "name":"SP Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 10;self.stats.critChance += 1;}",
+        "enchantments":["smashing"],
+        "defense":0,
+        "damageReduction":0.99,
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+???% magic damage.</span><br><span style='color: #33ee33'>+???% magic critical strike chance.</span>"
+    },
+    "woodenarmor":{
+        "name":"Wooden Armor",
+        "equip":"armor",
+        "event":"",
+        "enchantments":["smashing"],
+        "defense":2,
+        "rarity":0
+    },
+    "steelarmor":{
+        "name":"Steel Armor",
+        "equip":"armor",
+        "event":"damageIncrease += 0.02;",
+        "enchantments":["smashing"],
+        "defense":5,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+2% damage.</span>"
+    },
+    "darksteelarmor":{
+        "name":"Dark Steel Armor",
+        "equip":"armor",
+        "event":"damageIncrease += 0.6;self.stats.critChance += 0.05;",
+        "enchantments":["smashing"],
+        "defense":8,
+        "rarity":1,
+        "description":"<span style='color: #33ee33'>+6% damage.</span><br><span style='color: #33ee33'>+5% critical strike chance.</span>"
+    },
+    "goldenarmor":{
+        "name":"Golden Armor",
+        "equip":"armor",
+        "event":"damageIncrease += 0.11;self.stats.critChance += 0.08;",
+        "enchantments":["smashing"],
+        "defense":17,
+        "damageReduction":0.1,
+        "rarity":2,
+        "description":"<span style='color: #33ee33'>+11% damage.</span><br><span style='color: #33ee33'>+8% critical strike chance.</span>"
+    },
+    "rubyarmor":{
+        "name":"Ruby Armor",
+        "equip":"armor",
+        "event":"damageIncrease += 0.2;self.stats.critChance += 0.15;",
+        "enchantments":["smashing"],
+        "defense":28,
+        "damageReduction":0.2,
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+20% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span>"
     },
     "bronzekey":{
         "name":"Bronze Key",
         "equip":"key",
         "event":"self.textColor = '#904000';",
-        "enchantments":["unlocking"]
+        "enchantments":["unlocking"],
+        "rarity":2
     },
     "silverkey":{
         "name":"Silver Key",
         "equip":"key",
         "event":"self.textColor = '#909090';",
-        "enchantments":["unlocking"]
+        "enchantments":["unlocking"],
+        "rarity":2
     },
     "goldenkey":{
         "name":"Golden Key",
         "equip":"key",
         "event":"self.textColor = '#dd9000';",
-        "enchantments":["unlocking"]
+        "enchantments":["unlocking"],
+        "rarity":3
     },
     "developerkey":{
         "name":"Developer Key",
         "equip":"key",
-        "event":"self.textColor = '#0090ff';self.manaRegen *= 2000;self.attackCooldown = 1;self.secondCooldown = 1;self.healCooldown = 1;",
-        "enchantments":["unlocking"]
+        "event":"self.textColor = '#0090ff';self.stats.luck = -3;",
+        "enchantments":["unlocking"],
+        "rarity":3
     },
     "spkey":{
         "name":"SP Key",
         "equip":"key",
-        "event":"self.textColor = '#ff0090';self.manaRegen *= 2000;self.attackCooldown = 1;self.secondCooldown = 1;self.healCooldown = 1;self.stats.luck = -3;",
-        "enchantments":["unlocking"]
-    },
-    "knowledgebook":{
-        "name":"Knowledge Book",
-        "equip":"book",
-        "event":"self.stats.luck += 2;",
-        "enchantments":["health"]
-    },
-    "candycane":{
-        "name":"Candy Cane",
-        "equip":"special",
-        "event":"self.hpMax += 200;self.stats.heal += 2;self.manaRegen *= 2;",
-        "enchantments":["health"]
-    },
-    "woodenarmor":{
-        "name":"Wooden Armor",
-        "equip":"armor",
-        "event":"self.stats.defense += 10;",
-        "enchantments":["smashing"]
-    },
-    "steelarmor":{
-        "name":"Steel Armor",
-        "equip":"armor",
-        "event":"self.stats.defense += 30;",
-        "enchantments":["smashing"]
-    },
-    "darksteelarmor":{
-        "name":"Dark Steel Armor",
-        "equip":"armor",
-        "event":"self.stats.defense += 70;",
-        "enchantments":["smashing"]
-    },
-    "goldenarmor":{
-        "name":"Golden Armor",
-        "equip":"armor",
-        "event":"self.stats.defense += 100;",
-        "enchantments":["smashing"]
-    },
-    "rubyarmor":{
-        "name":"Ruby Armor",
-        "equip":"armor",
-        "event":"self.stats.defense += 150;",
-        "enchantments":["smashing"]
-    },
-    "simplewoodenhelmet":{
-        "name":"Simple Wooden Helmet",
-        "equip":"helmet",
-        "event":"self.stats.defense += 6;",
-        "enchantments":["smashing"]
-    },
-    "simplesteelhelmet":{
-        "name":"Simple Steel Helmet",
-        "equip":"helmet",
-        "event":"self.stats.defense += 20;",
-        "enchantments":["smashing"]
-    },
-    "simpledarksteelhelmet":{
-        "name":"Simple Dark Steel Helmet",
-        "equip":"helmet",
-        "event":"self.stats.defense += 46;",
-        "enchantments":["smashing"]
-    },
-    "simplegoldenhelmet":{
-        "name":"Simple Golden Helmet",
-        "equip":"helmet",
-        "event":"self.stats.defense += 66;",
-        "enchantments":["smashing"]
-    },
-    "simplerubyhelmet":{
-        "name":"Simple Ruby Helmet",
-        "equip":"helmet",
-        "event":"self.stats.defense += 100;",
-        "enchantments":["smashing"]
-    },
-    "earthbook1":{
-        "name":"Earth Book 1",
-        "equip":"weapon",
-        "event":"self.stats.attack += 50;self.attackCooldown = 5;self.secondCooldown = 5;self.ability.attackAbility = 'earthAttack1';self.ability.secondAbility = 'earthSecond1';self.ability.healAbility = 'earthHeal1';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "earthbook2":{
-        "name":"Earth Book 2",
-        "equip":"weapon",
-        "event":"self.stats.attack += 80;self.attackCooldown = 10;self.secondCooldown = 10;self.ability.attackAbility = 'earthAttack2';self.ability.secondAbility = 'earthSecond2';self.ability.healAbility = 'earthHeal2';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "earthbook3":{
-        "name":"Earth Book 3",
-        "equip":"weapon",
-        "event":"self.stats.attack += 130;self.attackCooldown = 15;self.secondCooldown = 15;self.ability.attackAbility = 'earthAttack3';self.ability.secondAbility = 'earthSecond3';self.ability.healAbility = 'earthHeal3';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "earthbook4":{
-        "name":"Earth Book 4",
-        "equip":"weapon",
-        "event":"self.stats.attack += 170;self.attackCooldown = 20;self.secondCooldown = 20;self.ability.attackAbility = 'earthAttack4';self.ability.secondAbility = 'earthSecond4';self.ability.healAbility = 'earthHeal4';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 2;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "earthbook5":{
-        "name":"Earth Book 5",
-        "equip":"weapon",
-        "event":"self.stats.attack += 230;self.attackCooldown = 25;self.secondCooldown = 25;self.ability.attackAbility = 'earthAttack5';self.ability.secondAbility = 'earthSecond5';self.ability.healAbility = 'earthHeal5';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 5;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "earthbook6":{
-        "name":"Earth Book 6",
-        "equip":"weapon",
-        "event":"self.stats.attack += 350;self.attackCooldown = 30;self.secondCooldown = 30;self.ability.attackAbility = 'earthAttack6';self.ability.secondAbility = 'earthSecond6';self.ability.healAbility = 'earthHeal6';self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 7;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "firebook1":{
-        "name":"Fire Book 1",
-        "equip":"weapon",
-        "event":"self.stats.attack += 50;self.ability.attackAbility = 'fireAttack1';self.ability.secondAbility = 'fireSecond1';self.ability.healAbility = 'fireHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "firebook2":{
-        "name":"Fire Book 2",
-        "equip":"weapon",
-        "event":"self.stats.attack += 80;self.ability.attackAbility = 'fireAttack2';self.ability.secondAbility = 'fireSecond2';self.ability.healAbility = 'fireHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "firebook3":{
-        "name":"Fire Book 3",
-        "equip":"weapon",
-        "event":"self.stats.attack += 130;self.ability.attackAbility = 'fireAttack3';self.ability.secondAbility = 'fireSecond3';self.ability.healAbility = 'fireHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "firebook4":{
-        "name":"Fire Book 4",
-        "equip":"weapon",
-        "event":"self.stats.attack += 170;self.ability.attackAbility = 'fireAttack4';self.ability.secondAbility = 'fireSecond4';self.ability.healAbility = 'fireHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 2;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "firebook5":{
-        "name":"Fire Book 5",
-        "equip":"weapon",
-        "event":"self.stats.attack += 230;self.ability.attackAbility = 'fireAttack5';self.ability.secondAbility = 'fireSecond5';self.ability.healAbility = 'fireHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 5;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "firebook6":{
-        "name":"Fire Book 6",
-        "equip":"weapon",
-        "event":"self.stats.attack += 350;self.ability.attackAbility = 'fireAttack6';self.ability.secondAbility = 'fireSecond6';self.ability.healAbility = 'fireHeal6';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 7;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "waterbook1":{
-        "name":"Water Book 1",
-        "equip":"weapon",
-        "event":"self.stats.attack += 50;self.stats.speed *= 0.15;self.stats.range *= 5;self.ability.attackAbility = 'waterAttack1';self.ability.secondAbility = 'waterSecond1';self.ability.healAbility = 'waterHeal1';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "waterbook2":{
-        "name":"Water Book 2",
-        "equip":"weapon",
-        "event":"self.stats.attack += 80;self.stats.speed *= 0.2;self.stats.range *= 7;self.ability.attackAbility = 'waterAttack2';self.ability.secondAbility = 'waterSecond2';self.ability.healAbility = 'waterHeal2';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "waterbook3":{
-        "name":"Water Book 3",
-        "equip":"weapon",
-        "event":"self.stats.attack += 130;self.stats.speed *= 0.3;self.stats.range *= 10;self.ability.attackAbility = 'waterAttack3';self.ability.secondAbility = 'waterSecond3';self.ability.healAbility = 'waterHeal3';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "waterbook4":{
-        "name":"Water Book 4",
-        "equip":"weapon",
-        "event":"self.stats.attack += 170;self.stats.speed *= 0.4;self.stats.range *= 13;self.ability.attackAbility = 'waterAttack4';self.ability.secondAbility = 'waterSecond4';self.ability.healAbility = 'waterHeal4';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 2;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "waterbook5":{
-        "name":"Water Book 5",
-        "equip":"weapon",
-        "event":"self.stats.attack += 230;self.stats.speed *= 0.5;self.stats.range *= 15;self.ability.attackAbility = 'waterAttack5';self.ability.secondAbility = 'waterSecond5';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 5;",
-        "enchantments":["speed","range","cost","burst"]
-    },
-    "waterbook6":{
-        "name":"Water Book 6",
-        "equip":"weapon",
-        "event":"self.stats.attack += 350;self.stats.speed *= 0.75;self.stats.range *= 20;self.ability.attackAbility = 'waterAttack6';self.ability.secondAbility = 'waterSecond6';self.ability.healAbility = 'waterHeal5';self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.xp *= 7;",
-        "enchantments":["speed","range","cost","burst"]
+        "event":"self.textColor = '#ff0090';self.stats.luck = -3;",
+        "enchantments":["unlocking"],
+        "rarity":3
     },
     "firecrystal":{
         "name":"Fire Crystal",
         "equip":"crystal",
         "event":"self.passive = 'homingFire';",
-        "enchantments":[]
+        "enchantments":[],
+        "description":"Harness the power of fire.",
+        "rarity":2
     },
     "lightningcrystal":{
         "name":"Lightning Crystal",
         "equip":"crystal",
         "event":"self.passive = 'lightningShards';",
-        "enchantments":[]
+        "enchantments":[],
+        "description":"Harness the power of lightning.",
+        "rarity":3
     },
     "yellowfish":{
         "name":"Yellow Fish",
         "equip":"consume",
         "event":"if(self.map === 'The Forest'){s.spawnMonster('lightningLizard',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('yellowfish',[]);",
         "enchantments":[],
-        "description":"Summons the Lightning Lizard.<br>Used in The Forest."
+        "description":"Summons the Lightning Lizard.<br>Used in The Forest.",
+        "rarity":3
     }
 }

@@ -5,11 +5,13 @@
         "width":44,
         "height":40,
         "attackState":"passiveBird",
-        "hp":350,
+        "hp":35,
         "stats":{
-            "attack":50,
+            "attack":5,
             "defense":0,
-            "heal":0
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":5,
         "itemDrops":{
@@ -22,7 +24,27 @@
             "advancedsteelbow":0.005,
             "advanceddarksteelbow":0.001,
             "advancedgoldenbow":0.0005,
-            "advancedrubybow":0.0001
+            "advancedrubybow":0.0001,
+            "simplewoodensword":0.1,
+            "simplesteelsword":0.05,
+            "simpledarksteelsword":0.01,
+            "simplegoldensword":0.005,
+            "simplerubysword":0.001,
+            "advancedwoodensword":0.01,
+            "advancedsteelsword":0.005,
+            "advanceddarksteelsword":0.001,
+            "advancedgoldensword":0.0005,
+            "advancedrubysword":0.0001,
+            "simplewoodenstaff":0.1,
+            "simplesteelstaff":0.05,
+            "simpledarksteelstaff":0.01,
+            "simplegoldenstaff":0.005,
+            "simplerubystaff":0.001,
+            "advancedwoodenstaff":0.01,
+            "advancedsteelstaff":0.005,
+            "advanceddarksteelstaff":0.001,
+            "advancedgoldenstaff":0.0005,
+            "advancedrubystaff":0.0001
         }
     },
     "greenBird":{
@@ -31,11 +53,13 @@
         "width":44,
         "height":40,
         "attackState":"passiveBird",
-        "hp":350,
+        "hp":35,
         "stats":{
-            "attack":50,
+            "attack":5,
             "defense":0,
-            "heal":0
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":5,
         "itemDrops":{
@@ -48,7 +72,27 @@
             "advancedsteelbow":0.005,
             "advanceddarksteelbow":0.001,
             "advancedgoldenbow":0.0005,
-            "advancedrubybow":0.0001
+            "advancedrubybow":0.0001,
+            "simplewoodensword":0.1,
+            "simplesteelsword":0.05,
+            "simpledarksteelsword":0.01,
+            "simplegoldensword":0.005,
+            "simplerubysword":0.001,
+            "advancedwoodensword":0.01,
+            "advancedsteelsword":0.005,
+            "advanceddarksteelsword":0.001,
+            "advancedgoldensword":0.0005,
+            "advancedrubysword":0.0001,
+            "simplewoodenstaff":0.1,
+            "simplesteelstaff":0.05,
+            "simpledarksteelstaff":0.01,
+            "simplegoldenstaff":0.005,
+            "simplerubystaff":0.001,
+            "advancedwoodenstaff":0.01,
+            "advancedsteelstaff":0.005,
+            "advanceddarksteelstaff":0.001,
+            "advancedgoldenstaff":0.0005,
+            "advancedrubystaff":0.0001
         }
     },
     "redBird":{
@@ -57,11 +101,13 @@
         "width":88,
         "height":80,
         "attackState":"passiveBird",
-        "hp":25000,
+        "hp":2500,
         "stats":{
-            "attack":75,
-            "defense":100,
-            "heal":0
+            "attack":7,
+            "defense":10,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":5,
         "itemDrops":{
@@ -74,30 +120,36 @@
         "width":44,
         "height":44,
         "attackState":"passiveBall",
-        "hp":500,
+        "hp":50,
         "stats":{
-            "attack":50,
-            "defense":2,
-            "heal":0
+            "attack":5,
+            "defense":0,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":5,
         "itemDrops":{
-            "simplewoodenhelmet":0.1,
-            "simplesteelhelmet":0.05,
-            "simpledarksteelhelmet":0.01,
-            "simplegoldenhelmet":0.005,
-            "simplerubyhelmet":0.001,
+            "woodenhood":0.1,
+            "steelhood":0.05,
+            "darksteelhood":0.01,
+            "goldenhood":0.005,
+            "rubyhood":0.001,
+            "woodenhelmet":0.1,
+            "steelhelmet":0.05,
+            "darksteelhelmet":0.01,
+            "goldenhelmet":0.005,
+            "rubyhelmet":0.001,
+            "woodenhat":0.1,
+            "steelhat":0.05,
+            "darksteelhat":0.01,
+            "goldenhat":0.005,
+            "rubyhat":0.001,
             "woodenarmor":0.1,
             "steelarmor":0.05,
             "darksteelarmor":0.01,
             "goldenarmor":0.005,
-            "rubyarmor":0.001,
-            "earthbook1":0.1,
-            "earthbook2":0.05,
-            "earthbook3":0.01,
-            "earthbook4":0.005,
-            "earthbook5":0.001,
-            "earthbook6":0.0005
+            "rubyarmor":0.001
         }
     },
     "snowBall":{
@@ -106,25 +158,36 @@
         "width":44,
         "height":44,
         "attackState":"passiveBall",
-        "hp":1000,
+        "hp":100,
         "stats":{
-            "attack":200,
-            "defense":2,
-            "heal":0
+            "attack":20,
+            "defense":0,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":10,
         "itemDrops":{
-            "simplewoodenhelmet":0.1,
-            "simplesteelhelmet":0.05,
-            "simpledarksteelhelmet":0.01,
-            "simplegoldenhelmet":0.005,
-            "simplerubyhelmet":0.001,
+            "woodenhood":0.1,
+            "steelhood":0.05,
+            "darksteelhood":0.01,
+            "goldenhood":0.005,
+            "rubyhood":0.001,
+            "woodenhelmet":0.1,
+            "steelhelmet":0.05,
+            "darksteelhelmet":0.01,
+            "goldenhelmet":0.005,
+            "rubyhelmet":0.001,
+            "woodenhat":0.1,
+            "steelhat":0.05,
+            "darksteelhat":0.01,
+            "goldenhat":0.005,
+            "rubyhat":0.001,
             "woodenarmor":0.1,
             "steelarmor":0.05,
             "darksteelarmor":0.01,
             "goldenarmor":0.005,
-            "rubyarmor":0.001,
-            "candycane":0.5
+            "rubyarmor":0.001
         }
     },
     "redCherryBomb":{
@@ -133,20 +196,16 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":350,
+        "hp":35,
         "stats":{
-            "attack":5000,
+            "attack":500,
             "defense":0,
-            "heal":0
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":15,
         "itemDrops":{
-            "firebook1":0.1,
-            "firebook2":0.05,
-            "firebook3":0.01,
-            "firebook4":0.005,
-            "firebook5":0.001,
-            "firebook6":0.0005
         }
     },
     "blueCherryBomb":{
@@ -155,21 +214,16 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":500,
+        "hp":50,
         "stats":{
-            "attack":5000,
+            "attack":500,
             "defense":0,
-            "heal":0
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":15,
         "itemDrops":{
-            "waterbook1":0.1,
-            "waterbook2":0.05,
-            "waterbook3":0.01,
-            "waterbook4":0.005,
-            "waterbook5":0.001,
-            "waterbook6":0.0005,
-            "knowledgebook":0.05
         }
     },
     "greenLizard":{
@@ -178,20 +232,16 @@
         "width":48,
         "height":32,
         "attackState":"passiveLizard",
-        "hp":5000,
+        "hp":500,
         "stats":{
-            "attack":200,
-            "defense":100,
-            "heal":0
+            "attack":20,
+            "defense":10,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":15,
         "itemDrops":{
-            "bronzekey":0.1,
-            "silverkey":0.05,
-            "goldenkey":0.01,
-            "waterbook4":0.05,
-            "waterbook5":0.01,
-            "waterbook6":0.005
         }
     },
     "lightningLizard":{
@@ -200,11 +250,13 @@
         "width":96,
         "height":64,
         "attackState":"passiveLightningLizard",
-        "hp":200000,
+        "hp":20000,
         "stats":{
-            "attack":300,
-            "defense":200,
-            "heal":0
+            "attack":55,
+            "defense":20,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
         },
         "moveSpeed":20,
         "itemDrops":{

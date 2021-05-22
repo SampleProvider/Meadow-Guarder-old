@@ -104,13 +104,51 @@ s = {
         for(var i in monsterData){
             if(i === param){
                 var monsterHp = monsterData[i].hp;
-                var monsterStats = monsterData[i].stats;
+                var monsterStats = Object.create(monsterData[i].stats);
                 monsterHp *= ENV.MonsterStrength;
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
                     spawnId:false,
                     x:spawner.x,
                     y:spawner.y,
+                    map:pt.map,
+                    moveSpeed:monsterData[i].moveSpeed,
+                    stats:monsterStats,
+                    hp:Math.round(monsterHp),
+                    monsterType:i,
+                    attackState:monsterData[i].attackState,
+                    width:monsterData[i].width,
+                    height:monsterData[i].height,
+                    xpGain:monsterData[i].xpGain,
+                    onDeath:function(pt){
+                        pt.toRemove = true;
+                        for(var i in Projectile.list){
+                            if(Projectile.list[i].parent === pt.id){
+                                Projectile.list[i].toRemove = true;
+                            }
+                        }
+                    },
+                });
+                for(var i in Player.list){
+                    if(Player.list[i].map === monster.map){
+                        SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                    }
+                }
+                return monster;
+            }
+        }
+    },
+    createMonster:function(param,pt){
+        for(var i in monsterData){
+            if(i === param){
+                var monsterHp = monsterData[i].hp;
+                var monsterStats = Object.create(monsterData[i].stats);
+                monsterHp *= ENV.MonsterStrength;
+                monsterStats.attack *= ENV.MonsterStrength;
+                var monster = new Monster({
+                    spawnId:false,
+                    x:pt.x + Math.random() * 128 - 64,
+                    y:pt.y + Math.random() * 128 - 64,
                     map:pt.map,
                     moveSpeed:monsterData[i].moveSpeed,
                     stats:monsterStats,
@@ -180,11 +218,11 @@ s = {
     smite:function(param){
         var player = s.findPlayer(param);
         player.invincible = false;
-        s.spawnMonster('redCherryBomb',player);
+        s.createMonster('redCherryBomb',player);
     },
     smiteAll:function(){
         for(var i in Player.list){
-            s.smite(Player.list[i].username);
+            s.createMonster(Player.list[i].username);
         }
     },
     kill:function(param){
@@ -860,8 +898,13 @@ Actor = function(param){
     }
     self.onCollision = function(pt,strength){
         if(!self.invincible && pt.toRemove === false && self.isDead === false){
-            var damage = Math.max(Math.round((pt.stats.attack - self.stats.defense) * strength * (1 + Math.random() / 5)),1);
+            var damage = Math.max(Math.round((pt.stats.attack - self.stats.defense) * strength * (1 + Math.random() / 5) * (1 - self.stats.damageReduction)),1);
             //damage = Math.min(self.hp,damage);
+            var particleType = 'redDamage';
+            if(Math.random() < pt.stats.critChance){
+                damage *= 2;
+                particleType = 'bigOrangeDamage';
+            }
             self.hp -= damage;
             self.onHit(pt);
             if(damage){
@@ -869,7 +912,7 @@ Actor = function(param){
                     x:self.x + Math.random() * 64 - 32,
                     y:self.y + Math.random() * 64 - 32,
                     map:self.map,
-                    particleType:'redDamage',
+                    particleType:particleType,
                     value:'-' + damage,
                 });
             }
@@ -978,6 +1021,7 @@ Actor = function(param){
         for(var i in projectileStats){
             projectileStats[i] *= stats[i];
         }
+        projectileStats.damageReduction = 0;
 		var projectile = Projectile({
             id:id,
             projectileType:projectileType,
@@ -1594,15 +1638,12 @@ Player = function(param){
     self.attackCost = 10;
     self.secondCost = 40;
     self.healCost = 100;
-    self.attackCooldown = 5;
-    self.secondCooldown = 5;
-    self.healCooldown = 5;
+    self.cooldown = 5;
+    self.useTime = 5;
     self.passive = '';
     self.regenTick = 0;
     self.ability = {
-        attackAbility:'baseAttack',
-        secondAbility:'baseSecond',
-        healAbility:'baseHeal',
+        ability:'base',
         attackPattern:[0],
         secondPattern:[0],
         healPattern:[0,20,40,60],
@@ -1623,7 +1664,7 @@ Player = function(param){
             if(self.inventory.currentEquip[i] === undefined){
                 self.inventory.addItem(param.param.currentEquip[i].id,param.param.currentEquip[i].enchantments);
             }
-            else{
+            else if(Item.list[param.param.currentEquip[i].id]){
                 self.inventory.currentEquip[i] = param.param.currentEquip[i];
             }
         }
@@ -1665,7 +1706,11 @@ Player = function(param){
         luck:1,
         range:1,
         speed:1,
+        critChance:0,
+        damageType:'',
+        damageReduction:0,
     }
+    self.currentItem = '';
     var lastSelf = {};
     self.update = function(){
         self.mapChange += 1;
@@ -1708,6 +1753,7 @@ Player = function(param){
         }
         self.regenTick += 1;
         self.manaRefresh = Math.max(self.manaRefresh - 1,-10);
+        self.cooldown -= 1;
         if(!self.invincible && self.isDead === false){
             if(self.manaRefresh <= -10){
                 self.mana += 2 * self.manaRegen;
@@ -2217,7 +2263,7 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:1000 * ENV.MonsterStrength,
+                        hp:250 * ENV.MonsterStrength,
                         monsterType:'blueBall',
                         attackState:'passiveBall',
                         width:monsterData['blueBall'].width,
@@ -2227,6 +2273,7 @@ Player = function(param){
                             attack:150 * ENV.MonsterStrength,
                             defense:30,
                             heal:0 * ENV.MonsterStrength,
+                            damageReduction:0,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -2263,7 +2310,8 @@ Player = function(param){
                         stats:{
                             attack:5000 * ENV.MonsterStrength,
                             defense:0,
-                            heal:0 * ENV.MonsterStrength,
+                            heal:0,
+                            damageReduction:0,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -2744,7 +2792,7 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:25000 * ENV.MonsterStrength,
+                        hp:500 * ENV.MonsterStrength,
                         monsterType:'snowBall',
                         attackState:'passiveBall',
                         width:monsterData['snowBall'].width,
@@ -2753,7 +2801,8 @@ Player = function(param){
                         stats:{
                             attack:45 * ENV.MonsterStrength,
                             defense:0,
-                            heal:0 * ENV.MonsterStrength,
+                            heal:0,
+                            damageReduction:0,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -2790,7 +2839,8 @@ Player = function(param){
                         stats:{
                             attack:monsterData['redBird'].stats.attack * ENV.MonsterStrength,
                             defense:monsterData['redBird'].stats.defense,
-                            heal:monsterData['redBird'].stats.heal * ENV.MonsterStrength,
+                            heal:monsterData['redBird'].stats.heal,
+                            damageReduction:monsterData['redBird'].stats.damageReduction,
                         },
                         itemDrops:monsterData['redBird'].itemDrops,
                         onDeath:function(pt){
@@ -3026,7 +3076,8 @@ Player = function(param){
                         stats:{
                             attack:monsterData['lightningLizard'].stats.attack * ENV.MonsterStrength,
                             defense:monsterData['lightningLizard'].stats.defense,
-                            heal:monsterData['lightningLizard'].stats.heal * ENV.MonsterStrength,
+                            heal:monsterData['lightningLizard'].stats.heal,
+                            damageReduction:monsterData['lightningLizard'].stats.damageReduction,
                         },
                         itemDrops:monsterData['lightningLizard'].itemDrops,
                         onDeath:function(pt){
@@ -3117,7 +3168,8 @@ Player = function(param){
                         stats:{
                             attack:monsterData['greenLizard'].stats.attack * ENV.MonsterStrength,
                             defense:monsterData['greenLizard'].stats.defense,
-                            heal:monsterData['greenLizard'].stats.heal * ENV.MonsterStrength,
+                            heal:monsterData['greenLizard'].stats.heal,
+                            damageReduction:monsterData['greenLizard'].stats.damageReduction,
                         },
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -3215,32 +3267,52 @@ Player = function(param){
                 luck:1,
                 range:1,
                 speed:1,
+                critChance:0,
+                damageType:'',
+                damageReduction:0,
             }
             self.passive = '';
             self.textColor = '#ffff00';
             self.hpMax = 1000;
             self.attackCost = 10;
             self.secondCost = 40;
-            self.healCost = 100;
-            self.attackCooldown = 5;
-            self.secondCooldown = 5;
-            self.healCooldown = 5;
+            self.healCost = 50;
             self.manaRegen = 1;
             self.maxMana = 200;
             self.ability = {
-                attackAbility:'baseAttack',
-                secondAbility:'baseSecond',
-                healAbility:'baseHeal',
+                ability:'base',
                 attackPattern:[0],
                 secondPattern:[0],
                 healPattern:[0,20,40,60],
             }
             self.maxSpeed = 20;
             self.pushPower = 3;
+            damageIncrease = 1;
+            self.useTime = 0;
             for(var i in self.inventory.currentEquip){
                 if(self.inventory.currentEquip[i].id !== undefined){
+                    var item = Item.list[self.inventory.currentEquip[i].id];
+                    if(item.damage){
+                        self.stats.attack += item.damage;
+                    }
+                    if(item.critChance){
+                        self.stats.critChance += item.critChance;
+                    }
+                    if(item.defense){
+                        self.stats.defense += item.defense;
+                    }
+                    if(item.damageReduction){
+                        self.stats.damageReduction += item.damageReduction;
+                    }
+                    if(item.damageType){
+                        self.stats.damageType += item.damageType;
+                        self.ability.ability = self.inventory.currentEquip[i].id;
+                    }
+                    if(item.useTime){
+                        self.useTime += item.useTime;
+                    }
                     try{
-                        eval(Item.list[self.inventory.currentEquip[i].id].event);
+                        eval(item.event);
                         for(var j in self.inventory.currentEquip[i].enchantments){
                             var enchantment = Enchantment.list[self.inventory.currentEquip[i].enchantments[j].id];
                             for(var k = 0;k < self.inventory.currentEquip[i].enchantments[j].level;k++){
@@ -3253,6 +3325,13 @@ Player = function(param){
                     }
                 }
             }
+            if(self.inventory.currentEquip['weapon'].id){
+                self.currentItem = self.inventory.currentEquip['weapon'].id;
+            }
+            else{
+                self.currentItem = '';
+            }
+            self.stats.attack = Math.round(self.stats.attack * damageIncrease);
             self.hpMax = Math.round(self.hpMax);
             if(self.inventory.spawn === true){
                 self.inventory.spawn = false;
@@ -3280,8 +3359,10 @@ Player = function(param){
             }
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
-            Pet.list[self.pet].mapWidth = self.transporter.mapx;
-            Pet.list[self.pet].mapHeight = self.transporter.mapy;
+            if(Pet.list[self.pet]){
+                Pet.list[self.pet].mapWidth = self.transporter.mapx;
+                Pet.list[self.pet].mapHeight = self.transporter.mapy;
+            }
             playerMap[self.map] += 1;
             if(map !== self.map){
                 for(var i in Spawner.list){
@@ -3404,307 +3485,72 @@ Player = function(param){
             }
         }
     }
+    self.doPassive = function(){
+        if(self.passive === 'homingFire'){
+            self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25},self.stats,'monsterHoming');
+            Sound({
+                type:'fireBullet',
+                map:self.map,
+            });
+        }
+        if(self.passive === 'lightningShards'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined){
+                    closestMonster = Monster.list[i];
+                }
+                else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
+                    closestMonster = Monster.list[i];
+                }
+            }
+            if(closestMonster){
+                for(var i = 0;i < 4;i++){
+                    var projectileWidth = 0;
+                    var projectileHeight = 0;
+                    var projectileStats = {};
+                    for(var j in projectileData){
+                        if(j === 'lightningSpit'){
+                            projectileWidth = projectileData[j].width;
+                            projectileHeight = projectileData[j].height;
+                            projectileStats = Object.create(projectileData[j].stats);
+                        }
+                    }
+                    for(var j in projectileStats){
+                        projectileStats[j] *= self.stats[j];
+                    }
+                    projectileStats.damageReduction = 0;
+                    var projectile = Projectile({
+                        id:self.id,
+                        projectileType:'lightningSpit',
+                        angle:i * 90,
+                        direction:i * 90,
+                        x:closestMonster.x - Math.cos(i / 2 * Math.PI) * 256,
+                        y:closestMonster.y - Math.sin(i / 2 * Math.PI) * 256,
+                        map:self.map,
+                        parentType:'Player',
+                        mapWidth:self.mapWidth,
+                        mapHeight:self.mapHeight,
+                        width:projectileWidth,
+                        height:projectileHeight,
+                        spin:function(t){return 0},
+                        stats:projectileStats,
+                        projectilePattern:'lightningStrike',
+                        onCollision:function(self,pt){
+                            self.toRemove = true;
+                        }
+                    });
+                }
+            }
+        }
+    }
     self.updateAttack = function(){
         var isFireMap = firableMap(self.map);
         for(var i = 0;i < self.eventQ.length;i++){
             if(self.eventQ[i] !== undefined){
                 if(self.eventQ[i].time === 0){
                     switch(self.eventQ[i].event){
-                        case "baseHeal":
-                            var heal = 100 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "bowHeal1":
-                            var heal = 100 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "earthHeal1":
-                            var heal = 110 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "earthHeal2":
-                            var heal = 120 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "earthHeal3":
-                            var heal = 130 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "earthHeal4":
-                            var heal = 135 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            if(isFireMap){
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'earthBullet',0,function(t){return 25},self.stats);
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthHeal5":
-                            var heal = 140 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            if(isFireMap){
-                                for(var j = 0;j < 15;j++){
-                                    self.shootProjectile(self.id,'Player',j * 24,j * 24,'earthBullet',0,function(t){return 25},self.stats);
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthHeal6":
-                            var heal = 150 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            if(isFireMap){
-                                for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'earthBullet',0,function(t){return 25},self.stats);
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "fireHeal1":
-                            var heal = 50 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "fireHeal2":
-                            var heal = 55 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "fireHeal3":
-                            var heal = 60 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "fireHeal4":
-                            var heal = 65 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "fireHeal5":
-                            var heal = 70 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "fireHeal6":
-                            var heal = 75 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "waterHeal1":
+                        case "heal":
                             var heal = 200 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "waterHeal2":
-                            var heal = 250 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "waterHeal3":
-                            var heal = 275 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "waterHeal4":
-                            var heal = 325 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "waterHeal5":
-                            var heal = 350 * self.stats.heal;
-                            heal = Math.min(self.hpMax - self.hp,heal);
-                            self.hp += heal;
-                            if(heal){
-                                var particle = new Particle({
-                                    x:self.x + Math.random() * 64 - 32,
-                                    y:self.y + Math.random() * 64 - 32,
-                                    map:self.map,
-                                    particleType:'greenDamage',
-                                    value:'+' + heal,
-                                });
-                            }
-                            break;
-                        case "waterHeal6":
-                            var heal = 400 * self.stats.heal;
                             heal = Math.min(self.hpMax - self.hp,heal);
                             self.hp += heal;
                             if(heal){
@@ -3719,23 +3565,308 @@ Player = function(param){
                             break;
                         case "baseAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',30,function(t){return 0},self.stats);
                                 Sound({
                                     type:'stoneArrow',
                                     map:self.map,
                                 });
                             }
                             break;
-                        case "bowAttack1":
+                        case "simplewoodenbowAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',0,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},self.stats);
                                 Sound({
                                     type:'stoneArrow',
                                     map:self.map,
                                 });
                             }
                             break;
-                        case "earthAttack1":
+                        case "simplesteelbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simpledarksteelbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplegoldenbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplerubybowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedwoodenbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedsteelbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advanceddarksteelbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedgoldenbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 10,self.direction - 10,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 10,self.direction + 10,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedrubybowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 10,self.direction - 10,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction + 10,self.direction + 10,'stoneArrow',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'stoneArrow',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplewoodenswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplewoodensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplesteelswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplesteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simpledarksteelswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simpledarksteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplegoldenswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplegoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplegoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplerubyswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplerubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplerubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedwoodenswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedwoodensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedsteelswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedsteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advancedsteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advanceddarksteelswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advanceddarksteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advanceddarksteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedgoldenswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedgoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedgoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedgoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedrubyswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedrubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedrubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedrubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplewoodenstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplesteelstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simpledarksteelstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplegoldenstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "simplerubystaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedwoodenstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedsteelstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advanceddarksteelstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedgoldenstaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 120,self.direction - 120,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "advancedrubystaffAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 120,self.direction - 120,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "earthbook1Attack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
                                 Sound({
@@ -3744,7 +3875,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "earthAttack2":
+                        case "earthbook2Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
@@ -3755,7 +3886,7 @@ Player = function(param){
                                     });
                                 }
                             break;
-                        case "earthAttack3":
+                        case "earthbook3Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
@@ -3766,7 +3897,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "earthAttack4":
+                        case "earthbook4Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
@@ -3777,7 +3908,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "earthAttack5":
+                        case "earthbook5Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
@@ -3791,7 +3922,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "earthAttack6":
+                        case "earthbook6Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
@@ -3805,7 +3936,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireAttack1":
+                        case "firebook1Attack":
                             if(isFireMap){
                                 for(var j = -1;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'fireBullet',-20,function(t){return 0},self.stats);
@@ -3816,7 +3947,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireAttack2":
+                        case "firebook2Attack":
                             if(isFireMap){
                                 for(var j = -1;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
@@ -3830,7 +3961,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireAttack3":
+                        case "firebook3Attack":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
@@ -3844,7 +3975,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireAttack4":
+                        case "firebook4Attack":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
@@ -3861,7 +3992,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireAttack5":
+                        case "firebook5Attack":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
@@ -3878,7 +4009,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireAttack6":
+                        case "firebook6Attack":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},self.stats);
@@ -3898,7 +4029,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterAttack1":
+                        case "waterbook1Attack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 Sound({
@@ -3907,7 +4038,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterAttack2":
+                        case "waterbook2Attack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
                                 Sound({
@@ -3916,7 +4047,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterAttack3":
+                        case "waterbook3Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 2;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -3927,7 +4058,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterAttack4":
+                        case "waterbook4Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -3938,7 +4069,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterAttack5":
+                        case "waterbook5Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -3949,7 +4080,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterAttack6":
+                        case "waterbook6Attack":
                             if(isFireMap){
                                 for(var j = 0;j < 4;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 90,self.direction + j * 90,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -3963,7 +4094,7 @@ Player = function(param){
                         case "baseSecond":
                             if(isFireMap){
                                 for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',j * 72,j * 72,'stoneArrow',0,function(t){return 0},self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 72,j * 72,'stoneArrow',30,function(t){return 0},self.stats);
                                 }
                                 Sound({
                                     type:'stoneArrow',
@@ -3974,7 +4105,7 @@ Player = function(param){
                         case "bowSecond1":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'stoneArrow',0,function(t){return 0},self.stats);
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'stoneArrow',30,function(t){return 0},self.stats);
                                 }
                                 Sound({
                                     type:'stoneArrow',
@@ -3982,7 +4113,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "earthSecond1":
+                        case "earthbook1Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4047,7 +4178,7 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
-                        case "earthSecond2":
+                        case "earthbook2Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4127,7 +4258,7 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
-                        case "earthSecond3":
+                        case "earthbook3Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4207,7 +4338,7 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
-                        case "earthSecond4":
+                        case "earthbook4Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4304,7 +4435,7 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
-                        case "earthSecond5":
+                        case "earthbook5Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4431,7 +4562,7 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
-                        case "earthSecond6":
+                        case "earthbook6Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4574,7 +4705,7 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
-                        case "fireSecond1":
+                        case "firebook1Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4588,7 +4719,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireSecond2":
+                        case "firebook2Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4602,7 +4733,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireSecond3":
+                        case "firebook3Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4619,7 +4750,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireSecond4":
+                        case "firebook4Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4636,7 +4767,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireSecond5":
+                        case "firebook5Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4656,7 +4787,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "fireSecond6":
+                        case "firebook6Second":
                             if(isFireMap){
                                 var speed = self.stats.speed;
                                 self.stats.speed = 0;
@@ -4676,7 +4807,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterSecond1":
+                        case "waterbook1Second":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -4687,7 +4818,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterSecond2":
+                        case "waterbook2Second":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -4698,7 +4829,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterSecond3":
+                        case "waterbook3Second":
                             if(isFireMap){
                                 for(var j = -3;j < 3;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -4709,7 +4840,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterSecond4":
+                        case "waterbook4Second":
                             if(isFireMap){
                                 for(var j = -4;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-10,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -4720,7 +4851,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterSecond5":
+                        case "waterbook5Second":
                             if(isFireMap){
                                 for(var j = -4;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -4731,7 +4862,7 @@ Player = function(param){
                                 });
                             }
                             break;
-                        case "waterSecond6":
+                        case "waterbook6Second":
                             if(isFireMap){
                                 for(var j = -5;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'waterBullet',-20,function(t){return 10},self.stats,'bounceOffCollisions');
@@ -4753,136 +4884,46 @@ Player = function(param){
         }
         if(self.keyPress.heal === true && self.mana >= self.healCost && self.manaRefresh <= 0 && self.hp < self.hpMax){
             self.mana -= self.healCost;
-            self.manaRefresh = self.healCooldown;
+            self.manaRefresh = self.useTime;
             for(var i in self.ability.healPattern){
-                self.addToEventQ(self.ability.healAbility,self.ability.healPattern[i]);
+                self.addToEventQ('heal',self.ability.healPattern[i]);
             }
         }
         if(isFireMap === false){
             return;
         }
-        if(self.keyPress.attack === true && self.mana >= self.attackCost && self.manaRefresh <= 0){
-            self.mana -= self.attackCost;
-            self.manaRefresh = self.attackCooldown;
-            for(var i in self.ability.attackPattern){
-                self.addToEventQ(self.ability.attackAbility,self.ability.attackPattern[i]);
-            }
-            if(self.passive === 'homingFire'){
-                self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25},self.stats,'monsterHoming');
-                Sound({
-                    type:'fireBullet',
-                    map:self.map,
-                });
-            }
-            if(self.passive === 'lightningShards'){
-                var closestMonster = undefined;
-                for(var i in Monster.list){
-                    if(closestMonster === undefined){
-                        closestMonster = Monster.list[i];
-                    }
-                    else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
-                        closestMonster = Monster.list[i];
-                    }
+        if(self.keyPress.attack === true){
+            if(self.stats.damageType === 'magic' && self.mana >= self.attackCost && self.manaRefresh <= 0){
+                for(var i in self.ability.attackPattern){
+                    self.addToEventQ(self.ability.ability + 'Attack',self.ability.attackPattern[i]);
                 }
-                if(closestMonster){
-                    for(var i = 0;i < 4;i++){
-                        var projectileWidth = 0;
-                        var projectileHeight = 0;
-                        var projectileStats = {};
-                        for(var j in projectileData){
-                            if(j === 'lightningSpit'){
-                                projectileWidth = projectileData[j].width;
-                                projectileHeight = projectileData[j].height;
-                                projectileStats = Object.create(projectileData[j].stats);
-                            }
-                        }
-                        for(var j in projectileStats){
-                            projectileStats[j] *= self.stats[j];
-                        }
-                        var projectile = Projectile({
-                            id:self.id,
-                            projectileType:'lightningSpit',
-                            angle:i * 90,
-                            direction:i * 90,
-                            x:closestMonster.x - Math.cos(i / 2 * Math.PI) * 256,
-                            y:closestMonster.y - Math.sin(i / 2 * Math.PI) * 256,
-                            map:self.map,
-                            parentType:'Player',
-                            mapWidth:self.mapWidth,
-                            mapHeight:self.mapHeight,
-                            width:projectileWidth,
-                            height:projectileHeight,
-                            spin:function(t){return 0},
-                            stats:projectileStats,
-                            projectilePattern:'lightningStrike',
-                            onCollision:function(self,pt){
-                                self.toRemove = true;
-                            }
-                        });
-                    }
+                self.doPassive();
+                self.mana -= self.attackCost;
+                self.manaRefresh = self.useTime;
+            }
+            else if(self.cooldown <= 0){
+                for(var i in self.ability.attackPattern){
+                    self.addToEventQ(self.ability.ability + 'Attack',self.ability.attackPattern[i]);
                 }
+                self.doPassive();
+                self.cooldown = self.useTime;
             }
         }
-        if(self.keyPress.second === true && self.mana >= self.secondCost && self.manaRefresh <= 0){
-            self.mana -= self.secondCost;
-            self.manaRefresh = self.secondCooldown;
-            for(var i in self.ability.secondPattern){
-                self.addToEventQ(self.ability.secondAbility,self.ability.secondPattern[i]);
-            }
-            if(self.passive === 'homingFire'){
-                self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25},self.stats,'monsterHoming');
-                Sound({
-                    type:'fireBullet',
-                    map:self.map,
-                });
-            }
-            if(self.passive === 'lightningShards'){
-                var closestMonster = undefined;
-                for(var i in Monster.list){
-                    if(closestMonster === undefined){
-                        closestMonster = Monster.list[i];
-                    }
-                    else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
-                        closestMonster = Monster.list[i];
-                    }
+        if(self.keyPress.second === true){
+            if(self.stats.damageType === 'magic' && self.mana >= self.secondCost && self.manaRefresh <= 0){
+                for(var i in self.ability.secondPattern){
+                    self.addToEventQ(self.ability.ability + 'Second',self.ability.secondPattern[i]);
                 }
-                if(closestMonster){
-                    for(var i = 0;i < 4;i++){
-                        var projectileWidth = 0;
-                        var projectileHeight = 0;
-                        var projectileStats = {};
-                        for(var j in projectileData){
-                            if(j === 'lightningSpit'){
-                                projectileWidth = projectileData[j].width;
-                                projectileHeight = projectileData[j].height;
-                                projectileStats = Object.create(projectileData[j].stats);
-                            }
-                        }
-                        for(var j in projectileStats){
-                            projectileStats[j] *= self.stats[j];
-                        }
-                        var projectile = Projectile({
-                            id:self.id,
-                            projectileType:'lightningSpit',
-                            angle:i * 90,
-                            direction:i * 90,
-                            x:closestMonster.x - Math.cos(i / 2 * Math.PI) * 256,
-                            y:closestMonster.y - Math.sin(i / 2 * Math.PI) * 256,
-                            map:self.map,
-                            parentType:'Player',
-                            mapWidth:self.mapWidth,
-                            mapHeight:self.mapHeight,
-                            width:projectileWidth,
-                            height:projectileHeight,
-                            spin:function(t){return 0},
-                            stats:projectileStats,
-                            projectilePattern:'lightningStrike',
-                            onCollision:function(self,pt){
-                                self.toRemove = true;
-                            }
-                        });
-                    }
+                self.doPassive();
+                self.mana -= self.secondCost;
+                self.manaRefresh = self.useTime;
+            }
+            else if(self.cooldown <= 0){
+                for(var i in self.ability.secondPattern){
+                    self.addToEventQ(self.ability.ability + 'Second',self.ability.secondPattern[i]);
                 }
+                self.doPassive();
+                self.cooldown = self.useTime;
             }
         }
     }
@@ -4991,17 +5032,9 @@ Player = function(param){
             pack.healCost = self.healCost;
             lastSelf.healCost = self.healCost;
         }
-        if(lastSelf.attackCooldown !== self.attackCooldown){
-            pack.attackCooldown = self.attackCooldown;
-            lastSelf.attackCooldown = self.attackCooldown;
-        }
-        if(lastSelf.secondCooldown !== self.secondCooldown){
-            pack.secondCooldown = self.secondCooldown;
-            lastSelf.secondCooldown = self.secondCooldown;
-        }
-        if(lastSelf.healCooldown !== self.healCooldown){
-            pack.healCooldown = self.healCooldown;
-            lastSelf.healCooldown = self.healCooldown;
+        if(lastSelf.useTime !== self.useTime){
+            pack.useTime = self.useTime;
+            lastSelf.useTime = self.useTime;
         }
         if(lastSelf.mapWidth !== self.mapWidth){
             pack.mapWidth = self.mapWidth;
@@ -5014,6 +5047,10 @@ Player = function(param){
         if(lastSelf.moveSpeed !== self.moveSpeed){
             pack.moveSpeed = self.moveSpeed;
             lastSelf.moveSpeed = self.moveSpeed;
+        }
+        if(lastSelf.currentItem !== self.currentItem){
+            pack.currentItem = self.currentItem;
+            lastSelf.currentItem = self.currentItem;
         }
         if(lastSelf.direction !== self.direction){
             pack.direction = self.direction;
@@ -5063,11 +5100,10 @@ Player = function(param){
         pack.attackCost = self.attackCost;
         pack.secondCost = self.secondCost;
         pack.healCost = self.healCost;
-        pack.attackCooldown = self.attackCooldown;
-        pack.secondCooldown = self.secondCooldown;
-        pack.healCooldown = self.healCooldown;
+        pack.useTime = self.useTime;
         pack.mapWidth = self.mapWidth;
         pack.mapHeight = self.mapHeight;
+        pack.currentItem = self.currentItem;
         pack.stats = self.stats;
         pack.type = self.type;
         return pack;
@@ -5620,6 +5656,7 @@ Monster = function(param){
         heal:1,
         range:1,
         speed:1,
+        damageReduction:0,
     }
     if(param.stats){
         for(var i in param.stats){
@@ -5660,6 +5697,12 @@ Monster = function(param){
         }
     }
     self.randomWalk(true,false,self.x,self.y);
+    if(self.monsterType === 'Red Bird'){
+        addToChat('style="color: #ff00ff">','Red Bird has awoken!');
+    }
+    if(self.monsterType === 'Lightning Lizard'){
+        addToChat('style="color: #ff00ff">','Lightning Lizard has awoken!');
+    }
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -5676,6 +5719,12 @@ Monster = function(param){
         }
         self.updateAttack();
         if(self.hp < 1){
+            if(self.monsterType === 'Red Bird'){
+                addToChat('style="color: #ff00ff">','Red Bird has been defeated!');
+            }
+            if(self.monsterType === 'Lightning Lizard'){
+                addToChat('style="color: #ff00ff">','Lightning Lizard has been defeated!');
+            }
             param.onDeath(self);
         }
         else{
@@ -6230,6 +6279,7 @@ Monster = function(param){
                         for(var j in projectileStats){
                             projectileStats[j] *= self.stats[j];
                         }
+                        projectileStats.damageReduction = 0;
                         var projectile = Projectile({
                             id:self.id,
                             projectileType:'lightningSpit',
@@ -6330,6 +6380,7 @@ Monster = function(param){
                         for(var j in projectileStats){
                             projectileStats[j] *= self.stats[j];
                         }
+                        projectileStats.damageReduction = 0;
                         var projectile = Projectile({
                             id:self.id,
                             projectileType:'lightningSpit',
@@ -6442,12 +6493,13 @@ Pet = function(param){
     self.height = 28;
     self.mana = 0;
     self.manaMax = 200;
-    self.hp = 1000000;
-    self.hpMax = 1000000;
+    self.hp = 1000;
+    self.hpMax = 1000;
     self.stats = {
         attack:0,
         defense:0,
         heal:1,
+        damageReduction:0.999
     }
     self.canChangeMap = false;
     self.trackEntity(Player.list[self.parent],128);
@@ -6462,6 +6514,58 @@ Pet = function(param){
                 if(Player.list[i]){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
                 }
+            }
+        }
+        if(self.hp <= 0){
+            self.toRemove = true;
+            addToChat('style="color:#ff0000">',self.name + ' was slain...');
+            if(Player.list[self.parent].level !== 0){
+                setTimeout(function(){
+                    addToChat('style="color:#00aadd">','A GOD DOES NOT FEAR DEATH!');
+                },100000);
+                setTimeout(function(){
+                    addToChat('style="color:#00aadd">','A fatal mistake!');
+                },102000);
+                setTimeout(function(){
+                    addToChat('style="color:#00aadd">','Of all my segments to get hit by...');
+                },104000);
+                setTimeout(function(){
+                    addToChat('style="color:#00aadd">','You hit my tail?');
+                },105000);
+                setTimeout(function(){
+                    addToChat('style="color:#ff00aa">','It\'s not over yet, kid!');
+                },110000);
+                setTimeout(function(){
+                    if(Player.list[self.parent]){
+                        addToChat('style="color:#ff0000">',Player.list[self.parent].displayName + ' let their arms get torn off by The Devourer of Gods.');
+                    }
+                    },113000);
+                setTimeout(function(){
+                    addToChat('style="color:#ff00ff">','Echdeath has enraged.');
+                    if(Player.list[self.parent]){
+                        for(var i = 0;i < 25;i++){
+                            s.smite(Player.list[self.parent].username);
+                        }
+                    }
+                },115000);
+                setTimeout(function(){
+                    if(Player.list[self.parent]){
+                        addToChat('style="color:#ff0000">',Player.list[self.parent].displayName + ' was removed from Meadow Guarder by Echdeath.');
+                        addToChat('style="color:#ff0000">',':echdeath');
+                    }
+                },116000);
+            }
+            else{
+                setTimeout(function(){
+                    addToChat('style="color:#00aadd">','Go to hell.');
+                },5000);
+                setTimeout(function(){
+                    if(Player.list[self.parent]){
+                        for(var i = 0;i < 25;i++){
+                            s.smite(Player.list[self.parent].username);
+                        }
+                    }
+                },7000);
             }
         }
         self.updateAttack();
@@ -6581,16 +6685,22 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
     }
+    if(param.projectilePattern === 'spinAroundPlayer'){
+        self.angle = param.angle;
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
+    }
     if(param.projectilePattern === 'spinAroundPoint'){
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
         self.parentStartX = 0;
         self.parentStartY = 0;
         if(Player.list[self.parent]){
             self.parentStartX = Player.list[self.parent].x;
             self.parentStartY = Player.list[self.parent].y;
         }
-        self.canCollide = false;
-        self.spdX = 0;
-        self.spdY = 0;
     }
     if(param.projectilePattern === 'stationary'){
         self.canCollide = false;
@@ -6615,6 +6725,10 @@ Projectile = function(param){
         self.lastX = self.x;
         self.lastY = self.y;
         super_update();
+        if(self.timer === 0){
+            self.x -= self.spdX;
+            self.y -= self.spdY;
+        }
         self.timer += 1;
         if(param.stats.range !== undefined){
             if(self.timer > 20 * param.stats.range){
@@ -6666,6 +6780,14 @@ Projectile = function(param){
             self.x = Player.list[self.parent].x - self.distanceFromParentX;
             self.y = Player.list[self.parent].y - self.distanceFromParentY;
         }
+        else if(param.projectilePattern === 'spinAroundPlayer'){
+            self.x = Player.list[self.parent].x;
+            self.y = Player.list[self.parent].y;
+            self.x += -Math.sin(self.angle) * 54;
+            self.y += Math.cos(self.angle) * 54;
+            self.angle += param.stats.speed / 2;
+            self.direction = self.angle * 180 / Math.PI + 180;
+        }
         else if(param.projectilePattern === 'spinAroundPoint'){
             var angle = Math.atan2(self.y - self.parentStartY,self.x - self.parentStartX);
             self.x += -Math.sin(angle) * param.stats.speed * 25;
@@ -6692,11 +6814,13 @@ Projectile = function(param){
         else if(param.projectilePattern === 'monsterHoming'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
                     closestMonster = Monster.list[i];
                 }
-                else if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster)){
-                    closestMonster = Monster.list[i];
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
                 }
             }
             if(closestMonster){
@@ -7833,8 +7957,8 @@ updateCrashes = function(){
         for(var j in Player.list){
             if(Monster.list[i] && Player.list[j]){
                 if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
-                    Player.list[j].onPush(Monster.list[i],15);
-                    Monster.list[i].onPush(Player.list[j],3);
+                    Player.list[j].onPush(Monster.list[i],2);
+                    Monster.list[i].onPush(Player.list[j],2);
                 }
             }
         }

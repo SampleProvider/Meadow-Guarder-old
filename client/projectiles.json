@@ -7,7 +7,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "earthBullet":{
@@ -18,7 +19,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "stoneArrow":{
@@ -29,7 +31,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "earthTower":{
@@ -40,7 +43,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "ballBullet":{
@@ -51,7 +55,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "fireBullet":{
@@ -62,7 +67,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "sword":{
@@ -73,7 +79,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "waterBullet":{
@@ -84,7 +91,8 @@
             "defense":1,
             "heal":1,
             "range":1,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "lizardSpit":{
@@ -95,7 +103,8 @@
             "defense":1,
             "heal":1,
             "range":3,
-            "speed":1
+            "speed":1,
+            "critChance":1
         }
     },
     "lightningSpit":{
@@ -106,7 +115,368 @@
             "defense":1,
             "heal":1,
             "range":3,
-            "speed":1
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplewoodenbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplesteelbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simpledarksteelbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplegoldenbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplerubybow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedwoodenbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedsteelbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advanceddarksteelbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedgoldenbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedrubybow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplewoodensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplesteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simpledarksteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplegoldensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplerubysword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedwoodensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedsteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advanceddarksteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedgoldensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedrubysword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplewoodenstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplesteelstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simpledarksteelstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplegoldenstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "simplerubystaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedwoodenstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedsteelstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advanceddarksteelstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedgoldenstaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "advancedrubystaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
         }
     }
 }

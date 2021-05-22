@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '021f2a';
+var VERSION = '0.2.2';
 
 var DEBUG = false;
 
@@ -504,6 +504,8 @@ Img.healthBarEnemy.src = '/client/img/healthBarEnemy.png';
 Img.manaBar = new Image();
 Img.manaBar.src = '/client/img/manaBar.png';
 
+var projectileData = {};
+
 var request = new XMLHttpRequest();
 request.open('GET',"/client/projectiles.json",true);
 
@@ -515,6 +517,7 @@ request.onload = function(){
             Img[i] = new Image();
             Img[i].src = '/client/img/' + i + '.png';
         }
+        projectileData = json;
     }
     else{
         // We reached our target server, but it returned an error
@@ -537,10 +540,6 @@ var mapX = -640;
 var mapY = -640;
 var mapDrag = true;
 var mapRatio = 1000;
-var mapLocations = [
-    ['The River','The Village'],
-    ['','The Docks'],
-];
 var mapTiles = {}
 var mapCropX = 3200;
 var mapCropY = 0;
@@ -916,14 +915,13 @@ var Player = function(initPack){
     self.attackCost = initPack.attackCost;
     self.secondCost = initPack.secondCost;
     self.healCost = initPack.healCost;
-    self.attackCooldown = initPack.attackCooldown;
-    self.secondCooldown = initPack.secondCooldown;
-    self.healCooldown = initPack.healCooldown;
+    self.useTime = initPack.useTime;
     self.mapHeight = initPack.mapWidth;
     self.mapWidth = initPack.mapHeight;
     self.updated = true;
     self.animation = initPack.animation;
     self.animationDirection = initPack.animationDirection;
+    self.currentItem = initPack.currentItem;
     self.stats = initPack.stats;
     self.type = initPack.type;
     self.moveNumber = 4;
@@ -938,9 +936,23 @@ var Player = function(initPack){
         self.moveNumber -= 1;
     }
     self.draw = function(){
+        if(Img[self.currentItem]){
+            ctx0.translate(self.x,self.y);
+            var turnAmount = 135;
+            var drawX = -70;
+            var drawY = -70;
+            if(self.currentItem.includes('bow')){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+            }
+            ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+            ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+            ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
         self.animation = Math.round(self.animation);
         drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
-        
         if(self.id === selfId){
             settingsPlayerDisplay.clearRect(0,0,10,17);
             drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
@@ -999,7 +1011,7 @@ var Player = function(initPack){
         }
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
-        document.getElementById('stat-text').innerHTML = 'You will deal a miminum of ' + Math.round(50 * self.stats.attack) + ' damage and a maximum of ' + Math.round(100 * self.stats.attack) + ' damage.<br>Out of 100 damage, you will receive ' + Math.round(100 / self.stats.defense) + ' damage.<br>You are level ' + self.level + '.<br>You will get ' + Math.round(self.stats.xp * 10) + ' xp per monster killed.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana and has a cooldown of ' + self.attackCooldown + '  ticks. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana and has a cooldown of ' + self.secondCooldown + ' ticks. Your heal spends ' + Math.round(self.healCost) + ' mana and has a cooldown of ' + self.healCooldown + ' ticks.';
+        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + self.stats.critChance * 100 + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
     }
     self.drawLight = function(){
         if(self.id !== selfId){
@@ -1050,7 +1062,7 @@ var Projectile = function(initPack){
             ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
         }
         else{
-            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2);
+            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
         ctx0.rotate(-self.direction * Math.PI / 180);
         ctx0.translate(-self.x,-self.y);
@@ -1062,7 +1074,7 @@ var Projectile = function(initPack){
             ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
         }
         else{
-            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2);
+            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
         ctx1.rotate(-self.direction * Math.PI / 180);
         ctx1.translate(-self.x,-self.y);
@@ -1309,8 +1321,13 @@ var Particle = function(initPack){
         if(self.particleType === 'redDamage' || self.particleType === 'greenDamage'){
             self.x += 5 * self.direction / 4;
             self.y += -self.timer / 2 + 10 / 4;
+            self.timer -= 1 / 4;
         }
-        self.timer -= 1 / 4;
+        if(self.particleType === 'bigOrangeDamage'){
+            self.x += 6 * self.direction / 4;
+            self.y += -self.timer / 2 + 15 / 4;
+            self.timer -= 1 / 7;
+        }
         if(self.timer < 0){
             self.toRemove = true;
         }
@@ -1318,13 +1335,19 @@ var Particle = function(initPack){
     self.draw = function(){
         if(self.particleType === 'redDamage'){
             ctx1.font = "30px pixel";
-            ctx1.fillStyle = 'rgba(255,0,0,' + (self.timer / 5) + ')';
+            ctx1.fillStyle = 'rgba(255,75,0,' + (self.timer / 5) + ')';
             ctx1.textAlign = "center";
             ctx1.fillText(self.value,self.x,self.y);
         }
         else if(self.particleType === 'greenDamage'){
             ctx1.font = "30px pixel";
             ctx1.fillStyle = 'rgba(0,255,0,' + (self.timer / 5) + ')';
+            ctx1.textAlign = "center";
+            ctx1.fillText(self.value,self.x,self.y);
+        }
+        else if(self.particleType === 'bigOrangeDamage'){
+            ctx1.font = "40px pixel";
+            ctx1.fillStyle = 'rgba(255,0,0,' + (self.timer / 5) + ')';
             ctx1.textAlign = "center";
             ctx1.fillText(self.value,self.x,self.y);
         }
@@ -1532,14 +1555,8 @@ socket.on('update',function(data){
                     if(data.player[i].healCost !== undefined){
                         Player.list[data.player[i].id].healCost = data.player[i].healCost;
                     }
-                    if(data.player[i].attackCooldown !== undefined){
-                        Player.list[data.player[i].id].attackCooldown = data.player[i].attackCooldown;
-                    }
-                    if(data.player[i].secondCooldown !== undefined){
-                        Player.list[data.player[i].id].secondCooldown = data.player[i].secondCooldown;
-                    }
-                    if(data.player[i].healCooldown !== undefined){
-                        Player.list[data.player[i].id].healCooldown = data.player[i].healCooldown;
+                    if(data.player[i].useTime !== undefined){
+                        Player.list[data.player[i].id].useTime = data.player[i].useTime;
                     }
                     if(data.player[i].mapWidth !== undefined){
                         Player.list[data.player[i].id].mapWidth = data.player[i].mapWidth;
@@ -1558,6 +1575,9 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].displayName !== undefined){
                         Player.list[data.player[i].id].displayName = data.player[i].displayName;
+                    }
+                    if(data.player[i].currentItem !== undefined){
+                        Player.list[data.player[i].id].currentItem = data.player[i].currentItem;
                     }
                     Player.list[data.player[i].id].updated = true;
                 }

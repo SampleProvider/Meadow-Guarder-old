@@ -64,9 +64,14 @@ Inventory = function(socket,server){
         select:false,
     };
     self.addItem = function(id,enchantments){
-        self.items.push({id:id,enchantments:enchantments || [],displayButtons:false});
-        self.refreshRender();
-        return self.items.length - 1;
+        if(Item.list[id]){
+            self.items.push({id:id,enchantments:enchantments || [],displayButtons:false});
+            self.refreshRender();
+            return self.items.length - 1;
+        }
+        else{
+            return false;
+        }
     }
     self.removeItem = function(index){
         self.items.splice(index,1);
@@ -190,11 +195,43 @@ Inventory = function(socket,server){
                 }
                 enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
             }
+            var description = '';
+            if(item.damage || item.defense){
+                description += 'When Equipped:<br>';
+            }
+            if(item.damage){
+                if(item.damageType){
+                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
+                }
+                if(item.critChance){
+                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
+                }
+            }
+            if(item.defense){
+                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
+            }
+            if(item.damageReduction){
+                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.rarity){
+                if(item.rarity === 0){
+                    button.style.color = '#ffffff';
+                }
+                if(item.rarity === 1){
+                    button.style.color = '#5555ff';
+                }
+                if(item.rarity === 2){
+                    button.style.color = '#ff9900';
+                }
+                if(item.rarity === 3){
+                    button.style.color = '#ffff00';
+                }
+            }
             if(item.description){
-                enchantments.innerHTML = item.description + '<br>' + enchantDisplayName;
+                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
             }
             else{
-                enchantments.innerHTML = enchantDisplayName;
+                enchantments.innerHTML = description + enchantDisplayName;
             }
             enchantments.style.padding = '0px';
             dismantle.onclick = function(){
@@ -295,7 +332,44 @@ Inventory = function(socket,server){
                 }
                 enchantDisplayName += '' + Enchantment.list[self.currentEquip[index].enchantments[i].id].name + ' ' + enchantName[self.currentEquip[index].enchantments[i].level] + '<br>';
             }
-            enchantments.innerHTML = enchantDisplayName;
+            var description = '';
+            if(item.damage || item.defense){
+                description += 'When Equipped:<br>';
+            }
+            if(item.damage){
+                if(item.damageType){
+                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
+                }
+                if(item.critChance){
+                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
+                }
+            }
+            if(item.defense){
+                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
+            }
+            if(item.damageReduction){
+                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.rarity){
+                if(item.rarity === 0){
+                    button.style.color = '#ffffff';
+                }
+                if(item.rarity === 1){
+                    button.style.color = '#5555ff';
+                }
+                if(item.rarity === 2){
+                    button.style.color = '#ff9900';
+                }
+                if(item.rarity === 3){
+                    button.style.color = '#ffff00';
+                }
+            }
+            if(item.description){
+                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
+            }
+            else{
+                enchantments.innerHTML = description + enchantDisplayName;
+            }
             enchantments.style.padding = '0px';
             unequip.onclick = function(){
                 self.socket.emit("unequipItem",index);
@@ -418,7 +492,7 @@ Enchantment = function(id,name,maxLevel,averageLevel,deviation,event){
 
 Enchantment.list = {};
 
-Item = function(id,name,equip,event,enchantments,description){
+Item = function(id,name,equip,event,enchantments,description,damage,damageType,critChance,useTime,defense,damageReduction,rarity){
 	var self = {
 		id:id,
         name:name,
@@ -426,6 +500,13 @@ Item = function(id,name,equip,event,enchantments,description){
         event:event,
         enchantments:enchantments,
         description:description,
+        damage:damage,
+        damageType:damageType,
+        critChance:critChance,
+        useTime:useTime,
+        defense:defense,
+        damageReduction,damageReduction,
+        rarity:rarity,
     }
 	Item.list[self.id] = self;
 	return self;
@@ -435,7 +516,7 @@ Item.list = {};
 try{
     var items = require('./item.json');
     for(var i in items){
-        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments);
+        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].rarity);
     }
 }
 catch(err){
@@ -447,7 +528,7 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description);
+                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].rarity);
             }
         }
         else{

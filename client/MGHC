@@ -203,6 +203,30 @@ freeCam.onclick = function(){
     }
 };
 
+var autoHeal = document.createElement('button');
+autoHeal.className = 'UI-button-light';
+autoHeal.style.position = 'static';
+autoHeal.style.top = '8px';
+autoHeal.innerHTML = 'Auto Heal';
+hackedCollumn4.appendChild(autoHeal);
+
+autoHeal.style.color = '#ffffff';
+autoHeal.style.backgroundColor = '#000000';
+
+var autoHealState = false;
+autoHeal.onclick = function(){
+    autoHealState = !autoHealState;
+    if(autoHealState){
+        autoHeal.style.color = '#000000';
+        autoHeal.style.backgroundColor = '#ffffff';
+        socket.emit('keyPress',{inputId:' ',state:false});
+    }
+    else{
+        autoHeal.style.color = '#ffffff';
+        autoHeal.style.backgroundColor = '#000000';
+    }
+};
+
 var getDistance = function(pt1,pt2){
     return (pt1.x - pt2.x)**2 + (pt1.y - pt2.y)**2;
 };
@@ -368,6 +392,14 @@ MGHC = function(){
         }
         else{
             socket.emit('keyPress',{inputId:'attack',state:false});
+        }
+    }
+    if(autoHealState){
+        if(Player.list[selfId].hpMax - Player.list[selfId].hp > 200){
+            socket.emit('keyPress',{inputId:' ',state:true});
+        }
+        else{
+            socket.emit('keyPress',{inputId:' ',state:false});
         }
     }
 };
