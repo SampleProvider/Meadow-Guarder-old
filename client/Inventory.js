@@ -162,6 +162,24 @@ Inventory = function(socket,server){
         inventory.innerHTML = "";
         var currentEquip = document.getElementById("currentEquip");
         currentEquip.innerHTML = "";
+        var button = document.createElement('button');
+        button.innerHTML = 'Dismantle All Common Items';
+        button.className = "UI-button-light";
+        inventory.appendChild(button);
+        button.style.color = '#ff0000';
+        button.onclick = function(){
+            var dismantleList = [];
+            for(var i in self.items){
+                if(Item.list[self.items[i].id].rarity <= 1){
+                    dismantleList.push(i);
+                }
+            }
+            for(var i = dismantleList.length - 1;i >= 0;i--){
+                self.socket.emit("dismantleItem",dismantleList[i]);
+            }
+        }
+        button.style.display = 'inline-block';
+        button.style.position = 'relative';
         var addButton = function(data,index){
             let item = Item.list[data.id];
             let button = document.createElement('button');
