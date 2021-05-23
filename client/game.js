@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '0.2.2';
+var VERSION = '0.2.3';
 
 var DEBUG = false;
 
@@ -945,6 +945,11 @@ var Player = function(initPack){
                 turnAmount = 225;
                 var drawX = -49;
                 var drawY = -15;
+            }
+            if(self.currentItem === 'bookoflightning'){
+                turnAmount = 270;
+                var drawX = -35;
+                var drawY = 15;
             }
             ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
             ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);

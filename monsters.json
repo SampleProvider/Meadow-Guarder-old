@@ -242,6 +242,10 @@
         },
         "moveSpeed":15,
         "itemDrops":{
+            "bronzekey":0.1,
+            "silverkey":0.05,
+            "goldenkey":0.01,
+            "developerkey":0.01
         }
     },
     "lightningLizard":{
@@ -253,7 +257,7 @@
         "hp":20000,
         "stats":{
             "attack":55,
-            "defense":20,
+            "defense":25,
             "heal":0,
             "critChance":0.04,
             "damageReduction":0

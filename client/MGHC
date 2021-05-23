@@ -395,7 +395,7 @@ MGHC = function(){
         }
     }
     if(autoHealState){
-        if(Player.list[selfId].hpMax - Player.list[selfId].hp > 200){
+        if(Player.list[selfId].hpMax - Player.list[selfId].hp > 40){
             socket.emit('keyPress',{inputId:' ',state:true});
         }
         else{

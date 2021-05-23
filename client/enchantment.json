@@ -21,7 +21,7 @@
         "averageLevel":3,
         "deviation":5,
         "dropChance":0.2,
-        "event":"self.attackCooldown -= 0.5;self.secondCooldown -= 0.5;self.healCooldown -= 0.0;self.stats.speed += 0.2"
+        "event":"self.useTime -= 0.5;"
     },
     "range":{
         "name":"Range",
@@ -37,7 +37,7 @@
         "averageLevel":1,
         "deviation":0,
         "dropChance":0.1,
-        "event":"self.maxSpeed += 5;"
+        "event":"self.maxSpeed += 2;"
     },
     "smashing":{
         "name":"Smashing",

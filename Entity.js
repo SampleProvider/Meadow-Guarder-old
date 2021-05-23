@@ -49,6 +49,56 @@ var xpLevels = [
     4000000,
     7000000,
     10000000,
+    5000,
+    10000,
+    15000,
+    20000,
+    25000,
+    30000,
+    35000,
+    40000,
+    45000,
+    50000,
+    55000,
+    60000,
+    65000,
+    70000,
+    75000,
+    80000,
+    85000,
+    90000,
+    95000,
+    100000,
+    110000,
+    120000,
+    130000,
+    140000,
+    150000,
+    160000,
+    170000,
+    180000,
+    190000,
+    200000,
+    220000,
+    240000,
+    260000,
+    280000,
+    300000,
+    400000,
+    550000,
+    700000,
+    1000000,
+    1400000,
+    2000000,
+    2750000,
+    4000000,
+    7250000,
+    10000000,
+    15000000,
+    25000000,
+    40000000,
+    70000000,
+    100000000,
 ];
 var fs = require('fs');
 var PF = require('pathfinding');
@@ -56,6 +106,10 @@ var PF = require('pathfinding');
 
 worldMap = [];
 require('./env.js');
+
+if(ENV.Difficulty === 'Expert'){
+    ENV.MonsterStrength *= 2;
+}
 
 var firableMap = function(map){
     var isFireMap = false;
@@ -1029,6 +1083,7 @@ Actor = function(param){
 			direction:direction,
 			x:self.x + Math.cos(direction / 180 * Math.PI) * distance,
 			y:self.y + Math.sin(direction / 180 * Math.PI) * distance,
+            distance:distance,
             map:self.map,
             parentType:parentType,
             mapWidth:self.mapWidth,
@@ -1562,8 +1617,8 @@ Player = function(param){
     self.imgwidth = 0;
     self.animationDirection = 'up';
     self.animation = 0;
-    self.hp = 1000;
-    self.hpMax = 1000;
+    self.hp = 200;
+    self.hpMax = 200;
     self.mana = 0;
     self.manaMax = 200;
     self.manaRefresh = 0;
@@ -1571,7 +1626,7 @@ Player = function(param){
     self.xp = 0;
     self.xpMax = 100;
     self.level = 0;
-    self.levelMax = 50;
+    self.levelMax = 100;
     self.direction = 0;
     self.map = ENV.Spawnpoint.map;
     playerMap[self.map] += 1;
@@ -1697,6 +1752,8 @@ Player = function(param){
             self.ability[i] = param.param.ability[i];
         }
     }
+    self.hpMax = 100 + self.level * 10;
+    self.maxSpeed = 20 + Math.floor(self.level / 10);
     self.inventory.refreshRender();
     self.stats = {
         attack:0,
@@ -1820,7 +1877,7 @@ Player = function(param){
                         response2:'No way. That isn\'t my problem.',
                     });
                 }
-                if(self.questStage === 4 && self.quest === 'Missing Person'){
+                else if(self.questStage === 4 && self.quest === 'Missing Person'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1829,13 +1886,20 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                if(self.questStage === 11){
+                else if(self.questStage === 11){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Oh, Mark is fine? That\'s great!',
                         response1:'*End conversation*',
+                    });
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] This NPC doesn\'t want to talk to you right now.',
+                        debug:false,
                     });
                 }
                 self.keyPress.second = false;
@@ -1852,7 +1916,7 @@ Player = function(param){
                         response2:'Nothing.',
                     });
                 }
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === true){
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === true){
                     self.questStage = 3;
                     self.invincible = true;
                     self.questInfo.quest = 'Weird Tower';
@@ -1863,7 +1927,7 @@ Player = function(param){
                         response2:'No.',
                     });
                 }
-                if(self.questStage === 7 && self.quest === 'Weird Tower'){
+                else if(self.questStage === 7 && self.quest === 'Weird Tower'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1872,7 +1936,7 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                if(self.questStage === 13){
+                else if(self.questStage === 13){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1881,6 +1945,13 @@ Player = function(param){
                         response1:'I found diamonds!',
                         response2:'There were Monsters protecting the tower.',
                         response3:'Nothing.',
+                    });
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] This NPC doesn\'t want to talk to you right now.',
+                        debug:false,
                     });
                 }
                 self.keyPress.second = false;
@@ -1896,7 +1967,7 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === true){
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear River';
@@ -1907,7 +1978,7 @@ Player = function(param){
                         response2:'No.',
                     });
                 }
-                if(self.questStage === 6 && self.quest === 'Clear River'){
+                else if(self.questStage === 6 && self.quest === 'Clear River'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1916,13 +1987,20 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                if(self.questStage === 11 && self.quest === 'Clear River'){
+                else if(self.questStage === 11 && self.quest === 'Clear River'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'You did it? Thanks! Here is a reward.',
                         response1:'*End conversation*',
+                    });
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] This NPC doesn\'t want to talk to you right now.',
+                        debug:false,
                     });
                 }
                 self.keyPress.second = false;
@@ -1960,7 +2038,7 @@ Player = function(param){
                         response2:'No, I\'m good.',
                     });
                 }
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear Tower';
@@ -1970,7 +2048,7 @@ Player = function(param){
                         response1:'Fine.',
                     });
                 }
-                if(self.questStage === 5 && self.quest === 'Clear Tower'){
+                else if(self.questStage === 5 && self.quest === 'Clear Tower'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1979,7 +2057,7 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                if(self.questStage === 11 && self.quest === 'Clear Tower'){
+                else if(self.questStage === 11 && self.quest === 'Clear Tower'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -1987,6 +2065,13 @@ Player = function(param){
                         message:'You found the tower? Were the rumors true?',
                         response1:'Yes.',
                         response2:'No.',
+                    });
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] This NPC doesn\'t want to talk to you right now.',
+                        debug:false,
                     });
                 }
                 self.keyPress.second = false;
@@ -2003,7 +2088,7 @@ Player = function(param){
                         response2:'Nah, sounds too scary.',
                     });
                 }
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Lightning Lizard Boss';
@@ -2013,7 +2098,7 @@ Player = function(param){
                         response1:'Ok.',
                     });
                 }
-                if(self.questStage === 5 && self.quest === 'Lightning Lizard Boss'){
+                else if(self.questStage === 5 && self.quest === 'Lightning Lizard Boss'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
@@ -2022,13 +2107,20 @@ Player = function(param){
                         response1:'*End conversation*',
                     });
                 }
-                if(self.questStage === 13 && self.quest === 'Lightning Lizard Boss'){
+                else if(self.questStage === 13 && self.quest === 'Lightning Lizard Boss'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialougeLine',{
                         state:'ask',
                         message:'Did you kill the Lightning Lizard?',
                         response1:'Yes I did!',
+                    });
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] This NPC doesn\'t want to talk to you right now.',
+                        debug:false,
                     });
                 }
                 self.keyPress.second = false;
@@ -2270,8 +2362,8 @@ Player = function(param){
                         height:monsterData['blueBall'].height,
                         xpGain:monsterData['blueBall'].xpGain * 10,
                         stats:{
-                            attack:150 * ENV.MonsterStrength,
-                            defense:30,
+                            attack:15 * ENV.MonsterStrength,
+                            defense:3,
                             heal:0 * ENV.MonsterStrength,
                             damageReduction:0,
                         },
@@ -2792,14 +2884,14 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:2,
-                        hp:500 * ENV.MonsterStrength,
+                        hp:250 * ENV.MonsterStrength,
                         monsterType:'snowBall',
                         attackState:'passiveBall',
                         width:monsterData['snowBall'].width,
                         height:monsterData['snowBall'].height,
                         xpGain:monsterData['snowBall'].xpGain * 10,
                         stats:{
-                            attack:45 * ENV.MonsterStrength,
+                            attack:25 * ENV.MonsterStrength,
                             defense:0,
                             heal:0,
                             damageReduction:0,
@@ -3273,7 +3365,7 @@ Player = function(param){
             }
             self.passive = '';
             self.textColor = '#ffff00';
-            self.hpMax = 1000;
+            self.hpMax = 100 + self.level * 10;
             self.attackCost = 10;
             self.secondCost = 40;
             self.healCost = 50;
@@ -3285,7 +3377,7 @@ Player = function(param){
                 secondPattern:[0],
                 healPattern:[0,20,40,60],
             }
-            self.maxSpeed = 20;
+            self.maxSpeed = 20 + Math.floor(self.level / 10);
             self.pushPower = 3;
             damageIncrease = 1;
             self.useTime = 0;
@@ -3483,6 +3575,7 @@ Player = function(param){
                 Pet.list[self.pet].name = 'Kiol Lvl.' + self.level;
                 Pet.list[self.pet].maxSpeed = 5 + self.level / 5;
             }
+            self.inventory.refresh = true;
         }
     }
     self.doPassive = function(){
@@ -3550,7 +3643,7 @@ Player = function(param){
                 if(self.eventQ[i].time === 0){
                     switch(self.eventQ[i].event){
                         case "heal":
-                            var heal = 200 * self.stats.heal;
+                            var heal = 40 * self.stats.heal;
                             heal = Math.min(self.hpMax - self.hp,heal);
                             self.hp += heal;
                             if(heal){
@@ -3672,7 +3765,7 @@ Player = function(param){
                             break;
                         case "simplewoodenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplewoodensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplewoodensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3681,7 +3774,7 @@ Player = function(param){
                             break;
                         case "simplesteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplesteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplesteelsword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3690,7 +3783,7 @@ Player = function(param){
                             break;
                         case "simpledarksteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simpledarksteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simpledarksteelsword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3699,8 +3792,8 @@ Player = function(param){
                             break;
                         case "simplegoldenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplegoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplegoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplegoldensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplegoldensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3709,8 +3802,8 @@ Player = function(param){
                             break;
                         case "simplerubyswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplerubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplerubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplerubysword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplerubysword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3719,7 +3812,7 @@ Player = function(param){
                             break;
                         case "advancedwoodenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedwoodensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedwoodensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3728,8 +3821,8 @@ Player = function(param){
                             break;
                         case "advancedsteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedsteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advancedsteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedsteelsword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advancedsteelsword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3738,8 +3831,8 @@ Player = function(param){
                             break;
                         case "advanceddarksteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advanceddarksteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advanceddarksteelsword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advanceddarksteelsword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advanceddarksteelsword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3748,9 +3841,9 @@ Player = function(param){
                             break;
                         case "advancedgoldenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedgoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedgoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedgoldensword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedgoldensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedgoldensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedgoldensword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3759,9 +3852,9 @@ Player = function(param){
                             break;
                         case "advancedrubyswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedrubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedrubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedrubysword',0,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedrubysword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedrubysword',54,function(t){return 0},self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedrubysword',54,function(t){return 0},self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -3862,6 +3955,39 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'earthBullet',70,function(t){return 0},self.stats,'monsterHoming');
                                 Sound({
                                     type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "lightningsaberAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningsaber',34,function(t){return 25},self.stats,'spinAroundPoint');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'lightningsaber',34,function(t){return 25},self.stats,'spinAroundPoint');
+                                self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'lightningsaber',34,function(t){return 25},self.stats,'spinAroundPoint');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'lightningsaber',34,function(t){return 25},self.stats,'spinAroundPoint');
+                                Sound({
+                                    type:'ninjaStar',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "lightningwandAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningSpit',70,function(t){return 0},self.stats);
+                                Sound({
+                                    type:'earthBullet',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "bookoflightningAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'lightningSpit',
                                     map:self.map,
                                 });
                             }
@@ -5697,12 +5823,13 @@ Monster = function(param){
         }
     }
     self.randomWalk(true,false,self.x,self.y);
-    if(self.monsterType === 'Red Bird'){
+    if(self.monsterType === 'redBird'){
         addToChat('style="color: #ff00ff">','Red Bird has awoken!');
     }
-    if(self.monsterType === 'Lightning Lizard'){
+    if(self.monsterType === 'lightningLizard'){
         addToChat('style="color: #ff00ff">','Lightning Lizard has awoken!');
     }
+    self.oldMoveSpeed = self.maxSpeed;
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -5719,10 +5846,10 @@ Monster = function(param){
         }
         self.updateAttack();
         if(self.hp < 1){
-            if(self.monsterType === 'Red Bird'){
+            if(self.monsterType === 'redBird'){
                 addToChat('style="color: #ff00ff">','Red Bird has been defeated!');
             }
-            if(self.monsterType === 'Lightning Lizard'){
+            if(self.monsterType === 'lightningLizard'){
                 addToChat('style="color: #ff00ff">','Lightning Lizard has been defeated!');
             }
             param.onDeath(self);
@@ -5902,6 +6029,9 @@ Monster = function(param){
                     break;
                 }
                 if(self.reload % 60 < 16 && self.reload > 49 && self.target.invincible === false){
+                    if(ENV.Difficulty === 'Expert'){
+                        self.maxSpeed = self.oldMoveSpeed * 5;
+                    }
                     self.animation += 0.5;
                     if(self.animation >= 8){
                         self.animation = 0;
@@ -5915,6 +6045,9 @@ Monster = function(param){
                             map:self.map,
                         });
                     }
+                }
+                else{
+                    self.maxSpeed = self.oldMoveSpeed;
                 }
                 self.reload += 1;
                 if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
@@ -5941,6 +6074,9 @@ Monster = function(param){
                 self.reload = 0;
                 self.animation = 0;
                 self.attackState = "attackCherryBomb";
+                if(ENV.Difficulty === 'Expert'){
+                    self.maxSpeed = self.oldMoveSpeed * 2;
+                }
                 break;
             case "attackCherryBomb":
                 if(!self.target){
@@ -6082,6 +6218,15 @@ Monster = function(param){
                         map:self.map,
                     });
                 }
+                if(self.reload % 150 < 5 && self.reload > 10 && self.target.invincible === false){
+                    for(var i = 0;i < 6;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + i * 60,self.direction + i * 60,'fireBullet',32,function(t){return 25},self.stats,'playerHoming');
+                    }
+                    Sound({
+                        type:'homingFireBullet',
+                        map:self.map,
+                    });
+                }
                 self.reload += 1;
                 if(self.animation === -1){
                     self.animation = 0;
@@ -6134,15 +6279,22 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},self.stats);
                     Sound({
                         type:'lizardSpit',
                         map:self.map,
                     });
                 }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},self.stats,'playerHoming');
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
                 self.reload += 1;
-                if(self.hp < 0.3 * self.hpMax){
+                if(self.hp < 0.3 * self.hpMax && ENV.Difficulty !== 'Expert'){
                     if(Spawner.list[self.spawnId]){
                         self.attackState = 'retreatLizard';
                         self.maxSpeed *= 1.5;
@@ -6257,8 +6409,15 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats);
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats,'playerHoming');
                     Sound({
                         type:'lizardSpit',
                         map:self.map,
@@ -6333,6 +6492,12 @@ Monster = function(param){
                 if(self.map === 'The Forest'){
                     self.attackState = 'enragedLightningLizard';
                     addToChat('style="color: #ff00ff">','Lightning Lizard has enraged.');
+                    self.itemDrops = {
+                        "lightningsaber":0.25,
+                        "lightningwand":0.25,
+                        "bookoflightning":0.25,
+                        "shieldoflightning":0.25,
+                    };
                 }
                 break;
             case "enragedLightningLizard":
@@ -6344,28 +6509,70 @@ Monster = function(param){
                     break;
                 }
                 if(self.target.isDead){
-                    self.target = undefined;
-                    self.attackState = 'passiveLightningLizard';
-                    self.damagedEntity = false;
-                    self.damaged = false;
-                    self.randomWalk(true,false,self.x,self.y);
+                    self.toRemove = true;
                     break;
                 }
                 if(self.target.toRemove){
-                    self.target = undefined;
-                    self.attackState = 'passiveLightningLizard';
-                    self.damagedEntity = false;
-                    self.damaged = false;
+                    self.toRemove = true;
                     break;
                 }
-                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false){
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats);
                     Sound({
                         type:'lizardSpit',
                         map:self.map,
                     });
                 }
-                if(self.reload % 3 === 0 && self.reload > 50 && self.target.invincible === false){
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},self.stats,'playerHoming');
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                if(self.reload % 3 === 0 && self.reload > 50 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
+                    for(var i = 0;i < 4;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'lightningSpit'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        projectileStats.damageReduction = 0;
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'lightningSpit',
+                            angle:i * 90,
+                            direction:i * 90,
+                            x:self.target.x - Math.cos(i / 2 * Math.PI) * 256,
+                            y:self.target.y - Math.sin(i / 2 * Math.PI) * 256,
+                            map:self.map,
+                            parentType:'Monster',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 0},
+                            stats:projectileStats,
+                            projectilePattern:'lightningStrike',
+                            onCollision:function(self,pt){
+                                self.toRemove = true;
+                            }
+                        });
+                    }
+                    Sound({
+                        type:'lizardSpit',
+                        map:self.map,
+                    });
+                }
+                if(self.reload % 3 === 0 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                     for(var i = 0;i < 4;i++){
                         var projectileWidth = 0;
                         var projectileHeight = 0;
@@ -6725,10 +6932,6 @@ Projectile = function(param){
         self.lastX = self.x;
         self.lastY = self.y;
         super_update();
-        if(self.timer === 0){
-            self.x -= self.spdX;
-            self.y -= self.spdY;
-        }
         self.timer += 1;
         if(param.stats.range !== undefined){
             if(self.timer > 20 * param.stats.range){
@@ -6783,16 +6986,23 @@ Projectile = function(param){
         else if(param.projectilePattern === 'spinAroundPlayer'){
             self.x = Player.list[self.parent].x;
             self.y = Player.list[self.parent].y;
-            self.x += -Math.sin(self.angle) * 54;
-            self.y += Math.cos(self.angle) * 54;
+            self.x += -Math.sin(self.angle) * param.distance;
+            self.y += Math.cos(self.angle) * param.distance;
             self.angle += param.stats.speed / 2;
             self.direction = self.angle * 180 / Math.PI + 180;
         }
         else if(param.projectilePattern === 'spinAroundPoint'){
             var angle = Math.atan2(self.y - self.parentStartY,self.x - self.parentStartX);
-            self.x += -Math.sin(angle) * param.stats.speed * 25;
-            self.y += Math.cos(angle) * param.stats.speed * 25;
+            self.spdX = -Math.sin(angle) * param.stats.speed * 25;
+            self.spdY = Math.cos(angle) * param.stats.speed * 25;
             self.timer -= 0.5;
+            if(param.spin !== undefined){
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+            self.direction = angle * 180 / Math.PI + 180;
         }
         else if(param.projectilePattern === 'playerHoming'){
             if(Monster.list[self.parent] === undefined){
@@ -6809,6 +7019,9 @@ Projectile = function(param){
             self.timer -= 0.5;
             if(param.spin !== undefined){
                 self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
             }
         }
         else if(param.projectilePattern === 'monsterHoming'){
@@ -6834,6 +7047,9 @@ Projectile = function(param){
             self.timer -= 0.5;
             if(param.spin !== undefined){
                 self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
             }
         }
         else if(param.projectilePattern === 'lightningStrike' && self.timer < 5){

@@ -57,7 +57,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",enchantments:[]}
-        currentEquip:{weapon:{},helmet:{},armor:{},key:{},book:{},special:{},crystal:{},consume:{}},
+        currentEquip:{weapon:{},helmet:{},armor:{},key:{},offhand:{},special:{},crystal:{},consume:{}},
         materials:[],
         refresh:true,
         spawn:true,

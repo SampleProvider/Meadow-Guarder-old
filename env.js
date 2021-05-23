@@ -3,6 +3,7 @@ ENV = {
     Hardcore:false,
     Peaceful:false,
     MonsterStrength:1,
+    Difficulty:'Expert',
     Spawnpoint:{
         x:320,
         y:320,
