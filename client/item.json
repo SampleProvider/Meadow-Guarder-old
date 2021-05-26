@@ -222,7 +222,7 @@
     "simplewoodenstaff":{
         "name":"Simple Wooden Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
         "damage":9,
         "damageType":"magic",
@@ -233,7 +233,7 @@
     "simplesteelstaff":{
         "name":"Simple Steel Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
         "damage":14,
         "damageType":"magic",
@@ -244,7 +244,7 @@
     "simpledarksteelstaff":{
         "name":"Simple Dark Steel Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
         "damage":21,
         "damageType":"magic",
@@ -255,7 +255,7 @@
     "simplegoldenstaff":{
         "name":"Simple Golden Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
         "damage":29,
         "damageType":"magic",
@@ -266,7 +266,7 @@
     "simplerubystaff":{
         "name":"Simple Ruby Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
         "damage":40,
         "damageType":"magic",
@@ -277,7 +277,7 @@
     "advancedwoodenstaff":{
         "name":"Advanced Wooden Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
         "damage":21,
         "damageType":"magic",
@@ -288,7 +288,7 @@
     "advancedsteelstaff":{
         "name":"Advanced Steel Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
         "damage":29,
         "damageType":"magic",
@@ -299,7 +299,7 @@
     "advanceddarksteelstaff":{
         "name":"Advanced Dark Steel Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
         "damage":40,
         "damageType":"magic",
@@ -310,7 +310,7 @@
     "advancedgoldenstaff":{
         "name":"Advanced Golden Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
         "damage":66,
         "damageType":"magic",
@@ -321,7 +321,7 @@
     "advancedrubystaff":{
         "name":"Advanced Ruby Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0,1];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
         "damage":89,
         "damageType":"magic",
@@ -598,7 +598,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
-        "damage":300,
+        "damage":200,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":15,
@@ -609,7 +609,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
-        "damage":65,
+        "damage":75,
         "damageType":"magic",
         "critChance":0.25,
         "useTime":7,
@@ -624,5 +624,13 @@
         "damageReduction":0.05,
         "rarity":3,
         "description":"<span style='color: #33ee33'>+20% melee damage.</span><br><span style='color: #33ee33'>+10% melee critical strike chance.</span>"
+    },
+    "ghastlyamulet":{
+        "name":"Ghastly Amulet",
+        "equip":"offhand",
+        "event":"self.hpMax += 1000;damageIncrease -= 0.3;self.stats.heal += 4;",
+        "enchantments":["smashing"],
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+1000 increased max hp.</span><br><span style='color: #33ee33'>Greatly increases life regeneration.</span><br><span style='color: #ff0000'>-30% damage.</span>"
     }
 }

@@ -14,6 +14,7 @@ Collision = function(param){
 }
 
 Collision.list = {};
+
 Collision2 = function(param){
     var self = Entity(param);
     self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";

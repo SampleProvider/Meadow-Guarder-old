@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '0.2.3';
+var VERSION = '023f1a';
 
 var DEBUG = false;
 
@@ -336,6 +336,7 @@ var renderPlayer = function(img,shadeValues){
     finalGl.drawImage(temp,0,0,72 * 4,152 * 4);
     return finalTemp;
 }
+document.getElementById('bossbar').style.display === 'none'
 
 var maps = {};
 
@@ -495,6 +496,8 @@ Img.cherryBomb = new Image();
 Img.cherryBomb.src = '/client/img/cherryBomb.png';
 Img.lizard = new Image();
 Img.lizard.src = '/client/img/lizard.png';
+Img.ghost = new Image();
+Img.ghost.src = '/client/img/ghost.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.healthBar = new Image();
@@ -936,8 +939,16 @@ var Player = function(initPack){
         self.moveNumber -= 1;
     }
     self.draw = function(){
+        self.animation = Math.round(self.animation);
+        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
+        if(self.id === selfId){
+            settingsPlayerDisplay.clearRect(0,0,10,17);
+            drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+        }
+    }
+    self.drawName = function(){
         if(Img[self.currentItem]){
-            ctx0.translate(self.x,self.y);
+            ctx1.translate(self.x,self.y);
             var turnAmount = 135;
             var drawX = -70;
             var drawY = -70;
@@ -951,19 +962,11 @@ var Player = function(initPack){
                 var drawX = -35;
                 var drawY = 15;
             }
-            ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
-            ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
-            ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
-            ctx0.translate(-self.x,-self.y);
+            ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+            ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+            ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
         }
-        self.animation = Math.round(self.animation);
-        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
-        if(self.id === selfId){
-            settingsPlayerDisplay.clearRect(0,0,10,17);
-            drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-        }
-    }
-    self.drawName = function(){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
@@ -1016,7 +1019,7 @@ var Player = function(initPack){
         }
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
-        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + self.stats.critChance * 100 + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
+        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
     }
     self.drawLight = function(){
         if(self.id !== selfId){
@@ -1079,7 +1082,7 @@ var Projectile = function(initPack){
             ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
         }
         else{
-            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
         ctx1.rotate(-self.direction * Math.PI / 180);
         ctx1.translate(-self.x,-self.y);
@@ -1107,11 +1110,20 @@ var Monster = function(initPack){
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
+    self.canCollide = initPack.canCollide;
     self.monsterType = initPack.monsterType;
     self.type = initPack.type;
     self.animation = initPack.animation;
     self.moveNumber = 4;
     self.updated = true;
+    if(self.monsterType === 'lightningLizard'){
+        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
+        document.getElementById('bossbar').innerHTML = 'Lightning Lizard ' + self.hp + '/' + self.hpMax;
+    }
+    if(self.monsterType === 'redBird'){
+        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
+        document.getElementById('bossbar').innerHTML = 'Red Bird ' + self.hp + '/' + self.hpMax;
+    }
     self.update = function(){
         if(self.moveNumber > 0){
             self.x += self.moveX;
@@ -1183,6 +1195,20 @@ var Monster = function(initPack){
             else{
                 ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13 - 26,9 * 3,12,8,self.x - 48,self.y - 32,96,64);
             }
+        }
+        if(self.monsterType === 'ghost'){
+            ctx0.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 0,10,21,self.x - 20,self.y - 42,40,84);
+        }
+        if(self.monsterType === 'lostSpirit'){
+            ctx0.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 1,10,21,self.x - 20,self.y - 42,40,84);
+        }
+    }
+    self.drawCtx1 = function(){
+        if(self.monsterType === 'ghost'){
+            ctx1.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 0,10,21,self.x - 20,self.y - 42,40,84);
+        }
+        if(self.monsterType === 'lostSpirit'){
+            ctx1.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 1,10,21,self.x - 20,self.y - 42,40,84);
         }
     }
     self.drawHp = function(){
@@ -1660,10 +1686,21 @@ socket.on('update',function(data){
                     if(data.monster[i].animation !== undefined){
                         Monster.list[data.monster[i].id].animation = data.monster[i].animation;
                     }
+                    if(data.monster[i].canCollide !== undefined){
+                        Monster.list[data.monster[i].id].canCollide = data.monster[i].canCollide;
+                    }
                     Monster.list[data.monster[i].id].updated = true;
                 }
                 else{
-                    new Monster(data.monster[i]);
+                    var monster = new Monster(data.monster[i]);
+                    if(monster.monsterType === 'lightningLizard'){
+                        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
+                        document.getElementById('bossbar').innerHTML = 'Lightning Lizard ' + monster.hp + '/' + monster.hpMax;
+                    }
+                    if(monster.monsterType === 'redBird'){
+                        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
+                        document.getElementById('bossbar').innerHTML = 'Red Bird ' + monster.hp + '/' + monster.hpMax;
+                    }
                 }
             }
         }
@@ -2095,13 +2132,13 @@ setInterval(function(){
     ctx1.save();
     ctx1.translate(cameraX,cameraY);
     for(var i in Projectile.list){
-        Projectile.list[i].drawHp();
-        Projectile.list[i].update();
-    }
-    for(var i in Projectile.list){
         if(Projectile.list[i].canCollide === false){
             Projectile.list[i].drawCtx1();
         }
+    }
+    for(var i in Projectile.list){
+        Projectile.list[i].drawHp();
+        Projectile.list[i].update();
     }
     var bossAlive = false;
     for(var i in Monster.list){
@@ -2112,7 +2149,7 @@ setInterval(function(){
             bossAlive = true;
         }
     }
-    if(bossAlive && document.getElementById('bossbar').style.display === 'none'){
+    if(bossAlive && (document.getElementById('bossbar').style.display === 'none' || document.getElementById('bossbar').style.display === '')){
         document.getElementById('bossHealth').style.display = 'inline-block';
         document.getElementById('bossbar').style.display = 'inline-block';
         for(var i in Monster.list){
@@ -2124,6 +2161,11 @@ setInterval(function(){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Red Bird ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
+        }
+    }
+    for(var i in Monster.list){
+        if(Monster.list[i].canCollide === false){
+            Monster.list[i].drawCtx1();
         }
     }
     for(var i in Monster.list){

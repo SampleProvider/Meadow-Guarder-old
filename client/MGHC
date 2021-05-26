@@ -272,6 +272,14 @@ MGHC = function(){
                 ctx1.strokeStyle = '#ffff00';
                 ctx1.lineWidth = 10;
             }
+            if(Monster.list[i].monsterType === 'ghost'){
+                ctx1.strokeStyle = '#ffffff';
+                ctx1.lineWidth = 2;
+            }
+            if(Monster.list[i].monsterType === 'lostSpirit'){
+                ctx1.strokeStyle = '#ccccff';
+                ctx1.lineWidth = 4;
+            }
             ctx1.beginPath();
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
             ctx1.lineTo(Monster.list[i].x,Monster.list[i].y);

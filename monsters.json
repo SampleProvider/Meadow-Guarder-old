@@ -232,7 +232,7 @@
         "width":48,
         "height":32,
         "attackState":"passiveLizard",
-        "hp":500,
+        "hp":750,
         "stats":{
             "attack":20,
             "defense":10,
@@ -254,7 +254,7 @@
         "width":96,
         "height":64,
         "attackState":"passiveLightningLizard",
-        "hp":20000,
+        "hp":10000,
         "stats":{
             "attack":55,
             "defense":25,
@@ -266,6 +266,43 @@
         "itemDrops":{
             "lightningcrystal":1,
             "yellowfish":0.1
+        }
+    },
+    "ghost":{
+        "spawnChance":1,
+        "xpGain":5,
+        "width":40,
+        "height":84,
+        "attackState":"passiveGhost",
+        "hp":250,
+        "stats":{
+            "attack":50,
+            "defense":25,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
+        },
+        "moveSpeed":15,
+        "itemDrops":{
+        }
+    },
+    "lostSpirit":{
+        "spawnChance":0.1,
+        "xpGain":50,
+        "width":40,
+        "height":84,
+        "attackState":"passiveLostSpirit",
+        "hp":1000,
+        "stats":{
+            "attack":75,
+            "defense":25,
+            "heal":0,
+            "critChance":0.04,
+            "damageReduction":0
+        },
+        "moveSpeed":15,
+        "itemDrops":{
+            "ghastlyamulet":0.05
         }
     }
 }

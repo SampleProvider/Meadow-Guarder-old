@@ -144,16 +144,20 @@ s = {
         }
         var spawners = 0;
         for(var i in Spawner.list){
-            spawners++;
+            if(Spawner.list[i].map === pt.map){
+                spawners++;
+            }
         }
         var spawnerNumber = Math.round(Math.random() * spawners);
         var currentSpawner = 0;
         var spawner = undefined;
         for(var i in Spawner.list){
-            if(currentSpawner === spawnerNumber){
-                spawner = Spawner.list[i];
+            if(Spawner.list[i].map === pt.map){
+                if(currentSpawner === spawnerNumber){
+                    spawner = Spawner.list[i];
+                }
+                currentSpawner += 1;
             }
-            currentSpawner += 1;
         }
         for(var i in monsterData){
             if(i === param){
@@ -276,7 +280,7 @@ s = {
     },
     smiteAll:function(){
         for(var i in Player.list){
-            s.createMonster(Player.list[i].username);
+            s.createMonster('redCherryBomb',Player.list[i].username);
         }
     },
     kill:function(param){
@@ -616,8 +620,8 @@ Actor = function(param){
     self.animationDirection = 'up';
     self.animation = 0;
     self.mapChange = 100;
+    self.canCollide = true;
     self.toRemove = false;
-    self.isHostile = false;
     self.isDead = false;
     self.willBeDead = false;
     self.pushPower = 3;
@@ -789,6 +793,26 @@ Actor = function(param){
                 self.trackingEntityReached = true;
             }
         }
+        else if(self.followingEntity){
+            if(self.followingEntity.x - self.x > 0){
+                self.spdX = 1;
+            }
+            else if(self.followingEntity.x - self.x < 0){
+                self.spdX = -1;
+            }
+            else{
+                self.spdX = 0;
+            }
+            if(self.followingEntity.y - self.y > 0){
+                self.spdY = 1;
+            }
+            else if(self.followingEntity.y - self.y < 0){
+                self.spdY = -1;
+            }
+            else{
+                self.spdY = 0;
+            }
+        }
         if(self.randomPos.walking){
             if(self.randomPos.waypoint){
                 if(self.randomPos.currentWaypoint){
@@ -816,7 +840,7 @@ Actor = function(param){
                 }
                 self.randomPos.waypointAttemptTime += 1;
             }
-            else if(self.trackingEntity === undefined){
+            else if(self.trackingEntity === undefined && self.followingEntity === undefined){
                 if(self.spdX === 0 && self.randomPos.timeX > self.randomPos.walkTimeX){
                     self.spdX = Math.round(Math.random() * 2 - 1);
                     self.randomPos.timeX = 0;
@@ -947,6 +971,9 @@ Actor = function(param){
         self.trackingPos = {x:undefined,y:undefined};
         self.trackCircleDirection = 1;
         self.trackingEntityReached = false;
+    }
+    self.followEntity = function(pt){
+        self.followingEntity = pt;
     }
     self.onHit = function(pt){
     }
@@ -1114,6 +1141,9 @@ Actor = function(param){
         self.eventQ.sort(sortByTime);
     }
     self.updateCollisions = function(){
+        if(self.canCollide === false){
+            return;
+        }
         var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
@@ -1825,6 +1855,16 @@ Player = function(param){
             if(self.willBeDead){
                 Player.spectate(socket);
                 addToChat('style="color: #ff0000">',self.displayName + ' died.');
+                self.quest = false;
+                self.questInfo = {
+                    quest:false,
+                };
+                for(var i in self.questDependent){
+                    self.questDependent[i].toRemove = true;
+                }
+                socket.emit('dialougeLine',{
+                    state:'remove',
+                });
             }
         }
         else{
@@ -5027,7 +5067,7 @@ Player = function(param){
                 self.mana -= self.attackCost;
                 self.manaRefresh = self.useTime;
             }
-            else if(self.cooldown <= 0){
+            else if(self.stats.damageType !== 'magic' && self.cooldown <= 0){
                 for(var i in self.ability.attackPattern){
                     self.addToEventQ(self.ability.ability + 'Attack',self.ability.attackPattern[i]);
                 }
@@ -5044,7 +5084,7 @@ Player = function(param){
                 self.mana -= self.secondCost;
                 self.manaRefresh = self.useTime;
             }
-            else if(self.cooldown <= 0){
+            else if(self.stats.damageType !== 'magic' && self.cooldown <= 0){
                 for(var i in self.ability.secondPattern){
                     self.addToEventQ(self.ability.ability + 'Second',self.ability.secondPattern[i]);
                 }
@@ -5432,13 +5472,6 @@ Player.onConnect = function(socket,username){
             player.toRemove = false;
             player.dazed = 0;
             //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
-            player.quest = false;
-            player.questInfo = {
-                quest:false,
-            };
-            for(var i in player.questDependent){
-                player.questDependent[i].toRemove = true;
-            }
             var newTiles = [];
             for(var i in tiles){
                 if(tiles[i].parent !== player.id){
@@ -5775,7 +5808,6 @@ Monster = function(param){
     self.target = {};
     self.type = 'Monster';
     self.isDead = false;
-    self.isHostile = true;
     self.stats = {
         attack:1,
         defense:1,
@@ -5828,6 +5860,12 @@ Monster = function(param){
     }
     if(self.monsterType === 'lightningLizard'){
         addToChat('style="color: #ff00ff">','Lightning Lizard has awoken!');
+    }
+    if(self.monsterType === 'ghost'){
+        self.canCollide = false;
+    }
+    if(self.monsterType === 'lostSpirit'){
+        self.canCollide = false;
     }
     self.oldMoveSpeed = self.maxSpeed;
     var lastSelf = {};
@@ -6313,16 +6351,22 @@ Monster = function(param){
                     if(self.animation >= 2){
                         self.animation = 0;
                     }
-                    else{
+                    else if(self.animation !== -1){
                         self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
                     }
                 }
                 else{
                     if(self.animation >= 4){
                         self.animation = 2;
                     }
-                    else{
+                    else if(self.animation !== -1){
                         self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
                     }
                 }
                 break;
@@ -6355,16 +6399,22 @@ Monster = function(param){
                     if(self.animation >= 2){
                         self.animation = 0;
                     }
-                    else{
+                    else if(self.animation !== -1){
                         self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
                     }
                 }
                 else{
                     if(self.animation >= 4){
                         self.animation = 2;
                     }
-                    else{
+                    else if(self.animation !== -1){
                         self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
                     }
                 }
                 break;
@@ -6477,16 +6527,22 @@ Monster = function(param){
                     if(self.animation >= 2){
                         self.animation = 0;
                     }
-                    else{
+                    else if(self.animation !== -1){
                         self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
                     }
                 }
                 else{
                     if(self.animation >= 4){
                         self.animation = 2;
                     }
-                    else{
+                    else if(self.animation !== -1){
                         self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
                     }
                 }
                 if(self.map === 'The Forest'){
@@ -6632,6 +6688,109 @@ Monster = function(param){
                     }
                 }
                 break;
+            case "passiveGhost":
+                //self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveGhost";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveGhost";
+                }
+                break;
+            case "moveGhost":
+                self.followEntity(self.target);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackGhost";
+                break;
+            case "attackGhost":
+                //self.animate = true;
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveGhost';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveGhost';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveGhost';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                self.reload += 1;
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "passiveLostSpirit":
+                //self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveLostSpirit";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveLostSpirit";
+                }
+                break;
+            case "moveLostSpirit":
+                self.followEntity(self.target);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackLostSpirit";
+                break;
+            case "attackLostSpirit":
+                //self.animate = true;
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveLostSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveLostSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveLostSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 20 === 0 && self.reload > 20 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'soul',0,function(t){return 0},self.stats,'playerHoming');
+                }
+                self.reload += 1;
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
         }
     }
     self.getUpdatePack = function(){
@@ -6665,6 +6824,10 @@ Monster = function(param){
             pack.animation = self.animation;
             lastSelf.animation = self.animation;
         }
+        if(lastSelf.canCollide !== self.canCollide){
+            pack.canCollide = self.canCollide;
+            lastSelf.canCollide = self.canCollide;
+        }
         return pack;
     }
     self.getInitPack = function(){
@@ -6677,6 +6840,7 @@ Monster = function(param){
         pack.map = self.map;
         pack.monsterType = self.monsterType;
         pack.animation = self.animation;
+        pack.canCollide = self.canCollide;
         pack.type = self.type;
         return pack;
     }
@@ -6805,10 +6969,6 @@ Pet = function(param){
                         value:'+' + heal,
                     });
                 }
-                var direction = (Math.atan2(Player.list[self.parent].mouseY - self.y,Player.list[self.parent].mouseX - self.x) / Math.PI * 180);
-                for(var i = -18;i < 19;i++){
-                    self.shootProjectile(self.parent,'Player',direction + i * 10,direction + i * 10,'sword',0,function(t){return 0},Player.list[self.parent].stats);
-                }
                 self.mana -= 100;
             }
         }
@@ -6931,7 +7091,16 @@ Projectile = function(param){
 	self.update = function(){
         self.lastX = self.x;
         self.lastY = self.y;
-        super_update();
+        if(self.timer !== 0){
+            self.spdX = self.spdX / 2;
+            self.spdY = self.spdY / 2;
+            for(var i = 0;i < 2;i++){
+                super_update();
+                self.updateCollisions();
+            }
+            self.spdX = self.spdX * 2;
+            self.spdY = self.spdY * 2;
+        }
         self.timer += 1;
         if(param.stats.range !== undefined){
             if(self.timer > 20 * param.stats.range){
@@ -7009,12 +7178,8 @@ Projectile = function(param){
                 self.timer = 0;
             }
             else if(Monster.list[self.parent].target !== undefined){
-                self.spdX = (Monster.list[self.parent].target.x - self.x) / 10 * self.stats.speed;
-                self.spdY = (Monster.list[self.parent].target.y - self.y) / 10 * self.stats.speed;
-            }
-            else{
-                self.spdX = (Monster.list[self.parent].x - self.x) / 10 * self.stats.speed;
-                self.spdY = (Monster.list[self.parent].y - self.y) / 10 * self.stats.speed;
+                self.spdX = Math.cos(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 25 * self.stats.speed;
+                self.spdY = Math.sin(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 25 * self.stats.speed;
             }
             self.timer -= 0.5;
             if(param.spin !== undefined){
@@ -7037,12 +7202,8 @@ Projectile = function(param){
                 }
             }
             if(closestMonster){
-                self.spdX = (closestMonster.x - self.x) / 10 * self.stats.speed;
-                self.spdY = (closestMonster.y - self.y) / 10 * self.stats.speed;
-            }
-            else{
-                self.spdX = (Player.list[self.parent].x - self.x) / 10 * self.stats.speed;
-                self.spdY = (Player.list[self.parent].y - self.y) / 10 * self.stats.speed;
+                self.spdX = Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 25 * self.stats.speed;
+                self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 25 * self.stats.speed;
             }
             self.timer -= 0.5;
             if(param.spin !== undefined){
@@ -8118,6 +8279,7 @@ var compareMaps = function(a,b){
 }
 fs.readFile("./client/maps/World.world","utf8",function(err,data){
     worldMap = JSON.parse(data).maps;
+    worldMap["Lilypad Temple Room 0"]
     worldMap.sort(compareMaps);
     for(var i in worldMap){
         load(worldMap[i].fileName.slice(0,-4));
