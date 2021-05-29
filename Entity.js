@@ -317,6 +317,10 @@ var spawnMonster = function(spawner,spawnId){
             var monsterStats = Object.create(currentMonster.stats);
             monsterHp *= ENV.MonsterStrength;
             monsterStats.attack *= ENV.MonsterStrength;
+            if(spawner.map === 'The Arena'){
+                monsterHp *= 10;
+                monsterStats.attack *= 10;
+            }
             var monster = new Monster({
                 spawnId:spawnId,
                 x:spawner.x,
