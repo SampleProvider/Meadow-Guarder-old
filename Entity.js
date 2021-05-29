@@ -317,9 +317,11 @@ var spawnMonster = function(spawner,spawnId){
             var monsterStats = Object.create(currentMonster.stats);
             monsterHp *= ENV.MonsterStrength;
             monsterStats.attack *= ENV.MonsterStrength;
+            var xpGain = currentMonster.xpGain;
             if(spawner.map === 'The Arena'){
                 monsterHp *= 10;
                 monsterStats.attack *= 10;
+                xpGain *= 10;
             }
             var monster = new Monster({
                 spawnId:spawnId,
@@ -333,7 +335,7 @@ var spawnMonster = function(spawner,spawnId){
                 attackState:currentMonster.attackState,
                 width:currentMonster.width,
                 height:currentMonster.height,
-                xpGain:currentMonster.xpGain,
+                xpGain:xpGain,
                 itemDrops:currentMonster.itemDrops,
                 onDeath:function(pt){
                     pt.toRemove = true;
