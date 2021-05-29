@@ -124,6 +124,9 @@ var firableMap = function(map){
     if(map.includes('Lilypad')){
         isFireMap = true;
     }
+    if(map.includes('Arena')){
+        isFireMap = true;
+    }
     if(ENV.PVP){
         isFireMap = true;
     }
@@ -1653,6 +1656,7 @@ Player = function(param){
     self.manaMax = 200;
     self.manaRefresh = 0;
     self.manaRegen = 1;
+    self.weaponState = 0;
     self.xp = 0;
     self.xpMax = 100;
     self.level = 0;
@@ -1726,6 +1730,7 @@ Player = function(param){
     self.cooldown = 5;
     self.useTime = 5;
     self.passive = '';
+    self.weaponPassive = '';
     self.regenTick = 0;
     self.ability = {
         ability:'base',
@@ -1843,7 +1848,7 @@ Player = function(param){
         self.cooldown -= 1;
         if(!self.invincible && self.isDead === false){
             if(self.manaRefresh <= -10){
-                self.mana += 2 * self.manaRegen;
+                self.mana += 5 * self.manaRegen;
             }
             self.mana += 0.1 * self.manaRegen;
         }
@@ -3404,6 +3409,7 @@ Player = function(param){
                 damageReduction:0,
             }
             self.passive = '';
+            self.weaponPassive = '';
             self.textColor = '#ffff00';
             self.hpMax = 100 + self.level * 10;
             self.attackCost = 10;
@@ -3674,6 +3680,11 @@ Player = function(param){
                     });
                 }
             }
+        }
+        if(self.weaponPassive === 'spirit'){
+            self.shootProjectile(self.id,'Player',self.direction,self.direction,'soul',32,function(t){return 25},self.stats,'playerSoul');
+            self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'soul',32,function(t){return 25},self.stats,'playerSoul');
+            self.shootProjectile(self.id,'Player',self.direction + 240,self.direction + 240,'soul',32,function(t){return 25},self.stats,'playerSoul');
         }
     }
     self.updateAttack = function(){
@@ -4026,6 +4037,18 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'lightningSpit',0,function(t){return 0},self.stats,'monsterHoming');
+                                Sound({
+                                    type:'lightningSpit',
+                                    map:self.map,
+                                });
+                            }
+                            break;
+                        case "bookofspiritsAttack":
+                            if(isFireMap){
+                                if(self.weaponState === 7){
+                                    self.weaponState = 0;
+                                }
+                                self.shootProjectile(self.id,'Player',self.direction + self.weaponState * 60,self.direction + self.weaponState * 60,'soul',64,function(t){return 30},self.stats,'playerSoulWait');
                                 Sound({
                                     type:'lightningSpit',
                                     map:self.map,
@@ -5066,6 +5089,7 @@ Player = function(param){
                 self.doPassive();
                 self.mana -= self.attackCost;
                 self.manaRefresh = self.useTime;
+                self.weaponState += 1;
             }
             else if(self.stats.damageType !== 'magic' && self.cooldown <= 0){
                 for(var i in self.ability.attackPattern){
@@ -5073,7 +5097,11 @@ Player = function(param){
                 }
                 self.doPassive();
                 self.cooldown = self.useTime;
+                self.weaponState += 1;
             }
+        }
+        else{
+            self.weaponState = 0;
         }
         if(self.keyPress.second === true){
             if(self.stats.damageType === 'magic' && self.mana >= self.secondCost && self.manaRefresh <= 0){
@@ -7080,6 +7108,13 @@ Projectile = function(param){
     if(param.projectilePattern === 'monsterHoming'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'playerSoul'){
+        self.canCollide = false;
+    }
+    if(param.projectilePattern === 'playerSoulWait'){
+        self.canCollide = false;
+        self.state = 0;
+    }
     if(param.projectilePattern === 'noCollision'){
         self.canCollide = false;
     }
@@ -7103,12 +7138,12 @@ Projectile = function(param){
         }
         self.timer += 1;
         if(param.stats.range !== undefined){
-            if(self.timer > 20 * param.stats.range){
+            if(self.timer > 35 * param.stats.range){
                 self.toRemove = true;
             }
         }
         else{
-            if(self.timer > 20){
+            if(self.timer > 35){
                 self.toRemove = true;
             }
         }
@@ -7182,7 +7217,7 @@ Projectile = function(param){
                 self.spdY = Math.sin(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 25 * self.stats.speed;
             }
             self.timer -= 0.5;
-            if(param.spin !== undefined){
+            if(param.spin(self.timer) !== 0){
                 self.direction += param.spin(self.timer);
             }
             else{
@@ -7206,7 +7241,86 @@ Projectile = function(param){
                 self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 25 * self.stats.speed;
             }
             self.timer -= 0.5;
-            if(param.spin !== undefined){
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+        }
+        else if(param.projectilePattern === 'playerSoul' && self.timer < 10){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(closestMonster){
+                self.spdX = Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 5 * self.stats.speed;
+                self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 5 * self.stats.speed;
+            }
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+        }
+        else if(param.projectilePattern === 'playerSoul'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(closestMonster){
+                self.spdX = Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 75 * self.stats.speed;
+                self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 75 * self.stats.speed;
+            }
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+        }
+        else if(param.projectilePattern === 'playerSoulWait'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(self.state === 0){
+                self.spdX = 0;
+                self.spdY = 0;
+            }
+            if(Player.list[self.parent].weaponState === 0){
+                self.state = 1;
+            }
+            if(closestMonster && self.state === 1){
+                self.spdX = Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 75 * self.stats.speed;
+                self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 75 * self.stats.speed;
+            }
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
                 self.direction += param.spin(self.timer);
             }
             else{
@@ -8271,6 +8385,7 @@ load("Fishing Hut");
 load("House");
 load("Tiny House");
 load("Lilypad Temple Room 0");
+load("The Arena");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

@@ -939,16 +939,8 @@ var Player = function(initPack){
         self.moveNumber -= 1;
     }
     self.draw = function(){
-        self.animation = Math.round(self.animation);
-        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
-        if(self.id === selfId){
-            settingsPlayerDisplay.clearRect(0,0,10,17);
-            drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
-        }
-    }
-    self.drawName = function(){
         if(Img[self.currentItem]){
-            ctx1.translate(self.x,self.y);
+            ctx0.translate(self.x,self.y);
             var turnAmount = 135;
             var drawX = -70;
             var drawY = -70;
@@ -962,11 +954,24 @@ var Player = function(initPack){
                 var drawX = -35;
                 var drawY = 15;
             }
-            ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
-            ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
-            ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
-            ctx1.translate(-self.x,-self.y);
+            if(self.currentItem === 'bookofspirits'){
+                turnAmount = 270;
+                var drawX = -35;
+                var drawY = 15;
+            }
+            ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+            ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+            ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
         }
+        self.animation = Math.round(self.animation);
+        drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y,4);
+        if(self.id === selfId){
+            settingsPlayerDisplay.clearRect(0,0,10,17);
+            drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+        }
+    }
+    self.drawName = function(){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";

@@ -18,6 +18,9 @@
         ],
         "The Weeping Forest": [
             "ghost","lostSpirit"
+        ],
+        "The Arena": [
+            "redBird","greenLizard","lightningLizard","ghost","lostSpirit"
         ]
     }
 }

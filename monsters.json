@@ -96,11 +96,11 @@
         }
     },
     "redBird":{
-        "spawnChance":0,
+        "spawnChance":0.1,
         "xpGain":25,
         "width":88,
         "height":80,
-        "attackState":"passiveBird",
+        "attackState":"passiveRedBird",
         "hp":2500,
         "stats":{
             "attack":7,
@@ -249,7 +249,7 @@
         }
     },
     "lightningLizard":{
-        "spawnChance":0,
+        "spawnChance":0.1,
         "xpGain":25,
         "width":96,
         "height":64,
@@ -302,7 +302,9 @@
         },
         "moveSpeed":15,
         "itemDrops":{
-            "ghastlyamulet":0.05
+            "ghastlyamulet":0.05,
+            "ectoglove":0.05,
+            "bookofspirits":0.05
         }
     }
 }

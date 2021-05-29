@@ -587,7 +587,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","reach"],
-        "damage":25,
+        "damage":35,
         "damageType":"melee",
         "critChance":0.25,
         "useTime":0,
@@ -598,7 +598,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
-        "damage":200,
+        "damage":250,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":15,
@@ -609,7 +609,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
-        "damage":75,
+        "damage":95,
         "damageType":"magic",
         "critChance":0.25,
         "useTime":7,
@@ -632,5 +632,26 @@
         "enchantments":["smashing"],
         "rarity":3,
         "description":"<span style='color: #33ee33'>+1000 increased max hp.</span><br><span style='color: #33ee33'>Greatly increases life regeneration.</span><br><span style='color: #ff0000'>-30% damage.</span>"
+    },
+    "ectoglove":{
+        "name":"Ecto Glove",
+        "equip":"offhand",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.critChance += 0.2;self.weaponPassive = 'spirit';}",
+        "enchantments":["smashing"],
+        "defense":2,
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+50% ranged damage.</span><br><span style='color: #33ee33'>+20% ranged critical strike chance.</span><br><span style='color: #33ee33'>Attacking generates homing spirits.</span>"
+    },
+    "bookofspirits":{
+        "name":"Book of Spirits",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 3;",
+        "enchantments":["speed","burst"],
+        "damage":135,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":3,
+        "description":"Spawns homing spirits.<br>Has a reduced mana cost."
     }
 }
