@@ -9,4 +9,6 @@ ENV = {
         y:320,
         map:'The Village',
     },
+    BossRush:false,
+    BossRushStage:0,
 }

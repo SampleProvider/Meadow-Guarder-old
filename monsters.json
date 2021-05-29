@@ -206,6 +206,7 @@
         },
         "moveSpeed":15,
         "itemDrops":{
+            "coinring":0.01
         }
     },
     "blueCherryBomb":{
@@ -224,6 +225,7 @@
         },
         "moveSpeed":15,
         "itemDrops":{
+            "coinring":0.01
         }
     },
     "greenLizard":{
@@ -304,7 +306,8 @@
         "itemDrops":{
             "ghastlyamulet":0.05,
             "ectoglove":0.05,
-            "bookofspirits":0.05
+            "bookofspirits":0.05,
+            "skullofdeath":0.05
         }
     }
 }

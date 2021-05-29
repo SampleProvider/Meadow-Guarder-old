@@ -585,6 +585,208 @@ Entity.getFrameUpdateData = function(){
             delete Projectile.list[i];
         }
     }
+    if(ENV.BossRush === true){
+        var bossRushInProgress = false;
+        for(var i in Monster.list){
+            if(Monster.list[i].map === 'The Arena'){
+                bossRushInProgress = true;
+            }
+        }
+        var allPlayersDead = true;
+        for(var i in Player.list){
+            if(Player.list[i].hp > 0 && Player.list[i].map === 'The Arena'){
+                allPlayersDead = false;
+            }
+        }
+        if(allPlayersDead === true){
+            ENV.BossRush = false;
+            bossRushInProgress = true;
+            addToChat('style="color: #ff0000">','Boss Rush has killed every player!');
+            for(var i in Monster.list){
+                if(Monster.list[i].map === 'The Arena'){
+                   Monster.list[i].toRemove = true;
+                }
+            }
+        }
+        if(!bossRushInProgress){
+            if(ENV.BossRushStage === 0){
+                addToChat('style="color: #ff00ff">','The Boss Rush has begun!');
+                addToChat('style="color: #00aadd">','Alright, let\'s get started. Not sure why you\'re bothering.');
+                for(var i in monsterData){
+                    if(i === 'greenLizard'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 50;
+                        monsterStats.attack *= 100;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1600,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                }
+            }
+            else if(ENV.BossRushStage === 1){
+                addToChat('style="color: #00aadd">','You seem so confident, even though you are painfully ignorant of what has yet to transpire.');
+                for(var i in monsterData){
+                    if(i === 'lostSpirit'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 50;
+                        monsterStats.attack *= 100;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1600,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                }
+            }
+            else if(ENV.BossRushStage === 2){
+                addToChat('style="color: #00aadd">','Impressive... but still not good enough!');
+                for(var i in monsterData){
+                    if(i === 'redBird'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 25;
+                        monsterStats.attack *= 100;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1600,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                }
+            }
+            else if(ENV.BossRushStage === 3){
+                addToChat('style="color: #00aadd">','How are you still alive!?');
+                for(var i in monsterData){
+                    if(i === 'lightningLizard'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 10;
+                        monsterStats.attack *= 100;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1600,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                }
+            }
+            else if(ENV.BossRushStage === 4){
+                addToChat('style="color: #00aadd">','You expected a reward beyond this mere leaf? Patience, the true reward will come apparent in time...');
+                ENV.BossRushStage = 0;
+                ENV.BossRush = false;
+                for(var i in Player.list){
+                    if(Player.list[i].map === 'The Arena'){
+                        Player.list[i].xp += 500000 * Player.list[i].stats.xp;
+                        Player.list[i].inventory.addItem('leaf',[]);
+                    }
+                }
+            }
+        }
+    }
     return pack;
 }
 

@@ -653,5 +653,29 @@
         "useTime":3,
         "rarity":3,
         "description":"Spawns homing spirits.<br>Has a reduced mana cost."
+    },
+    "skullofdeath":{
+        "name":"Skull of Death",
+        "equip":"consume",
+        "event":"if(self.map === 'The Arena' && ENV.BossRush === false){ENV.BossRush = true;ENV.BossRushStage = 0;}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('skullofdeath',[]);",
+        "enchantments":[],
+        "description":"Summons the Boss Rush.<br>Used in The Arena.",
+        "rarity":3
+    },
+    "coinring":{
+        "name":"Coin Ring",
+        "equip":"offhand",
+        "event":"self.stats.xp += 5;",
+        "enchantments":["smashing"],
+        "rarity":3,
+        "description":"<span style='color: #33ee33'>+500% increased xp gain.</span>"
+    },
+    "leaf":{
+        "name":"Leaf",
+        "equip":"offhand",
+        "event":"",
+        "enchantments":[],
+        "rarity":3,
+        "description":"A small leaf."
     }
 }
