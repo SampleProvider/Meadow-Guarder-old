@@ -244,6 +244,15 @@ Inventory = function(socket,server){
                 if(item.rarity === 3){
                     button.style.color = '#ffff00';
                 }
+                if(item.rarity === 4){
+                    button.style.color = '#ff00ff';
+                }
+                if(item.rarity === 5){
+                    button.style.color = '#ff0000';
+                }
+                if(item.rarity === 6){
+                    button.style.color = '#000099';
+                }
             }
             if(item.description){
                 enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
@@ -380,6 +389,15 @@ Inventory = function(socket,server){
                 }
                 if(item.rarity === 3){
                     button.style.color = '#ffff00';
+                }
+                if(item.rarity === 4){
+                    button.style.color = '#ff00ff';
+                }
+                if(item.rarity === 5){
+                    button.style.color = '#ff0000';
+                }
+                if(item.rarity === 6){
+                    button.style.color = '#000099';
                 }
             }
             if(item.description){

@@ -41,7 +41,7 @@
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
-        "rarity":2
+        "rarity":1
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
@@ -74,7 +74,7 @@
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
-        "rarity":2
+        "rarity":1
     },
     "advanceddarksteelbow":{
         "name":"Advanced Dark Steel Bow",
@@ -96,7 +96,7 @@
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
-        "rarity":3
+        "rarity":2
     },
     "advancedrubybow":{
         "name":"Advanced Ruby Bow",
@@ -151,7 +151,7 @@
         "damageType":"melee",
         "critChance":0.04,
         "useTime":3,
-        "rarity":2
+        "rarity":1
     },
     "simplerubysword":{
         "name":"Simple Ruby Sword",
@@ -184,7 +184,7 @@
         "damageType":"melee",
         "critChance":0.04,
         "useTime":4,
-        "rarity":2
+        "rarity":1
     },
     "advanceddarksteelsword":{
         "name":"Advanced Dark Steel Sword",
@@ -206,7 +206,7 @@
         "damageType":"melee",
         "critChance":0.04,
         "useTime":4,
-        "rarity":3
+        "rarity":2
     },
     "advancedrubysword":{
         "name":"Advanced Ruby Sword",
@@ -261,7 +261,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
-        "rarity":2
+        "rarity":1
     },
     "simplerubystaff":{
         "name":"Simple Ruby Staff",
@@ -294,7 +294,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
-        "rarity":2
+        "rarity":1
     },
     "advanceddarksteelstaff":{
         "name":"Advanced Dark Steel Staff",
@@ -316,7 +316,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
-        "rarity":3
+        "rarity":2
     },
     "advancedrubystaff":{
         "name":"Advanced Ruby Staff",
@@ -399,7 +399,7 @@
         "enchantments":["smashing"],
         "defense":21,
         "damageReduction":0.15,
-        "rarity":1,
+        "rarity":2,
         "description":"<span style='color: #33ee33'>+18% melee damage.</span><br><span style='color: #33ee33'>+5% melee critical strike chance.</span>"
     },
     "goldenhelmet":{
@@ -446,7 +446,7 @@
         "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.1;self.stats.critChance += 0.3;}",
         "enchantments":["smashing"],
         "defense":4,
-        "rarity":1,
+        "rarity":2,
         "description":"<span style='color: #33ee33'>+10% magic damage.</span><br><span style='color: #33ee33'>+30% magic critical strike chance.</span>"
     },
     "goldenhat":{
@@ -474,7 +474,7 @@
         "enchantments":["smashing"],
         "defense":0,
         "damageReduction":0.99,
-        "rarity":3,
+        "rarity":6,
         "description":"<span style='color: #33ee33'>+???% magic damage.</span><br><span style='color: #33ee33'>+???% magic critical strike chance.</span>"
     },
     "woodenarmor":{
@@ -500,7 +500,7 @@
         "event":"damageIncrease += 0.6;self.stats.critChance += 0.05;",
         "enchantments":["smashing"],
         "defense":8,
-        "rarity":1,
+        "rarity":2,
         "description":"<span style='color: #33ee33'>+6% damage.</span><br><span style='color: #33ee33'>+5% critical strike chance.</span>"
     },
     "goldenarmor":{
@@ -549,14 +549,14 @@
         "equip":"key",
         "event":"self.textColor = '#0090ff';self.stats.luck = -3;",
         "enchantments":["unlocking"],
-        "rarity":3
+        "rarity":4
     },
     "spkey":{
         "name":"SP Key",
         "equip":"key",
         "event":"self.textColor = '#ff0090';self.stats.luck = -3;",
         "enchantments":["unlocking"],
-        "rarity":3
+        "rarity":6
     },
     "firecrystal":{
         "name":"Fire Crystal",
@@ -564,7 +564,7 @@
         "event":"self.passive = 'homingFire';",
         "enchantments":[],
         "description":"Harness the power of fire.",
-        "rarity":2
+        "rarity":3
     },
     "lightningcrystal":{
         "name":"Lightning Crystal",
@@ -591,7 +591,7 @@
         "damageType":"melee",
         "critChance":0.25,
         "useTime":0,
-        "rarity":3
+        "rarity":4
     },
     "lightningwand":{
         "name":"Lightning Wand",
@@ -602,7 +602,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":15,
-        "rarity":3
+        "rarity":4
     },
     "bookoflightning":{
         "name":"Book of Lightning",
@@ -613,7 +613,7 @@
         "damageType":"magic",
         "critChance":0.25,
         "useTime":7,
-        "rarity":3
+        "rarity":4
     },
     "shieldoflightning":{
         "name":"Shield of Lightning",
@@ -622,7 +622,7 @@
         "enchantments":["smashing"],
         "defense":20,
         "damageReduction":0.05,
-        "rarity":3,
+        "rarity":4,
         "description":"<span style='color: #33ee33'>+20% melee damage.</span><br><span style='color: #33ee33'>+10% melee critical strike chance.</span>"
     },
     "ghastlyamulet":{
@@ -630,7 +630,7 @@
         "equip":"offhand",
         "event":"self.hpMax += 1000;damageIncrease -= 0.3;self.stats.heal += 4;",
         "enchantments":["smashing"],
-        "rarity":3,
+        "rarity":4,
         "description":"<span style='color: #33ee33'>+1000 increased max hp.</span><br><span style='color: #33ee33'>Greatly increases life regeneration.</span><br><span style='color: #ff0000'>-30% damage.</span>"
     },
     "ectoglove":{
@@ -639,7 +639,7 @@
         "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.critChance += 0.2;self.weaponPassive = 'spirit';}",
         "enchantments":["smashing"],
         "defense":2,
-        "rarity":3,
+        "rarity":4,
         "description":"<span style='color: #33ee33'>+50% ranged damage.</span><br><span style='color: #33ee33'>+20% ranged critical strike chance.</span><br><span style='color: #33ee33'>Attacking generates homing spirits.</span>"
     },
     "bookofspirits":{
@@ -651,7 +651,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":3,
-        "rarity":3,
+        "rarity":4,
         "description":"Spawns homing spirits.<br>Has a reduced mana cost."
     },
     "skullofdeath":{
@@ -660,14 +660,14 @@
         "event":"if(self.map === 'The Arena' && ENV.BossRush === false){ENV.BossRush = true;ENV.BossRushStage = 0;}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('skullofdeath',[]);",
         "enchantments":[],
         "description":"Summons the Boss Rush.<br>Used in The Arena.",
-        "rarity":3
+        "rarity":4
     },
     "coinring":{
         "name":"Coin Ring",
         "equip":"offhand",
         "event":"self.stats.xp += 5;",
         "enchantments":["smashing"],
-        "rarity":3,
+        "rarity":4,
         "description":"<span style='color: #33ee33'>+500% increased xp gain.</span>"
     },
     "leaf":{
@@ -675,7 +675,7 @@
         "equip":"offhand",
         "event":"",
         "enchantments":[],
-        "rarity":3,
+        "rarity":5,
         "description":"A small leaf."
     }
 }
