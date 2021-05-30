@@ -267,7 +267,7 @@
         "moveSpeed":20,
         "itemDrops":{
             "lightningcrystal":1,
-            "yellowfish":0.1
+            "yellowfish":0.5
         }
     },
     "ghost":{
@@ -278,7 +278,7 @@
         "attackState":"passiveGhost",
         "hp":250,
         "stats":{
-            "attack":50,
+            "attack":40,
             "defense":25,
             "heal":0,
             "critChance":0.04,
@@ -290,13 +290,13 @@
     },
     "lostSpirit":{
         "spawnChance":0.1,
-        "xpGain":50,
+        "xpGain":15,
         "width":40,
         "height":84,
         "attackState":"passiveLostSpirit",
-        "hp":1000,
+        "hp":500,
         "stats":{
-            "attack":75,
+            "attack":35,
             "defense":25,
             "heal":0,
             "critChance":0.04,
@@ -304,10 +304,31 @@
         },
         "moveSpeed":15,
         "itemDrops":{
-            "ghastlyamulet":0.05,
-            "ectoglove":0.05,
-            "bookofspirits":0.05,
-            "skullofdeath":0.05
+            "ghastlyamulet":0.01,
+            "ectoglove":0.01,
+            "bookofspirits":0.01,
+            "orangefish":0.01
+        }
+    },
+    "possessedSpirit":{
+        "spawnChance":0.1,
+        "xpGain":50,
+        "width":80,
+        "height":168,
+        "attackState":"passivePossessedSpirit",
+        "hp":25000,
+        "stats":{
+            "attack":50,
+            "defense":35,
+            "heal":0,
+            "speed":0.3,
+            "critChance":0.04,
+            "damageReduction":0
+        },
+        "moveSpeed":5,
+        "itemDrops":{
+            "ectocannon":0.5,
+            "skullofdeath":0.5
         }
     }
 }

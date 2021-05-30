@@ -949,6 +949,11 @@ var Player = function(initPack){
                 var drawX = -49;
                 var drawY = -15;
             }
+            if(self.currentItem === 'ectocannon'){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+            }
             if(self.currentItem === 'bookoflightning'){
                 turnAmount = 270;
                 var drawX = -35;
@@ -1129,6 +1134,10 @@ var Monster = function(initPack){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'Red Bird ' + self.hp + '/' + self.hpMax;
     }
+    if(self.monsterType === 'possessedSpirit'){
+        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
+        document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + self.hp + '/' + self.hpMax;
+    }
     self.update = function(){
         if(self.moveNumber > 0){
             self.x += self.moveX;
@@ -1207,6 +1216,9 @@ var Monster = function(initPack){
         if(self.monsterType === 'lostSpirit'){
             ctx0.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 1,10,21,self.x - 20,self.y - 42,40,84);
         }
+        if(self.monsterType === 'possessedSpirit'){
+            ctx0.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 2,10,21,self.x - 40,self.y - 84,80,168);
+        }
     }
     self.drawCtx1 = function(){
         if(self.monsterType === 'ghost'){
@@ -1215,11 +1227,18 @@ var Monster = function(initPack){
         if(self.monsterType === 'lostSpirit'){
             ctx1.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 1,10,21,self.x - 20,self.y - 42,40,84);
         }
+        if(self.monsterType === 'possessedSpirit'){
+            ctx1.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 2,10,21,self.x - 40,self.y - 84,80,168);
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 75,126,15);
             ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'possessedSpirit'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 100,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 100,Math.round(126 * self.hp / self.hpMax),15);
         }
         else{
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
@@ -1684,6 +1703,10 @@ socket.on('update',function(data){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'Red Bird ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
+                        if(Monster.list[data.monster[i].id].monsterType === 'possessedSpirit'){
+                            document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
+                            document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                        }
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
@@ -1705,6 +1728,10 @@ socket.on('update',function(data){
                     if(monster.monsterType === 'redBird'){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
                         document.getElementById('bossbar').innerHTML = 'Red Bird ' + monster.hp + '/' + monster.hpMax;
+                    }
+                    if(monster.monsterType === 'possessedSpirit'){
+                        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
+                        document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + monster.hp + '/' + monster.hpMax;
                     }
                 }
             }
@@ -1800,6 +1827,10 @@ socket.on('update',function(data){
                 document.getElementById('bossbar').style.display = 'none';
             }
             if(Monster.list[i].monsterType === 'redBird'){
+                document.getElementById('bossHealth').style.display = 'none';
+                document.getElementById('bossbar').style.display = 'none';
+            }
+            if(Monster.list[i].monsterType === 'possessedSpirit'){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
@@ -2153,6 +2184,9 @@ setInterval(function(){
         if(Monster.list[i].monsterType === 'redBird'){
             bossAlive = true;
         }
+        if(Monster.list[i].monsterType === 'possessedSpirit'){
+            bossAlive = true;
+        }
     }
     if(bossAlive && (document.getElementById('bossbar').style.display === 'none' || document.getElementById('bossbar').style.display === '')){
         document.getElementById('bossHealth').style.display = 'inline-block';
@@ -2165,6 +2199,10 @@ setInterval(function(){
             if(Monster.list[i].monsterType === 'redBird'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Red Bird ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+            }
+            if(Monster.list[i].monsterType === 'possessedSpirit'){
+                document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
+                document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
         }
     }

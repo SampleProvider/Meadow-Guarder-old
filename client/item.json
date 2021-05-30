@@ -673,9 +673,29 @@
     "leaf":{
         "name":"Leaf",
         "equip":"offhand",
-        "event":"",
+        "event":"self.stats.damageReduction += 1;damageIncrease -= 100;",
         "enchantments":[],
         "rarity":5,
         "description":"A small leaf."
+    },
+    "orangefish":{
+        "name":"Orange Fish",
+        "equip":"consume",
+        "event":"if(self.map === 'The Graveyard'){s.spawnMonster('possessedSpirit',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('orangefish',[]);",
+        "enchantments":[],
+        "description":"Summons the Possessed Spirit.<br>Used in The Graveyard.",
+        "rarity":4
+    },
+    "ectocannon":{
+        "name":"Ecto Cannon",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":225,
+        "damageType":"ranged",
+        "critChance":0.2,
+        "useTime":20,
+        "rarity":5,
+        "description":"Launches a powerful burst of spirits."
     }
 }

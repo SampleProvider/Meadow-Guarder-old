@@ -527,9 +527,33 @@
             "critChance":1
         }
     },
+    "ectocannon":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
     "soul":{
         "width":16,
         "height":16,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":3,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "possessedSoul":{
+        "width":32,
+        "height":32,
         "stats":{
             "attack":1,
             "defense":1,

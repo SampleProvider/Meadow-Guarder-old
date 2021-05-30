@@ -151,7 +151,7 @@ s = {
                 spawners++;
             }
         }
-        var spawnerNumber = Math.round(Math.random() * spawners);
+        var spawnerNumber = Math.floor(Math.random() * spawners);
         var currentSpawner = 0;
         var spawner = undefined;
         for(var i in Spawner.list){
@@ -208,8 +208,8 @@ s = {
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
                     spawnId:false,
-                    x:pt.x + Math.random() * 128 - 64,
-                    y:pt.y + Math.random() * 128 - 64,
+                    x:pt.x,
+                    y:pt.y,
                     map:pt.map,
                     moveSpeed:monsterData[i].moveSpeed,
                     stats:monsterStats,
@@ -619,7 +619,7 @@ Entity.getFrameUpdateData = function(){
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 50;
-                        monsterStats.attack *= 100;
+                        monsterStats.attack *= 10;
                         var monster = new Monster({
                             spawnId:false,
                             x:1600,
@@ -659,8 +659,8 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 50;
-                        monsterStats.attack *= 100;
+                        monsterHp *= 100;
+                        monsterStats.attack *= 10;
                         var monster = new Monster({
                             spawnId:false,
                             x:1600,
@@ -742,7 +742,7 @@ Entity.getFrameUpdateData = function(){
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 10;
-                        monsterStats.attack *= 100;
+                        monsterStats.attack *= 3;
                         var monster = new Monster({
                             spawnId:false,
                             x:1600,
@@ -775,6 +775,46 @@ Entity.getFrameUpdateData = function(){
                 }
             }
             else if(ENV.BossRushStage === 4){
+                addToChat('style="color: #00aadd">','I still have plenty of tricks up my sleeve...');
+                for(var i in monsterData){
+                    if(i === 'possessedSpirit'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 5;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1600,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                }
+            }
+            else if(ENV.BossRushStage === 5){
                 addToChat('style="color: #00aadd">','You expected a reward beyond this mere leaf? Patience, the true reward will come apparent in time...');
                 ENV.BossRushStage = 0;
                 ENV.BossRush = false;
@@ -4263,6 +4303,13 @@ Player = function(param){
                                 });
                             }
                             break;
+                        case "ectocannonAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'soul',12 + 24 * Math.random(),function(t){return 20},self.stats,'playerSoulLaunch');
+                                }
+                            }
+                            break;
                         case "earthbook1Attack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
@@ -6103,7 +6150,12 @@ Monster = function(param){
     if(self.monsterType === 'lostSpirit'){
         self.canCollide = false;
     }
+    if(self.monsterType === 'possessedSpirit'){
+        self.canCollide = false;
+        addToChat('style="color: #ff00ff">','Possessed Spirit has awoken!');
+    }
     self.oldMoveSpeed = self.maxSpeed;
+    self.oldStats = Object.create(self.stats);
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -6125,6 +6177,9 @@ Monster = function(param){
             }
             if(self.monsterType === 'lightningLizard'){
                 addToChat('style="color: #ff00ff">','Lightning Lizard has been defeated!');
+            }
+            if(self.monsterType === 'possessedSpirit'){
+                addToChat('style="color: #ff00ff">','Possessed Spirit has been defeated!');
             }
             param.onDeath(self);
         }
@@ -7027,6 +7082,248 @@ Monster = function(param){
                     self.animation += 1;
                 }
                 break;
+            case "passivePossessedSpirit":
+                //self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "movePossessedSpirit";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "movePossessedSpirit";
+                }
+                break;
+            case "movePossessedSpirit":
+                self.followEntity(self.target);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackPhase1PossessedSpirit";
+                break;
+            case "attackPhase1PossessedSpirit":
+                //self.animate = true;
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(self.reload % 50 < 8 && self.reload > 50 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50),self.direction + 10 * (self.reload % 50),'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 90,self.direction + 10 * (self.reload % 50) + 90,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 180,self.direction + 10 * (self.reload % 50) + 180,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 270,self.direction + 10 * (self.reload % 50) + 270,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 10,self.direction + 10 * (self.reload % 50) + 10,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 100,self.direction + 10 * (self.reload % 50) + 100,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 190,self.direction + 10 * (self.reload % 50) + 190,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 280,self.direction + 10 * (self.reload % 50) + 280,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                }
+                if(self.hp < self.hpMax / 2){
+                    self.attackState = 'phase2Transition';
+                }
+                self.reload += 1;
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "phase2Transition":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                for(var i = 0;i < 30;i++){
+                    self.shootProjectile(self.id,'Monster',self.direction + i * 12,self.direction + i * 12,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                }
+                for(var i = 0;i < 8;i++){
+                    var monster = s.createMonster('lostSpirit',{
+                        x:self.x + Math.cos(i * Math.PI / 4) * 256,
+                        y:self.y + Math.sin(i * Math.PI / 4) * 256,
+                        map:self.map,
+                    });
+                    monster.stats.hp *= 2;
+                }
+                self.maxSpeed = self.oldMoveSpeed * 3;
+                self.stats.attack = self.oldStats.attack * 2;
+                self.attackState = 'attackPhase2PossessedSpirit';
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackPhase2PossessedSpirit":
+                //self.animate = true;
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(self.reload % 30 < 8 && self.reload > 30 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30),self.direction + 10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 90,self.direction + 10 * (self.reload % 30) + 90,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 180,self.direction + 10 * (self.reload % 30) + 180,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 270,self.direction + 10 * (self.reload % 30) + 270,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 10,self.direction + 10 * (self.reload % 30) + 10,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 100,self.direction + 10 * (self.reload % 30) + 100,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 190,self.direction + 10 * (self.reload % 30) + 190,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 280,self.direction + 10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                }
+                if(self.reload % 5 === 0 && self.reload > 30 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'possessedSoul',0,function(t){return 50},self.stats,'playerHoming');
+                }
+                if(self.hp < self.hpMax / 6 && ENV.Difficulty === 'Expert'){
+                    self.attackState = 'attackPhase3PossessedSpirit';
+                    for(var i = 0;i < 16;i++){
+                        var monster = s.createMonster('lostSpirit',{
+                            x:self.x + Math.cos(i * Math.PI / 8) * 256,
+                            y:self.y + Math.sin(i * Math.PI / 8) * 256,
+                            map:self.map,
+                        });
+                        monster.stats.hp *= 3;
+                    }
+                    self.stats.attack = self.oldStats.attack * 2.5;
+                }
+                self.reload += 1;
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackPhase3PossessedSpirit":
+                //self.animate = true;
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passivePossessedSpirit';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(self.reload % 3 === 0 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30),self.direction + 10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 90,self.direction + 10 * (self.reload % 30) + 90,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 180,self.direction + 10 * (self.reload % 30) + 180,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 270,self.direction + 10 * (self.reload % 30) + 270,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 10,self.direction + 10 * (self.reload % 30) + 10,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 100,self.direction + 10 * (self.reload % 30) + 100,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 190,self.direction + 10 * (self.reload % 30) + 190,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 280,self.direction + 10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
+                }
+                self.reload += 1;
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
         }
     }
     self.getUpdatePack = function(){
@@ -7319,6 +7616,9 @@ Projectile = function(param){
     if(param.projectilePattern === 'playerSoul'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'playerSoulLaunch'){
+        self.canCollide = false;
+    }
     if(param.projectilePattern === 'playerSoulWait'){
         self.canCollide = false;
         self.state = 0;
@@ -7481,6 +7781,41 @@ Projectile = function(param){
             }
         }
         else if(param.projectilePattern === 'playerSoul'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(closestMonster){
+                self.spdX = Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 75 * self.stats.speed;
+                self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 75 * self.stats.speed;
+            }
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+        }
+        else if(param.projectilePattern === 'playerSoulLaunch' && self.timer < 10){
+            self.spdX *= 0.9;
+            self.spdY *= 0.9;
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX);
+            }
+        }
+        else if(param.projectilePattern === 'playerSoulLaunch'){
             var closestMonster = undefined;
             for(var i in Monster.list){
                 if(closestMonster === undefined && Monster.list[i].map === self.map){
