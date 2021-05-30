@@ -1065,13 +1065,17 @@ var Projectile = function(initPack){
     self.projectileType = initPack.projectileType;
     self.canCollide = initPack.canCollide;
     self.type = initPack.type;
+    self.moveNumber = 4;
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
     self.updated = true;
     self.update = function(){
-        self.x += self.moveX;
-        self.y += self.moveY;
+        if(self.moveNumber > 0){
+            self.x += self.moveX;
+            self.y += self.moveY;
+        }
+        self.moveNumber -= 1;
     }
     self.draw = function(){
         ctx0.translate(self.x,self.y);
@@ -1654,6 +1658,7 @@ socket.on('update',function(data){
                         Projectile.list[data.projectile[i].id].nextY = data.projectile[i].y;
                     }
                     Projectile.list[data.projectile[i].id].moveY = (Projectile.list[data.projectile[i].id].nextY - Projectile.list[data.projectile[i].id].y) / 4;
+                    Projectile.list[data.projectile[i].id].moveNumber = 4;
                     if(data.projectile[i].map !== undefined){
                         Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
                     }
