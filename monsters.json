@@ -318,7 +318,7 @@
         "attackState":"passivePossessedSpirit",
         "hp":25000,
         "stats":{
-            "attack":50,
+            "attack":35,
             "defense":35,
             "heal":0,
             "speed":0.3,
