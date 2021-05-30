@@ -7102,6 +7102,18 @@ Monster = function(param){
                 break;
             case "attackPhase1PossessedSpirit":
                 //self.animate = true;
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passivePossessedSpirit';
@@ -7123,15 +7135,6 @@ Monster = function(param){
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
-                }
-                var allPlayersDead = true;
-                for(var i in Player.list){
-                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
-                        allPlayersDead = false;
-                    }
-                }
-                if(allPlayersDead){
-                    self.toRemove = true;
                 }
                 if(self.reload % 50 < 8 && self.reload > 50 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50),self.direction + 10 * (self.reload % 50),'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
@@ -7155,6 +7158,18 @@ Monster = function(param){
                 }
                 break;
             case "phase2Transition":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passivePossessedSpirit';
@@ -7176,15 +7191,6 @@ Monster = function(param){
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
-                }
-                var allPlayersDead = true;
-                for(var i in Player.list){
-                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
-                        allPlayersDead = false;
-                    }
-                }
-                if(allPlayersDead){
-                    self.toRemove = true;
                 }
                 for(var i = 0;i < 30;i++){
                     self.shootProjectile(self.id,'Monster',self.direction + i * 12,self.direction + i * 12,'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
@@ -7209,6 +7215,18 @@ Monster = function(param){
                 break;
             case "attackPhase2PossessedSpirit":
                 //self.animate = true;
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passivePossessedSpirit';
@@ -7230,15 +7248,6 @@ Monster = function(param){
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
-                }
-                var allPlayersDead = true;
-                for(var i in Player.list){
-                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
-                        allPlayersDead = false;
-                    }
-                }
-                if(allPlayersDead){
-                    self.toRemove = true;
                 }
                 if(self.reload % 30 < 8 && self.reload > 30 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30),self.direction + 10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
@@ -7275,6 +7284,18 @@ Monster = function(param){
                 break;
             case "attackPhase3PossessedSpirit":
                 //self.animate = true;
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
                 if(!self.target){
                     self.target = undefined;
                     self.attackState = 'passivePossessedSpirit';
@@ -7296,15 +7317,6 @@ Monster = function(param){
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
-                }
-                var allPlayersDead = true;
-                for(var i in Player.list){
-                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
-                        allPlayersDead = false;
-                    }
-                }
-                if(allPlayersDead){
-                    self.toRemove = true;
                 }
                 if(self.reload % 3 === 0 && self.target.invincible === false){
                     self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30),self.direction + 10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},self.stats,'noCollision');
