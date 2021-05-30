@@ -181,6 +181,7 @@ s = {
                     width:monsterData[i].width,
                     height:monsterData[i].height,
                     xpGain:monsterData[i].xpGain,
+                    itemDrops:monsterData[i].itemDrops,
                     onDeath:function(pt){
                         pt.toRemove = true;
                         for(var i in Projectile.list){
