@@ -954,6 +954,11 @@ var Player = function(initPack){
                 var drawX = -49;
                 var drawY = -15;
             }
+            if(self.currentItem === 'halibutcannon'){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+            }
             if(self.currentItem === 'bookoflightning'){
                 turnAmount = 270;
                 var drawX = -35;
@@ -1029,7 +1034,7 @@ var Player = function(initPack){
         }
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
-        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
+        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You have ' + Math.round(self.stats.damageReduction * 100) + '% damage reduction.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
     }
     self.drawLight = function(){
         if(self.id !== selfId){

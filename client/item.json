@@ -697,5 +697,17 @@
         "useTime":20,
         "rarity":5,
         "description":"Launches a powerful burst of spirits."
+    },
+    "halibutcannon":{
+        "name":"Halibut Cannon",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":105,
+        "damageType":"ranged",
+        "critChance":1,
+        "useTime":2,
+        "rarity":5,
+        "description":"Halibut is canon."
     }
 }

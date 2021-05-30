@@ -824,6 +824,11 @@ Entity.getFrameUpdateData = function(){
                     if(Player.list[i].map === 'The Arena'){
                         Player.list[i].xp += 500000 * Player.list[i].stats.xp;
                         Player.list[i].inventory.addItem('leaf',[]);
+                        setTimeout(function(){
+                            if(Player.list[i] && Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('halibutcannon',[]);
+                            }
+                        },300000);
                     }
                 }
             }
@@ -4308,7 +4313,14 @@ Player = function(param){
                         case "ectocannonAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'soul',12 + 24 * Math.random(),function(t){return 20},self.stats,'playerSoulLaunch');
+                                    self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'soul',12 + 24 * Math.random(),function(t){return 0},self.stats,'playerSoulLaunch');
+                                }
+                            }
+                            break;
+                        case "halibutcannonAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},self.stats);
                                 }
                             }
                             break;
