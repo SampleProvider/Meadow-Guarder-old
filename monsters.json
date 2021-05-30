@@ -10,7 +10,7 @@
             "attack":5,
             "defense":0,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":5,
@@ -58,7 +58,7 @@
             "attack":5,
             "defense":0,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":5,
@@ -106,7 +106,7 @@
             "attack":7,
             "defense":10,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":5,
@@ -125,7 +125,7 @@
             "attack":5,
             "defense":0,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":5,
@@ -163,7 +163,7 @@
             "attack":20,
             "defense":0,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":10,
@@ -201,7 +201,7 @@
             "attack":500,
             "defense":0,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":15,
@@ -220,7 +220,7 @@
             "attack":500,
             "defense":0,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":15,
@@ -239,7 +239,7 @@
             "attack":20,
             "defense":10,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":15,
@@ -261,7 +261,7 @@
             "attack":55,
             "defense":25,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":20,
@@ -281,7 +281,7 @@
             "attack":40,
             "defense":25,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":15,
@@ -299,7 +299,7 @@
             "attack":35,
             "defense":25,
             "heal":0,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":15,
@@ -322,7 +322,7 @@
             "defense":35,
             "heal":0,
             "speed":0.3,
-            "critChance":0.04,
+            "critChance":0,
             "damageReduction":0
         },
         "moveSpeed":5,
