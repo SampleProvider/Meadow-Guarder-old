@@ -7204,7 +7204,7 @@ Monster = function(param){
                     monster.stats.hp *= 2;
                 }
                 self.maxSpeed = self.oldMoveSpeed * 3;
-                self.stats.attack = self.oldStats.attack * 2;
+                self.stats.attack = self.oldStats.attack * 1.5;
                 self.attackState = 'attackPhase2PossessedSpirit';
                 if(self.animation === 1){
                     self.animation = 0;
@@ -7272,7 +7272,7 @@ Monster = function(param){
                         });
                         monster.stats.hp *= 3;
                     }
-                    self.stats.attack = self.oldStats.attack * 2.5;
+                    self.stats.attack = self.oldStats.attack * 1.8;
                 }
                 self.reload += 1;
                 if(self.animation === 1){

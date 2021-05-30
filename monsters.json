@@ -294,7 +294,7 @@
         "width":40,
         "height":84,
         "attackState":"passiveLostSpirit",
-        "hp":500,
+        "hp":300,
         "stats":{
             "attack":35,
             "defense":25,
