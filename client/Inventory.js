@@ -121,12 +121,9 @@ Inventory = function(socket,server){
         var id = self.items[i].id;
         for(var j in Item.list[id].enchantments){
             for(var k in Enchantment.list){
-                console.log(k,Item.list[id].enchantments[j])
                 if(k === Item.list[id].enchantments[j]){
                     var enchantment = Enchantment.list[k];
-                    console.log(enchantment)
                     if(Math.random() < enchantment.dropChance * luck){
-                        console.log(1);
                         enchantments.push({id:k,level:Math.min(Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)),enchantment.maxLevel)});
                     }
                 }
