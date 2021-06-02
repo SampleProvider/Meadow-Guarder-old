@@ -743,7 +743,7 @@
         "damageType":"melee",
         "critChance":0.04,
         "useTime":11,
-        "rarity":4,
+        "rarity":5,
         "description":"Shoots a holy trident that shoots holy souls."
     }
 }

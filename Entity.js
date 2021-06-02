@@ -824,15 +824,16 @@ Entity.getFrameUpdateData = function(){
                     if(Player.list[i].map === 'The Arena'){
                         Player.list[i].xp += 500000 * Player.list[i].stats.xp;
                         Player.list[i].inventory.addItem('leaf',[]);
+                        var playerid = i;
                         setTimeout(function(){
-                            if(Player.list[i] && Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('halibutcannon',[]);
+                            if(Player.list[playerid] && Math.random() < 0.1){
+                                Player.list[playerid].inventory.addItem('halibutcannon',[]);
                             }
-                            if(Player.list[i] && Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('bookofdeath',[]);
+                            if(Player.list[playerid] && Math.random() < 0.1){
+                                Player.list[playerid].inventory.addItem('bookofdeath',[]);
                             }
-                            if(Player.list[i] && Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('holytrident',[]);
+                            if(Player.list[playerid] && Math.random() < 0.1){
+                                Player.list[playerid].inventory.addItem('holytrident',[]);
                             }
                         },300000);
                     }
@@ -6212,6 +6213,8 @@ Monster = function(param){
     if(self.monsterType === 'possessedSpirit'){
         self.canCollide = false;
         addToChat('style="color: #ff00ff">','Possessed Spirit has awoken!');
+        self.stage2 = false;
+        self.stage3 = false;
     }
     self.oldMoveSpeed = self.maxSpeed;
     self.oldStats = Object.create(self.stats);
@@ -7224,7 +7227,12 @@ Monster = function(param){
                     self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 280,self.direction + 10 * (self.reload % 50) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
                 }
                 if(self.hp < self.hpMax / 2){
-                    self.attackState = 'phase2Transition';
+                    if(self.stage2){
+                        self.attackState = 'attackPhase2PossessedSpirit';
+                    }
+                    else{
+                        self.attackState = 'phase2Transition';
+                    }
                 }
                 self.reload += 1;
                 if(self.animation === 1){
@@ -7235,6 +7243,7 @@ Monster = function(param){
                 }
                 break;
             case "phase2Transition":
+                self.stage2 = true;
                 var allPlayersDead = true;
                 for(var i in Player.list){
                     if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
@@ -7340,16 +7349,22 @@ Monster = function(param){
                     self.shootProjectile(self.id,'Monster',self.direction,self.direction,'possessedSoul',0,function(t){return 50},0,self.stats,'playerHoming');
                 }
                 if(self.hp < self.hpMax / 6 && ENV.Difficulty === 'Expert'){
-                    self.attackState = 'attackPhase3PossessedSpirit';
-                    for(var i = 0;i < 16;i++){
-                        var monster = s.createMonster('lostSpirit',{
-                            x:self.x + Math.cos(i * Math.PI / 8) * 256,
-                            y:self.y + Math.sin(i * Math.PI / 8) * 256,
-                            map:self.map,
-                        });
-                        monster.stats.hp *= 3;
+                    if(self.stage3){
+                        self.attackState = 'attackPhase2PossessedSpirit';
                     }
-                    self.stats.attack = self.oldStats.attack * 1.8;
+                    else{
+                        self.attackState = 'attackPhase3PossessedSpirit';
+                        for(var i = 0;i < 16;i++){
+                            var monster = s.createMonster('lostSpirit',{
+                                x:self.x + Math.cos(i * Math.PI / 8) * 256,
+                                y:self.y + Math.sin(i * Math.PI / 8) * 256,
+                                map:self.map,
+                            });
+                            monster.stats.hp *= 3;
+                        }
+                        self.stage3 = true;
+                        self.stats.attack = self.oldStats.attack * 1.8;
+                    }
                 }
                 self.reload += 1;
                 if(self.animation === 1){
