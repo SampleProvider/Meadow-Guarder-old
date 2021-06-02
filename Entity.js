@@ -824,18 +824,15 @@ Entity.getFrameUpdateData = function(){
                     if(Player.list[i].map === 'The Arena'){
                         Player.list[i].xp += 500000 * Player.list[i].stats.xp;
                         Player.list[i].inventory.addItem('leaf',[]);
-                        var playerid = i;
-                        setTimeout(function(){
-                            if(Player.list[playerid] && Math.random() < 0.1){
-                                Player.list[playerid].inventory.addItem('halibutcannon',[]);
-                            }
-                            if(Player.list[playerid] && Math.random() < 0.1){
-                                Player.list[playerid].inventory.addItem('bookofdeath',[]);
-                            }
-                            if(Player.list[playerid] && Math.random() < 0.1){
-                                Player.list[playerid].inventory.addItem('holytrident',[]);
-                            }
-                        },300000);
+                        if(Math.random() < 0.1){
+                            Player.list[i].inventory.addItem('halibutcannon',[]);
+                        }
+                        if(Math.random() < 0.1){
+                            Player.list[i].inventory.addItem('bookofdeath',[]);
+                        }
+                        if(Math.random() < 0.1){
+                            Player.list[i].inventory.addItem('holytrident',[]);
+                        }
                     }
                 }
             }
