@@ -959,19 +959,24 @@ var Player = function(initPack){
                 var drawX = -49;
                 var drawY = -15;
             }
-            if(self.currentItem === 'bookoflightning'){
+            if(self.currentItem.includes('book')){
                 turnAmount = 270;
                 var drawX = -35;
                 var drawY = 15;
             }
-            if(self.currentItem === 'bookofspirits'){
-                turnAmount = 270;
-                var drawX = -35;
-                var drawY = 15;
+            if(self.currentItem.includes('trident')){
+                turnAmount = 45;
+                var drawX = 5;
+                var drawY = -89;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,84,84);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
-            ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
-            ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
-            ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            else{
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
             ctx0.translate(-self.x,-self.y);
         }
         self.animation = Math.round(self.animation);
@@ -1088,6 +1093,16 @@ var Projectile = function(initPack){
         if(self.projectileType === 'stoneArrow'){
             ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
         }
+        else if(self.projectileType === 'unholytrident'){
+            ctx0.rotate(45 * Math.PI / 180);
+            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            ctx0.rotate(-45 * Math.PI / 180);
+        }
+        else if(self.projectileType === 'holytrident'){
+            ctx0.rotate(45 * Math.PI / 180);
+            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            ctx0.rotate(-45 * Math.PI / 180);
+        }
         else{
             ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
@@ -1099,6 +1114,16 @@ var Projectile = function(initPack){
         ctx1.rotate(self.direction * Math.PI / 180);
         if(self.projectileType === 'stoneArrow'){
             ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
+        }
+        else if(self.projectileType === 'unholytrident'){
+            ctx1.rotate(45 * Math.PI / 180);
+            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            ctx1.rotate(-45 * Math.PI / 180);
+        }
+        else if(self.projectileType === 'holytrident'){
+            ctx1.rotate(45 * Math.PI / 180);
+            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            ctx1.rotate(-45 * Math.PI / 180);
         }
         else{
             ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);

@@ -527,6 +527,18 @@
             "critChance":1
         }
     },
+    "bookofdeath":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
     "ectocannon":{
         "width":64,
         "height":64,
@@ -542,6 +554,30 @@
     "halibutcannon":{
         "width":64,
         "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "unholytrident":{
+        "width":84,
+        "height":84,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "holytrident":{
+        "width":84,
+        "height":84,
         "stats":{
             "attack":1,
             "defense":1,
@@ -584,6 +620,42 @@
             "heal":1,
             "range":1,
             "speed":2,
+            "critChance":1
+        }
+    },
+    "skull":{
+        "width":76,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":10,
+            "speed":0.3,
+            "critChance":1
+        }
+    },
+    "unholySoul":{
+        "width":32,
+        "height":32,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":3,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "holySoul":{
+        "width":32,
+        "height":32,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":3,
+            "speed":1,
             "critChance":1
         }
     }

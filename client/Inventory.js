@@ -121,9 +121,12 @@ Inventory = function(socket,server){
         var id = self.items[i].id;
         for(var j in Item.list[id].enchantments){
             for(var k in Enchantment.list){
+                console.log(k,Item.list[id].enchantments[j])
                 if(k === Item.list[id].enchantments[j]){
                     var enchantment = Enchantment.list[k];
+                    console.log(enchantment)
                     if(Math.random() < enchantment.dropChance * luck){
+                        console.log(1);
                         enchantments.push({id:k,level:Math.min(Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)),enchantment.maxLevel)});
                     }
                 }
@@ -513,13 +516,14 @@ Inventory = function(socket,server){
 	return self;
 }
 
-Enchantment = function(id,name,maxLevel,averageLevel,deviation,event){
+Enchantment = function(id,name,maxLevel,averageLevel,deviation,dropChance,event){
 	var self = {
 		id:id,
         name:name,
         maxLevel:maxLevel,
         averageLevel:averageLevel,
         deviation:deviation,
+        dropChance:dropChance,
         event:event,
     }
 	Enchantment.list[self.id] = self;
@@ -581,7 +585,7 @@ catch(err){
 try{
     var enchantments = require('./enchantment.json');
     for(var i in enchantments){
-        Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].event);
+        Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].dropChance,enchantments[i].event);
     }
 }
 catch(err){
@@ -593,7 +597,7 @@ catch(err){
             // Success!
             var enchantments = JSON.parse(this.response);
             for(var i in enchantments){
-                Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].event);
+                Enchantment(i,enchantments[i].name,enchantments[i].maxLevel,enchantments[i].averageLevel,enchantments[i].deviation,enchantments[i].dropChance,enchantments[i].event);
             }
         }
         else{
