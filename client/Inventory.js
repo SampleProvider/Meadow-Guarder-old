@@ -150,9 +150,6 @@ Inventory = function(socket,server){
 	self.refreshRender = function(){
         if(self.server){
             self.refresh = true;
-            for(var i = 0;i < self.items.length;i++){
-                self.items[i].index = i;
-            }
             if(self.socket !== undefined){
                 self.socket.emit('updateInventory',{items:self.items,currentEquip:self.currentEquip});
             }
@@ -162,12 +159,12 @@ Inventory = function(socket,server){
         inventory.innerHTML = "";
         var currentEquip = document.getElementById("currentEquip");
         currentEquip.innerHTML = "";
-        var button = document.createElement('button');
-        button.innerHTML = 'Dismantle All Common Items';
-        button.className = "UI-button-light";
-        inventory.appendChild(button);
-        button.style.color = '#ff0000';
-        button.onclick = function(){
+        var dismantleButton = document.createElement('button');
+        dismantleButton.innerHTML = 'Dismantle All Common Items';
+        dismantleButton.className = "UI-button-light";
+        inventory.appendChild(dismantleButton);
+        dismantleButton.style.color = '#ff0000';
+        dismantleButton.onclick = function(){
             var dismantleList = [];
             for(var i in self.items){
                 if(Item.list[self.items[i].id].rarity <= 1){
@@ -178,8 +175,8 @@ Inventory = function(socket,server){
                 self.socket.emit("dismantleItem",dismantleList[i]);
             }
         }
-        button.style.display = 'inline-block';
-        button.style.position = 'relative';
+        dismantleButton.style.display = 'inline-block';
+        dismantleButton.style.position = 'relative';
         var addButton = function(data,index){
             let item = Item.list[data.id];
             let button = document.createElement('button');
@@ -298,35 +295,40 @@ Inventory = function(socket,server){
             div.appendChild(dismantle);
             div.appendChild(select);
             div.appendChild(enchantments);
-            if(item.displayButtons === undefined){
+            if(data.displayButtons === undefined){
                 equip.style.display = 'none';
                 dismantle.style.display = 'none';
-                item.displayButtons = false;
+                self.items[index].displayButtons = false;
             }
-            else if(item.displayButtons === false){
+            else if(data.displayButtons === false){
                 equip.style.display = 'none';
                 dismantle.style.display = 'none';
             }
-            else{
+            else if(data.displayButtons === true){
                 equip.style.display = 'inline-block';
                 dismantle.style.display = 'inline-block';
             }
+            else{
+                equip.style.display = 'none';
+                dismantle.style.display = 'none';
+            }
             button.onclick = function(){
-                if(Item.list[data.id].displayButtons === undefined){
+                if(data.displayButtons === undefined){
                     equip.style.display = 'inline-block';
                     dismantle.style.display = 'inline-block';
-                    Item.list[data.id].displayButtons = true;
+                    self.items[index].displayButtons = true;
                 }
-                else if(Item.list[data.id].displayButtons === false){
+                else if(data.displayButtons === false){
                     equip.style.display = 'inline-block';
                     dismantle.style.display = 'inline-block';
-                    Item.list[data.id].displayButtons = true;
+                    self.items[index].displayButtons = true;
                 }
                 else{
                     equip.style.display = 'none';
                     dismantle.style.display = 'none';
-                    Item.list[data.id].displayButtons = false;
+                    self.items[index].displayButtons = false;
                 }
+                self.socket.emit("changeTaskBar",index);
             }
             button.appendChild(image);
             var spacing = document.createElement('div');
@@ -442,8 +444,8 @@ Inventory = function(socket,server){
                     addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
                     return;
                 }
+                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1));
                 self.removeItem(index);
-                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200);
             }
             catch(err){
                 console.error(err);
@@ -504,6 +506,7 @@ Inventory = function(socket,server){
                 }
                 var item = self.items[index];
                 item.displayButtons = !item.displayButtons;
+                self.refreshRender();
             }
             catch(err){
                 console.error(err);
