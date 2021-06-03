@@ -619,7 +619,7 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 75;
+                        monsterHp *= 25;
                         monsterStats.attack *= 10;
                         var monster = new Monster({
                             spawnId:false,
@@ -660,7 +660,7 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 250;
+                        monsterHp *= 100;
                         monsterStats.attack *= 10;
                         var monster = new Monster({
                             spawnId:false,
@@ -701,7 +701,7 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 50;
+                        monsterHp *= 30;
                         monsterStats.attack *= 100;
                         var monster = new Monster({
                             spawnId:false,
@@ -783,7 +783,7 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 10;
+                        monsterHp *= 5;
                         monsterStats.attack *= 5;
                         var monster = new Monster({
                             spawnId:false,
