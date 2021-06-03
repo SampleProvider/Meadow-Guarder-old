@@ -703,7 +703,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
-        "damage":250,
+        "damage":550,
         "damageType":"ranged",
         "critChance":1,
         "useTime":2,
@@ -718,7 +718,7 @@
         "damage":750,
         "damageType":"magic",
         "critChance":0.04,
-        "useTime":8,
+        "useTime":10,
         "rarity":5,
         "description":"Shoots 3 homing skulls that pierce and shoot <span style='color:#ff0000'>lasers</span>."
     },

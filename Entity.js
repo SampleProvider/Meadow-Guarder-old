@@ -7945,7 +7945,7 @@ Projectile = function(param){
             }
         }
         else if(param.projectilePattern === 'unholyTrident'){
-            if(self.timer % 2 === 0){
+            if(self.timer % 6 === 0 && self.timer < 20){
                 var projectileWidth = 0;
                 var projectileHeight = 0;
                 var projectileStats = {};
@@ -7977,7 +7977,7 @@ Projectile = function(param){
                     height:projectileHeight,
                     spin:function(t){return 50},
                     pierce:1,
-                    projectilePattern:'noCollision',
+                    projectilePattern:'playerSoulLaunch',
                     stats:projectileStats,
                     onCollision:function(self,pt){
                         if(self.pierce === 0){
@@ -8004,7 +8004,7 @@ Projectile = function(param){
                     height:projectileHeight,
                     spin:function(t){return 50},
                     pierce:1,
-                    projectilePattern:'noCollision',
+                    projectilePattern:'playerSoulLaunch',
                     stats:projectileStats,
                     onCollision:function(self,pt){
                         if(self.pierce === 0){
@@ -8018,7 +8018,7 @@ Projectile = function(param){
             }
         }
         else if(param.projectilePattern === 'holyTrident'){
-            if(self.timer % 2 === 0){
+            if(self.timer % 6 === 0 && self.timer < 20){
                 var projectileWidth = 0;
                 var projectileHeight = 0;
                 var projectileStats = {};
@@ -8050,7 +8050,7 @@ Projectile = function(param){
                     height:projectileHeight,
                     spin:function(t){return 50},
                     pierce:1,
-                    projectilePattern:'noCollision',
+                    projectilePattern:'playerSoulLaunch',
                     stats:projectileStats,
                     onCollision:function(self,pt){
                         if(self.pierce === 0){
@@ -8077,7 +8077,7 @@ Projectile = function(param){
                     height:projectileHeight,
                     spin:function(t){return 50},
                     pierce:1,
-                    projectilePattern:'noCollision',
+                    projectilePattern:'playerSoulLaunch',
                     stats:projectileStats,
                     onCollision:function(self,pt){
                         if(self.pierce === 0){
