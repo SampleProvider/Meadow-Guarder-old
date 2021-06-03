@@ -694,7 +694,7 @@
         "damage":225,
         "damageType":"ranged",
         "critChance":0.2,
-        "useTime":20,
+        "useTime":34,
         "rarity":5,
         "description":"Launches a powerful burst of spirits."
     },
