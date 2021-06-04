@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '023f2a';
+var VERSION = '023f3a';
 
 var DEBUG = false;
 
@@ -249,6 +249,7 @@ chatInput.onkeydown = function(e){
 }
 chatInput.onmousedown = function(e){
     inChat = true;
+    socket.emit('releaseAll');
 }
 debugInput.onkeydown = function(e){
     chatPress = true;
@@ -635,6 +636,17 @@ document.getElementById('fullscreen').onclick = function(){
     }
     else if(document.documentElement.msRequestFullscreen){ /* IE/Edge */
         document.documentElement.msRequestFullscreen();
+    }
+}
+var showParticles = true;
+document.getElementById('particles').onclick = function(){
+    if(showParticles){
+        document.getElementById('particles').innerHTML = 'Particles: Off';
+        showParticles = false;
+    }
+    else{
+        document.getElementById('particles').innerHTML = 'Particles: On';
+        showParticles = true;
     }
 }
 
@@ -1417,11 +1429,17 @@ var Particle = function(initPack){
             self.y += -self.timer / 2 + 15 / 4;
             self.timer -= 1 / 7;
         }
+        else{
+            self.timer -= 1 / 2;
+        }
         if(self.timer < 0){
             self.toRemove = true;
         }
     }
     self.draw = function(){
+        if(!showParticles){
+            return;
+        }
         if(self.particleType === 'redDamage'){
             ctx1.font = "30px pixel";
             ctx1.fillStyle = 'rgba(255,75,0,' + (self.timer / 5) + ')';
@@ -1440,12 +1458,25 @@ var Particle = function(initPack){
             ctx1.textAlign = "center";
             ctx1.fillText(self.value,self.x,self.y);
         }
+        else if(self.particleType === 'fire'){
+            ctx1.fillStyle = "rgba(255,75,0," + (self.timer / 10) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
+        else if(self.particleType === 'electricity'){
+            ctx1.fillStyle = "rgba(255,255,0," + (self.timer / 10) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
+        else if(self.particleType === 'death'){
+            ctx1.fillStyle = "rgba(0,0,0," + (self.timer / 10) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
     }
     Particle.list[self.id] = self;
     return self;
 }
 Particle.list = {};
 var Sound = function(initPack){
+    /*
     if(initPack.type === 'stoneArrow'){
         var sound = new Audio();
         sound.src = "/client/websiteAssets/arrowShoot.mp3";

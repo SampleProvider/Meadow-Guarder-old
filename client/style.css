@@ -777,7 +777,7 @@ canvas {
     position: relative;
     display: block;
     left: 120px;
-    top: -10px;
+    top: 15px;
     width: 100px;
     background: #d3d3d3;
     outline: none;
@@ -792,7 +792,7 @@ canvas {
     position: relative;
     display: block;
     left: 230px;
-    top: -100px;
+    top: -75px;
     width: 100px;
     background: #d3d3d3;
     outline: none;
@@ -1005,6 +1005,11 @@ audio {
     top: 105px;
 }
 #fullscreen {
+    position: absolute;
+    left: 120px;
+    top: 165px;
+}
+#particles {
     position: absolute;
     left: 120px;
     top: 135px;

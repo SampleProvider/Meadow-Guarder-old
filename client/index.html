@@ -8,7 +8,7 @@
 
 	<link rel="icon" href="/client/img/favicon.png" type="image/png" async>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://bajie:3000 http://localhost:3000 http://meadowguarder.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">
+	<!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src http://bajie:3000 http://localhost:3000 http://meadowguarder.herokuapp.com 'unsafe-eval' 'unsafe-inline' https://cdn.socket.io/socket.io-1.4.5.js; style-src 'self' 'unsafe-inline'; child-src 'none'; object-src 'none'">-->
 	<title>Meadow Guarder</title>
 	<link href="client/style.css" rel="stylesheet" type="text/css">
 </head>
@@ -57,6 +57,20 @@
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							Do you want to contribute to this game? Then click <a class="UI-link-light" href="https://forms.gle/ScdgYv1CqezcGb1r9" target="_blank">here</a>!
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							6/4/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Added setting to turn particles off.
+							<br>
+							Added debuffs.
+							<br>
+							Released 023f3a
 						</div>
 					</div>
 				</div>
@@ -614,6 +628,7 @@
 					<button id="audioSwitch" class='UI-button-light'>Change music. Current music is none.</button>
 					<button id="chatBackground" class='UI-button-light'>Add a background to the chat.</button>
 					<button id="showDebugCommands" class='UI-button-light'>Show Debug Commands.</button>
+					<button id="particles" class='UI-button-light'>Particles: On</button>
 					<button id="fullscreen" class='UI-button-light'>Fullscreen mode. Exit by pressing [ECS].</button>
 				</div>
 				<div id="leaderboardScreen" class="menuText menuDisplay" style="display: none; overflow: scroll;">

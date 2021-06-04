@@ -519,6 +519,7 @@ Entity.getFrameUpdateData = function(){
             }
         }
     }
+    /*
     for(var i in Sound.list){
         if(!pack[Sound.list[i].map]){
             pack[Sound.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
@@ -526,7 +527,7 @@ Entity.getFrameUpdateData = function(){
         var updatePack = Sound.list[i].getUpdatePack();
         pack[Sound.list[i].map].sound.push(updatePack);
         delete Sound.list[i];
-    }
+    }*/
     for(var i in Pet.list){
         Pet.list[i].update();
         if(!pack[Pet.list[i].map]){
@@ -889,6 +890,17 @@ Actor = function(param){
     self.pushPower = 3;
     self.dazed = 0;
     self.animate = true;
+    self.stats = {
+        attack:1,
+        defense:1,
+        heal:1,
+        range:1,
+        speed:1,
+        damageReduction:0,
+        debuffs:[],
+    }
+    self.debuffs = [];
+    self.debuffTimer = 0;
     self.eventQ = [];
     var super_update = self.update;
     self.update = function(){
@@ -919,6 +931,7 @@ Actor = function(param){
             }
             self.updateCollisions();
         }
+        self.doDebuffs();
         if(self.mapChange === 5){
             self.map = self.transporter.teleport;
             if(self.transporter.teleportx !== -1){
@@ -1237,6 +1250,85 @@ Actor = function(param){
     self.followEntity = function(pt){
         self.followingEntity = pt;
     }
+    self.doDebuffs = function(){
+        if(self.invincible){
+            return;
+        }
+        self.debuffTimer += 1;
+        var debuffRemoveList = [];
+        for(var i = self.debuffs.length - 1;i >= 0;i--){
+            if(self.debuffs[i].id === 'burning' && self.debuffTimer % 2 === 0){
+                var damage = 1;
+                var particleType = 'redDamage';
+                self.hp -= damage;
+                if(damage){
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:particleType,
+                        value:'-' + damage,
+                    });
+                    var particle = new Particle({
+                        x:self.x + Math.random() * self.width - self.width / 2,
+                        y:self.y + Math.random() * self.height - self.height / 2,
+                        map:self.map,
+                        particleType:'fire',
+                        value:'-' + damage,
+                    });
+                }
+            }
+            if(self.debuffs[i].id === 'electrified'){
+                var damage = 5;
+                var particleType = 'redDamage';
+                self.hp -= damage;
+                if(damage){
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:particleType,
+                        value:'-' + damage,
+                    });
+                    var particle = new Particle({
+                        x:self.x + Math.random() * self.width - self.width / 2,
+                        y:self.y + Math.random() * self.height - self.height / 2,
+                        map:self.map,
+                        particleType:'electricity',
+                        value:'-' + damage,
+                    });
+                }
+            }
+            if(self.debuffs[i].id === 'death'){
+                var damage = 25;
+                var particleType = 'redDamage';
+                self.hp -= damage;
+                if(damage){
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:particleType,
+                        value:'-' + damage,
+                    });
+                    var particle = new Particle({
+                        x:self.x + Math.random() * self.width - self.width / 2,
+                        y:self.y + Math.random() * self.height - self.height / 2,
+                        map:self.map,
+                        particleType:'death',
+                        value:'-' + damage,
+                    });
+                }
+            }
+            self.debuffs[i].time -= 1;
+            if(self.debuffs[i].time === 0){
+                debuffRemoveList.push(i);
+            }
+        }
+        for(var i = debuffRemoveList.length - 1;i >= 0;i--){
+            self.debuffs.splice(debuffRemoveList[i],1);
+        }
+    }
     self.onHit = function(pt){
     }
     self.onCollision = function(pt,strength){
@@ -1258,6 +1350,44 @@ Actor = function(param){
                     particleType:particleType,
                     value:'-' + damage,
                 });
+            }
+            for(var i in pt.stats.debuffs){
+                var debuffAdded = false;
+                for(var j in self.debuffs){
+                    if(pt.stats.debuffs[i].id === self.debuffs[j].id && !debuffAdded){
+                        self.debuffs[j].time = pt.stats.debuffs[i].time;
+                        debuffAdded = true;
+                    }
+                }
+                if(!debuffAdded){
+                    self.debuffs.push(pt.stats.debuffs[i]);
+                }
+            }
+            if(pt.projectileType){
+                if(pt.projectileType === 'fireBullet'){
+                    var debuffAdded = false;
+                    for(var j in self.debuffs){
+                        if(self.debuffs[j].id === 'burning' && !debuffAdded){
+                            self.debuffs[j].time = 30;
+                            debuffAdded = true;
+                        }
+                    }
+                    if(!debuffAdded){
+                        self.debuffs.push({id:'burning',time:30});
+                    }
+                }
+                if(pt.projectileType === 'lightningSpit'){
+                    var debuffAdded = false;
+                    for(var j in self.debuffs){
+                        if(self.debuffs[j].id === 'electrified' && !debuffAdded){
+                            self.debuffs[j].time = 30;
+                            debuffAdded = true;
+                        }
+                    }
+                    if(!debuffAdded){
+                        self.debuffs.push({id:'electrified',time:30});
+                    }
+                }
             }
             if(pt.projectileType){
                 /*
@@ -1365,6 +1495,7 @@ Actor = function(param){
             projectileStats[i] *= stats[i];
         }
         projectileStats.damageReduction = 0;
+        projectileStats.debuffs = stats.debuffs;
 		var projectile = Projectile({
             id:id,
             projectileType:projectileType,
@@ -2066,6 +2197,7 @@ Player = function(param){
         critChance:0,
         damageType:'',
         damageReduction:0,
+        debuffs:[],
     }
     self.currentItem = '';
     var lastSelf = {};
@@ -2108,6 +2240,7 @@ Player = function(param){
                 self.animation = 0;
             }
         }
+        self.doDebuffs();
         self.regenTick += 1;
         self.manaRefresh = Math.max(self.manaRefresh - 1,-10);
         self.cooldown -= 1;
@@ -3672,6 +3805,7 @@ Player = function(param){
                 critChance:0,
                 damageType:'',
                 damageReduction:0,
+                debuffs:[],
             }
             self.passive = '';
             self.weaponPassive = '';
@@ -3923,6 +4057,7 @@ Player = function(param){
                         projectileStats[j] *= self.stats[j];
                     }
                     projectileStats.damageReduction = 0;
+                    projectileStats.debuffs = self.stats.debuffs;
                     var projectile = Projectile({
                         id:self.id,
                         projectileType:'lightningSpit',
@@ -6148,14 +6283,6 @@ Monster = function(param){
     self.target = {};
     self.type = 'Monster';
     self.isDead = false;
-    self.stats = {
-        attack:1,
-        defense:1,
-        heal:1,
-        range:1,
-        speed:1,
-        damageReduction:0,
-    }
     if(param.stats){
         for(var i in param.stats){
             self.stats[i] = param.stats[i];
@@ -6839,6 +6966,7 @@ Monster = function(param){
                             projectileStats[j] *= self.stats[j];
                         }
                         projectileStats.damageReduction = 0;
+                        projectileStats.debuffs = self.stats.debuffs;
                         var projectile = Projectile({
                             id:self.id,
                             projectileType:'lightningSpit',
@@ -6958,6 +7086,7 @@ Monster = function(param){
                             projectileStats[j] *= self.stats[j];
                         }
                         projectileStats.damageReduction = 0;
+                        projectileStats.debuffs = self.stats.debuffs;
                         var projectile = Projectile({
                             id:self.id,
                             projectileType:'lightningSpit',
@@ -7006,6 +7135,7 @@ Monster = function(param){
                             projectileStats[j] *= self.stats[j];
                         }
                         projectileStats.damageReduction = 0;
+                        projectileStats.debuffs = self.stats.debuffs;
                         var projectile = Projectile({
                             id:self.id,
                             projectileType:'lightningSpit',
@@ -7908,6 +8038,7 @@ Projectile = function(param){
                 projectileStats.attack = Math.round(projectileStats.attack / 3);
                 projectileStats.speed = 2;
                 projectileStats.damageReduction = 0;
+                projectileStats.debuffs = self.stats.debuffs;
                 var projectile = Projectile({
                     id:self.parent,
                     projectileType:'bullet',
@@ -7960,6 +8091,7 @@ Projectile = function(param){
                 }
                 projectileStats.attack = Math.round(projectileStats.attack / 3);
                 projectileStats.damageReduction = 0;
+                projectileStats.debuffs = self.stats.debuffs;
                 var projectile = Projectile({
                     id:self.parent,
                     projectileType:'unholySoul',
@@ -8033,6 +8165,7 @@ Projectile = function(param){
                 }
                 projectileStats.attack = Math.round(projectileStats.attack / 3);
                 projectileStats.damageReduction = 0;
+                projectileStats.debuffs = self.stats.debuffs;
                 var projectile = Projectile({
                     id:self.parent,
                     projectileType:'holySoul',
