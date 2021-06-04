@@ -4343,7 +4343,7 @@ Player = function(param){
                         case "bookofdeathAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},0,self.stats,'skull');
+                                    self.shootProjectile(self.id,'Player',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'skull');
                                 }
                             }
                             break;
@@ -7720,7 +7720,6 @@ Projectile = function(param){
     }
     if(param.projectilePattern === 'skull'){
         self.canCollide = false;
-        self.pierce = 2;
     }
     if(param.projectilePattern === 'unholyTrident'){
         self.canCollide = false;
