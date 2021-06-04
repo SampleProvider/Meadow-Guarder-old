@@ -7,7 +7,7 @@ ENV = {
     Spawnpoint:{
         x:320,
         y:320,
-        map:'The Village',
+        map:'The Graveyard',
     },
     BossRush:false,
     BossRushStage:0,

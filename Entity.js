@@ -166,6 +166,12 @@ s = {
             if(i === param){
                 var monsterHp = monsterData[i].hp;
                 var monsterStats = Object.create(monsterData[i].stats);
+                monsterStats.debuffs = [];
+                if(monsterData[i].stats.debuffs){
+                    for(var j in monsterData[i].stats.debuffs){
+                        monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                    }
+                }
                 monsterHp *= ENV.MonsterStrength;
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
@@ -205,6 +211,12 @@ s = {
             if(i === param){
                 var monsterHp = monsterData[i].hp;
                 var monsterStats = Object.create(monsterData[i].stats);
+                monsterStats.debuffs = [];
+                if(monsterData[i].stats.debuffs){
+                    for(var j in monsterData[i].stats.debuffs){
+                        monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                    }
+                }
                 monsterHp *= ENV.MonsterStrength;
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
@@ -316,6 +328,12 @@ var spawnMonster = function(spawner,spawnId){
         if(monsterSeed > 0 && monsterSeed < currentMonster.spawnChance){
             var monsterHp = currentMonster.hp;
             var monsterStats = Object.create(currentMonster.stats);
+            monsterStats.debuffs = [];
+            if(currentMonster.stats.debuffs){
+                for(var j in currentMonster.stats.debuffs){
+                    monsterStats.debuffs.push(Object.create(currentMonster.stats.debuffs[j]));
+                }
+            }
             monsterHp *= ENV.MonsterStrength;
             monsterStats.attack *= ENV.MonsterStrength;
             var xpGain = currentMonster.xpGain;
@@ -618,6 +636,12 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'greenLizard'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
+                        monsterStats.debuffs = [];
+                        if(monsterData[i].stats.debuffs){
+                            for(var j in monsterData[i].stats.debuffs){
+                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                            }
+                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 25;
@@ -659,6 +683,12 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'lostSpirit'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
+                        monsterStats.debuffs = [];
+                        if(monsterData[i].stats.debuffs){
+                            for(var j in monsterData[i].stats.debuffs){
+                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                            }
+                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 100;
@@ -700,6 +730,12 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'redBird'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
+                        monsterStats.debuffs = [];
+                        if(monsterData[i].stats.debuffs){
+                            for(var j in monsterData[i].stats.debuffs){
+                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                            }
+                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 30;
@@ -741,6 +777,12 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'lightningLizard'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
+                        monsterStats.debuffs = [];
+                        if(monsterData[i].stats.debuffs){
+                            for(var j in monsterData[i].stats.debuffs){
+                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                            }
+                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 10;
@@ -782,6 +824,12 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'possessedSpirit'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
+                        monsterStats.debuffs = [];
+                        if(monsterData[i].stats.debuffs){
+                            for(var j in monsterData[i].stats.debuffs){
+                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
+                            }
+                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 5;
@@ -1363,7 +1411,7 @@ Actor = function(param){
                 }
             }
             self.debuffs[i].time -= 1;
-            if(self.debuffs[i].time === 0){
+            if(self.debuffs[i].time <= 0){
                 debuffRemoveList.push(i);
             }
         }
@@ -1402,7 +1450,7 @@ Actor = function(param){
                     }
                 }
                 if(!debuffAdded){
-                    self.debuffs.push(pt.stats.debuffs[i]);
+                    self.debuffs.push(Object.create(pt.stats.debuffs[i]));
                 }
             }
             if(pt.projectileType){
@@ -2282,7 +2330,6 @@ Player = function(param){
                 self.animation = 0;
             }
         }
-        self.doDebuffs();
         self.regenTick += 1;
         self.manaRefresh = Math.max(self.manaRefresh - 1,-10);
         self.cooldown -= 1;
@@ -2294,6 +2341,9 @@ Player = function(param){
         }
         if(Math.round(self.mana) >= self.manaMax){
             self.mana = self.manaMax;
+        }
+        if(!self.invincible && self.isDead === false){
+            self.doDebuffs();
         }
         if(self.hp < 1){
             self.hp = 0;
@@ -6328,11 +6378,6 @@ Monster = function(param){
     if(param.stats){
         for(var i in param.stats){
             self.stats[i] = param.stats[i];
-        }
-    }
-    if(param.stats){
-        if(param.stats.debuffs){
-            self.stats.debuffs = param.stats.debuffs;
         }
     }
     self.hp = 200;

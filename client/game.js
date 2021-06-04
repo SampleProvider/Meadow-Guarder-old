@@ -1459,20 +1459,48 @@ var Particle = function(initPack){
             ctx1.fillText(self.value,self.x,self.y);
         }
         else if(self.particleType === 'fire'){
-            ctx1.fillStyle = "rgba(255,75,0," + (self.timer / 10) + ")";
-            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+            var a = (self.timer / 5);
+            ctx1.fillStyle = "rgba(255,75,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(255,75,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y,4,4);
+            ctx1.fillStyle = "rgba(255,75,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(255,75,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y,4,4);
         }
         else if(self.particleType === 'electricity'){
-            ctx1.fillStyle = "rgba(255,255,0," + (self.timer / 10) + ")";
-            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+            var a = (self.timer / 5);
+            ctx1.fillStyle = "rgba(255,255,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(255,255,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y,4,4);
+            ctx1.fillStyle = "rgba(255,255,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(255,255,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y,4,4);
         }
         else if(self.particleType === 'death'){
-            ctx1.fillStyle = "rgba(0,0,0," + (self.timer / 10) + ")";
-            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+            var a = (self.timer / 5);
+            ctx1.fillStyle = "rgba(0,0,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(0,0,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y,4,4);
+            ctx1.fillStyle = "rgba(0,0,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(0,0,0," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y,4,4);
         }
         else if(self.particleType === 'frost'){
-            ctx1.fillStyle = "rgba(0,255,255," + (self.timer / 10) + ")";
-            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+            var a = (self.timer / 5);
+            ctx1.fillStyle = "rgba(0,255,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(0,255,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y,4,4);
+            ctx1.fillStyle = "rgba(0,255,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(0,255,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y,4,4);
         }
     }
     Particle.list[self.id] = self;
