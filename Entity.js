@@ -1320,6 +1320,48 @@ Actor = function(param){
                     });
                 }
             }
+            if(self.debuffs[i].id === 'frostburn' && self.debuffTimer % 2 === 0){
+                var damage = 2;
+                var particleType = 'redDamage';
+                self.hp -= damage;
+                if(damage){
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:particleType,
+                        value:'-' + damage,
+                    });
+                    var particle = new Particle({
+                        x:self.x + Math.random() * self.width - self.width / 2,
+                        y:self.y + Math.random() * self.height - self.height / 2,
+                        map:self.map,
+                        particleType:'frost',
+                        value:'-' + damage,
+                    });
+                }
+            }
+            if(self.debuffs[i].id === 'frostbite' && self.debuffTimer % 2 === 0){
+                var damage = 20;
+                var particleType = 'redDamage';
+                self.hp -= damage;
+                if(damage){
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:particleType,
+                        value:'-' + damage,
+                    });
+                    var particle = new Particle({
+                        x:self.x + Math.random() * self.width - self.width / 2,
+                        y:self.y + Math.random() * self.height - self.height / 2,
+                        map:self.map,
+                        particleType:'frost',
+                        value:'-' + damage,
+                    });
+                }
+            }
             self.debuffs[i].time -= 1;
             if(self.debuffs[i].time === 0){
                 debuffRemoveList.push(i);
@@ -6286,6 +6328,11 @@ Monster = function(param){
     if(param.stats){
         for(var i in param.stats){
             self.stats[i] = param.stats[i];
+        }
+    }
+    if(param.stats){
+        if(param.stats.debuffs){
+            self.stats.debuffs = param.stats.debuffs;
         }
     }
     self.hp = 200;

@@ -628,10 +628,10 @@
     "ghastlyamulet":{
         "name":"Ghastly Amulet",
         "equip":"offhand",
-        "event":"self.hpMax += 1000;damageIncrease -= 0.3;self.stats.heal += 4;",
+        "event":"self.hpMax += 1000;damageIncrease -= 0.5;self.stats.heal += 4;",
         "enchantments":["smashing"],
         "rarity":4,
-        "description":"<span style='color: #33ee33'>+1000 increased max hp.</span><br><span style='color: #33ee33'>Greatly increases life regeneration.</span><br><span style='color: #ff0000'>-30% damage.</span>"
+        "description":"<span style='color: #33ee33'>+1000 increased max hp.</span><br><span style='color: #33ee33'>Greatly increases life regeneration.</span><br><span style='color: #ff0000'>-50% damage.</span>"
     },
     "ectoglove":{
         "name":"Ecto Glove",

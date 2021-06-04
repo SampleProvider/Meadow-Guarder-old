@@ -1470,6 +1470,10 @@ var Particle = function(initPack){
             ctx1.fillStyle = "rgba(0,0,0," + (self.timer / 10) + ")";
             ctx1.fillRect(self.x - 4,self.y - 4,8,8);
         }
+        else if(self.particleType === 'frost'){
+            ctx1.fillStyle = "rgba(0,255,255," + (self.timer / 10) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
     }
     Particle.list[self.id] = self;
     return self;
