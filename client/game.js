@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '023f3a';
+var VERSION = '023f4a';
 
 var DEBUG = false;
 
@@ -120,6 +120,15 @@ socket.on('signInResponse',function(data){
         for(var i in world){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
+            for(var j in waypoints){
+                if(waypoints[j].map === world[i].fileName.slice(0,-4)){
+                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 64),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 64),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                    worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
+                    worldMap.fillStyle = '#ff7700';
+                    worldMap.textAlign = "center";
+                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 112));
+                }
+            }
         }
         worldMap.restore();
         gameDiv.style.display = 'inline-block';
@@ -348,6 +357,7 @@ tileset.onload = function(){
     tilesetLoaded = true;
 };
 var loadedMap = {};
+var waypoints = [];
 var renderLayers = function(json,name){
     if(isFirefox){
         var tempLower = document.createElement('canvas');
@@ -388,6 +398,51 @@ var renderLayers = function(json,name){
                     }
                     else{
                         glLower.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
+                    }
+                }
+            }
+        }
+        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('Npc')){
+            var size = json.tilewidth;
+            for(var j = 0;j < json.layers[i].data.length;j++){
+                tile_idx = json.layers[i].data[j];
+                if(tile_idx !== 0){
+                    if(tile_idx === 1950){
+                        var type = "";
+                        var typej = 0;
+                        var id = "";
+                        var idj = 0;
+                        var npcName = "";
+                        var namej = 0;
+                        var info = "";
+                        for(var k = 0;k < json.layers[i].name.length;k++){
+                            if(json.layers[i].name[k] === ':'){
+                                if(type === ""){
+                                    type = json.layers[i].name.substr(0,k);
+                                    typej = k;
+                                }
+                                else if(id === ""){
+                                    id = json.layers[i].name.substr(typej + 1,k - typej - 1);
+                                    idj = k;
+                                }
+                                else if(npcName === ""){
+                                    npcName = json.layers[i].name.substr(idj + 1,k - idj - 1);
+                                    namej = k;
+                                }
+                                else if(info === ""){
+                                    info = json.layers[i].name.substr(namej + 1,json.layers[i].name.length - namej - 2);
+                                }
+                            }
+                        }
+                        s_x = (j % json.layers[i].width) * size;
+                        s_y = ~~(j / json.layers[i].width) * size;
+                        waypoints.push({
+                            id:'quest',
+                            x:Math.round(s_x * 4),
+                            y:Math.round(s_y * 4),
+                            map:name,
+                            info:npcName,
+                        });
                     }
                 }
             }
@@ -507,6 +562,8 @@ Img.healthBarEnemy = new Image();
 Img.healthBarEnemy.src = '/client/img/healthBarEnemy.png';
 Img.manaBar = new Image();
 Img.manaBar.src = '/client/img/manaBar.png';
+Img.quest = new Image();
+Img.quest.src = '/client/img/quest.png';
 
 var projectileData = {};
 
@@ -2377,6 +2434,15 @@ setInterval(function(){
         for(var i in world){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
+            for(var j in waypoints){
+                if(waypoints[j].map === world[i].fileName.slice(0,-4)){
+                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 64),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 64),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                    worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
+                    worldMap.fillStyle = '#ff7700';
+                    worldMap.textAlign = "center";
+                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 112));
+                }
+            }
         }
     }
     worldMap.restore();
@@ -2532,6 +2598,15 @@ window.addEventListener('wheel',function(event){
     for(var i in world){
         worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
         worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
+        for(var j in waypoints){
+            if(waypoints[j].map === world[i].fileName.slice(0,-4)){
+                worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 64),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 64),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
+                worldMap.fillStyle = '#ff7700';
+                worldMap.textAlign = "center";
+                worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 112));
+            }
+        }
     }
     worldMap.restore();
 });
