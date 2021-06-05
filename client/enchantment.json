@@ -34,8 +34,8 @@
     "burst":{
         "name":"Burst",
         "maxLevel":50,
-        "averageLevel":1,
-        "deviation":0,
+        "averageLevel":2,
+        "deviation":1,
         "dropChance":0.1,
         "event":"self.maxSpeed += 2;"
     },

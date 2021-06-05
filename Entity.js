@@ -1539,7 +1539,15 @@ Actor = function(param){
                     }
                     else{
                         for(var i in self.itemDrops){
-                            if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
+                            if(i === 'enchantmentbook'){
+                                var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
+                                for(var j = 0;j < self.itemDrops[i] - 1;j++){
+                                    Player.list[pt.parent].inventory.addItem(i,[]);
+                                }
+                                var item = Player.list[pt.parent].inventory.items[itemIndex];
+                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + " x" + self.itemDrops[i] + ".");
+                            }
+                            else if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
                                 var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
                                 Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,Player.list[pt.parent].stats.luck);
                                 var item = Player.list[pt.parent].inventory.items[itemIndex];
@@ -1556,7 +1564,15 @@ Actor = function(param){
                 }
                 else{
                     for(var i in self.itemDrops){
-                        if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                        if(i === 'enchantmentbook'){
+                            var itemIndex = pt.inventory.addItem(i,[]);
+                            for(var j = 0;j < self.itemDrops[i] - 1;j++){
+                                pt.inventory.addItem(i,[]);
+                            }
+                            var item = pt.inventory.items[itemIndex];
+                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + " x" + self.itemDrops[i] + ".");
+                        }
+                        else if(self.itemDrops[i] * pt.stats.luck > Math.random()){
                             var itemIndex = pt.inventory.addItem(i,[]);
                             pt.inventory.addRandomizedEnchantments(itemIndex,pt.stats.luck);
                             var item = pt.inventory.items[itemIndex];
@@ -3336,6 +3352,41 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Enchanter'){
             self.quest = false;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+
+        if(self.selectedItem !== false && self.questStage === 1 && self.quest === 'Enchant' && self.map === 'Town Hall'){
+            self.questStage += 1;
+            var item = Item.list[self.inventory.items[self.selectedItem].id];
+            if(item.enchantments.length === 0){
+                self.invincible = true;
+                socket.emit('dialougeLine',{
+                    state:'ask',
+                    message:'I can\'t enchant this item...',
+                    response1:'...',
+                });
+                self.selectedItem = false;
+                self.questStage = 2;
+                self.currentResponse = 0;
+            }
+            else{
+                self.inventory.addRandomizedEnchantments(self.selectedItem,self.stats.luck * 5);
+                socket.emit('toggleSelect');
+                socket.emit('showInventory');
+                self.quest = false;
+                socket.emit('dialougeLine',{
+                    state:'remove',
+                });
+                self.selectedItem = false;
+                self.currentResponse = 0;
+            }
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'Enchant'){
+            self.questStage = 1;
             self.invincible = false;
             socket.emit('dialougeLine',{
                 state:'remove',

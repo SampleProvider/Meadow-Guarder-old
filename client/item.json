@@ -745,5 +745,13 @@
         "useTime":11,
         "rarity":5,
         "description":"Shoots a holy trident that shoots holy souls."
+    },
+    "enchantmentbook":{
+        "name":"Enchantment Book",
+        "equip":"consume",
+        "event":"if(self.map === 'Town Hall' && self.quest === false){socket.emit('toggleSelect');self.quest = 'Enchant';self.questStage = 1;}else{self.inventory.addItem('enchantmentbook');}self.inventory.currentEquip['consume'] = {};self.inventory.refreshRender();",
+        "enchantments":[],
+        "description":"Gives a random enchantment.<br>Used in Town Hall when no quest is active.",
+        "rarity":3
     }
 }

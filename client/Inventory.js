@@ -129,7 +129,9 @@ Inventory = function(socket,server){
                 }
             }
         }
-        self.items[i].enchantments = enchantments;
+        for(var j in enchantments){
+            self.enchantItem(i,enchantments[j].id,enchantments[j].level);
+        }
         self.refreshRender();
         return Item.list[id];
     }
