@@ -191,7 +191,7 @@ io.sockets.on('connection',function(socket){
 							addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ' used the command ' + data,true);
 						}
 						catch(e){
-							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
+							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.<br>Crash code: ' + e);
 						}
 					}
 					else if(data.includes('setInterval') || data.includes('function')){
@@ -204,7 +204,7 @@ io.sockets.on('connection',function(socket){
 							addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ' used the command ' + data,true);
 						}
 						catch(e){
-							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.');
+							socket.emit('addToDebug','style="color: #ffff00">Command resulted in server crash.<br>Crash code: ' + e);
 						}
 					}
 				}
