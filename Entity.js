@@ -7826,6 +7826,8 @@ Monster = function(param){
                 }
                 self.animation = 0;
                 self.direction = 0;
+                self.spdX = 0;
+                self.spdY = 0;
                 //self.stats.damageReduction = 1;
                 if(self.stage2){
                     self.attackState = 'attackPhase2Plantera';
