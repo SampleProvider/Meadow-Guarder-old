@@ -773,5 +773,39 @@
         "useTime":10,
         "rarity":5,
         "description":"Shoots a bouncing ball of frost."
+    },
+    "leafblower":{
+        "name":"Leaf Blower",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":361,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":5,
+        "description":"Leaf Blower"
+    },
+    "bookofnature":{
+        "name":"Book Of Nature",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.range = 50;",
+        "enchantments":["speed","burst","cost"],
+        "damage":750,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":30,
+        "rarity":5,
+        "description":"This book contains EVERYTHING about nature!"
+    },
+    "brokenheroshield":{
+        "name":"Broken Hero Shield",
+        "equip":"offhand",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.35;self.stats.critChance += 0.25;}",
+        "enchantments":["smashing"],
+        "defense":45,
+        "damageReduction":0.15,
+        "rarity":5,
+        "description":"<span style='color: #33ee33'>+35% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>The shield of a fallen hero..."
     }
 }

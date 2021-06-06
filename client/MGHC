@@ -284,6 +284,14 @@ MGHC = function(){
                 ctx1.strokeStyle = '#ff9900';
                 ctx1.lineWidth = 10;
             }
+            if(Monster.list[i].monsterType === 'thorn'){
+                ctx1.strokeStyle = '#00aa00';
+                ctx1.lineWidth = 4;
+            }
+            if(Monster.list[i].monsterType === 'plantera'){
+                ctx1.strokeStyle = '#229900';
+                ctx1.lineWidth = 10;
+            }
             ctx1.beginPath();
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
             ctx1.lineTo(Monster.list[i].x,Monster.list[i].y);

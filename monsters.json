@@ -364,6 +364,9 @@
         },
         "moveSpeed":5,
         "itemDrops":{
+            "leafblower":0.5,
+            "bookofnature":0.5,
+            "brokenheroshield":0.5,
             "skullofdeath":0.5,
             "enchantmentbook":7
         }

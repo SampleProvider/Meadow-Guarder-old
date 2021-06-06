@@ -644,7 +644,7 @@ Entity.getFrameUpdateData = function(){
                         }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 25;
+                        monsterHp *= 50;
                         monsterStats.attack *= 10;
                         var monster = new Monster({
                             spawnId:false,
@@ -691,7 +691,7 @@ Entity.getFrameUpdateData = function(){
                         }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 100;
+                        monsterHp *= 150;
                         monsterStats.attack *= 10;
                         var monster = new Monster({
                             spawnId:false,
@@ -738,7 +738,7 @@ Entity.getFrameUpdateData = function(){
                         }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 30;
+                        monsterHp *= 75;
                         monsterStats.attack *= 100;
                         var monster = new Monster({
                             spawnId:false,
@@ -785,7 +785,7 @@ Entity.getFrameUpdateData = function(){
                         }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 10;
+                        monsterHp *= 15;
                         monsterStats.attack *= 3;
                         var monster = new Monster({
                             spawnId:false,
@@ -832,7 +832,7 @@ Entity.getFrameUpdateData = function(){
                         }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 5;
+                        monsterHp *= 10;
                         monsterStats.attack *= 5;
                         var monster = new Monster({
                             spawnId:false,
@@ -880,7 +880,7 @@ Entity.getFrameUpdateData = function(){
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 10;
-                        monsterStats.attack *= 5;
+                        monsterStats.attack *= 3;
                         var monster = new Monster({
                             spawnId:false,
                             x:1600,
@@ -4718,6 +4718,18 @@ Player = function(param){
                                 }
                             }
                             break;
+                        case "leafblowerAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'seed',54 + 24 * Math.random(),function(t){return 0},0,self.stats);
+                            }
+                            break;
+                        case "bookofnatureAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',(self.direction + j * 36) / 180 * Math.PI,(self.direction + j * 36) / 180 * Math.PI,'seed',256,function(t){return 0},100,self.stats,'auraPlayer');
+                                }
+                            }
+                            break;
                         case "bookofdeathAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 3;j++){
@@ -7865,15 +7877,13 @@ Monster = function(param){
                     self.attackState = 'attackPhase2Plantera';
                     self.followEntity(self.target);
                 }
-                if(self.hp < 1){
+                if(self.hp < self.hpMax / 2){
                     if(self.stage2){
                         self.attackState = 'attackPhase2Plantera';
-                        self.hp = self.hpMax;
                         self.followEntity(self.target);
                     }
                     else{
                         self.attackState = 'phase2TransitionPlantera';
-                        self.hp = self.hpMax;
                     }
                 }
                 self.reload += 1;
@@ -7937,9 +7947,9 @@ Monster = function(param){
                     };
                     self.thorns += 1;
                 }
-                self.hpMax *= 25;
-                self.hp = self.hpMax;
-                self.stats.damageReduction = 0;
+                self.hpMax *= 50;
+                self.hp *= 50;
+                self.stats.damageReduction = 0.5;
                 self.maxSpeed = self.oldMoveSpeed * 3;
                 self.followEntity(self.target);
                 self.reload = 0;
@@ -8346,6 +8356,12 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
     }
+    if(param.projectilePattern === 'auraPlayer'){
+        self.angle = param.angle;
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
+    }
     if(param.projectilePattern === 'spinAroundPoint'){
         self.canCollide = false;
         self.spdX = 0;
@@ -8469,6 +8485,22 @@ Projectile = function(param){
             self.y += Math.cos(self.angle) * param.distance;
             self.angle += param.stats.speed / 2;
             self.direction = self.angle * 180 / Math.PI + 180;
+        }
+        else if(param.projectilePattern === 'auraPlayer'){
+            self.x = Player.list[self.parent].x;
+            self.y = Player.list[self.parent].y;
+            self.spdX = -Math.sin(self.angle) * param.distance;
+            self.spdY = Math.cos(self.angle) * param.distance;
+            self.x += self.spdX;
+            self.y += self.spdY;
+            self.angle += param.stats.speed / 2;
+            self.direction = self.angle * 180 / Math.PI + 180;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180 + 90;
+            }
         }
         else if(param.projectilePattern === 'spinAroundPoint'){
             var angle = Math.atan2(self.y - self.parentStartY,self.x - self.parentStartX);

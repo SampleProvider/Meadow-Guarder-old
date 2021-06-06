@@ -1045,6 +1045,14 @@ var Player = function(initPack){
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,84,84);
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
+            if(self.currentItem === 'leafblower'){
+                turnAmount = 0;
+                var drawX = -8;
+                var drawY = -32;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
             else{
                 ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);

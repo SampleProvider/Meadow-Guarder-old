@@ -587,6 +587,30 @@
             "critChance":1
         }
     },
+    "leafblower":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "bookofnature":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
     "unholytrident":{
         "width":84,
         "height":84,
