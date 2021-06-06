@@ -880,7 +880,7 @@ Entity.getFrameUpdateData = function(){
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 10;
-                        monsterStats.attack *= 3;
+                        monsterStats.attack *= 5;
                         var monster = new Monster({
                             spawnId:false,
                             x:1600,
