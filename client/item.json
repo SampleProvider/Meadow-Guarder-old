@@ -765,7 +765,7 @@
     "bookoffrost":{
         "name":"Book of Frost",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:100});",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frozen',time:100});",
         "enchantments":["speed","burst","cost"],
         "damage":95,
         "damageType":"magic",

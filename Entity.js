@@ -994,12 +994,16 @@ Actor = function(param){
         damageReduction:0,
         debuffs:[],
     }
+    self.startX = self.x;
+    self.startY = self.y;
     self.oldStats = JSON.parse(JSON.stringify(self.stats));
     self.debuffs = [];
     self.debuffTimer = 0;
     self.eventQ = [];
     var super_update = self.update;
     self.update = function(){
+        self.startX = self.x;
+        self.startY = self.y;
         self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
@@ -1448,6 +1452,32 @@ Actor = function(param){
                         value:'-' + damage,
                     });
                 }
+            }
+            if(self.debuffs[i].id === 'frozen'){
+                var damage = 40;
+                var particleType = 'redDamage';
+                self.hp -= damage;
+                if(damage){
+                    var particle = new Particle({
+                        x:self.x + Math.random() * 64 - 32,
+                        y:self.y + Math.random() * 64 - 32,
+                        map:self.map,
+                        particleType:particleType,
+                        value:'-' + damage,
+                    });
+                    var particle = new Particle({
+                        x:self.x + Math.random() * self.width - self.width / 2,
+                        y:self.y + Math.random() * self.height - self.height / 2,
+                        map:self.map,
+                        particleType:'frost',
+                        value:'-' + damage,
+                    });
+                }
+                stats.defense = 0;
+                self.spdX = 0;
+                self.spdY = 0;
+                self.x = self.startX;
+                self.y = self.startY;
             }
             if(self.hp < 1 && self.monsterType !== 'plantera'){
                 self.willBeDead = true;
@@ -2359,6 +2389,8 @@ Player = function(param){
     self.currentItem = '';
     var lastSelf = {};
     self.update = function(){
+        self.startX = self.x;
+        self.startY = self.y;
         self.mapChange += 1;
         self.moveSpeed = self.maxSpeed;
         for(var i = 0;i < self.moveSpeed;i++){
