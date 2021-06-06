@@ -252,6 +252,9 @@ Inventory = function(socket,server){
                 if(item.rarity === 6){
                     button.style.color = '#000099';
                 }
+                if(item.rarity === 7){
+                    button.style.color = '#00ff00';
+                }
             }
             if(item.description){
                 enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
@@ -396,6 +399,9 @@ Inventory = function(socket,server){
                 if(item.rarity === 6){
                     button.style.color = '#000099';
                 }
+                if(item.rarity === 7){
+                    button.style.color = '#00ff00';
+                }
             }
             if(item.description){
                 enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
@@ -439,7 +445,7 @@ Inventory = function(socket,server){
                     addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
                     return;
                 }
-                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1));
+                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) + 200 * self.items[index].enchantments.length);
                 self.removeItem(index);
             }
             catch(err){

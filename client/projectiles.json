@@ -95,6 +95,18 @@
             "critChance":1
         }
     },
+    "frostBullet":{
+        "width":44,
+        "height":44,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":0.3,
+            "critChance":1
+        }
+    },
     "lizardSpit":{
         "width":28,
         "height":28,
@@ -539,6 +551,18 @@
             "critChance":1
         }
     },
+    "bookoffrost":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
     "ectocannon":{
         "width":64,
         "height":64,
@@ -655,6 +679,18 @@
             "defense":1,
             "heal":1,
             "range":3,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "seed":{
+        "width":36,
+        "height":36,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":5,
             "speed":1,
             "critChance":1
         }

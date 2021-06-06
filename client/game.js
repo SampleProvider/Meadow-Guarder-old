@@ -554,6 +554,10 @@ Img.lizard = new Image();
 Img.lizard.src = '/client/img/lizard.png';
 Img.ghost = new Image();
 Img.ghost.src = '/client/img/ghost.png';
+Img.plantera = new Image();
+Img.plantera.src = '/client/img/plantera.png';
+Img.thorn = new Image();
+Img.thorn.src = '/client/img/thorn.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.healthBar = new Image();
@@ -1227,6 +1231,7 @@ var Monster = function(initPack){
     self.monsterType = initPack.monsterType;
     self.type = initPack.type;
     self.animation = initPack.animation;
+    self.direction = initPack.direction;
     self.moveNumber = 4;
     self.updated = true;
     if(self.monsterType === 'lightningLizard'){
@@ -1240,6 +1245,10 @@ var Monster = function(initPack){
     if(self.monsterType === 'possessedSpirit'){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + self.hp + '/' + self.hpMax;
+    }
+    if(self.monsterType === 'plantera'){
+        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
+        document.getElementById('bossbar').innerHTML = 'Plantera ' + self.hp + '/' + self.hpMax;
     }
     self.update = function(){
         if(self.moveNumber > 0){
@@ -1322,6 +1331,20 @@ var Monster = function(initPack){
         if(self.monsterType === 'possessedSpirit'){
             ctx0.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 2,10,21,self.x - 40,self.y - 84,80,168);
         }
+        if(self.monsterType === 'plantera'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.direction * Math.PI / 180);
+            ctx0.drawImage(Img.plantera,0,self.animation * 14,13,13,-52,-52,104,104);
+            ctx0.rotate(-self.direction * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
+        if(self.monsterType === 'thorn'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.animation * 45 * Math.PI / 180);
+            ctx0.drawImage(Img.thorn,0,0,11,11,-22,-22,44,44);
+            ctx0.rotate(-self.animation * 45 * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
     }
     self.drawCtx1 = function(){
         if(self.monsterType === 'ghost'){
@@ -1333,6 +1356,20 @@ var Monster = function(initPack){
         if(self.monsterType === 'possessedSpirit'){
             ctx1.drawImage(Img.ghost,Math.floor(self.animation) * 11,22 * 2,10,21,self.x - 40,self.y - 84,80,168);
         }
+        if(self.monsterType === 'plantera'){
+            ctx1.translate(self.x,self.y);
+            ctx1.rotate(self.direction * Math.PI / 180);
+            ctx1.drawImage(Img.plantera,0,self.animation * 14,13,13,-52,-52,104,104);
+            ctx1.rotate(-self.direction * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
+        }
+        if(self.monsterType === 'thorn'){
+            ctx1.translate(self.x,self.y);
+            ctx1.rotate(self.animation * 10 * Math.PI / 180);
+            ctx1.drawImage(Img.thorn,0,0,11,11,-22,-22,44,44);
+            ctx1.rotate(-self.animation * 10 * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
@@ -1342,6 +1379,10 @@ var Monster = function(initPack){
         else if(self.monsterType === 'possessedSpirit'){
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 100,126,15);
             ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 100,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'plantera'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 70,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 70,Math.round(126 * self.hp / self.hpMax),15);
         }
         else{
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
@@ -1862,12 +1903,19 @@ socket.on('update',function(data){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
+                        if(Monster.list[data.monster[i].id].monsterType === 'plantera'){
+                            document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
+                            document.getElementById('bossbar').innerHTML = 'Plantera ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                        }
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
                     }
                     if(data.monster[i].animation !== undefined){
                         Monster.list[data.monster[i].id].animation = data.monster[i].animation;
+                    }
+                    if(data.monster[i].direction !== undefined){
+                        Monster.list[data.monster[i].id].direction = data.monster[i].direction;
                     }
                     if(data.monster[i].canCollide !== undefined){
                         Monster.list[data.monster[i].id].canCollide = data.monster[i].canCollide;
@@ -1887,6 +1935,10 @@ socket.on('update',function(data){
                     if(monster.monsterType === 'possessedSpirit'){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
                         document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + monster.hp + '/' + monster.hpMax;
+                    }
+                    if(monster.monsterType === 'plantera'){
+                        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
+                        document.getElementById('bossbar').innerHTML = 'Plantera ' + monster.hp + '/' + monster.hpMax;
                     }
                 }
             }
@@ -1986,6 +2038,10 @@ socket.on('update',function(data){
                 document.getElementById('bossbar').style.display = 'none';
             }
             if(Monster.list[i].monsterType === 'possessedSpirit'){
+                document.getElementById('bossHealth').style.display = 'none';
+                document.getElementById('bossbar').style.display = 'none';
+            }
+            if(Monster.list[i].monsterType === 'plantera'){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
@@ -2342,6 +2398,9 @@ setInterval(function(){
         if(Monster.list[i].monsterType === 'possessedSpirit'){
             bossAlive = true;
         }
+        if(Monster.list[i].monsterType === 'plantera'){
+            bossAlive = true;
+        }
     }
     if(bossAlive && (document.getElementById('bossbar').style.display === 'none' || document.getElementById('bossbar').style.display === '')){
         document.getElementById('bossHealth').style.display = 'inline-block';
@@ -2358,6 +2417,10 @@ setInterval(function(){
             if(Monster.list[i].monsterType === 'possessedSpirit'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Possessed Spirit ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+            }
+            if(Monster.list[i].monsterType === 'plantera'){
+                document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
+                document.getElementById('bossbar').innerHTML = 'Plantera ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
         }
     }

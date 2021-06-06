@@ -675,7 +675,7 @@
         "equip":"offhand",
         "event":"self.stats.damageReduction += 1;damageIncrease -= 100;",
         "enchantments":[],
-        "rarity":5,
+        "rarity":7,
         "description":"A small leaf."
     },
     "orangefish":{
@@ -685,6 +685,14 @@
         "enchantments":[],
         "description":"Summons the Possessed Spirit.<br>Used in The Graveyard.",
         "rarity":4
+    },
+    "greenfish":{
+        "name":"Green Fish",
+        "equip":"consume",
+        "event":"if(self.map === 'The Forest'){s.spawnMonster('plantera',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('greenfish',[]);",
+        "enchantments":[],
+        "description":"Summons Plantera.<br>Used in The Forest.",
+        "rarity":7
     },
     "ectocannon":{
         "name":"Ecto Cannon",
@@ -707,7 +715,7 @@
         "damageType":"ranged",
         "critChance":1,
         "useTime":2,
-        "rarity":5,
+        "rarity":6,
         "description":"Shoots piercing <span style='color:#ff0000'>lasers</span>.<br>Halibut is canon."
     },
     "bookofdeath":{
@@ -719,7 +727,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":10,
-        "rarity":5,
+        "rarity":6,
         "description":"Shoots 3 homing skulls that pierce and shoot <span style='color:#ff0000'>lasers</span>."
     },
     "unholytrident":{
@@ -743,7 +751,7 @@
         "damageType":"melee",
         "critChance":0.04,
         "useTime":11,
-        "rarity":5,
+        "rarity":6,
         "description":"Shoots a holy trident that shoots holy souls."
     },
     "enchantmentbook":{
@@ -753,5 +761,17 @@
         "enchantments":["speed","burst","cost","range","reach","smashing","unlocking"],
         "description":"Gives enchantents.",
         "rarity":3
+    },
+    "bookoffrost":{
+        "name":"Book of Frost",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:100});",
+        "enchantments":["speed","burst","cost"],
+        "damage":95,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":10,
+        "rarity":5,
+        "description":"Shoots a bouncing ball of frost."
     }
 }
