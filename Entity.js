@@ -947,6 +947,7 @@ Actor = function(param){
         damageReduction:0,
         debuffs:[],
     }
+    self.oldStats = JSON.parse(JSON.stringify(self.stats));
     self.debuffs = [];
     self.debuffTimer = 0;
     self.eventQ = [];
@@ -1303,6 +1304,7 @@ Actor = function(param){
             return;
         }
         self.debuffTimer += 1;
+        var stats = JSON.parse(JSON.stringify(self.oldStats));
         var debuffRemoveList = [];
         for(var i = self.debuffs.length - 1;i >= 0;i--){
             if(self.debuffs[i].id === 'burning' && self.debuffTimer % 2 === 0){
@@ -1345,6 +1347,9 @@ Actor = function(param){
                         particleType:'electricity',
                         value:'-' + damage,
                     });
+                }
+                if(self.type === 'Player'){
+                    stats.defense -= 40;
                 }
             }
             if(self.debuffs[i].id === 'death'){
@@ -1418,6 +1423,7 @@ Actor = function(param){
         for(var i = debuffRemoveList.length - 1;i >= 0;i--){
             self.debuffs.splice(debuffRemoveList[i],1);
         }
+        //self.stats = JSON.parse(JSON.stringify(stats));
     }
     self.onHit = function(pt){
     }
@@ -1539,13 +1545,15 @@ Actor = function(param){
                     }
                     else{
                         for(var i in self.itemDrops){
-                            if(i === 'enchantmentbook'){
+                            if(i === 'enchantmentbook' && Player.list[pt.parent].stats.luck > 0){
                                 var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
+                                Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,10);
                                 for(var j = 0;j < self.itemDrops[i] - 1;j++){
-                                    Player.list[pt.parent].inventory.addItem(i,[]);
+                                    var itemIndex2 = Player.list[pt.parent].inventory.addItem(i,[]);
+                                    Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex2,10);
                                 }
                                 var item = Player.list[pt.parent].inventory.items[itemIndex];
-                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + " x" + self.itemDrops[i] + ".");
+                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
                             }
                             else if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
                                 var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
@@ -1564,13 +1572,15 @@ Actor = function(param){
                 }
                 else{
                     for(var i in self.itemDrops){
-                        if(i === 'enchantmentbook'){
+                        if(i === 'enchantmentbook' && pt.stats.luck > 0){
                             var itemIndex = pt.inventory.addItem(i,[]);
+                            pt.inventory.addRandomizedEnchantments(itemIndex,10);
                             for(var j = 0;j < self.itemDrops[i] - 1;j++){
-                                pt.inventory.addItem(i,[]);
+                                var itemIndex2 = pt.inventory.addItem(i,[]);
+                                pt.inventory.addRandomizedEnchantments(itemIndex2,10);
                             }
                             var item = pt.inventory.items[itemIndex];
-                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + " x" + self.itemDrops[i] + ".");
+                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
                         }
                         else if(self.itemDrops[i] * pt.stats.luck > Math.random()){
                             var itemIndex = pt.inventory.addItem(i,[]);
@@ -2305,6 +2315,7 @@ Player = function(param){
         damageReduction:0,
         debuffs:[],
     }
+    self.oldStats = Object.create(self.stats);
     self.currentItem = '';
     var lastSelf = {};
     self.update = function(){
@@ -3359,10 +3370,19 @@ Player = function(param){
             self.currentResponse = 0;
         }
 
-        if(self.selectedItem !== false && self.questStage === 1 && self.quest === 'Enchant' && self.map === 'Town Hall'){
+        if(self.selectedItem !== false && self.questStage === 1 && self.quest === 'Enchant'){
             self.questStage += 1;
             var item = Item.list[self.inventory.items[self.selectedItem].id];
-            if(item.enchantments.length === 0){
+            var book = self.questInfo.item;
+            var canEnchant = false;
+            for(var i in book.enchantments){
+                for(var j in item.enchantments){
+                    if(book.enchantments[i].id === item.enchantments[j]){
+                        canEnchant = true;
+                    }
+                }
+            }
+            if(item.enchantments.length === 0 || canEnchant === false){
                 self.invincible = true;
                 socket.emit('dialougeLine',{
                     state:'ask',
@@ -3374,7 +3394,13 @@ Player = function(param){
                 self.currentResponse = 0;
             }
             else{
-                self.inventory.addRandomizedEnchantments(self.selectedItem,self.stats.luck * 5);
+                for(var i in book.enchantments){
+                    for(var j in item.enchantments){
+                        if(book.enchantments[i].id === item.enchantments[j]){
+                            self.inventory.enchantItem(self.selectedItem,book.enchantments[i].id,book.enchantments[i].level);
+                        }
+                    }
+                }
                 socket.emit('toggleSelect');
                 socket.emit('showInventory');
                 self.quest = false;
@@ -3391,6 +3417,7 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            socket.emit('showInventory');
             self.currentResponse = 0;
         }
 
@@ -4020,6 +4047,7 @@ Player = function(param){
             if(self.username === 'Unknown'){
                 self.textColor = '#000000';
             }
+            self.oldStats = JSON.parse(JSON.stringify(self.stats));
         }
     }
     self.updateMap = function(){
@@ -6431,6 +6459,7 @@ Monster = function(param){
             self.stats[i] = param.stats[i];
         }
     }
+    self.oldStats = JSON.parse(JSON.stringify(self.stats));
     self.hp = 200;
     self.hpMax = 200;
     if(param.hp){

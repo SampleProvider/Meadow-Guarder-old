@@ -269,10 +269,8 @@ Inventory = function(socket,server){
                 equip.style.display = 'inline-block';
             }
             select.onclick = function(){
-                if(Player.list[selfId].map === 'Town Hall'){
-                    self.socket.emit("selectItem",index);
-                    select.style.display = 'inline-block';
-                }
+                self.socket.emit("selectItem",index);
+                select.style.display = 'inline-block';
             }
             button.innerHTML = item.name + " ";
             button.style.display = 'inline-block';
@@ -281,11 +279,6 @@ Inventory = function(socket,server){
             enchantments.style.color = '#ffffff';
             if(!self.select){
                 select.style.display = 'none';
-            }
-            if(selfId){
-                if(Player.list[selfId].map !== 'Town Hall'){
-                    select.style.display = 'none';
-                }
             }
             div.style.display = 'inline-block';
             div.style.position = 'relative';
