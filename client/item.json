@@ -789,12 +789,12 @@
     "bookofnature":{
         "name":"Book Of Nature",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.range = 50;",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
         "damage":750,
         "damageType":"magic",
         "critChance":0.04,
-        "useTime":30,
+        "useTime":12,
         "rarity":5,
         "description":"This book contains EVERYTHING about nature!"
     },

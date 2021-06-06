@@ -4726,7 +4726,7 @@ Player = function(param){
                         case "bookofnatureAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',(self.direction + j * 36) / 180 * Math.PI,(self.direction + j * 36) / 180 * Math.PI,'seed',256,function(t){return 0},100,self.stats,'auraPlayer');
+                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'seed',32,function(t){return 0},3,self.stats,'playerSeed');
                                 }
                             }
                             break;
@@ -8412,6 +8412,9 @@ Projectile = function(param){
     if(param.projectilePattern === 'seed'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'playerSeed'){
+        self.canCollide = false;
+    }
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -8641,6 +8644,33 @@ Projectile = function(param){
             }
             else{
                 self.timer = 0;
+            }
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
+        }
+        else if(param.projectilePattern === 'playerSeed'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(closestMonster){
+                //self.spdX = Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 25 * self.stats.speed;
+                //self.spdY = Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 25 * self.stats.speed;
+                self.spdX += Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 5;
+                self.spdY += Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x)) * 5;
+                self.spdX *= 0.95;
+                self.spdY *= 0.95;
             }
             if(param.spin(self.timer) !== 0){
                 self.direction += param.spin(self.timer);
