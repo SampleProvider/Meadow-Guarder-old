@@ -10165,16 +10165,14 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].isColliding(Projectile.list[j])){
-                    if("" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
-                        if(ENV.PVP){
-                            Player.list[i].onCollision(Projectile.list[j],1);
-                            Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
-                        }
-                        else if(Projectile.list[j].parentType !== 'Player'){
-                            Player.list[i].onCollision(Projectile.list[j],1);
-                            Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
-                        }
+                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
+                    if(ENV.PVP){
+                        Player.list[i].onCollision(Projectile.list[j],1);
+                        Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                    }
+                    else if(Projectile.list[j].parentType !== 'Player'){
+                        Player.list[i].onCollision(Projectile.list[j],1);
+                        Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                     }
                 }
             }
@@ -10203,11 +10201,9 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].isColliding(Projectile.list[j])){
-                    if("" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
-                        Monster.list[i].onCollision(Projectile.list[j],1);
-                        Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
-                    }
+                if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
+                    Monster.list[i].onCollision(Projectile.list[j],1);
+                    Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                 }
             }
         }
