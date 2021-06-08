@@ -497,7 +497,7 @@
     "darksteelarmor":{
         "name":"Dark Steel Armor",
         "equip":"armor",
-        "event":"damageIncrease += 0.6;self.stats.critChance += 0.05;",
+        "event":"damageIncrease += 0.06;self.stats.critChance += 0.05;",
         "enchantments":["smashing"],
         "defense":8,
         "rarity":2,
