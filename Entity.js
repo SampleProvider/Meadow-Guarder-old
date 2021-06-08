@@ -4685,8 +4685,8 @@ Player = function(param){
                             break;
                         case "bookofnatureAttack":
                             if(isFireMap){
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'seed',32,function(t){return 0},3,self.stats,'playerSeed');
+                                for(var j = 0;j < 8;j++){
+                                    self.shootProjectile(self.id,'Player',j * 45,j * 45,'seed',32,function(t){return 0},3,self.stats,'playerSeed');
                                 }
                             }
                             break;

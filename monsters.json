@@ -395,7 +395,7 @@
         "width":36,
         "height":52,
         "attackState":"passiveLightningTurret",
-        "hp":2500,
+        "hp":5000,
         "stats":{
             "attack":105,
             "defense":35,
@@ -416,7 +416,7 @@
         "width":36,
         "height":36,
         "attackState":"passiveLightningRammer",
-        "hp":1000,
+        "hp":2500,
         "stats":{
             "attack":75,
             "defense":50,
