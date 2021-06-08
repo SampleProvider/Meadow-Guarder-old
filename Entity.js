@@ -6183,7 +6183,14 @@ Player.onConnect = function(socket,username){
             player.questInfo.started = true;
         });
         socket.on('waypoint',function(data){
-            if(data === 'The Village'){
+            if(player.quest !== false){
+                socket.emit('addToChat',{
+                    style:'style="color: #ff0000">',
+                    message:'[!] You cannot use waypoints in a quest.',
+                    debug:false,
+                });
+            }
+            else if(data === 'The Village'){
                 player.teleport(2080,1760,data);
             }
             else if(data === 'Lilypad Pathway Part 1'){
