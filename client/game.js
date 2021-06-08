@@ -1047,22 +1047,22 @@ var Player = function(initPack){
                 var drawX = -49;
                 var drawY = -15;
             }
-            if(self.currentItem === 'ectocannon'){
+            else if(self.currentItem === 'ectocannon'){
                 turnAmount = 225;
                 var drawX = -49;
                 var drawY = -15;
             }
-            if(self.currentItem === 'halibutcannon'){
+            else if(self.currentItem === 'halibutcannon'){
                 turnAmount = 225;
                 var drawX = -49;
                 var drawY = -15;
             }
-            if(self.currentItem.includes('book')){
+            else if(self.currentItem.includes('book')){
                 turnAmount = 270;
                 var drawX = -35;
                 var drawY = 15;
             }
-            if(self.currentItem.includes('trident')){
+            else if(self.currentItem.includes('trident')){
                 turnAmount = 45;
                 var drawX = 5;
                 var drawY = -89;
@@ -1070,7 +1070,7 @@ var Player = function(initPack){
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,84,84);
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
-            if(self.currentItem === 'leafblower'){
+            else if(self.currentItem === 'leafblower'){
                 turnAmount = 0;
                 var drawX = -8;
                 var drawY = -32;
