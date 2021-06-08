@@ -5,8 +5,8 @@ ENV = {
     MonsterStrength:1,
     Difficulty:'Expert',
     Spawnpoint:{
-        x:320,
-        y:320,
+        x:2080,
+        y:1760,
         map:'The Village',
     },
     BossRush:false,

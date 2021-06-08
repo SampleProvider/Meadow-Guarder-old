@@ -1014,6 +1014,58 @@ audio {
     left: 120px;
     top: 135px;
 }
+.waypoint {
+    position: relative;
+    width: 153px;
+    height: 153px;
+    margin-left: 3px;
+    margin-top: 3px;
+    margin-right: 3px;
+    margin-bottom: 0px;
+    padding: 15px;
+    float: left;
+    border: 1px solid #000000;
+}
+.row {
+    position: static;
+    width: 576px;
+    height: 194px;
+    margin: 6px;
+    padding-left: 3px;
+    padding-top: 3px;
+    padding-bottom: 0px;
+    color: #ffffff;
+    user-select: none;
+    border: 1px solid #000000;
+}
+.waypointName {
+    position: static;
+    font-family: 'pixel';
+    font-size: 20px;
+    left: 4px;
+    top: 15px;
+    width: 160px;
+    height: auto;
+    text-align: center;
+    color: #ffffff;
+    user-select: none;
+}
+.waypointSelect {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 20px;
+    color: #ffffff;
+    background-color: #007700;
+    border: 1px solid #00aa00;
+    cursor: pointer;
+    left: 50%;
+    bottom: 5%;
+    transform: translate(-50%, 0%);
+}
+.waypointSelect:hover {
+    background-color: #005500;
+    border: 1px solid #00aa00;
+}
 
 #bossbar {
     position: absolute;

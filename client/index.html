@@ -66,6 +66,18 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							6/7/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Added Waypoints.
+							<br>
+							Released 023f5a.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
 							6/6/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
@@ -661,6 +673,36 @@
 				<div id="leaderboardScreen" class="menuText menuDisplay" style="display: none; overflow: scroll;">
 					<div style="font-size:18px;">Leaderboards update every five minutes.</div><br>
 				</div>
+				<div id="waypointScreen" class="menuText menuDisplay" style="display: none; overflow-y: scroll;">
+					<div class="row">
+						<div id="villageWaypoint" class="waypoint">
+							<div class="waypointName">The Village</div>
+							<br>
+							<div class="waypointDescription" style="font-size: 13px;text-align: center;">Teleports you in front of Town Hall.</div>
+							<div class="waypointSelect">Teleport</div>
+						</div>
+						<div id="lilypad1Waypoint" class="waypoint">
+							<div class="waypointName">Lilypad Pathway Part 1</div>
+							<br>
+							<div class="waypointDescription" style="font-size: 13px;text-align: center;">Teleports you in front of the Lilypad Temple.</div>
+							<div class="waypointSelect">Teleport</div>
+						</div>
+						<div id="graveyardWaypoint" class="waypoint">
+							<div class="waypointName">The Graveyard</div>
+							<br>
+							<div class="waypointDescription" style="font-size: 13px;text-align: center;">Teleports you in front of the Graveyard house.</div>
+							<div class="waypointSelect">Teleport</div>
+						</div>
+					</div>
+					<div class="row">
+						<div id="arenaWaypoint" class="waypoint">
+							<div class="waypointName">The Arena</div>
+							<br>
+							<div class="waypointDescription" style="font-size: 13px;text-align: center;">Teleports you into The Arena.</div>
+							<div class="waypointSelect">Teleport</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			
 			<div id="menu-text" class="UI-text-light">
@@ -669,6 +711,7 @@
 				<button id="worldMapButton" class="UI-button-light menuButton">World Map</button>
 				<button id="settingsButton" class="UI-button-light menuButton">Settings</button>
 				<button id="leaderboardButton" class="UI-button-light menuButton" style="font-size: 13px;">Leaderboards</button>
+				<button id="waypointButton" class="UI-button-light menuButton">Waypoints</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>
 				<button class="UI-button-light menuButton">Useless</button>

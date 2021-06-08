@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '023f4a';
+var VERSION = '023f5a';
 
 var DEBUG = false;
 
@@ -841,6 +841,24 @@ document.getElementById('settingsButton').onclick = function(){
 document.getElementById('leaderboardButton').onclick = function(){
     disableAllMenu();
     document.getElementById('leaderboardScreen').style.display = 'inline-block';
+}
+document.getElementById('waypointButton').onclick = function(){
+    disableAllMenu();
+    document.getElementById('waypointScreen').style.display = 'inline-block';
+}
+
+
+document.getElementById('villageWaypoint').onclick = function(){
+    socket.emit('waypoint','The Village');
+}
+document.getElementById('lilypad1Waypoint').onclick = function(){
+    socket.emit('waypoint','Lilypad Pathway Part 1');
+}
+document.getElementById('graveyardWaypoint').onclick = function(){
+    socket.emit('waypoint','The Graveyard');
+}
+document.getElementById('arenaWaypoint').onclick = function(){
+    socket.emit('waypoint','The Arena');
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){

@@ -166,12 +166,6 @@ s = {
             if(i === param){
                 var monsterHp = monsterData[i].hp;
                 var monsterStats = Object.create(monsterData[i].stats);
-                monsterStats.debuffs = [];
-                if(monsterData[i].stats.debuffs){
-                    for(var j in monsterData[i].stats.debuffs){
-                        monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                    }
-                }
                 monsterHp *= ENV.MonsterStrength;
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
@@ -211,12 +205,6 @@ s = {
             if(i === param){
                 var monsterHp = monsterData[i].hp;
                 var monsterStats = Object.create(monsterData[i].stats);
-                monsterStats.debuffs = [];
-                if(monsterData[i].stats.debuffs){
-                    for(var j in monsterData[i].stats.debuffs){
-                        monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                    }
-                }
                 monsterHp *= ENV.MonsterStrength;
                 monsterStats.attack *= ENV.MonsterStrength;
                 var monster = new Monster({
@@ -328,12 +316,6 @@ var spawnMonster = function(spawner,spawnId){
         if(monsterSeed > 0 && monsterSeed < currentMonster.spawnChance){
             var monsterHp = currentMonster.hp;
             var monsterStats = Object.create(currentMonster.stats);
-            monsterStats.debuffs = [];
-            if(currentMonster.stats.debuffs){
-                for(var j in currentMonster.stats.debuffs){
-                    monsterStats.debuffs.push(Object.create(currentMonster.stats.debuffs[j]));
-                }
-            }
             monsterHp *= ENV.MonsterStrength;
             monsterStats.attack *= ENV.MonsterStrength;
             var xpGain = currentMonster.xpGain;
@@ -636,12 +618,6 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'greenLizard'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
-                        monsterStats.debuffs = [];
-                        if(monsterData[i].stats.debuffs){
-                            for(var j in monsterData[i].stats.debuffs){
-                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                            }
-                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 50;
@@ -683,12 +659,6 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'lostSpirit'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
-                        monsterStats.debuffs = [];
-                        if(monsterData[i].stats.debuffs){
-                            for(var j in monsterData[i].stats.debuffs){
-                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                            }
-                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 150;
@@ -730,12 +700,6 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'redBird'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
-                        monsterStats.debuffs = [];
-                        if(monsterData[i].stats.debuffs){
-                            for(var j in monsterData[i].stats.debuffs){
-                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                            }
-                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 75;
@@ -777,12 +741,6 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'lightningLizard'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
-                        monsterStats.debuffs = [];
-                        if(monsterData[i].stats.debuffs){
-                            for(var j in monsterData[i].stats.debuffs){
-                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                            }
-                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 15;
@@ -824,12 +782,6 @@ Entity.getFrameUpdateData = function(){
                     if(i === 'possessedSpirit'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
-                        monsterStats.debuffs = [];
-                        if(monsterData[i].stats.debuffs){
-                            for(var j in monsterData[i].stats.debuffs){
-                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                            }
-                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 10;
@@ -866,17 +818,11 @@ Entity.getFrameUpdateData = function(){
                 }
             }
             else if(ENV.BossRushStage === 5){
-                addToChat('style="color: #00aadd">','Hmm...perhaps I should let the little ones out to play for a while.');
+                addToChat('style="color: #00aadd">','Hmm... perhaps I should let the little ones out to play for a while.');
                 for(var i in monsterData){
                     if(i === 'plantera'){
                         var monsterHp = monsterData[i].hp;
                         var monsterStats = Object.create(monsterData[i].stats);
-                        monsterStats.debuffs = [];
-                        if(monsterData[i].stats.debuffs){
-                            for(var j in monsterData[i].stats.debuffs){
-                                monsterStats.debuffs.push(Object.create(monsterData[i].stats.debuffs[j]));
-                            }
-                        }
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
                         monsterHp *= 10;
@@ -1339,7 +1285,7 @@ Actor = function(param){
             return;
         }
         self.debuffTimer += 1;
-        self.oldStats = JSON.parse(JSON.stringify(self.stats));
+        //self.oldStats = JSON.parse(JSON.stringify(self.stats));
         var stats = JSON.parse(JSON.stringify(self.oldStats));
         var debuffRemoveList = [];
         for(var i = self.debuffs.length - 1;i >= 0;i--){
@@ -1385,8 +1331,7 @@ Actor = function(param){
                     });
                 }
                 if(self.type === 'Player'){
-                    //stats.defense = 0;
-                    stats.heal = 0;
+                    stats.defense -= 40;
                 }
             }
             if(self.debuffs[i].id === 'death'){
@@ -1409,7 +1354,6 @@ Actor = function(param){
                         value:'-' + damage,
                     });
                 }
-                stats.defense = 0;
             }
             if(self.debuffs[i].id === 'frostburn' && self.debuffTimer % 2 === 0){
                 var damage = 2;
@@ -1451,6 +1395,9 @@ Actor = function(param){
                         particleType:'frost',
                         value:'-' + damage,
                     });
+                }
+                if(self.type === 'Player'){
+                    stats.heal -= 0.8;
                 }
             }
             if(self.debuffs[i].id === 'frozen'){
@@ -2261,6 +2208,8 @@ Player = function(param){
         "Clear River":false,
         "Clear Tower":false,
         "Lightning Lizard Boss":false,
+        "Possessed Spirit":false,
+        "Plantera":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -6222,6 +6171,45 @@ Player.onConnect = function(socket,username){
         socket.on('startQuest',function(data){
             player.questInfo.started = true;
         });
+        socket.on('waypoint',function(data){
+            if(data === 'The Village'){
+                player.teleport(2080,1760,data);
+            }
+            else if(data === 'Lilypad Pathway Part 1'){
+                if(player.questStats['Lightning Lizard Boss']){
+                    player.teleport(1376,1632,data);
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.',
+                        debug:false,
+                    });
+                }
+            }
+            else if(data === 'The Graveyard'){
+                if(player.questStats['Possessed Spirit']){
+                    player.teleport(2048,1376,data);
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] Defeat Possessed Spirit to gain access to this waypoint.',
+                        debug:false,
+                    });
+                }
+            }
+            else if(data === 'The Arena'){
+                player.teleport(1600,1600,data);
+            }
+            else{
+                socket.emit('addToChat',{
+                    style:'style="color: #ff0000">',
+                    message:'[!] Stop hacking.',
+                    debug:false,
+                });
+            }
+        });
 
 
         socket.on('init',function(data){
@@ -6628,9 +6616,19 @@ Monster = function(param){
             }
             if(self.monsterType === 'possessedSpirit'){
                 addToChat('style="color: #ff00ff">','Possessed Spirit has been defeated!');
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map){
+                        Player.list[i].questStats["Possessed Spirit"] = true;
+                    }
+                }
             }
             if(self.monsterType === 'plantera'){
                 addToChat('style="color: #ff00ff">','Plantera has been defeated!');
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map){
+                        Player.list[i].questStats["Plantera"] = true;
+                    }
+                }
             }
             param.onDeath(self);
         }
@@ -7950,6 +7948,7 @@ Monster = function(param){
                 self.hpMax *= 50;
                 self.hp *= 50;
                 self.stats.damageReduction = 0.5;
+                self.oldStats.damageReduction = 0.5;
                 self.maxSpeed = self.oldMoveSpeed * 3;
                 self.followEntity(self.target);
                 self.reload = 0;
