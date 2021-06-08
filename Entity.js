@@ -944,6 +944,7 @@ Actor = function(param){
     self.startY = self.y;
     self.oldStats = JSON.parse(JSON.stringify(self.stats));
     self.debuffs = [];
+    self.immuneDebuffs = [];
     self.debuffTimer = 0;
     self.eventQ = [];
     var super_update = self.update;
@@ -1289,148 +1290,157 @@ Actor = function(param){
         var stats = JSON.parse(JSON.stringify(self.oldStats));
         var debuffRemoveList = [];
         for(var i = self.debuffs.length - 1;i >= 0;i--){
-            if(self.debuffs[i].id === 'burning' && self.debuffTimer % 2 === 0){
-                var damage = 1;
-                var particleType = 'redDamage';
-                self.hp -= damage;
-                if(damage){
-                    var particle = new Particle({
-                        x:self.x + Math.random() * 64 - 32,
-                        y:self.y + Math.random() * 64 - 32,
-                        map:self.map,
-                        particleType:particleType,
-                        value:'-' + damage,
-                    });
-                    var particle = new Particle({
-                        x:self.x + Math.random() * self.width - self.width / 2,
-                        y:self.y + Math.random() * self.height - self.height / 2,
-                        map:self.map,
-                        particleType:'fire',
-                        value:'-' + damage,
-                    });
+            var debuffImmune = true;
+            for(var j in self.immuneDebuffs){
+                if(self.immuneDebuffs[j] === self.debuffs[i].id){
+                    debuffRemoveList.push(i);
+                    debuffImmune = false;
                 }
             }
-            if(self.debuffs[i].id === 'electrified'){
-                var damage = 5;
-                var particleType = 'redDamage';
-                self.hp -= damage;
-                if(damage){
-                    var particle = new Particle({
-                        x:self.x + Math.random() * 64 - 32,
-                        y:self.y + Math.random() * 64 - 32,
-                        map:self.map,
-                        particleType:particleType,
-                        value:'-' + damage,
-                    });
-                    var particle = new Particle({
-                        x:self.x + Math.random() * self.width - self.width / 2,
-                        y:self.y + Math.random() * self.height - self.height / 2,
-                        map:self.map,
-                        particleType:'electricity',
-                        value:'-' + damage,
-                    });
+            if(debuffImmune === true){
+                if(self.debuffs[i].id === 'burning' && self.debuffTimer % 2 === 0){
+                    var damage = 1;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'fire',
+                            value:'-' + damage,
+                        });
+                    }
                 }
-                if(self.type === 'Player'){
-                    stats.defense -= 40;
+                if(self.debuffs[i].id === 'electrified'){
+                    var damage = 5;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'electricity',
+                            value:'-' + damage,
+                        });
+                    }
+                    if(self.type === 'Player'){
+                        stats.defense -= 40;
+                    }
                 }
-            }
-            if(self.debuffs[i].id === 'death'){
-                var damage = 25;
-                var particleType = 'redDamage';
-                self.hp -= damage;
-                if(damage){
-                    var particle = new Particle({
-                        x:self.x + Math.random() * 64 - 32,
-                        y:self.y + Math.random() * 64 - 32,
-                        map:self.map,
-                        particleType:particleType,
-                        value:'-' + damage,
-                    });
-                    var particle = new Particle({
-                        x:self.x + Math.random() * self.width - self.width / 2,
-                        y:self.y + Math.random() * self.height - self.height / 2,
-                        map:self.map,
-                        particleType:'death',
-                        value:'-' + damage,
-                    });
+                if(self.debuffs[i].id === 'death'){
+                    var damage = 25;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'death',
+                            value:'-' + damage,
+                        });
+                    }
                 }
-            }
-            if(self.debuffs[i].id === 'frostburn' && self.debuffTimer % 2 === 0){
-                var damage = 2;
-                var particleType = 'redDamage';
-                self.hp -= damage;
-                if(damage){
-                    var particle = new Particle({
-                        x:self.x + Math.random() * 64 - 32,
-                        y:self.y + Math.random() * 64 - 32,
-                        map:self.map,
-                        particleType:particleType,
-                        value:'-' + damage,
-                    });
-                    var particle = new Particle({
-                        x:self.x + Math.random() * self.width - self.width / 2,
-                        y:self.y + Math.random() * self.height - self.height / 2,
-                        map:self.map,
-                        particleType:'frost',
-                        value:'-' + damage,
-                    });
+                if(self.debuffs[i].id === 'frostburn' && self.debuffTimer % 2 === 0){
+                    var damage = 2;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'frost',
+                            value:'-' + damage,
+                        });
+                    }
                 }
-            }
-            if(self.debuffs[i].id === 'frostbite' && self.debuffTimer % 2 === 0){
-                var damage = 20;
-                var particleType = 'redDamage';
-                self.hp -= damage;
-                if(damage){
-                    var particle = new Particle({
-                        x:self.x + Math.random() * 64 - 32,
-                        y:self.y + Math.random() * 64 - 32,
-                        map:self.map,
-                        particleType:particleType,
-                        value:'-' + damage,
-                    });
-                    var particle = new Particle({
-                        x:self.x + Math.random() * self.width - self.width / 2,
-                        y:self.y + Math.random() * self.height - self.height / 2,
-                        map:self.map,
-                        particleType:'frost',
-                        value:'-' + damage,
-                    });
+                if(self.debuffs[i].id === 'frostbite' && self.debuffTimer % 2 === 0){
+                    var damage = 20;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'frost',
+                            value:'-' + damage,
+                        });
+                    }
+                    if(self.type === 'Player'){
+                        stats.heal -= 0.8;
+                    }
                 }
-                if(self.type === 'Player'){
-                    stats.heal -= 0.8;
+                if(self.debuffs[i].id === 'frozen'){
+                    var damage = 40;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'frost',
+                            value:'-' + damage,
+                        });
+                    }
+                    stats.defense = 0;
+                    self.spdX = 0;
+                    self.spdY = 0;
+                    self.x = self.startX;
+                    self.y = self.startY;
                 }
-            }
-            if(self.debuffs[i].id === 'frozen'){
-                var damage = 40;
-                var particleType = 'redDamage';
-                self.hp -= damage;
-                if(damage){
-                    var particle = new Particle({
-                        x:self.x + Math.random() * 64 - 32,
-                        y:self.y + Math.random() * 64 - 32,
-                        map:self.map,
-                        particleType:particleType,
-                        value:'-' + damage,
-                    });
-                    var particle = new Particle({
-                        x:self.x + Math.random() * self.width - self.width / 2,
-                        y:self.y + Math.random() * self.height - self.height / 2,
-                        map:self.map,
-                        particleType:'frost',
-                        value:'-' + damage,
-                    });
+                if(self.hp < 1 && self.monsterType !== 'plantera'){
+                    self.willBeDead = true;
                 }
-                stats.defense = 0;
-                self.spdX = 0;
-                self.spdY = 0;
-                self.x = self.startX;
-                self.y = self.startY;
-            }
-            if(self.hp < 1 && self.monsterType !== 'plantera'){
-                self.willBeDead = true;
-            }
-            if(self.hp < 1 && self.monsterType !== 'plantera' && self.stage2 === true){
-                self.willBeDead = true;
+                if(self.hp < 1 && self.monsterType !== 'plantera' && self.stage2 === true){
+                    self.willBeDead = true;
+                }
             }
             self.debuffs[i].time -= 1;
             if(self.debuffs[i].time <= 0){
@@ -4015,6 +4025,7 @@ Player = function(param){
             }
             self.maxSpeed = 20 + Math.floor(self.level / 10);
             self.pushPower = 3;
+            self.immuneDebuffs = [];
             damageIncrease = 1;
             self.useTime = 0;
             for(var i in self.inventory.currentEquip){
@@ -6202,6 +6213,18 @@ Player.onConnect = function(socket,username){
             else if(data === 'The Arena'){
                 player.teleport(1600,1600,data);
             }
+            else if(data === 'Lilypad Temple Room 1'){
+                if(player.questStats['Lightning Lizard Boss']){
+                    player.teleport(256,3168,data);
+                }
+                else{
+                    socket.emit('addToChat',{
+                        style:'style="color: #ff0000">',
+                        message:'[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.',
+                        debug:false,
+                    });
+                }
+            }
             else{
                 socket.emit('addToChat',{
                     style:'style="color: #ff0000">',
@@ -8079,7 +8102,129 @@ Monster = function(param){
                     }
                 }
                 break;
-        }
+            case "passiveLightningTurret":
+                self.animate = false;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveLightningTurret";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveLightningTurret";
+                }
+                break;
+            case "moveLightningTurret":
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackLightningTurret";
+                break;
+            case "attackLightningTurret":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningTurret';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningTurret';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningTurret';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 10 === 0 && self.reload > 5 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},0,self.stats);
+                }
+                self.reload += 1;
+                if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
+                    if(!self.damaged){
+                        self.target = undefined;
+                        self.trackingEntity = undefined;
+                        self.attackState = 'passiveLightningTurret';
+                    }
+                }
+                self.animation += 0.5;
+                if(self.animation >= 4){
+                    self.animation = 0;
+                }
+                break;
+            case "passiveLightningRammer":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveLightningRammer";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveLightningRammer";
+                }
+                break;
+            case "moveLightningRammer":
+                self.trackEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackLightningRammer";
+                break;
+            case "attackLightningRammer":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningRammer';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningRammer';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveLightningRammer';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 35 === 0 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                    self.stats.defense += 50;
+                    self.maxSpeed = self.oldMoveSpeed + 15;
+                }
+                else if(ENV.Difficulty === 'Expert'){
+                    self.stats.defense = self.oldStats.defense;
+                    self.maxSpeed = self.oldMoveSpeed;
+                }
+                self.reload += 1;
+                if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
+                    if(!self.damaged){
+                        self.target = undefined;
+                        self.trackingEntity = undefined;
+                        self.attackState = 'passiveLightningRammer';
+                    }
+                }
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 36){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            }
     }
     self.getUpdatePack = function(){
         var pack = {};
@@ -9998,6 +10143,7 @@ load("Fishing Hut");
 load("House");
 load("Tiny House");
 load("Lilypad Temple Room 0");
+load("Lilypad Temple Room 1");
 load("The Arena");
 var compareMaps = function(a,b){
     if(a.y === b.y){
@@ -10007,7 +10153,8 @@ var compareMaps = function(a,b){
 }
 fs.readFile("./client/maps/World.world","utf8",function(err,data){
     worldMap = JSON.parse(data).maps;
-    worldMap["Lilypad Temple Room 0"]
+    worldMap["Lilypad Temple Room 0"];
+    worldMap["Lilypad Temple Room 1"];
     worldMap.sort(compareMaps);
     for(var i in worldMap){
         load(worldMap[i].fileName.slice(0,-4));

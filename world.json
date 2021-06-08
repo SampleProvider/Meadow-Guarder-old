@@ -24,6 +24,9 @@
         ],
         "The Arena": [
             "redBird","greenLizard","lightningLizard","ghost","lostSpirit"
+        ],
+        "Lilypad Temple Room 1": [
+            "lightningTurret","lightningRammer"
         ]
     }
 }

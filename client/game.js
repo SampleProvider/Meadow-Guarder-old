@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '023f5a';
+var VERSION = '023f6a';
 
 var DEBUG = false;
 
@@ -558,6 +558,10 @@ Img.plantera = new Image();
 Img.plantera.src = '/client/img/plantera.png';
 Img.thorn = new Image();
 Img.thorn.src = '/client/img/thorn.png';
+Img.lightningTurret = new Image();
+Img.lightningTurret.src = '/client/img/lightningTurret.png';
+Img.lightningRammer = new Image();
+Img.lightningRammer.src = '/client/img/lightningRammer.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.healthBar = new Image();
@@ -859,6 +863,9 @@ document.getElementById('graveyardWaypoint').onclick = function(){
 }
 document.getElementById('arenaWaypoint').onclick = function(){
     socket.emit('waypoint','The Arena');
+}
+document.getElementById('lilypad2Waypoint').onclick = function(){
+    socket.emit('waypoint','Lilypad Temple Room 1');
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
@@ -1368,6 +1375,16 @@ var Monster = function(initPack){
             ctx0.translate(self.x,self.y);
             ctx0.rotate(self.animation * 45 * Math.PI / 180);
             ctx0.drawImage(Img.thorn,0,0,11,11,-22,-22,44,44);
+            ctx0.rotate(-self.animation * 45 * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
+        if(self.monsterType === 'lightningTurret'){
+            ctx0.drawImage(Img.lightningTurret,Math.floor(self.animation) * 10,14 * 0,9,13,self.x - 18,self.y - 26,36,52);
+        }
+        if(self.monsterType === 'lightningRammer'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.animation * 45 * Math.PI / 180);
+            ctx0.drawImage(Img.lightningRammer,0,0,9,9,-18,-18,36,36);
             ctx0.rotate(-self.animation * 45 * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }

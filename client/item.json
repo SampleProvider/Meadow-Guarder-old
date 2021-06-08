@@ -807,5 +807,25 @@
         "damageReduction":0.15,
         "rarity":5,
         "description":"<span style='color: #33ee33'>+35% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>The shield of a fallen hero..."
+    },
+    "lightningmask":{
+        "name":"Lightning Mask",
+        "equip":"helmet",
+        "event":"damageIncrease += 0.25;self.stats.critChance += 0.25;self.stats.debuffs.push({id:'electrified',time:60});",
+        "enchantments":["smashing","burst"],
+        "defense":31,
+        "damageReduction":0.1,
+        "rarity":4,
+        "description":"<span style='color: #33ee33'>+25% damage.</span><br><span style='color: #33ee33'>+25% critical strike chance.</span><br>You inflict the electrified debuff for 3 seconds."
+    },
+    "lightningarmor":{
+        "name":"Lightning Armor",
+        "equip":"armor",
+        "event":"damageIncrease += 0.3;self.stats.critChance += 0.15;self.immuneDebuffs.push('electrified');",
+        "enchantments":["smashing","burst"],
+        "defense":37,
+        "damageReduction":0.3,
+        "rarity":4,
+        "description":"<span style='color: #33ee33'>+30% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span><br>You gain immunity to the electrified debuff."
     }
 }
