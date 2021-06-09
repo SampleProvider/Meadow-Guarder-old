@@ -112,6 +112,7 @@
         "moveSpeed":5,
         "itemDrops":{
             "firecrystal":1,
+            "redfish":0.5,
             "enchantmentbook":1,
             "flamethrower":0.01
         }

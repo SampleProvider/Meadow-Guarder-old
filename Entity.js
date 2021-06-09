@@ -2288,7 +2288,9 @@ Player = function(param){
         }
     }
     if(self.inventory.items.length === 0){
-        self.inventory.addItem('simplewoodenbow',[])
+        self.inventory.addItem('simplewoodenbow',[]);
+        self.inventory.addItem('simplewoodensword',[]);
+        self.inventory.addItem('simplewoodenstaff',[]);
     }
     if(param.param.currentEquip !== undefined){
         for(var i in param.param.currentEquip){
@@ -7355,6 +7357,7 @@ Monster = function(param){
                         "lightningwand":0.25,
                         "bookoflightning":0.25,
                         "shieldoflightning":0.25,
+                        "thetoothoflightning":0.01,
                     };
                 }
                 break;

@@ -697,6 +697,14 @@
         "description":"Summons Plantera.<br>Used in The Forest.",
         "rarity":7
     },
+    "redfish":{
+        "name":"Red Fish",
+        "equip":"consume",
+        "event":"if(self.map === 'The River'){s.spawnMonster('redBird',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('redfish',[]);",
+        "enchantments":[],
+        "description":"Summons Red Bird.<br>Used in The River.",
+        "rarity":3
+    },
     "ectocannon":{
         "name":"Ecto Cannon",
         "equip":"weapon",
