@@ -274,7 +274,9 @@
         "itemDrops":{
             "lightningcrystal":1,
             "yellowfish":0.5,
-            "enchantmentbook":3
+            "enchantmentbook":3,
+            "thetoothoflightning":0.01,
+            "lightningkey":0.05
         }
     },
     "ghost":{
@@ -342,7 +344,8 @@
             "ectocannon":0.5,
             "greenfish":0.5,
             "bookoffrost":0.5,
-            "enchantmentbook":5
+            "enchantmentbook":5,
+            "ringofaspirit":0.01
         }
     },
     "plantera":{
@@ -367,7 +370,8 @@
             "bookofnature":0.5,
             "brokenheroshield":0.5,
             "skullofdeath":0.5,
-            "enchantmentbook":7
+            "enchantmentbook":7,
+            "heroshield":0.01
         }
     },
     "thorn":{

@@ -269,7 +269,7 @@ MGHC = function(){
                 ctx1.lineWidth = 6;
             }
             if(Monster.list[i].monsterType === 'lightningLizard'){
-                ctx1.strokeStyle = '#ffff00';
+                ctx1.strokeStyle = '#ddff00';
                 ctx1.lineWidth = 10;
             }
             if(Monster.list[i].monsterType === 'ghost'){
@@ -291,6 +291,14 @@ MGHC = function(){
             if(Monster.list[i].monsterType === 'plantera'){
                 ctx1.strokeStyle = '#229900';
                 ctx1.lineWidth = 10;
+            }
+            if(Monster.list[i].monsterType === 'lightningTurret'){
+                ctx1.strokeStyle = '#ddff00';
+                ctx1.lineWidth = 2;
+            }
+            if(Monster.list[i].monsterType === 'lightningRammer'){
+                ctx1.strokeStyle = '#ddff00';
+                ctx1.lineWidth = 4;
             }
             ctx1.beginPath();
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);

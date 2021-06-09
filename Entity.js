@@ -2271,7 +2271,6 @@ Player = function(param){
     self.cooldown = 5;
     self.useTime = 5;
     self.passive = '';
-    self.weaponPassive = '';
     self.offhandPassive = '';
     self.regenTick = 0;
     self.ability = {
@@ -4010,7 +4009,6 @@ Player = function(param){
                 debuffs:[],
             }
             self.passive = '';
-            self.weaponPassive = '';
             self.offhandPassive = '';
             self.textColor = '#ffff00';
             self.hpMax = 100 + self.level * 10;
@@ -4292,16 +4290,26 @@ Player = function(param){
                 }
             }
         }
-        if(self.weaponPassive === 'spirit'){
+        if(self.offhandPassive === 'spirit'){
             self.shootProjectile(self.id,'Player',self.direction,self.direction,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
             self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
             self.shootProjectile(self.id,'Player',self.direction + 240,self.direction + 240,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
         }
         if(self.offhandPassive === 'lightning'){
-            self.shootProjectile(self.id,'Player',0 * Math.PI / 180,0 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
-            self.shootProjectile(self.id,'Player',90 * Math.PI / 180,90 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
-            self.shootProjectile(self.id,'Player',180 * Math.PI / 180,180 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
-            self.shootProjectile(self.id,'Player',270 * Math.PI / 180,270 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',0 * Math.PI / 180,0 * Math.PI / 180,'lightningSpit',128,function(t){return 0},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',90 * Math.PI / 180,90 * Math.PI / 180,'lightningSpit',128,function(t){return 0},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',180 * Math.PI / 180,180 * Math.PI / 180,'lightningSpit',128,function(t){return 0},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',270 * Math.PI / 180,270 * Math.PI / 180,'lightningSpit',128,function(t){return 0},30,self.stats,'spinAroundPlayer');
+        }
+        if(self.offhandPassive === 'spiritProtect'){
+            self.shootProjectile(self.id,'Player',0 * Math.PI / 180,0 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',45 * Math.PI / 180,45 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',90 * Math.PI / 180,90 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',135 * Math.PI / 180,135 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',180 * Math.PI / 180,180 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',225 * Math.PI / 180,225 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',270 * Math.PI / 180,270 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',315 * Math.PI / 180,315 * Math.PI / 180,'holySoul',128,function(t){return 25},30,self.stats,'spinAroundPlayer');
         }
     }
     self.updateAttack = function(){
@@ -8221,7 +8229,7 @@ Monster = function(param){
                     self.damaged = false;
                     break;
                 }
-                if(self.reload % 35 === 0 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                if(self.reload % 35 < 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                     self.stats.defense += 50;
                     self.maxSpeed = self.oldMoveSpeed + 15;
                 }
@@ -8247,7 +8255,7 @@ Monster = function(param){
                     }
                 }
                 break;
-            }
+        }
     }
     self.getUpdatePack = function(){
         var pack = {};

@@ -554,6 +554,13 @@
         "enchantments":["unlocking"],
         "rarity":6
     },
+    "lightningkey":{
+        "name":"Lightning Key",
+        "equip":"key",
+        "event":"self.textColor = '#ccff00';self.displayName = '⚡' + self.username + '⚡';",
+        "enchantments":["unlocking"],
+        "rarity":4
+    },
     "firecrystal":{
         "name":"Fire Crystal",
         "equip":"crystal",
@@ -632,7 +639,7 @@
     "ectoglove":{
         "name":"Ecto Glove",
         "equip":"offhand",
-        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.critChance += 0.2;self.weaponPassive = 'spirit';}",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.critChance += 0.2;self.offhandPassive = 'spirit';}",
         "enchantments":["smashing"],
         "defense":2,
         "rarity":4,
@@ -844,5 +851,32 @@
         "defense":12,
         "rarity":4,
         "description":"<span style='color: #33ee33'>+10 movement speed.</span><br>Four lightning shards spin around you and protect you."
+    },
+    "thetoothoflightning":{
+        "name":"The Tooth of Lightning",
+        "equip":"offhand",
+        "event":"damageIncrease += 0.15;self.stats.critChance += 0.25;",
+        "enchantments":["smashing"],
+        "defense":3,
+        "rarity":4,
+        "description":"<span style='color: #33ee33'>+25% critical strike chance.</span><br><span style='color: #33ee33'>+15% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
+    },
+    "heroshield":{
+        "name":"Hero Shield",
+        "equip":"offhand",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.5;self.stats.critChance += 0.35;}",
+        "enchantments":["smashing"],
+        "defense":72,
+        "damageReduction":0.2,
+        "rarity":5,
+        "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+35% melee critical strike chance.</span><br>A hero's shield.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
+    },
+    "ringofaspirit":{
+        "name":"Ring of a Spirit",
+        "equip":"offhand",
+        "event":"self.stats.xp += 1.5;self.offhandPassive = 'spiritProtect';",
+        "enchantments":["smashing"],
+        "rarity":5,
+        "description":"<span style='color: #33ee33'>+150% increased xp gain.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     }
 }
