@@ -179,6 +179,24 @@ Inventory = function(socket,server){
         }
         dismantleButton.style.display = 'inline-block';
         dismantleButton.style.position = 'relative';
+        var dismantleEnchantButton = document.createElement('button');
+        dismantleEnchantButton.innerHTML = 'Dismantle All Enchantment Books';
+        dismantleEnchantButton.className = "UI-button-light";
+        inventory.appendChild(dismantleEnchantButton);
+        dismantleEnchantButton.style.color = '#ff0000';
+        dismantleEnchantButton.onclick = function(){
+            var dismantleList = [];
+            for(var i in self.items){
+                if(self.items[i].id === 'enchantmentbook'){
+                    dismantleList.push(i);
+                }
+            }
+            for(var i = dismantleList.length - 1;i >= 0;i--){
+                self.socket.emit("dismantleItem",dismantleList[i]);
+            }
+        }
+        dismantleEnchantButton.style.display = 'inline-block';
+        dismantleEnchantButton.style.position = 'relative';
         var addButton = function(data,index){
             let item = Item.list[data.id];
             let button = document.createElement('button');

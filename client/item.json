@@ -855,11 +855,11 @@
     "thetoothoflightning":{
         "name":"The Tooth of Lightning",
         "equip":"offhand",
-        "event":"damageIncrease += 0.15;self.stats.critChance += 0.25;",
+        "event":"damageIncrease += 0.15;self.stats.critChance += 0.50;",
         "enchantments":["smashing"],
         "defense":3,
         "rarity":4,
-        "description":"<span style='color: #33ee33'>+25% critical strike chance.</span><br><span style='color: #33ee33'>+15% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
+        "description":"<span style='color: #33ee33'>+50% critical strike chance.</span><br><span style='color: #33ee33'>+15% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "heroshield":{
         "name":"Hero Shield",
