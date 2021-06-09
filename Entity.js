@@ -8611,12 +8611,12 @@ Projectile = function(param){
         }
         self.timer += 1;
         if(param.stats.range !== undefined){
-            if(self.timer > 35 * param.stats.range){
+            if(self.timer > 40 * param.stats.range){
                 self.toRemove = true;
             }
         }
         else{
-            if(self.timer > 35){
+            if(self.timer > 40){
                 self.toRemove = true;
             }
         }

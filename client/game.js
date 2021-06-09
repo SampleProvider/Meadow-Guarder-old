@@ -1220,6 +1220,9 @@ var Projectile = function(initPack){
             ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
             ctx0.rotate(-45 * Math.PI / 180);
         }
+        else if(self.projectileType === 'flame'){
+            ctx0.drawImage(Img[self.projectileType],-self.width / 2 + 6 - Math.random() * 12,-self.height / 2 + 6 - Math.random() * 12,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+        }
         else{
             ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
@@ -1241,6 +1244,9 @@ var Projectile = function(initPack){
             ctx1.rotate(45 * Math.PI / 180);
             ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
             ctx1.rotate(-45 * Math.PI / 180);
+        }
+        else if(self.projectileType === 'flame'){
+            ctx1.drawImage(Img[self.projectileType],-self.width / 2 + 6 - Math.random() * 12,-self.height / 2 + 6 - Math.random() * 12,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
         else{
             ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);

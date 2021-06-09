@@ -843,7 +843,7 @@
         "name":"Flamethrower",
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'burning',time:60});",
-        "enchantments":["speed","burst","range"],
+        "enchantments":["burst"],
         "damage":55,
         "damageType":"ranged",
         "critChance":0.5,
