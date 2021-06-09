@@ -1046,6 +1046,9 @@ var Player = function(initPack){
                 turnAmount = 225;
                 var drawX = -49;
                 var drawY = -15;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
             else if(self.currentItem === 'ectocannon'){
                 turnAmount = 225;
