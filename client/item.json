@@ -398,7 +398,6 @@
         "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.18;self.stats.critChance += 0.05;}",
         "enchantments":["smashing"],
         "defense":21,
-        "damageReduction":0.15,
         "rarity":2,
         "description":"<span style='color: #33ee33'>+18% melee damage.</span><br><span style='color: #33ee33'>+5% melee critical strike chance.</span>"
     },
@@ -408,7 +407,6 @@
         "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.27;self.stats.critChance += 0.08;}",
         "enchantments":["smashing"],
         "defense":34,
-        "damageReduction":0.35,
         "rarity":2,
         "description":"<span style='color: #33ee33'>+27% melee damage.</span><br><span style='color: #33ee33'>+8% melee critical strike chance.</span>"
     },
@@ -418,7 +416,7 @@
         "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.45;self.stats.critChance += 0.15;}",
         "enchantments":["smashing"],
         "defense":52,
-        "damageReduction":0.5,
+        "damageReduction":0.05,
         "rarity":3,
         "description":"<span style='color: #33ee33'>+45% melee damage.</span><br><span style='color: #33ee33'>+15% melee critical strike chance.</span>"
     },
@@ -509,7 +507,6 @@
         "event":"damageIncrease += 0.11;self.stats.critChance += 0.08;",
         "enchantments":["smashing"],
         "defense":17,
-        "damageReduction":0.05,
         "rarity":2,
         "description":"<span style='color: #33ee33'>+11% damage.</span><br><span style='color: #33ee33'>+8% critical strike chance.</span>"
     },
@@ -519,7 +516,6 @@
         "event":"damageIncrease += 0.2;self.stats.critChance += 0.15;",
         "enchantments":["smashing"],
         "defense":28,
-        "damageReduction":0.15,
         "rarity":3,
         "description":"<span style='color: #33ee33'>+20% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span>"
     },
@@ -814,7 +810,7 @@
         "event":"damageIncrease += 0.25;self.stats.critChance += 0.25;self.stats.debuffs.push({id:'electrified',time:60});",
         "enchantments":["smashing","burst"],
         "defense":31,
-        "damageReduction":0.1,
+        "damageReduction":0.15,
         "rarity":4,
         "description":"<span style='color: #33ee33'>+25% damage.</span><br><span style='color: #33ee33'>+25% critical strike chance.</span><br>You inflict the electrified debuff for 3 seconds."
     },
