@@ -4017,6 +4017,7 @@ Player = function(param){
             self.healCost = 50;
             self.manaRegen = 1;
             self.maxMana = 200;
+            self.displayName = self.username;
             self.ability = {
                 ability:'base',
                 attackPattern:[0],
