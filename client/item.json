@@ -787,7 +787,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","cost"],
-        "damage":750,
+        "damage":650,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":12,
@@ -823,5 +823,26 @@
         "damageReduction":0.3,
         "rarity":4,
         "description":"<span style='color: #33ee33'>+30% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span><br>You gain immunity to the electrified debuff."
+    },
+    "flamethrower":{
+        "name":"Flamethrower",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'burning',time:60});",
+        "enchantments":["speed","burst","range"],
+        "damage":55,
+        "damageType":"ranged",
+        "critChance":0.5,
+        "useTime":4,
+        "rarity":4,
+        "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
+    },
+    "lightningboots":{
+        "name":"Lightning Boots",
+        "equip":"offhand",
+        "event":"self.maxSpeed += 10;self.offhandPassive = 'lightning';",
+        "enchantments":["smashing"],
+        "defense":12,
+        "rarity":4,
+        "description":"<span style='color: #33ee33'>+10 movement speed.</span><br>Four lightning shards spin around you and protect you."
     }
 }

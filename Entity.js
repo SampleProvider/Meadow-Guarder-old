@@ -2272,6 +2272,7 @@ Player = function(param){
     self.useTime = 5;
     self.passive = '';
     self.weaponPassive = '';
+    self.offhandPassive = '';
     self.regenTick = 0;
     self.ability = {
         ability:'base',
@@ -4010,6 +4011,7 @@ Player = function(param){
             }
             self.passive = '';
             self.weaponPassive = '';
+            self.offhandPassive = '';
             self.textColor = '#ffff00';
             self.hpMax = 100 + self.level * 10;
             self.attackCost = 10;
@@ -4294,6 +4296,12 @@ Player = function(param){
             self.shootProjectile(self.id,'Player',self.direction,self.direction,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
             self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
             self.shootProjectile(self.id,'Player',self.direction + 240,self.direction + 240,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
+        }
+        if(self.offhandPassive === 'lightning'){
+            self.shootProjectile(self.id,'Player',0 * Math.PI / 180,0 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',90 * Math.PI / 180,90 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',180 * Math.PI / 180,180 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
+            self.shootProjectile(self.id,'Player',270 * Math.PI / 180,270 * Math.PI / 180,'lightningSpit',128,function(t){return 0},0,self.stats,'spinAroundPlayer');
         }
     }
     self.updateAttack = function(){
@@ -4687,6 +4695,14 @@ Player = function(param){
                             if(isFireMap){
                                 for(var j = 0;j < 8;j++){
                                     self.shootProjectile(self.id,'Player',j * 45,j * 45,'seed',32,function(t){return 0},3,self.stats,'playerSeed');
+                                }
+                            }
+                            break;
+                        case "flamethrowerAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 32;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction - 5 + Math.random() * 10,self.direction - 5 + Math.random() * 10,'flame',48 + 8 * j,function(t){return 25},0,self.stats,'followPlayerStationary');
+                                    self.shootProjectile(self.id,'Player',self.direction - 5 + Math.random() * 10,self.direction - 5 + Math.random() * 10,'flame',48 + 8 * j,function(t){return 25},0,self.stats,'followPlayerStationary');
                                 }
                             }
                             break;
