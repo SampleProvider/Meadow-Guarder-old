@@ -8383,7 +8383,7 @@ Pet = function(param){
                     if(Player.list[self.parent]){
                         addToChat('style="color:#ff0000">',Player.list[self.parent].displayName + ' let their arms get torn off by The Devourer of Gods.');
                     }
-                    },113000);
+                },113000);
                 setTimeout(function(){
                     addToChat('style="color:#ff00ff">','Echdeath has enraged.');
                     if(Player.list[self.parent]){

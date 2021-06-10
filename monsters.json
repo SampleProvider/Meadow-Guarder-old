@@ -203,7 +203,7 @@
         "width":48,
         "height":40,
         "attackState":"passiveCherryBomb",
-        "hp":35,
+        "hp":50,
         "stats":{
             "attack":500,
             "defense":0,
