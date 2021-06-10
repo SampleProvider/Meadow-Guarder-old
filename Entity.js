@@ -6185,6 +6185,12 @@ Player.onConnect = function(socket,username){
             player.toRemove = false;
             player.dazed = 0;
             player.debuffs = [];
+            if(player.map === 'The Arena'){
+                player.teleport(2080,1760,'The Village');
+            }
+            else if(player.map === 'Lilypad Temple Room 1'){
+                player.teleport(2080,1760,'The Village');
+            }
             //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
             var newTiles = [];
             for(var i in tiles){
