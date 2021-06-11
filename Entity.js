@@ -8241,7 +8241,7 @@ Monster = function(param){
                 }
                 if(self.reload % 35 < 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                     self.stats.defense += 50;
-                    self.maxSpeed = self.oldMoveSpeed + 15;
+                    self.maxSpeed = self.oldMoveSpeed + 50;
                 }
                 else if(ENV.Difficulty === 'Expert'){
                     self.stats.defense = self.oldStats.defense;
