@@ -848,7 +848,7 @@
         "damageType":"ranged",
         "critChance":0.5,
         "useTime":4,
-        "rarity":4,
+        "rarity":8,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "lightningboots":{
@@ -866,7 +866,7 @@
         "event":"damageIncrease += 0.15;self.stats.critChance += 0.50;",
         "enchantments":["smashing"],
         "defense":3,
-        "rarity":4,
+        "rarity":8,
         "description":"<span style='color: #33ee33'>+50% critical strike chance.</span><br><span style='color: #33ee33'>+15% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "heroshield":{
@@ -876,7 +876,7 @@
         "enchantments":["smashing"],
         "defense":72,
         "damageReduction":0.2,
-        "rarity":5,
+        "rarity":8,
         "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+35% melee critical strike chance.</span><br>A hero's shield.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "ringofaspirit":{
@@ -884,7 +884,7 @@
         "equip":"offhand",
         "event":"self.stats.xp += 1.5;self.offhandPassive = 'spiritProtect';",
         "enchantments":["smashing"],
-        "rarity":5,
+        "rarity":8,
         "description":"<span style='color: #33ee33'>+150% increased xp gain.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     }
 }

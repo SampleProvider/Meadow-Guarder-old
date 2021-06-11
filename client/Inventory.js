@@ -273,6 +273,9 @@ Inventory = function(socket,server){
                 if(item.rarity === 7){
                     button.style.color = '#00ff00';
                 }
+                if(item.rarity === 8){
+                    button.style.color = '#00ff90';
+                }
             }
             if(item.description){
                 enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
@@ -419,6 +422,9 @@ Inventory = function(socket,server){
                 }
                 if(item.rarity === 7){
                     button.style.color = '#00ff00';
+                }
+                if(item.rarity === 8){
+                    button.style.color = '#00ff90';
                 }
             }
             if(item.description){
