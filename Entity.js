@@ -8154,6 +8154,7 @@ Monster = function(param){
                 if(self.damaged){
                     self.attackState = "moveLightningTurret";
                 }
+                self.animation = 0;
                 break;
             case "moveLightningTurret":
                 self.reload = 0;
