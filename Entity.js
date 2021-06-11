@@ -1435,6 +1435,32 @@ Actor = function(param){
                     self.x = self.startX;
                     self.y = self.startY;
                 }
+                if(self.debuffs[i].id === 'shocked'){
+                    var damage = 25;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'electricity',
+                            value:'-' + damage,
+                        });
+                    }
+                    stats.defense -= 150;
+                    self.spdX = 0;
+                    self.spdY = 0;
+                    self.x = self.startX;
+                    self.y = self.startY;
+                }
                 if(self.hp < 1 && self.monsterType !== 'plantera'){
                     self.willBeDead = true;
                 }
@@ -5793,7 +5819,7 @@ Player = function(param){
                 for(var i in self.ability.secondPattern){
                     self.addToEventQ(self.ability.ability + 'Second',self.ability.secondPattern[i]);
                 }
-                self.doPassive();
+                //self.doPassive();
                 self.mana -= self.secondCost;
                 self.manaRefresh = self.useTime;
             }
@@ -5801,7 +5827,7 @@ Player = function(param){
                 for(var i in self.ability.secondPattern){
                     self.addToEventQ(self.ability.ability + 'Second',self.ability.secondPattern[i]);
                 }
-                self.doPassive();
+                //self.doPassive();
                 self.cooldown = self.useTime;
             }
         }

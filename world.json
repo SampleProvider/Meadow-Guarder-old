@@ -27,6 +27,9 @@
         ],
         "Lilypad Temple Room 1": [
             "lightningTurret","lightningRammer"
+        ],
+        "The Outskirts": [
+            "sandBird"
         ]
     }
 }

@@ -1329,6 +1329,10 @@ var Monster = function(initPack){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 2,11,13,self.x - 44,self.y - 52,88,104);
         }
+        if(self.monsterType === 'sandBird'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 3,11,13,self.x - 22,self.y - 32,44,52);
+        }
         if(self.monsterType === 'blueBall'){
             ctx0.translate(self.x,self.y);
             ctx0.rotate(self.animation * 45 * Math.PI / 180);

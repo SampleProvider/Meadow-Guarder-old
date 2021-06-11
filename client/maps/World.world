@@ -53,8 +53,15 @@
             "fileName": "The Graveyard.tmx",
             "height": 800,
             "width": 800,
-            "x": -0,
+            "x": 0,
             "y": -1600
+        },
+        {
+            "fileName": "The Outskirts.tmx",
+            "height": 800,
+            "width": 800,
+            "x": -800,
+            "y": 0
         }
     ],
     "onlyShowAdjacentMaps": false,
