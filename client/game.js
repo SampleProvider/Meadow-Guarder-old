@@ -1291,6 +1291,8 @@ var Monster = function(initPack){
     self.type = initPack.type;
     self.animation = initPack.animation;
     self.direction = initPack.direction;
+    self.width = initPack.width;
+    self.height = initPack.height;
     self.moveNumber = 4;
     self.updated = true;
     if(self.monsterType === 'lightningLizard'){
@@ -1993,6 +1995,12 @@ socket.on('update',function(data){
                     if(data.monster[i].canCollide !== undefined){
                         Monster.list[data.monster[i].id].canCollide = data.monster[i].canCollide;
                     }
+                    if(data.monster[i].width !== undefined){
+                        Monster.list[data.monster[i].id].width = data.monster[i].width;
+                    }
+                    if(data.monster[i].height !== undefined){
+                        Monster.list[data.monster[i].id].height = data.monster[i].height;
+                    }
                     Monster.list[data.monster[i].id].updated = true;
                 }
                 else{
@@ -2392,10 +2400,14 @@ setInterval(function(){
         entities.push(Player.list[i]);
     }
     for(var i in Projectile.list){
-        entities.push(Projectile.list[i]);
+        if(Projectile.list[i].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
+            entities.push(Projectile.list[i]);
+        }
     }
     for(var i in Monster.list){
-        entities.push(Monster.list[i]);
+        if(Monster.list[i].x + Monster.list[i].width / 2 + cameraX > 0 && Monster.list[i].x - Monster.list[i].width / 2 + cameraX < window.innerWidth && Monster.list[i].y + Monster.list[i].height / 2 + cameraY > 0 && Monster.list[i].y - Monster.list[i].height / 2 + cameraY < window.innerHeight){
+            entities.push(Monster.list[i]);
+        }
     }
     for(var i in Npc.list){
         entities.push(Npc.list[i]);

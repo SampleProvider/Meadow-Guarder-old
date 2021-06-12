@@ -8333,6 +8333,14 @@ Monster = function(param){
             pack.canCollide = self.canCollide;
             lastSelf.canCollide = self.canCollide;
         }
+        if(lastSelf.width !== self.width){
+            pack.width = self.width;
+            lastSelf.width = self.width;
+        }
+        if(lastSelf.height !== self.height){
+            pack.height = self.height;
+            lastSelf.height = self.height;
+        }
         return pack;
     }
     self.getInitPack = function(){
