@@ -4929,7 +4929,7 @@ Player = function(param){
                             break;
                         case "bookoffrostAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'frostBullet',32,function(t){return 10},30,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'frostBullet',0,function(t){return 10},30,self.stats,'bounceOffCollisions');
                             }
                             break;
                         case "waterbook2Attack":
