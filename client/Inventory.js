@@ -268,7 +268,7 @@ Inventory = function(socket,server){
                     button.style.color = '#ff0000';
                 }
                 if(item.rarity === 6){
-                    button.style.color = '#000099';
+                    button.style.color = '#0000aa';
                 }
                 if(item.rarity === 7){
                     button.style.color = '#00ff00';
@@ -418,7 +418,7 @@ Inventory = function(socket,server){
                     button.style.color = '#ff0000';
                 }
                 if(item.rarity === 6){
-                    button.style.color = '#000099';
+                    button.style.color = '#0000aa';
                 }
                 if(item.rarity === 7){
                     button.style.color = '#00ff00';
