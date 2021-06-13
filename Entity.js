@@ -1282,7 +1282,7 @@ Actor = function(param){
         self.followingEntity = pt;
     }
     self.doDebuffs = function(){
-        if(self.invincible){
+        if(self.invincible || self.type === 'Pet'){
             return;
         }
         self.debuffTimer += 1;
@@ -8378,8 +8378,8 @@ Pet = function(param){
     self.height = 28;
     self.mana = 0;
     self.manaMax = 200;
-    self.hp = 100000;
-    self.hpMax = 100000;
+    self.hp = 1000;
+    self.hpMax = 1000;
     self.stats = {
         attack:0,
         defense:0,
