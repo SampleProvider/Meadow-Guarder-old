@@ -96,8 +96,8 @@
         }
     },
     "frostBullet":{
-        "width":44,
-        "height":44,
+        "width":20,
+        "height":20,
         "stats":{
             "attack":1,
             "defense":1,

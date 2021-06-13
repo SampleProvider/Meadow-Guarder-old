@@ -8635,6 +8635,9 @@ Projectile = function(param){
     if(param.projectilePattern === 'playerSeed'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'bounceOffCollisions'){
+        console.log(self.x,self.y)
+    }
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){

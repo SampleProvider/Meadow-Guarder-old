@@ -1219,6 +1219,9 @@ var Projectile = function(initPack){
         if(self.projectileType === 'stoneArrow'){
             ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
         }
+        if(self.projectileType === 'frostBullet'){
+            ctx0.drawImage(Img[self.projectileType],-22,-22,44,44);
+        }
         else if(self.projectileType === 'unholytrident'){
             ctx0.rotate(45 * Math.PI / 180);
             ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
