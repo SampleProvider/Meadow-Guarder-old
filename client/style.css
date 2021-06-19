@@ -1205,6 +1205,7 @@ audio {
     width: 300px;
     background: none;
     border: none;
+    cursor: crosshair;
 }
 .notification {
     position: static;

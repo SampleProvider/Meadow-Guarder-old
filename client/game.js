@@ -2348,7 +2348,7 @@ socket.on('closeCraft',function(data){
     }
 });
 socket.on('notification',function(data){
-    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5">' + data + '</div>';
+    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">' + data + '</div>';
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
         if(notifications.length > 5){
