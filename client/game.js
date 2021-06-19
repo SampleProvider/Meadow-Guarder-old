@@ -2743,29 +2743,31 @@ document.onkeydown = function(event){
         if(!talking){
             socket.emit('keyPress',{inputId:key,state:true});
         }
-        if(key === 'i' && event.ctrlKey){
-            disableAllMenu();
-            document.getElementById('debugScreen').style.display = 'inline-block';
-            document.getElementById('window').style.display = 'inline-block';
-            state.isHidden = false;
-        }
-        else if(key === 'i'){
-            disableAllMenu();
-            document.getElementById('inventoryScreen').style.display = 'inline-block';
-            document.getElementById('window').style.display = 'inline-block';
-            state.isHidden = false;
-        }
-        else if(key === 'm'){
-            disableAllMenu();
-            document.getElementById('worldMap').style.display = 'inline-block';
-            document.getElementById('window').style.display = 'inline-block';
-            state.isHidden = false;
-        }
-        else if(key === 'r'){
-            disableAllMenu();
-            document.getElementById('waypointScreen').style.display = 'inline-block';
-            document.getElementById('window').style.display = 'inline-block';
-            state.isHidden = false;
+        if(selfId){
+            if(key === 'i' && event.ctrlKey){
+                disableAllMenu();
+                document.getElementById('debugScreen').style.display = 'inline-block';
+                document.getElementById('window').style.display = 'inline-block';
+                state.isHidden = false;
+            }
+            else if(key === 'i'){
+                disableAllMenu();
+                document.getElementById('inventoryScreen').style.display = 'inline-block';
+                document.getElementById('window').style.display = 'inline-block';
+                state.isHidden = false;
+            }
+            else if(key === 'm'){
+                disableAllMenu();
+                document.getElementById('worldMap').style.display = 'inline-block';
+                document.getElementById('window').style.display = 'inline-block';
+                state.isHidden = false;
+            }
+            else if(key === 'r' && !event.ctrlKey){
+                disableAllMenu();
+                document.getElementById('waypointScreen').style.display = 'inline-block';
+                document.getElementById('window').style.display = 'inline-block';
+                state.isHidden = false;
+            }
         }
     }
     keys[key] = true;
