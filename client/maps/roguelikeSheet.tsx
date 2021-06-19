@@ -17,6 +17,8 @@
   <terrain name="Clay Wall" tile="1322"/>
   <terrain name="Old Clay Wall" tile="1315"/>
   <terrain name="Sand Wall" tile="1308"/>
+  <terrain name="Green Tree" tile="5007"/>
+  <terrain name="Red Tree" tile="5265"/>
  </terraintypes>
  <tile id="0" terrain="1,1,1,1"/>
  <tile id="1" terrain="1,1,1,1"/>
@@ -191,6 +193,15 @@
  <tile id="1985" terrain=",2,,"/>
  <tile id="1986" terrain="2,2,,"/>
  <tile id="1987" terrain="2,,,"/>
+ <tile id="4920" terrain=",,,15"/>
+ <tile id="4921" terrain=",,15,15"/>
+ <tile id="4922" terrain=",,15,"/>
+ <tile id="5006" terrain=",15,,15"/>
+ <tile id="5007" terrain="15,15,15,15"/>
+ <tile id="5008" terrain="15,,15,"/>
+ <tile id="5092" terrain=",15,,"/>
+ <tile id="5093" terrain="15,15,,"/>
+ <tile id="5094" terrain="15,,,"/>
  <tile id="5130" terrain="14,14,14,"/>
  <tile id="5131" terrain="14,14,,14"/>
  <tile id="5132" terrain="13,13,13,"/>
@@ -199,6 +210,9 @@
  <tile id="5135" terrain="12,12,,12"/>
  <tile id="5136" terrain="11,11,11,"/>
  <tile id="5137" terrain="11,11,,11"/>
+ <tile id="5178" terrain=",,,16"/>
+ <tile id="5179" terrain=",,16,16"/>
+ <tile id="5180" terrain=",,16,"/>
  <tile id="5216" terrain="14,,14,14"/>
  <tile id="5217" terrain=",14,14,14"/>
  <tile id="5218" terrain="13,,13,13"/>
@@ -207,6 +221,12 @@
  <tile id="5221" terrain=",12,12,12"/>
  <tile id="5222" terrain="11,,11,11"/>
  <tile id="5223" terrain=",11,11,11"/>
+ <tile id="5264" terrain=",16,,16"/>
+ <tile id="5265" terrain="16,16,16,16"/>
+ <tile id="5266" terrain="16,,16,"/>
+ <tile id="5350" terrain=",16,,"/>
+ <tile id="5351" terrain="16,16,,"/>
+ <tile id="5352" terrain="16,,,"/>
  <wangsets>
   <wangset name="Path" tile="868">
    <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>

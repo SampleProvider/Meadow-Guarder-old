@@ -97,7 +97,7 @@
     },
     "redBird":{
         "spawnChance":0.1,
-        "xpGain":25,
+        "xpGain":50,
         "width":88,
         "height":80,
         "attackState":"passiveRedBird",
@@ -180,7 +180,7 @@
     },
     "snowBall":{
         "spawnChance":0.15,
-        "xpGain":5,
+        "xpGain":3,
         "width":44,
         "height":44,
         "attackState":"passiveBall",
@@ -276,13 +276,12 @@
         "itemDrops":{
             "bronzekey":0.1,
             "silverkey":0.05,
-            "goldenkey":0.01,
-            "developerkey":0.01
+            "goldenkey":0.01
         }
     },
     "lightningLizard":{
         "spawnChance":0.1,
-        "xpGain":25,
+        "xpGain":100,
         "width":96,
         "height":64,
         "attackState":"passiveLightningLizard",
@@ -323,7 +322,7 @@
     },
     "lostSpirit":{
         "spawnChance":0.1,
-        "xpGain":15,
+        "xpGain":10,
         "width":40,
         "height":84,
         "attackState":"passiveLostSpirit",
@@ -346,7 +345,7 @@
     },
     "possessedSpirit":{
         "spawnChance":0.1,
-        "xpGain":50,
+        "xpGain":200,
         "width":80,
         "height":168,
         "attackState":"passivePossessedSpirit",
@@ -374,7 +373,7 @@
     },
     "plantera":{
         "spawnChance":0.1,
-        "xpGain":50,
+        "xpGain":250,
         "width":104,
         "height":104,
         "attackState":"passivePlantera",

@@ -300,6 +300,7 @@ s = {
 var monsterData = require('./monsters.json');
 var worldData = require('./world.json');
 var projectileData = require('./client/projectiles.json');
+var npcData = require('./npc.json');
 
 var spawnMonster = function(spawner,spawnId){
     if(ENV.Peaceful){
@@ -490,7 +491,7 @@ Entity.getFrameUpdateData = function(){
         Projectile.list[i].update();
     }
     for(var i in Npc.list){
-        if(playerMap[Npc.list[i].map] > 0){
+        if(playerMap[Npc.list[i].map] > 0 && Npc.list[i].type !== 'StaticNpc'){
             Npc.list[i].update();
             if(playerMap[Npc.list[i].map] > 0){
                 if(!pack[Npc.list[i].map]){
@@ -1056,8 +1057,10 @@ Actor = function(param){
                             for(var j = 0;j < size;j++){
                                 var x = dx * 64 + i * 64;
                                 var y = dy * 64 + j * 64;
-                                if(Collision.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
-                                    grid.setWalkableAt(i,j,false);
+                                if(Collision.list[self.map][x / 64]){
+                                    if(Collision.list[self.map][x / 64][y / 64]){
+                                        grid.setWalkableAt(i,j,false);
+                                    }
                                 }
                                 if(Collision2.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
                                     grid.setWalkableAt(i,j,false);
@@ -1617,6 +1620,7 @@ Actor = function(param){
                         }
                     }
                     Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
+                    Player.list[pt.parent].coins += self.xpGain * Math.round((10 + Math.random() * 10));
                 }
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
@@ -1644,6 +1648,7 @@ Actor = function(param){
                     }
                 }
                 pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
+                pt.coins += Math.round(self.xpGain * (10 + Math.random() * 10));
             }
             self.willBeDead = true;
             self.toRemove = true;
@@ -1717,19 +1722,27 @@ Actor = function(param){
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         
-        if(self.spdX < 0){
-            if(self.spdY < 0){
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
+        if(self.spdX <= 0){
+            if(self.spdY <= 0){
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
                 if(Collision2.list[fourthTile]){
                     self.doCollision(Collision2.list[fourthTile]);
@@ -1757,17 +1770,25 @@ Actor = function(param){
                 }
             }
             else if(self.spdY > 0){
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
                 }
                 if(Collision2.list[thirdTile]){
                     self.doCollision(Collision2.list[thirdTile]);
@@ -1792,60 +1813,30 @@ Actor = function(param){
                 }
                 if(Collision3.list[secondTile]){
                     self.doCollision(Collision3.list[secondTile]);
-                }
-            }
-            else{
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
-                }
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
-                }
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
-                }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
                 }
             }
         }
         else if(self.spdX > 0){
-            if(self.spdY < 0){
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
+            if(self.spdY <= 0){
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
                 if(Collision2.list[secondTile]){
                     self.doCollision(Collision2.list[secondTile]);
@@ -1873,17 +1864,25 @@ Actor = function(param){
                 }
             }
             else if(self.spdY > 0){
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
                 }
                 if(Collision2.list[firstTile]){
                     self.doCollision(Collision2.list[firstTile]);
@@ -1909,125 +1908,6 @@ Actor = function(param){
                 if(Collision3.list[fourthTile]){
                     self.doCollision(Collision3.list[fourthTile]);
                 }
-            }
-            else{
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
-                }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
-                }
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
-                }
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-            }
-        }
-        else{
-            if(self.spdY < 0){
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
-                }
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
-                }
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
-                }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-            }
-            else if(self.spdY > 0){
-                if(Collision.list[thirdTile]){
-                    self.doCollision(Collision.list[thirdTile]);
-                }
-                if(Collision.list[fourthTile]){
-                    self.doCollision(Collision.list[fourthTile]);
-                }
-                if(Collision.list[firstTile]){
-                    self.doCollision(Collision.list[firstTile]);
-                }
-                if(Collision.list[secondTile]){
-                    self.doCollision(Collision.list[secondTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-            }
-            else{
-                
             }
         }
 
@@ -2044,17 +1924,25 @@ Actor = function(param){
             self.doSlowDown(SlowDown.list[fourthTile]);
         }
 
-        if(Collision.list[firstTile]){
-            self.justCollided = true;
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                self.justCollided = true;
+            }
         }
-        if(Collision.list[secondTile]){
-            self.justCollided = true;
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                self.justCollided = true;
+            }
         }
-        if(Collision.list[thirdTile]){
-            self.justCollided = true;
+        if(Collision.list[self.map][Math.round((self.x) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                self.justCollided = true;
+            }
         }
-        if(Collision.list[fourthTile]){
-            self.justCollided = true;
+        if(Collision.list[self.map][Math.round((self.x) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                self.justCollided = true;
+            }
         }
         if(Collision2.list[firstTile]){
             self.justCollided = true;
@@ -2143,6 +2031,91 @@ Actor = function(param){
         }
     }
     self.doCollision = function(collision){
+        if(self.isColliding(collision)){
+            var x = self.x;
+            self.x = self.lastX;
+            if(self.isColliding(collision)){
+                self.x = x;
+                self.y = self.lastY;
+                if(self.isColliding(collision)){
+                    self.x = self.lastX;
+                    self.y = self.lastY;
+                }
+                else{
+                    
+                }
+            }
+            else{
+                
+            }
+        }
+    }
+    self.doNormalCollision = function(map,x,y){
+        var collision = {
+            map:map,
+            x:x * 64,
+            y:y * 64,
+        };
+        if(Collision.list[map][x][y] === 1){
+            collision.width = 64;
+            collision.height = 64;
+            collision.x += 32;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 2){
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 3){
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 4){
+            collision.width = 32;
+            collision.height = 64;
+            collision.x += 16;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 5){
+            collision.width = 32;
+            collision.height = 64;
+            collision.x += 48;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 6){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 7){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 16;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 8){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 48;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 9){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 48;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 10){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 16;
+            collision.y += 16;
+        }
         if(self.isColliding(collision)){
             var x = self.x;
             self.x = self.lastX;
@@ -2328,6 +2301,16 @@ Player = function(param){
             }
         }
     }
+    if(param.param.materials !== undefined){
+        for(var i in param.param.materials){
+            if(self.inventory.materials[i] === undefined){
+                
+            }
+            else{
+                self.inventory.materials[i] = param.param.materials[i];
+            }
+        }
+    }
     if(param.param.xp !== undefined){
         self.xp = param.param.xp;
     }
@@ -2373,9 +2356,18 @@ Player = function(param){
         debuffs:[],
     }
     self.oldStats = JSON.parse(JSON.stringify(self.stats));
+    self.coins = 0;
+    self.devCoins = 0;
+    if(param.param.coins !== undefined){
+        self.coins = param.param.coins;
+    }
+    if(param.param.devCoins !== undefined){
+        self.devCoins = param.param.devCoins;
+    }
     self.currentItem = '';
     var lastSelf = {};
     self.update = function(){
+        self.tick += 1;
         self.startX = self.x;
         self.startY = self.y;
         self.mapChange += 1;
@@ -2487,7 +2479,7 @@ Player = function(param){
     self.updateQuest = function(){
         for(var i in Npc.list){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Missing Person';
@@ -2496,6 +2488,18 @@ Player = function(param){
                         message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescue Mark for me?',
                         response1:'Sure, I can rescue Mark.',
                         response2:'No way. That isn\'t my problem.',
+                    });
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === true){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Missing Person';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescue Mark for me?',
+                        response1:'Sure, I can rescue Mark.',
+                        response2:'No way. That isn\'t my problem.',
+                        response3:'I\'ve done this before, can I buy some wood?',
                     });
                 }
                 else if(self.questStage === 4 && self.quest === 'Missing Person'){
@@ -2517,11 +2521,7 @@ Player = function(param){
                     });
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] This NPC doesn\'t want to talk to you right now.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
                 }
                 self.keyPress.second = false;
             }
@@ -2569,11 +2569,7 @@ Player = function(param){
                     });
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] This NPC doesn\'t want to talk to you right now.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
                 }
                 self.keyPress.second = false;
             }
@@ -2597,6 +2593,7 @@ Player = function(param){
                         message:'You talked to John and defeated the monsters in that weird tower right?',
                         response1:'Yeah!',
                         response2:'No.',
+                        response3:'Can I buy some fish?',
                     });
                 }
                 else if(self.questStage === 6 && self.quest === 'Clear River'){
@@ -2618,11 +2615,7 @@ Player = function(param){
                     });
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] This NPC doesn\'t want to talk to you right now.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
                 }
                 self.keyPress.second = false;
             }
@@ -2639,11 +2632,7 @@ Player = function(param){
                     });
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] This NPC doesn\'t want to talk to you right now.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
                 }
                 self.keyPress.second = false;
             }
@@ -2689,11 +2678,7 @@ Player = function(param){
                     });
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] This NPC doesn\'t want to talk to you right now.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
                 }
                 self.keyPress.second = false;
             }
@@ -2738,11 +2723,44 @@ Player = function(param){
                     });
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] This NPC doesn\'t want to talk to you right now.',
-                        debug:false,
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'anvil' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.questStats["Plantera"] === true){
+                    self.inventory.craftItems = Npc.list[i].crafts;
+                    socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
+                }
+                else{
+                    socket.emit('notification','[!] Defeat Plantera before using the Anvil.');
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'blacksmith' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Blacksmith';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You seem strong enough to hold the skill of using an anvil. Do you want to buy some metals?',
+                        response1:'Sure! I would love to buy some metals!',
+                        response2:'No, thank you.',
                     });
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Blacksmith';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You are not strong enough to hold the skill of using an anvil. ',
+                        response1:'Ok.',
+                    });
+                }
+                else{
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
                 }
                 self.keyPress.second = false;
             }
@@ -2758,6 +2776,7 @@ Player = function(param){
                 questName:'Missing Person',
                 questDescription:'Find Mark who has been missing in the map The River. Test out some new quest mechanics.',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
@@ -2771,6 +2790,25 @@ Player = function(param){
             socket.emit('dialougeLine',{
                 state:'remove',
             });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 3 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            for(var i in Npc.list){
+                if(Npc.list[i].entityId === 'bob'){
+                    self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                    socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
+                }
+            }
             self.currentResponse = 0;
         }
         if(self.questInfo.started === true && self.questStage === 2 && self.questInfo.quest === 'Missing Person'){
@@ -2872,6 +2910,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(1000 * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Weird Tower'){
@@ -2933,6 +2972,7 @@ Player = function(param){
                 questName:'Weird Tower',
                 questDescription:'Investigate a weird house in the map The River. Defeat Monsters to save The Village.',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.questInfo.started === true && self.questStage === 5 && self.questInfo.quest === 'Weird Tower'){
@@ -3201,6 +3241,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(2000 * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Clear River'){
@@ -3232,6 +3273,22 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
+        if(self.currentResponse === 3 && self.questStage === 2 && self.questInfo.quest === 'Clear River'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            for(var i in Npc.list){
+                if(Npc.list[i].entityId === 'fisherman'){
+                    self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                    socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
+                }
+            }
+        }
         if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Clear River'){
             self.questInfo.started = false;
             self.questStage += 1;
@@ -3243,6 +3300,7 @@ Player = function(param){
                 questName:'Clear River',
                 questDescription:'Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class="UI-link-light" href="https://github.com/maitian352/Meadow-Guarder/issues">here</a>.',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.questInfo.started === true && self.questStage === 4 && self.questInfo.quest === 'Clear River'){
@@ -3315,6 +3373,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(5000 * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.quest === 'Enchanter'){
@@ -3501,6 +3560,7 @@ Player = function(param){
                 questName:'Clear Tower',
                 questDescription:'Defeat all the monsters in the weird tower in the map The River.',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Clear Tower'){
@@ -3738,6 +3798,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(25000 * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Clear Tower'){
             self.quest = false;
@@ -3776,6 +3837,7 @@ Player = function(param){
                 questName:'Lightning Lizard Boss',
                 questDescription:'Defeat the Lightning Lizard.',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Lightning Lizard Boss'){
@@ -4018,6 +4080,44 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(250000 * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
+        }
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Blacksmith'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Blacksmith'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            for(var i in Npc.list){
+                if(Npc.list[i].entityId === 'blacksmith'){
+                    self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                    socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
+                }
+            }
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Blacksmith'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
         }
     }
     self.updateStats = function(){
@@ -4141,6 +4241,9 @@ Player = function(param){
                 }
                 addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
                 self.inventory.refreshRender();
+                socket.emit('closeShop');
+                socket.emit('closeCraft');
+                self.questInfo.quest = false;
             }
             Player.getAllInitPack(socket);
             for(var i in Player.list){
@@ -5961,6 +6064,14 @@ Player = function(param){
             pack.direction = self.direction;
             lastSelf.direction = self.direction;
         }
+        if(lastSelf.coins !== self.coins){
+            pack.coins = self.coins;
+            lastSelf.coins = self.coins;
+        }
+        if(lastSelf.devCoins !== self.devCoins){
+            pack.devCoins = self.devCoins;
+            lastSelf.devCoins = self.devCoins;
+        }
         for(var i in self.stats){
             if(lastSelf.stats){
                 if(lastSelf.stats[i]){
@@ -6008,7 +6119,10 @@ Player = function(param){
         pack.useTime = self.useTime;
         pack.mapWidth = self.mapWidth;
         pack.mapHeight = self.mapHeight;
+        pack.moveSpeed = self.moveSpeed;
         pack.currentItem = self.currentItem;
+        pack.coins = self.coins;
+        pack.devCoins = self.devCoins;
         pack.stats = self.stats;
         pack.type = self.type;
         return pack;
@@ -6243,11 +6357,7 @@ Player.onConnect = function(socket,username){
         });
         socket.on('waypoint',function(data){
             if(player.quest !== false){
-                socket.emit('addToChat',{
-                    style:'style="color: #ff0000">',
-                    message:'[!] You cannot use waypoints in a quest.',
-                    debug:false,
-                });
+                socket.emit('notification','[!] You cannot use waypoints in a quest.');
             }
             else if(data === 'The Village'){
                 player.teleport(2080,1760,data);
@@ -6257,11 +6367,7 @@ Player.onConnect = function(socket,username){
                     player.teleport(1376,1632,data);
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.');
                 }
             }
             else if(data === 'The Graveyard'){
@@ -6269,11 +6375,7 @@ Player.onConnect = function(socket,username){
                     player.teleport(2048,1376,data);
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] Defeat Possessed Spirit to gain access to this waypoint.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] Defeat Possessed Spirit to gain access to this waypoint.');
                 }
             }
             else if(data === 'The Arena'){
@@ -6284,19 +6386,19 @@ Player.onConnect = function(socket,username){
                     player.teleport(256,3168,data);
                 }
                 else{
-                    socket.emit('addToChat',{
-                        style:'style="color: #ff0000">',
-                        message:'[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.',
-                        debug:false,
-                    });
+                    socket.emit('notification','[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.');
+                }
+            }
+            else if(data === 'Deserted Town'){
+                if(player.questStats['Plantera']){
+                    player.teleport(2144,2144,data);
+                }
+                else{
+                    socket.emit('notification','[!] Defeat Plantera to gain access to this waypoint.');
                 }
             }
             else{
-                socket.emit('addToChat',{
-                    style:'style="color: #ff0000">',
-                    message:'[!] Stop hacking.',
-                    debug:false,
-                });
+                socket.emit('notification','Stop hacking.');
             }
         });
 
@@ -6597,6 +6699,28 @@ Npc = function(param){
 	return self;
 }
 Npc.list = {};
+
+StaticNpc = function(param){
+    var self = Actor(param);
+	self.id = Math.random();
+    self.map = param.map;
+    self.entityId = param.entityId;
+    self.name = param.name;
+    self.type = 'StaticNpc';
+    self.info = param.info;
+    self.update = function(){
+
+    }
+	self.getUpdatePack = function(){
+        return {};
+	}
+	self.getInitPack = function(){
+        return {};
+	}
+	Npc.list[self.id] = self;
+	return self;
+}
+
 
 
 Monster = function(param){
@@ -6974,6 +7098,8 @@ Monster = function(param){
                         if(self.target.mapChange > 10){
                             self.stats.defense += 2000000;
                             self.stats.attack += 2000000;
+                            self.oldStats.defense += 2000000;
+                            self.oldStats.attack += 2000000;
                             self.attackState = 'explodeCherryBomb';
                             Sound({
                                 type:'cherryBomb',
@@ -8486,6 +8612,25 @@ Pet = function(param){
                 self.mana -= 100;
             }
         }
+        if(self.reload >= 10 && Player.list[self.parent].isDead === false){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(closestMonster){
+                self.direction = Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180;
+                self.shootProjectile(self.parent,'Player',self.direction,self.direction,'earthBullet',0,function(t){return 25;},0,Player.list[self.parent].stats);
+                self.reload = 0;
+            }
+        }
+        self.reload += 1;
     }
 	self.getUpdatePack = function(){
         var pack = {};
@@ -9180,131 +9325,399 @@ Projectile = function(param){
         var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
-        if(Collision.list[firstTile]){
-            if(self.isColliding(Collision.list[firstTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision.list[firstTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision.list[firstTile])){
-                            self.x = self.lastX;
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                var collision = {
+                    map:self.map,
+                    x:Math.round((self.x - 64) / 64) * 64,
+                    y:Math.round((self.y - 64) / 64) * 64,
+                };
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 1){
+                    collision.width = 64;
+                    collision.height = 64;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 2){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 3){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 4){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 16;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 5){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 48;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 6){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 7){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 8){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 9){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 10){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 16;
+                }
+                if(self.isColliding(collision)){
+                    if(param.projectilePattern === 'bounceOffCollisions'){
+                        var x = self.x;
+                        self.x = self.lastX;
+                        if(self.isColliding(collision)){
+                            self.x = x;
                             self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            if(self.isColliding(collision)){
+                                self.x = self.lastX;
+                                self.y = self.lastY;
+                                self.spdX = -self.spdX;
+                                self.x += self.spdX;
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
+                            else{
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
                         }
                         else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
                         }
                     }
                     else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
+                        self.toRemove = true;
+                        self.updateNextFrame = false;
                     }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
                 }
             }
         }
-        if(Collision.list[secondTile]){
-            if(self.isColliding(Collision.list[secondTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision.list[secondTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision.list[secondTile])){
-                            self.x = self.lastX;
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                var collision = {
+                    map:self.map,
+                    x:Math.round((self.x - 64) / 64) * 64,
+                    y:Math.round((self.y) / 64) * 64,
+                };
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 1){
+                    collision.width = 64;
+                    collision.height = 64;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 2){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 3){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 4){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 16;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 5){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 48;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 6){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 7){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 8){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 9){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 10){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 16;
+                }
+                if(self.isColliding(collision)){
+                    if(param.projectilePattern === 'bounceOffCollisions'){
+                        var x = self.x;
+                        self.x = self.lastX;
+                        if(self.isColliding(collision)){
+                            self.x = x;
                             self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            if(self.isColliding(collision)){
+                                self.x = self.lastX;
+                                self.y = self.lastY;
+                                self.spdX = -self.spdX;
+                                self.x += self.spdX;
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
+                            else{
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
                         }
                         else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
                         }
                     }
                     else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
+                        self.toRemove = true;
+                        self.updateNextFrame = false;
                     }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
                 }
             }
         }
-        if(Collision.list[thirdTile]){
-            if(self.isColliding(Collision.list[thirdTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision.list[thirdTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision.list[thirdTile])){
-                            self.x = self.lastX;
+        if(Collision.list[self.map][Math.round((self.x) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                var collision = {
+                    map:self.map,
+                    x:Math.round((self.x) / 64) * 64,
+                    y:Math.round((self.y - 64) / 64) * 64,
+                };
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 1){
+                    collision.width = 64;
+                    collision.height = 64;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 2){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 3){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 4){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 16;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 5){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 48;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 6){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 7){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 8){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 9){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 10){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 16;
+                }
+                if(self.isColliding(collision)){
+                    if(param.projectilePattern === 'bounceOffCollisions'){
+                        var x = self.x;
+                        self.x = self.lastX;
+                        if(self.isColliding(collision)){
+                            self.x = x;
                             self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            if(self.isColliding(collision)){
+                                self.x = self.lastX;
+                                self.y = self.lastY;
+                                self.spdX = -self.spdX;
+                                self.x += self.spdX;
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
+                            else{
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
                         }
                         else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
                         }
                     }
                     else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
+                        self.toRemove = true;
+                        self.updateNextFrame = false;
                     }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
                 }
             }
         }
-        if(Collision.list[fourthTile]){
-            if(self.isColliding(Collision.list[fourthTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision.list[fourthTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision.list[fourthTile])){
-                            self.x = self.lastX;
+        if(Collision.list[self.map][Math.round((self.x) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                var collision = {
+                    map:self.map,
+                    x:Math.round((self.x) / 64) * 64,
+                    y:Math.round((self.y) / 64) * 64,
+                };
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 1){
+                    collision.width = 64;
+                    collision.height = 64;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 2){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 3){
+                    collision.width = 64;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 4){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 16;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 5){
+                    collision.width = 32;
+                    collision.height = 64;
+                    collision.x += 48;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 6){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 32;
+                    collision.y += 32;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 7){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 8){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 48;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 9){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 48;
+                    collision.y += 16;
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 10){
+                    collision.width = 32;
+                    collision.height = 32;
+                    collision.x += 16;
+                    collision.y += 16;
+                }
+                if(self.isColliding(collision)){
+                    if(param.projectilePattern === 'bounceOffCollisions'){
+                        var x = self.x;
+                        self.x = self.lastX;
+                        if(self.isColliding(collision)){
+                            self.x = x;
                             self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            if(self.isColliding(collision)){
+                                self.x = self.lastX;
+                                self.y = self.lastY;
+                                self.spdX = -self.spdX;
+                                self.x += self.spdX;
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
+                            else{
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
                         }
                         else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
                         }
                     }
                     else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
+                        self.toRemove = true;
+                        self.updateNextFrame = false;
                     }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
                 }
             }
         }
@@ -9646,7 +10059,7 @@ Sound = function(param){
 Sound.list = {};
 
 var renderLayer = function(layer,data,loadedMap){
-    if(layer.type !== "tilelayer" && layer.visible === false){
+    if(layer.type !== "tilelayer" || layer.visible === true){
         return;
     }
     var size = data.tilewidth;
@@ -9661,49 +10074,60 @@ var renderLayer = function(layer,data,loadedMap){
             var map = loadedMap;
             tile = data.tilesets[0];
             tile_idx -= 1;
+            if(Collision.list[loadedMap]){
+                if(Collision.list[loadedMap][x / size]){
+                    if(Collision.list[loadedMap][x / size][y / size] === undefined){
+                        Collision.list[loadedMap][x / size][y / size] = 0;
+                    }
+                }
+                else{
+                    Collision.list[loadedMap][x / size] = [];
+                    Collision.list[loadedMap][x / size][y / size] = 0;
+                }
+            }
+            else{
+                Collision.list[loadedMap] = [];
+                Collision.list[loadedMap][x / size] = [];
+                Collision.list[loadedMap][x / size][y / size] = 0;
+            }
             if(tile_idx === 2121){
                 var collision = new Collision({
-                    x:x + size / 2,
-                    y:y + size / 2,
-                    width:size,
-                    height:size,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:1,
                 });
             }
             if(tile_idx === 2122){
                 var collision = new Collision({
-                    x:x + size / 2,
-                    y:y + 3 * size / 4,
-                    width:size,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:2,
                 });
             }
             if(tile_idx === 2123){
                 var collision = new Collision({
-                    x:x + size / 2,
-                    y:y + size / 4,
-                    width:size,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:3,
                 });
             }
             if(tile_idx === 2124){
                 var collision = new Collision({
-                    x:x + size / 4,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:4,
                 });
             }
             if(tile_idx === 2125){
                 var collision = new Collision({
-                    x:x + 3 * size / 4,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:5,
                 });
             }
             if(tile_idx === 2126){
@@ -9716,7 +10140,7 @@ var renderLayer = function(layer,data,loadedMap){
                 });
             }
             if(tile_idx === 2127){
-                var collision = new Collision({
+                var collision2 = new Collision2({
                     x:x + size / 2,
                     y:y + 3 * size / 4,
                     width:size,
@@ -9753,47 +10177,42 @@ var renderLayer = function(layer,data,loadedMap){
             }
             if(tile_idx === 2207){
                 var collision = new Collision({
-                    x:x + size / 2,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:6,
                 });
             }
             if(tile_idx === 2208){
                 var collision = new Collision({
-                    x:x + size / 4,
-                    y:y + 3 * size / 4,
-                    width:size / 2,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:7,
                 });
             }
             if(tile_idx === 2209){
                 var collision = new Collision({
-                    x:x + 3 * size / 4,
-                    y:y + 3 * size / 4,
-                    width:size / 2,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:8,
                 });
             }
             if(tile_idx === 2210){
                 var collision = new Collision({
-                    x:x + 3 * size / 4,
-                    y:y + size / 4,
-                    width:size / 2,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:9,
                 });
             }
             if(tile_idx === 2211){
                 var collision = new Collision({
-                    x:x + size / 4,
-                    y:y + size / 4,
-                    width:size / 2,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:10,
                 });
             }
             if(tile_idx === 2212){
@@ -9847,8 +10266,6 @@ var renderLayer = function(layer,data,loadedMap){
                 var id = "";
                 var idj = 0;
                 var name = "";
-                var namej = 0;
-                var info = "";
                 for(var j = 0;j < layer.name.length;j++){
                     if(layer.name[j] === ':'){
                         if(type === ""){
@@ -9860,15 +10277,12 @@ var renderLayer = function(layer,data,loadedMap){
                             idj = j;
                         }
                         else if(name === ""){
-                            name = layer.name.substr(idj + 1,j - idj - 1);
-                            namej = j;
-                        }
-                        else if(info === ""){
-                            info = layer.name.substr(namej + 1,layer.name.length - namej - 2);
+                            name = layer.name.substr(idj + 1,layer.name.length - idj - 2);
                         }
                     }
                 }
                 if(type === 'Npc'){
+                    var info = npcData[id];
                     var npc = new Npc({
                         x:x + size / 2,
                         y:y + size / 2,
@@ -9876,8 +10290,42 @@ var renderLayer = function(layer,data,loadedMap){
                         entityId:id,
                         map:map,
                         moveSpeed:5,
-                        info:JSON.parse(info),
+                        info:info,
                     });
+                    if(npcData[id]){
+                        if(npcData[id].shop !== false){
+                            npc.shop = npcData[id].shop;
+                        }
+                        if(npcData[id].shopPrices !== false){
+                            npc.shopPrices = npcData[id].shopPrices;
+                        }
+                        if(npcData[id].quote !== false){
+                            npc.quote = npcData[id].quote;
+                        }
+                    }
+                }
+                if(type === 'StaticNpc'){
+                    var info = npcData[id];
+                    var npc = new StaticNpc({
+                        x:x + size / 2,
+                        y:y + size / 2,
+                        name:name,
+                        entityId:id,
+                        map:map,
+                        moveSpeed:0,
+                        info:info,
+                    });
+                    if(npcData[id]){
+                        if(npcData[id].shop !== false){
+                            npc.shop = npcData[id].shop;
+                        }
+                        if(npcData[id].crafts !== false){
+                            npc.crafts = npcData[id].crafts;
+                        }
+                        if(npcData[id].quote !== false){
+                            npc.quote = npcData[id].quote;
+                        }
+                    }
                 }
                 if(type === 'WayPoint'){
                     var waypoint = new WayPoint({

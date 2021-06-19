@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '023f7a';
+var VERSION = '0.2.4';
 
 var DEBUG = false;
 
@@ -122,11 +122,11 @@ socket.on('signInResponse',function(data){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
             for(var j in waypoints){
                 if(waypoints[j].map === world[i].fileName.slice(0,-4)){
-                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 64),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 64),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 96),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
                     worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
                     worldMap.fillStyle = '#ff7700';
                     worldMap.textAlign = "center";
-                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 112));
+                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 + 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 80));
                 }
             }
         }
@@ -413,8 +413,6 @@ var renderLayers = function(json,name){
                         var id = "";
                         var idj = 0;
                         var npcName = "";
-                        var namej = 0;
-                        var info = "";
                         for(var k = 0;k < json.layers[i].name.length;k++){
                             if(json.layers[i].name[k] === ':'){
                                 if(type === ""){
@@ -426,11 +424,7 @@ var renderLayers = function(json,name){
                                     idj = k;
                                 }
                                 else if(npcName === ""){
-                                    npcName = json.layers[i].name.substr(idj + 1,k - idj - 1);
-                                    namej = k;
-                                }
-                                else if(info === ""){
-                                    info = json.layers[i].name.substr(namej + 1,json.layers[i].name.length - namej - 2);
+                                    npcName = json.layers[i].name.substr(idj + 1,json.layers[i].name.length - idj - 2);
                                 }
                             }
                         }
@@ -726,8 +720,8 @@ var state = {
     isHidden:true,
     xDiff:0,
     yDiff:0,
-    x:50,
-    y:50,
+    x:0,
+    y:0,
 };
 
 // hehe: http://youmightnotneedjquery.com/
@@ -753,7 +747,7 @@ function clampX(n){
     return Math.min(Math.max(n,0),window.innerWidth - 900);
 }
 function clampY(n){
-    return Math.min(Math.max(n,0),window.innerHeight - 45);
+    return Math.min(Math.max(n,-14),window.innerHeight - 14);
 }
 function onMouseMove(e){
     if(state.isDragging){
@@ -816,6 +810,7 @@ var inventory = new Inventory(socket,false);
 socket.on('updateInventory',function(pack){
     inventory.items = pack.items;
     inventory.currentEquip = pack.currentEquip;
+    inventory.materials = pack.materials;
     inventory.refreshRender();
 });
 
@@ -866,6 +861,9 @@ document.getElementById('arenaWaypoint').onclick = function(){
 }
 document.getElementById('lilypad2Waypoint').onclick = function(){
     socket.emit('waypoint','Lilypad Temple Room 1');
+}
+document.getElementById('desertedTownWaypoint').onclick = function(){
+    socket.emit('waypoint','Deserted Town');
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
@@ -1023,6 +1021,9 @@ var Player = function(initPack){
     self.animation = initPack.animation;
     self.animationDirection = initPack.animationDirection;
     self.currentItem = initPack.currentItem;
+    self.coins = initPack.coins;
+    self.devCoins = initPack.devCoins;
+    self.materials = initPack.materials;
     self.stats = initPack.stats;
     self.type = initPack.type;
     self.moveNumber = 4;
@@ -1166,12 +1167,16 @@ var Player = function(initPack){
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
         document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You have ' + Math.round(self.stats.damageReduction * 100) + '% damage reduction.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
+        document.getElementById('devcoinDiv').innerHTML = self.devCoins;
+        document.getElementById('goldcoinDiv').innerHTML = Math.floor(self.coins / 10000);
+        document.getElementById('silvercoinDiv').innerHTML = Math.floor(self.coins / 100) % 100;
+        document.getElementById('bronzecoinDiv').innerHTML = self.coins % 100;
     }
     self.drawLight = function(){
         if(self.id !== selfId){
             return;
         }
-        if(self.map !== "Cave"){
+        if(self.map !== "Lilypad Temple Room 1"){
             return;
         }
         var grd = ctx1.createRadialGradient(self.x,self.y,50,self.x,self.y,500);
@@ -1478,6 +1483,9 @@ var Monster = function(initPack){
 }
 Monster.list = {};
 var Npc = function(initPack){
+    if(initPack.type === 'StaticNpc' || initPack.type === undefined){
+        return;
+    }
     var self = {};
     self.id = initPack.id;
     self.x = initPack.x;
@@ -1907,6 +1915,12 @@ socket.on('update',function(data){
                     if(data.player[i].currentItem !== undefined){
                         Player.list[data.player[i].id].currentItem = data.player[i].currentItem;
                     }
+                    if(data.player[i].coins !== undefined){
+                        Player.list[data.player[i].id].coins = data.player[i].coins;
+                    }
+                    if(data.player[i].devCoins !== undefined){
+                        Player.list[data.player[i].id].devCoins = data.player[i].devCoins;
+                    }
                     Player.list[data.player[i].id].updated = true;
                 }
                 else{
@@ -2261,7 +2275,7 @@ socket.on('toggleSelect',function(data){
     inventory.refreshRender();
 });
 socket.on('updateLeaderboard',function(data){
-    document.getElementById('leaderboardScreen').innerHTML = '<div style="font-size:18px;">Leaderboards update every five minutes.</div><br>';
+    document.getElementById('leaderboardScreen').innerHTML = '<div class="window-body">Leaderboards</div><div style="font-size:18px;">Leaderboards update every five minutes.</div><br>';
     var j = 1;
     for(var i in data){
         if(data[i].level === 0){
@@ -2300,6 +2314,48 @@ socket.on('removeSameTiles',function(data){
         }
     }
     tempMap[data.map] = Object.create(newMap);
+});
+socket.on('openShop',function(data){
+    disableAllMenu();
+    document.getElementById('shopScreen').style.display = 'inline-block';
+    document.getElementById('window').style.display = 'inline-block';
+    document.getElementById('shopHeader').innerHTML = data.name + '\'s shop<div id="shopDescription" class="UI-display-light"></div>';
+    document.getElementById('shopDescription').innerHTML = '"' + data.quote + '"';
+    state.isHidden = false;
+    inventory.shopItems = data.inventory;
+    inventory.refreshRender();
+});
+socket.on('closeShop',function(data){
+    if(document.getElementById('shopScreen').style.display === 'inline-block'){
+        disableAllMenu();
+        document.getElementById('inventoryScreen').style.display = 'inline-block';
+    }
+});
+socket.on('openCraft',function(data){
+    disableAllMenu();
+    document.getElementById('craftScreen').style.display = 'inline-block';
+    document.getElementById('window').style.display = 'inline-block';
+    document.getElementById('craftHeader').innerHTML = data.name + '<div id="craftDescription" class="UI-display-light"></div>';
+    document.getElementById('craftDescription').innerHTML = '"' + data.quote + '"';
+    state.isHidden = false;
+    inventory.craftItems = data.crafts;
+    inventory.refreshRender();
+});
+socket.on('closeCraft',function(data){
+    if(document.getElementById('craftScreen').style.display === 'inline-block'){
+        disableAllMenu();
+        document.getElementById('inventoryScreen').style.display = 'inline-block';
+    }
+});
+socket.on('notification',function(data){
+    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5">' + data + '</div>';
+    var notifications = document.getElementsByClassName('notification');
+    for(var i = 0;i < notifications.length;i++){
+        if(notifications.length > 5){
+            notifications[i].remove();
+            i -= 1;
+        }
+    }
 });
 
 startQuest = function(){
@@ -2355,22 +2411,38 @@ setInterval(function(){
     map1.clearRect(0,0,WIDTH,HEIGHT);
     cameraX = WIDTH / 2 - Player.list[selfId].x;
     cameraY = HEIGHT / 2 - Player.list[selfId].y;
-    if(Player.list[selfId].mapWidth > window.innerWidth){
+    var mouseCameraX = mouseX / 8;
+    var mouseCameraY = mouseY / 8;
+    if(mouseCameraX > 128){
+        mouseCameraX = 128;
+    }
+    if(mouseCameraX < -128){
+        mouseCameraX = -128;
+    }
+    if(mouseCameraY > 128){
+        mouseCameraY = 128;
+    }
+    if(mouseCameraY < -128){
+        mouseCameraY = -128;
+    }
+    cameraX -= mouseCameraX;
+    cameraY -= mouseCameraY;
+    //if(Player.list[selfId].mapWidth > window.innerWidth){
         if(cameraX > 0){
             cameraX = 0;
         }
         if(cameraX < WIDTH - Player.list[selfId].mapWidth){
             cameraX = WIDTH - Player.list[selfId].mapWidth;
         }
-    }
-    if(Player.list[selfId].mapHeight > window.innerHeight){
+    //}
+    //if(Player.list[selfId].mapHeight > window.innerHeight){
         if(cameraY > 0){
             cameraY = 0;
         }
         if(cameraY < HEIGHT - Player.list[selfId].mapHeight){
             cameraY = HEIGHT - Player.list[selfId].mapHeight;
         }
-    }
+    //}
     MGHC1();
 
     map0.save();
@@ -2587,11 +2659,11 @@ setInterval(function(){
             worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
             for(var j in waypoints){
                 if(waypoints[j].map === world[i].fileName.slice(0,-4)){
-                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 64),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 64),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 96),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
                     worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
                     worldMap.fillStyle = '#ff7700';
                     worldMap.textAlign = "center";
-                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 112));
+                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 + 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 80));
                 }
             }
         }
@@ -2605,6 +2677,21 @@ setInterval(function(){
     }
     MGHC();
 },1000/80);
+setInterval(function(){
+    var notifications = document.getElementsByClassName('notification');
+    for(var i = 0;i < notifications.length;i++){
+        if(notifications.length > 5){
+            notifications[i].remove();
+            i -= 1;
+        }
+        else{
+            notifications[i].style.opacity -= 0.05;
+            if(notifications[i].style.opacity <= 0){
+                notifications[i].remove();
+            }
+        }
+    }
+},100);
 var updateRespawn = function(){
     if(spectatorDiv.style.display === 'none'){
         return;
@@ -2659,6 +2746,24 @@ document.onkeydown = function(event){
         if(key === 'i' && event.ctrlKey){
             disableAllMenu();
             document.getElementById('debugScreen').style.display = 'inline-block';
+            document.getElementById('window').style.display = 'inline-block';
+            state.isHidden = false;
+        }
+        else if(key === 'i'){
+            disableAllMenu();
+            document.getElementById('inventoryScreen').style.display = 'inline-block';
+            document.getElementById('window').style.display = 'inline-block';
+            state.isHidden = false;
+        }
+        else if(key === 'm'){
+            disableAllMenu();
+            document.getElementById('worldMap').style.display = 'inline-block';
+            document.getElementById('window').style.display = 'inline-block';
+            state.isHidden = false;
+        }
+        else if(key === 'r'){
+            disableAllMenu();
+            document.getElementById('waypointScreen').style.display = 'inline-block';
             document.getElementById('window').style.display = 'inline-block';
             state.isHidden = false;
         }
@@ -2751,11 +2856,11 @@ window.addEventListener('wheel',function(event){
         worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
         for(var j in waypoints){
             if(waypoints[j].map === world[i].fileName.slice(0,-4)){
-                worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 64),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 64),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 96),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
                 worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
                 worldMap.fillStyle = '#ff7700';
                 worldMap.textAlign = "center";
-                worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 112));
+                worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 + 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 80));
             }
         }
     }
@@ -2770,16 +2875,16 @@ document.onmousemove = function(event){
     if(Player.list[selfId]){
         var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
         var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
-        if(event.clientY <= 0){
+        if(event.clientY < 0){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
-        if(event.clientY >= window.innerHeight){
+        if(event.clientY > window.innerHeight){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
-        if(event.clientX <= 0){
+        if(event.clientX < 0){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
-        if(event.clientX >= window.innerWidth){
+        if(event.clientX > window.innerWidth){
             socket.emit('keyPress',{inputId:'releaseAll'});
         }
         mouseX = event.clientX - WIDTH / 2;

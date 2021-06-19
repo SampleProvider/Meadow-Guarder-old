@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -60,6 +59,50 @@
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							Do you want to contribute to this game? Then click <a class="UI-link-light" href="https://forms.gle/ScdgYv1CqezcGb1r9" target="_blank">here</a>!
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							6/19/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Added Deserted Town map.
+							<br>
+							Added the Anvil.
+							<br>
+							Added Wally the Blacksmith.
+							<br>
+							Added notifications.
+							<br>
+							Added coins.
+							<br>
+							Added materials.
+							<br>
+							Added NPC shops.
+							<br>
+							Added crafting.
+							<br>
+							Added camera slide.
+							<br>
+							Released 0.2.4.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							6/17/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Added The Outskirts map.
+							<br>
+							Added Sand Bird.
+							<br>
+							Added Lightning Arrow.
+							<br>
+							Improved server collisions.
 						</div>
 					</div>
 				</div>
@@ -640,7 +683,7 @@
 		<div id="bossbar"></div>
 		<div id="window" class="window" onmouseover="mouseUp(event)">
 			<div class="window-bar">
-				<div>Window Title</div>
+				<div>Menu</div>
 				<span class="window-close">
 					<svg viewport="0 0 12 12" version="1.1" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
 						<line x1="2" y1="12"
@@ -654,17 +697,28 @@
 					</svg>
 				</span>
 			</div>
-			<div class="window-body">
-				Window body
-			</div>
 			<div id="windowMain">
 				<div id="inventoryScreen" class="menuDisplay">
+					<div class="window-body">
+						Inventory
+					</div>
+					<div id="coinsDiv">
+						<image class="coinImage" src="/client/img/bronzecoin.png"></image><div id="bronzecoinDiv" class="coinDiv">0</div>
+						<image class="coinImage" src="/client/img/silvercoin.png"></image><div id="silvercoinDiv" class="coinDiv">0</div>
+						<image class="coinImage" src="/client/img/goldcoin.png"></image><div id="goldcoinDiv" class="coinDiv">0</div>
+						<image class="coinImage" src="/client/img/devcoin.png"></image><div id="devcoinDiv" class="coinDiv">0</div>
+						<div id="coinDiv">Coins:</div>
+					</div>
 					<div id="currentEquip"></div>
+					<div id="materials"></div>
 					<div id="inventoryItem"></div>
 					<div id="currentEquipHeader" class="UI-display-light">Equipped Items</div>
 					<div id="inventoryItemHeader" class="UI-display-light">Items</div>
 				</div>
 				<div id="debugScreen" class="menuDisplay" style="display: none;">
+					<div class="window-body">
+						Debug
+					</div>
 					<div id="debug-text" class="UI-text-light">
 						<div>Debug info will show up here.</div>
 					</div>
@@ -673,10 +727,16 @@
 						<input id="debug-input" class="UI-input-light" type="text"></input>
 					</form>
 				</div>
-				<div id="statScreen" class="menuText menuDisplay" style="display: none;">
+				<div id="statScreen" class="menuDisplay" style="display: none;">
+					<div class="window-body">
+						Statistics
+					</div>
 					<div id="stat-text" class="UI-text-light"></div>
 				</div>
 				<div id="questScreen" class="menuDisplay" style="display: none;">
+					<div class="window-body">
+						Quests
+					</div>
 					<div id="questName"></div>
 					<div id="questDescription"></div>
 					<button id="questStart" onclick="startQuest()">Start Quest</button>
@@ -685,6 +745,9 @@
 					<canvas id="worldMapCanvas" onmousedown="mapMouseDown(event)" onmouseover="onMapMouseOver(true)" onmouseout="onMapMouseOver(false)"></canvas>
 				</div>
 				<div id="settingsScreen" class="menuDisplay" style="display: none;">
+					<div class="window-body">
+						Settings
+					</div>
 					<div id="settingsPlayer" class="UI-text-light">
 						<div id="settingsPlayerName"></div>
 						<canvas id="settingsPlayerDisplay"></canvas>
@@ -741,6 +804,30 @@
 							<div class="waypointDescription" style="font-size: 13px;text-align: center;">Teleports you into Lilypad Temple Room 1.</div>
 							<div class="waypointSelect">Teleport</div>
 						</div>
+						<div id="desertedTownWaypoint" class="waypoint">
+							<div class="waypointName">Deserted Town</div>
+							<br>
+							<div class="waypointDescription" style="font-size: 13px;text-align: center;">Teleports you into Deserted Town.</div>
+							<div class="waypointSelect">Teleport</div>
+						</div>
+					</div>
+				</div>
+				<div id="shopScreen" class="menuDisplay" style="display: none;">
+					<div class="window-body">
+						Shop
+					</div>
+					<div id="shopItem"></div>
+					<div id="shopHeader" class="UI-display-light">
+						<div id="shopDescription" class="UI-display-light"></div>
+					</div>
+				</div>
+				<div id="craftScreen" class="menuDisplay" style="display: none;">
+					<div class="window-body">
+						Crafting
+					</div>
+					<div id="craftItem"></div>
+					<div id="craftHeader" class="UI-display-light">
+						<div id="craftDescription" class="UI-display-light"></div>
 					</div>
 				</div>
 			</div>
@@ -787,6 +874,7 @@
 				<button id="signOut" class="UI-button-light" onclick="history.go(0)">Log Out</button>
 			</div>
 		</div>
+		<div id="notifications" class="UI-display-light"></div>
 		
 		<div id="interactMenu" class="UI-display-light" style="display:none;" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
 			<div id="interactMenuText" class="UI-text-light"></div>

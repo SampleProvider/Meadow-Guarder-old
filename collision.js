@@ -1,15 +1,16 @@
 
 
 Collision = function(param){
-    var self = Entity(param);
-    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
-    self.toRemove = false;
-    self.type = 'Collision';
-    var super_update = self.update;
-    self.update = function(){
-        super_update();
+    var self = {};
+    self.map = param.map;
+    self.x = param.x;
+    self.y = param.y;
+    if(Collision.list[self.map]){
+        if(Collision.list[self.map][Math.round(self.x / 64)]){
+            Collision.list[self.map][Math.round(self.x / 64)][Math.round(self.y / 64)] = param.type;
+        }
     }
-    Collision.list[self.id] = self;
+    //Collision.list[self.id] = self;
     return self;
 }
 

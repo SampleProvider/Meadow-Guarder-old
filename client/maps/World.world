@@ -62,6 +62,13 @@
             "width": 800,
             "x": -800,
             "y": 0
+        },
+        {
+            "fileName": "Deserted Town.tmx",
+            "height": 800,
+            "width": 800,
+            "x": -1600,
+            "y": 0
         }
     ],
     "onlyShowAdjacentMaps": false,

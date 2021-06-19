@@ -337,6 +337,69 @@ canvas {
     height: 500px;
     overflow-y: scroll;
     overflow-x: scroll;
+    border: 1px solid #000000;
+}
+#shopItem {
+    position: absolute;
+    left: 8px;
+    top: 65px;
+    width: 500px;
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    border: 1px solid #000000;
+}
+#shopHeader {
+    position: absolute;
+    left: 516px;
+    top: 65px;
+    width: 240px;
+    height: 500px;
+    border: none;
+    text-align: center;
+    font-size: 30px;
+}
+#shopDescription {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 240px;
+    height: 500px;
+    border: none;
+    text-align: center;
+    background: none;
+    font-size: 15px;
+}
+#craftItem {
+    position: absolute;
+    left: 8px;
+    top: 65px;
+    width: 500px;
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    border: 1px solid #000000;
+}
+#craftHeader {
+    position: absolute;
+    left: 516px;
+    top: 65px;
+    width: 240px;
+    height: 500px;
+    border: none;
+    text-align: center;
+    font-size: 30px;
+}
+#craftDescription {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 240px;
+    height: 500px;
+    border: none;
+    text-align: center;
+    background: none;
+    font-size: 15px;
 }
 #inventoryItemHeader {
     position: absolute;
@@ -359,10 +422,19 @@ canvas {
     position: absolute;
     left: 391px;
     top: 65px;
-    width: 375px;
-    height: 500px;
+    width: 367px;
+    height: 400px;
     overflow-y: scroll;
     overflow-x: scroll;
+    border: 1px solid #000000;
+}
+#materials {
+    position: absolute;
+    left: 391px;
+    top: 473px;
+    width: 367px;
+    height: 92px;
+    border: 1px solid #000000;
 }
 #inventoryExit {
     position: absolute;
@@ -380,15 +452,6 @@ canvas {
 }
 #inventoryExit:hover {
     background-color: #aa0000;
-}
-
-#questInventoryDiv {
-    top: 115px;
-    float: right;
-    user-select: none;
-    width: 100px;
-    height: 0px;
-    display: block;
 }
 
 #selfDisplay {
@@ -605,8 +668,49 @@ canvas {
 
 .window-body {
     position: absolute;
-    margin: 1em;
+    top: 8px;
+    margin-left: 1em;
+    color: #ffffff;
+}
+#coinsDiv {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 50%;
+    margin-left: 1em;
     margin-top: 8px;
+    color: #ffffff;
+    float: right;
+    height: 20px;
+    text-align: right;
+    transform: translate(-16px, 0);
+}
+#coinDiv {
+    position: relative;
+    top: 0px;
+    right: 8px;
+    color: #ffffff;
+    float: right;
+}
+.coinDiv {
+    position: relative;
+    top: 0px;
+    right: 8px;
+    padding-left: 8px;
+    color: #ffffff;
+    float: right;
+}
+.coinImage {
+    position: relative;
+    top: 4px;
+    right: 8px;
+    color: #ffffff;
+    float: right;
+}
+.coinShopImage {
+    position: static;
+    top: 4px;
+    right: 8px;
     color: #ffffff;
 }
 
@@ -1091,4 +1195,21 @@ audio {
     display: none;
     width: 50%;
     height: 30px;
+}
+
+#notifications {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    height: 316px;
+    width: 300px;
+    background: none;
+    border: none;
+}
+.notification {
+    position: static;
+    margin-top: 8px;
+    height: 45px;
+    width: 286px;
+    opacity: 1;
 }

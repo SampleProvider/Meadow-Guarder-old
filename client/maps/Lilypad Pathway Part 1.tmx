@@ -4,7 +4,7 @@
   <export target="Lilypad Pathway Part 1.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="roguelikeSheet.tsx"/>
- <layer id="1" name="Ground Terrarin" width="50" height="50">
+ <layer id="1" name="Ground Terrain" width="50" height="50">
   <data encoding="csv">
 1,1,1,1,90,2,1,1,1,1,2,90,2,2,2,2,1,1,1,1,1,90,1,90,1,1,1,90,2,1,90,1,90,2,2,1,1,2,2,1,1,1,90,90,1,90,2,2,90,1,
 90,1,2,1,90,1,90,90,1,90,2,90,2,90,1,2,2,2,1,1,90,90,1,90,90,90,1,2,90,1,2,90,90,90,90,1,2,2,90,1,2,2,90,2,90,2,2,2,1,90,
@@ -544,7 +544,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="12" name="Npc:hunter:Hunter:{&quot;randomWalk&quot;:&quot;wander&quot;,&quot;canChangeMap&quot;:false}:" width="50" height="50" visible="0">
+ <layer id="12" name="Npc:hunter:Hunter:" width="50" height="50" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
