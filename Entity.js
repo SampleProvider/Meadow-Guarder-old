@@ -2741,7 +2741,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'anvil' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.questStats["Plantera"] === true){
+                if(self.questStats["Lightning Lizard Boss"] === true){
                     self.inventory.craftItems = Npc.list[i].crafts;
                     socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
                 }
@@ -2761,7 +2761,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'blacksmith' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Lightning Lizard Boss"] === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Blacksmith';
@@ -2772,7 +2772,7 @@ Player = function(param){
                         response2:'No, thank you.',
                     });
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lightning Lizard Boss"] === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Blacksmith';
