@@ -1202,7 +1202,7 @@ audio {
 #notificationsHolder {
     position: absolute;
     right: 8px;
-    top: 8px;
+    top: 0px;
     height: 316px;
     width: 300px;
     background: none;
@@ -1223,7 +1223,7 @@ audio {
 .notification {
     position: static;
     margin-top: 8px;
-    height: 45px;
     width: 286px;
     opacity: 1;
+    overflow: auto;
 }

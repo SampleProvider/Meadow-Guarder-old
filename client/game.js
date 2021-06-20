@@ -2351,8 +2351,8 @@ socket.on('notification',function(data){
     document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5">' + data + '</div>';
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
-        if(notifications.length > 12){
-            notifications[i].remove();
+        if(notifications[i].offsetTop + notifications[i].offsetHeight > window.innerHeight - 16){
+            notifications[0].remove();
             i -= 1;
         }
     }
@@ -2680,8 +2680,8 @@ setInterval(function(){
 setInterval(function(){
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
-        if(notifications.length > 12){
-            notifications[i].remove();
+        if(notifications[i].offsetTop + notifications[i].offsetHeight > window.innerHeight - 16){
+            notifications[0].remove();
             i -= 1;
         }
         else{
