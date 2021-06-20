@@ -275,8 +275,7 @@
         "moveSpeed":15,
         "itemDrops":{
             "bronzekey":0.1,
-            "silverkey":0.05,
-            "goldenkey":0.01
+            "silverkey":0.05
         }
     },
     "lightningLizard":{

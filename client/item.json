@@ -860,6 +860,31 @@
         "rarity":4,
         "description":"<span style='color: #33ee33'>+10 movement speed.</span><br>Four lightning shards spin around you and protect you."
     },
+    "rubypresent":{
+        "name":"Ruby Present",
+        "equip":"consume",
+        "event":"var rubyItem = Math.random();if(rubyItem < 0.1){var rubyItemToGive = 'simplerubybow';}else if(rubyItem < 0.2){var rubyItemToGive = 'advancedrubybow';}else if(rubyItem < 0.3){var rubyItemToGive = 'simplerubysword';}else if(rubyItem < 0.4){var rubyItemToGive = 'advancedrubysword';}else if(rubyItem < 0.5){var rubyItemToGive = 'simplerubystaff';}else if(rubyItem < 0.6){var rubyItemToGive = 'advancedrubystaff';}else if(rubyItem < 0.7){var rubyItemToGive = 'rubyarmor';}else if(rubyItem < 0.733){var rubyItemToGive = 'rubyhelmet';}else if(rubyItem < 0.766){var rubyItemToGive = 'rubyhood';}else if(rubyItem < 0.8){var rubyItemToGive = 'rubyhat';}else if(rubyItem < 0.9){var rubyItemToGive = 'rubyboots';}else{var rubyItemToGive = 'rubyglove';}self.inventory.currentEquip['consume'] = {};self.inventory.addItem(rubyItemToGive,[]);",
+        "enchantments":[],
+        "description":"Gives you a random ruby item.",
+        "rarity":5
+    },
+    "rubyboots":{
+        "name":"Ruby Boots",
+        "equip":"offhand",
+        "event":"self.maxSpeed -= 10;",
+        "enchantments":["smashing"],
+        "defense":120,
+        "rarity":5,
+        "description":"<span style='color: #ff0000'>-10 movement speed.</span>"
+    },
+    "rubyglove":{
+        "name":"Ruby Glove",
+        "equip":"offhand",
+        "event":"self.useTime *= 0.85;self.attackCooldown *= 0.85;",
+        "enchantments":["smashing"],
+        "rarity":5,
+        "description":"<span style='color: #33ee33'>-15% attack speed.</span>"
+    },
     "thetoothoflightning":{
         "name":"The Tooth of Lightning",
         "equip":"offhand",

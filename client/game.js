@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '0.2.4';
+var VERSION = '024f1a';
 
 var DEBUG = false;
 
@@ -1176,7 +1176,7 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        if(self.map !== "Lilypad Temple Room 1"){
+        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave"){
             return;
         }
         var grd = ctx1.createRadialGradient(self.x,self.y,50,self.x,self.y,500);
@@ -2348,10 +2348,10 @@ socket.on('closeCraft',function(data){
     }
 });
 socket.on('notification',function(data){
-    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">' + data + '</div>';
+    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5">' + data + '</div>';
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
-        if(notifications.length > 5){
+        if(notifications.length > 12){
             notifications[i].remove();
             i -= 1;
         }
@@ -2427,22 +2427,22 @@ setInterval(function(){
     }
     cameraX -= mouseCameraX;
     cameraY -= mouseCameraY;
-    //if(Player.list[selfId].mapWidth > window.innerWidth){
+    if(Player.list[selfId].mapWidth > window.innerWidth){
         if(cameraX > 0){
             cameraX = 0;
         }
         if(cameraX < WIDTH - Player.list[selfId].mapWidth){
             cameraX = WIDTH - Player.list[selfId].mapWidth;
         }
-    //}
-    //if(Player.list[selfId].mapHeight > window.innerHeight){
+    }
+    if(Player.list[selfId].mapHeight > window.innerHeight){
         if(cameraY > 0){
             cameraY = 0;
         }
         if(cameraY < HEIGHT - Player.list[selfId].mapHeight){
             cameraY = HEIGHT - Player.list[selfId].mapHeight;
         }
-    //}
+    }
     MGHC1();
 
     map0.save();
@@ -2680,7 +2680,7 @@ setInterval(function(){
 setInterval(function(){
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
-        if(notifications.length > 5){
+        if(notifications.length > 12){
             notifications[i].remove();
             i -= 1;
         }

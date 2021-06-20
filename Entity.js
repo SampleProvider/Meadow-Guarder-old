@@ -121,6 +121,15 @@ var firableMap = function(map){
     if(map === 'The Village'){
         isFireMap = false;
     }
+    if(map === 'Deserted Town'){
+        isFireMap = false;
+    }
+    if(map === 'The Guarded Citadel'){
+        isFireMap = false;
+    }
+    if(map === 'Town Cave'){
+        isFireMap = true;
+    }
     if(map.includes('Lilypad')){
         isFireMap = true;
     }
@@ -1413,6 +1422,10 @@ Actor = function(param){
                     }
                 }
                 if(self.debuffs[i].id === 'frozen'){
+                    self.spdX = 0;
+                    self.spdY = 0;
+                    self.x = self.startX;
+                    self.y = self.startY;
                     var damage = 40;
                     var particleType = 'redDamage';
                     self.hp -= damage;
@@ -1433,12 +1446,12 @@ Actor = function(param){
                         });
                     }
                     stats.defense = 0;
+                }
+                if(self.debuffs[i].id === 'shocked'){
                     self.spdX = 0;
                     self.spdY = 0;
                     self.x = self.startX;
                     self.y = self.startY;
-                }
-                if(self.debuffs[i].id === 'shocked'){
                     var damage = 25;
                     var particleType = 'redDamage';
                     self.hp -= damage;
@@ -1459,10 +1472,6 @@ Actor = function(param){
                         });
                     }
                     stats.defense -= 150;
-                    self.spdX = 0;
-                    self.spdY = 0;
-                    self.x = self.startX;
-                    self.y = self.startY;
                 }
                 if(self.hp < 1 && self.monsterType !== 'plantera'){
                     self.willBeDead = true;
@@ -2219,6 +2228,7 @@ Player = function(param){
         "Lightning Lizard Boss":false,
         "Possessed Spirit":false,
         "Plantera":false,
+        "Lost Rubies":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -2428,6 +2438,9 @@ Player = function(param){
             if(self.willBeDead){
                 Player.spectate(socket);
                 addToChat('style="color: #ff0000">',self.displayName + ' died.');
+                if(self.quest !== false){
+                    socket.emit('notification','You failed the quest ' + self.quest + '.');
+                }
                 self.quest = false;
                 self.questInfo = {
                     quest:false,
@@ -2737,6 +2750,16 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'rubyforge' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.questStats["Lost Rubies"] === true){
+                    self.inventory.craftItems = Npc.list[i].crafts;
+                    socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
+                }
+                else{
+                    socket.emit('notification','[!] Complete the quest Lost Rubies to gain access to the Ruby Forge.');
+                }
+                self.keyPress.second = false;
+            }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'blacksmith' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === true){
                     self.questStage = 2;
@@ -2764,6 +2787,51 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Lost Rubies';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Hey, my friend Wally lost some rubies in the Town Cave the other day. Could you please find them and return it to me?',
+                        response1:'Sure! I can help you!',
+                        response2:'Nah, not today.',
+                    });
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Lost Rubies';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'My friend Wally lost some rubies in the Town Cave. I don\'t think you are strong enough to find them. Defeat a giant beast in the Forest to be worthy enough.',
+                        response1:'Ok.',
+                    });
+                }
+                else if(self.questStage === 5 && self.quest === 'Lost Rubies'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'If you don\'t know, the Town Cave is northwest of The Guarded Citadel.',
+                        response1:'*End conversation*',
+                    });
+                }
+                else if(self.questStage === 10 && self.quest === 'Lost Rubies'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Did you get Wally\'s rubies?',
+                        response1:'Yes I did!',
+                    });
+                }
+                else{
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
+                }
+                self.keyPress.second = false;
+            }
         }
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
             self.questInfo.started = false;
@@ -2776,7 +2844,6 @@ Player = function(param){
                 questName:'Missing Person',
                 questDescription:'Find Mark who has been missing in the map The River. Test out some new quest mechanics.',
             });
-            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
@@ -2820,6 +2887,7 @@ Player = function(param){
                 message:'I should talk with Bob.',
                 response1:'...',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Missing Person'){
             self.questStage += 1;
@@ -2895,6 +2963,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Missing Person'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -2910,7 +2979,6 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(1000 * self.stats.xp);
-            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Weird Tower'){
@@ -2972,7 +3040,6 @@ Player = function(param){
                 questName:'Weird Tower',
                 questDescription:'Investigate a weird house in the map The River. Defeat Monsters to save The Village.',
             });
-            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.questInfo.started === true && self.questStage === 5 && self.questInfo.quest === 'Weird Tower'){
@@ -2984,6 +3051,7 @@ Player = function(param){
                 message:'I should talk with John.',
                 response1:'...',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Weird Tower'){
             self.questStage += 1;
@@ -3157,7 +3225,7 @@ Player = function(param){
             }
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 14 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Weird Tower'){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'ask',
@@ -3166,7 +3234,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 14 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 2 && self.questStage === 14 && self.quest === 'Weird Tower'){
             self.questStage += 2;
             socket.emit('dialougeLine',{
                 state:'ask',
@@ -3176,7 +3244,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 3 && self.questStage === 14 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 3 && self.questStage === 14 && self.quest === 'Weird Tower'){
             self.questStage += 3;
             socket.emit('dialougeLine',{
                 state:'ask',
@@ -3185,7 +3253,8 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 15 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 1 && self.questStage === 15 && self.quest === 'Weird Tower'){
+            socket.emit('notification','You failed the quest ' + self.quest + '.');
             self.quest = false;
             self.questInfo = {
                 quest:false,
@@ -3199,7 +3268,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 16 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 1 && self.questStage === 16 && self.quest === 'Weird Tower'){
             self.questStage += 2;
             socket.emit('dialougeLine',{
                 state:'ask',
@@ -3208,7 +3277,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 16 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 2 && self.questStage === 16 && self.quest === 'Weird Tower'){
             self.questStage += 1;
             socket.emit('dialougeLine',{
                 state:'ask',
@@ -3217,7 +3286,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 17 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 1 && self.questStage === 17 && self.quest === 'Weird Tower'){
             self.questStage = 9;
             self.invincible = false;
             socket.emit('dialougeLine',{
@@ -3225,7 +3294,8 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 18 && self.questInfo.quest === 'Weird Tower'){
+        if(self.currentResponse === 1 && self.questStage === 18 && self.quest === 'Weird Tower'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3241,7 +3311,6 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(2000 * self.stats.xp);
-            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Clear River'){
@@ -3300,7 +3369,6 @@ Player = function(param){
                 questName:'Clear River',
                 questDescription:'Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class="UI-link-light" href="https://github.com/maitian352/Meadow-Guarder/issues">here</a>.',
             });
-            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.questInfo.started === true && self.questStage === 4 && self.questInfo.quest === 'Clear River'){
@@ -3312,6 +3380,7 @@ Player = function(param){
                 message:'I should talk with Fisherman.',
                 response1:'...',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Clear River'){
             self.questStage += 1;
@@ -3357,7 +3426,8 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 12 && self.questInfo.quest === 'Clear River'){
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Clear River'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3373,7 +3443,6 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(5000 * self.stats.xp);
-            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.quest === 'Enchanter'){
@@ -3560,7 +3629,6 @@ Player = function(param){
                 questName:'Clear Tower',
                 questDescription:'Defeat all the monsters in the weird tower in the map The River.',
             });
-            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Clear Tower'){
@@ -3582,6 +3650,7 @@ Player = function(param){
                 message:'I should talk with Joe.',
                 response1:'...',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Clear Tower'){
             self.questStage += 1;
@@ -3783,6 +3852,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Clear Tower'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3798,7 +3868,6 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(25000 * self.stats.xp);
-            socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Clear Tower'){
             self.quest = false;
@@ -3837,7 +3906,6 @@ Player = function(param){
                 questName:'Lightning Lizard Boss',
                 questDescription:'Defeat the Lightning Lizard.',
             });
-            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
             self.currentResponse = 0;
         }
         if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Lightning Lizard Boss'){
@@ -3859,6 +3927,7 @@ Player = function(param){
                 message:'I should talk with Hunter.',
                 response1:'...',
             });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
@@ -4065,6 +4134,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 15 && self.quest === 'Lightning Lizard Boss'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4118,6 +4188,123 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
+        }
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Lost Rubies'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Lost Rubies'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Lost Rubies',
+                questDescription:'Find some lost rubies in the Town Cave.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Lost Rubies'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 3 && self.questInfo.quest === 'Lost Rubies'){
+            self.quest = 'Lost Rubies';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with Sally.',
+                response1:'...',
+            });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Lost Rubies'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Lost Rubies'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 7 && self.quest === 'Lost Rubies' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Lost Rubies' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 8;
+                }
+            }
+        }
+        if(self.questStage === 8 && self.quest === 'Lost Rubies' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I found the rubies, I should return them to Sally.',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'Lost Rubies'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 11 && self.quest === 'Lost Rubies'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'You got the rubies? Here, let me give you a reward.',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Lost Rubies'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
+            var rubiesObtained = Math.round(5 + Math.random() * 10);
+            socket.emit('notification','You obtained ' + rubiesObtained + ' rubies.');
+            self.inventory.materials.ruby += rubiesObtained;
+            self.inventory.refreshRender();
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(125000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -6330,6 +6517,9 @@ Player.onConnect = function(socket,username){
             }
             else if(player.map === 'Lilypad Temple Room 1'){
                 player.teleport(2080,1760,'The Village');
+            }
+            else if(player.map === 'Town Cave'){
+                player.teleport(2144,2144,'Deserted Town');
             }
             //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
             var newTiles = [];
@@ -10669,6 +10859,8 @@ load("Tiny House");
 load("Lilypad Temple Room 0");
 load("Lilypad Temple Room 1");
 load("The Arena");
+load("The Guarded Citadel");
+load("Town Cave");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

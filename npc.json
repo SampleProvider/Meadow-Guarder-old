@@ -21,7 +21,13 @@
         "shop":false
     },
     "wizard":{
-        "name":"Fisherman",
+        "name":"Wizard",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false
+    },
+    "sally":{
+        "name":"Sally",
         "randomWalk":"wander",
         "canChangeMap":false,
         "shop":false
@@ -78,6 +84,10 @@
                 "enchantments":[]
             },
             {
+                "id":"gold",
+                "enchantments":[]
+            },
+            {
                 "id":"advancedgoldensword",
                 "enchantments":[]
             },
@@ -108,6 +118,7 @@
         ],
         "shopPrices":[
             1000,
+            10000,
             100000,
             100000,
             100000,
@@ -138,15 +149,15 @@
                     "enchantments":[]
                 },
                 {
+                    "id":"goldenkey",
+                    "enchantments":[]
+                },
+                {
                     "id":"brokenheroshield",
                     "enchantments":[]
                 },
                 {
                     "id":"developerkey",
-                    "enchantments":[]
-                },
-                {
-                    "id":"spkey",
                     "enchantments":[]
                 }
             ],
@@ -183,6 +194,16 @@
                 ],
                 [
                     {
+                        "id":"steel",
+                        "amount":10
+                    },
+                    {
+                        "id":"gold",
+                        "amount":125
+                    }
+                ],
+                [
+                    {
                         "id":"wood",
                         "amount":350
                     },
@@ -199,6 +220,93 @@
                     {
                         "id":"steel",
                         "amount":500
+                    },
+                    {
+                        "id":"gold",
+                        "amount":500
+                    }
+                ]
+            ]
+        },
+        "quote":"Use me to craft items out of wood and metal."
+    },
+    "rubyforge":{
+        "name":"Ruby Forge",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "crafts":{
+            "items":[
+                {
+                    "id":"advancedrubysword",
+                    "enchantments":[]
+                },
+                {
+                    "id":"advancedrubybow",
+                    "enchantments":[]
+                },
+                {
+                    "id":"advancedrubystaff",
+                    "enchantments":[]
+                },
+                {
+                    "id":"firecrystal",
+                    "enchantments":[]
+                },
+                {
+                    "id":"rubypresent",
+                    "enchantments":[]
+                },
+                {
+                    "id":"spkey",
+                    "enchantments":[]
+                }
+            ],
+            "materials":[
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"ruby",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"ruby",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"ruby",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"gold",
+                        "amount":10
+                    },
+                    {
+                        "id":"ruby",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"ruby",
+                        "amount":50
                     }
                 ],
                 [
@@ -209,10 +317,18 @@
                     {
                         "id":"steel",
                         "amount":10000
+                    },
+                    {
+                        "id":"gold",
+                        "amount":10000
+                    },
+                    {
+                        "id":"ruby",
+                        "amount":10000
                     }
                 ]
             ]
         },
-        "quote":"Use me to craft items out of wood and metal."
+        "quote":"Use me to craft items out of rubies."
     }
 }

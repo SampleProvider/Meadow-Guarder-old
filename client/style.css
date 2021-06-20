@@ -434,6 +434,8 @@ canvas {
     top: 473px;
     width: 367px;
     height: 92px;
+    overflow-y: scroll;
+    overflow-x: scroll;
     border: 1px solid #000000;
 }
 #inventoryExit {
@@ -1197,12 +1199,23 @@ audio {
     height: 30px;
 }
 
-#notifications {
+#notificationsHolder {
     position: absolute;
     right: 8px;
-    bottom: 8px;
+    top: 8px;
     height: 316px;
     width: 300px;
+    background: none;
+    border: none;
+    cursor: crosshair;
+}
+#notifications {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 300px;
+    height: 316px;
+    margin: 0px;
     background: none;
     border: none;
     cursor: crosshair;

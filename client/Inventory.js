@@ -61,6 +61,8 @@ Inventory = function(socket,server){
         materials:{
             wood:0,
             steel:0,
+            gold:0,
+            ruby:0,
         },
         shopItems:{items:[],prices:[]},
         craftItems:{items:[],materials:[]},
@@ -81,6 +83,14 @@ Inventory = function(socket,server){
         else if(id === 'steel'){
             self.materials.steel += 1;
             return self.materials.steel;
+        }
+        else if(id === 'gold'){
+            self.materials.gold += 1;
+            return self.materials.gold;
+        }
+        else if(id === 'ruby'){
+            self.materials.ruby += 1;
+            return self.materials.ruby;
         }
         else{
             return false;
@@ -466,6 +476,12 @@ Inventory = function(socket,server){
             else if(data.id === 'steel'){
                 button.innerHTML = "Steel ";
             }
+            else if(data.id === 'gold'){
+                button.innerHTML = "Gold ";
+            }
+            else if(data.id === 'ruby'){
+                button.innerHTML = "Ruby ";
+            }
             button.style.display = 'inline-block';
             button.style.position = 'relative';
             enchantments.style.position = 'relative';
@@ -823,6 +839,12 @@ Inventory = function(socket,server){
                 }
                 else if(item.id === 'steel'){
                     socket.emit('notification','You successfully bought Steel.');
+                }
+                else if(item.id === 'gold'){
+                    socket.emit('notification','You successfully bought Gold.');
+                }
+                else if(item.id === 'ruby'){
+                    socket.emit('notification','You successfully bought Ruby.');
                 }
             }
             catch(err){
