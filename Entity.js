@@ -1629,7 +1629,7 @@ Actor = function(param){
                         }
                     }
                     Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
-                    Player.list[pt.parent].coins += self.xpGain * Math.round((10 + Math.random() * 10));
+                    Player.list[pt.parent].coins += self.xpGain * Math.round((50 + Math.random() * 25));
                 }
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
@@ -1657,7 +1657,7 @@ Actor = function(param){
                     }
                 }
                 pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
-                pt.coins += Math.round(self.xpGain * (10 + Math.random() * 10));
+                pt.coins += Math.round(self.xpGain * (50 + Math.random() * 25));
             }
             self.willBeDead = true;
             self.toRemove = true;
