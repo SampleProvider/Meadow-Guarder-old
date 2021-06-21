@@ -74,6 +74,12 @@
         "canChangeMap":false,
         "shop":false
     },
+    "mia":{
+        "name":"Mia",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false
+    },
     "blacksmith":{
         "name":"Wally",
         "randomWalk":"wander",

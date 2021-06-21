@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f1a';
+var VERSION = '024f2a';
 
 var DEBUG = false;
 
@@ -35,6 +35,7 @@ socket.on('disconnect',function(){
 });
 
 var gameDiv = document.getElementById('gameDiv');
+var loadingDiv = document.getElementById('loadingDiv');
 var pageDiv = document.getElementById('pageDiv');
 var mainAttackDiv = document.getElementById('mainAttack');
 var secondaryAttackDiv = document.getElementById('secondaryAttack');
@@ -71,6 +72,9 @@ pageDiv.style.height = window.innerHeight + 'px';
 
 var respawnTimer = 0;
 
+var loading = false;
+var loadingProgress = 0;
+
 var canSignIn = true;
 var changePasswordState = 0;
 var deletePasswordState = 0;
@@ -81,6 +85,11 @@ signDivSignIn.onclick = function(){
         setTimeout(() => {
             canSignIn = true;
         },2000);
+        loadingDiv.style.display = 'inline-block';
+        loading = true;
+        disconnectedDiv.style.display = 'none';
+        spectatorDiv.style.display = 'none';
+        pageDiv.style.display = 'none';
     }
 }
 signDivCreateAccount.onclick = function(){
@@ -131,7 +140,8 @@ socket.on('signInResponse',function(data){
             }
         }
         worldMap.restore();
-        gameDiv.style.display = 'inline-block';
+        //gameDiv.style.display = 'inline-block';
+        //loadingDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
@@ -355,6 +365,9 @@ tileset.src = '/client/maps/roguelikeSheet.png';
 var tilesetLoaded = false;
 tileset.onload = function(){
     tilesetLoaded = true;
+    setTimeout(function(){
+        loadingProgress += 1;
+    },500 + 1500 * Math.random());
 };
 var loadedMap = {};
 var waypoints = [];
@@ -441,11 +454,17 @@ var renderLayers = function(json,name){
                 }
             }
         }
+        setTimeout(function(){
+            loadingProgress += 1;
+        },500 + 1500 * Math.random());
     }
     loadedMap[name] = {
         lower:tempLower,
         upper:tempUpper,
     }
+    setTimeout(function(){
+        loadingProgress += 1;
+    },500 + 1500 * Math.random());
 }
 var loadTileset = function(json,name){
     if(tilesetLoaded){
@@ -579,6 +598,9 @@ request.onload = function(){
         for(var i in json){
             Img[i] = new Image();
             Img[i].src = '/client/img/' + i + '.png';
+            setTimeout(function(){
+                loadingProgress += 1;
+            },500 + 1500 * Math.random());
         }
         projectileData = json;
     }
@@ -747,7 +769,7 @@ function clampX(n){
     return Math.min(Math.max(n,0),window.innerWidth - 900);
 }
 function clampY(n){
-    return Math.min(Math.max(n,-14),window.innerHeight - 14);
+    return Math.min(Math.max(n,-14),window.innerHeight - 46);
 }
 function onMouseMove(e){
     if(state.isDragging){
@@ -2372,7 +2394,18 @@ var response = function(data){
 var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
-    if(!selfId){
+    if(loading){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 227';
+        if(loadingProgress === 227){
+            setTimeout(function(){
+                loading = false;
+                gameDiv.style.display = 'inline-block';
+                loadingDiv.style.display = 'none';
+            },500 + Math.random() * 500);
+        }
+    }
+
+    if(!selfId || loading){
         return;
     }
     if(!Player.list[selfId]){
@@ -2740,7 +2773,7 @@ document.onkeydown = function(event){
         if(key === 'b' && selfId){
             DEBUG = !DEBUG;
         }
-        if(!talking){
+        if(!talking && loading === false){
             socket.emit('keyPress',{inputId:key,state:true});
         }
         if(selfId){

@@ -49,56 +49,56 @@ var xpLevels = [
     4000000,
     7000000,
     10000000,
-    5000,
-    10000,
-    15000,
-    20000,
-    25000,
-    30000,
-    35000,
-    40000,
-    45000,
     50000,
-    55000,
-    60000,
-    65000,
-    70000,
-    75000,
-    80000,
-    85000,
-    90000,
-    95000,
     100000,
-    110000,
-    120000,
-    130000,
-    140000,
     150000,
-    160000,
-    170000,
-    180000,
-    190000,
     200000,
-    220000,
-    240000,
-    260000,
-    280000,
+    250000,
     300000,
+    350000,
     400000,
+    450000,
+    500000,
     550000,
+    600000,
+    650000,
     700000,
+    750000,
+    800000,
+    850000,
+    900000,
+    950000,
     1000000,
+    1100000,
+    1200000,
+    1300000,
     1400000,
+    1500000,
+    1600000,
+    1700000,
+    1800000,
+    1900000,
     2000000,
-    2750000,
+    2200000,
+    2400000,
+    2600000,
+    2800000,
+    3000000,
     4000000,
-    7250000,
+    5500000,
+    7000000,
     10000000,
-    15000000,
-    25000000,
+    14000000,
+    20000000,
+    27500000,
     40000000,
-    70000000,
+    72500000,
     100000000,
+    150000000,
+    250000000,
+    400000000,
+    700000000,
+    1000000000,
 ];
 var fs = require('fs');
 var PF = require('pathfinding');
@@ -1629,7 +1629,7 @@ Actor = function(param){
                         }
                     }
                     Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
-                    Player.list[pt.parent].coins += self.xpGain * Math.round((50 + Math.random() * 25));
+                    Player.list[pt.parent].coins += self.xpGain * Math.round((50 + Math.random() * 25) * Player.list[pt.parent].stats.xp);
                 }
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
@@ -1657,7 +1657,7 @@ Actor = function(param){
                     }
                 }
                 pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
-                pt.coins += Math.round(self.xpGain * (50 + Math.random() * 25));
+                pt.coins += Math.round(self.xpGain * (50 + Math.random() * 25) * pt.stats.xp);
             }
             self.willBeDead = true;
             self.toRemove = true;
@@ -2229,6 +2229,7 @@ Player = function(param){
         "Possessed Spirit":false,
         "Plantera":false,
         "Lost Rubies":false,
+        "Broken Piano":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -2746,7 +2747,7 @@ Player = function(param){
                     socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
                 }
                 else{
-                    socket.emit('notification','[!] Defeat Plantera before using the Anvil.');
+                    socket.emit('notification','[!] Complete the Lightnign Lizard Boss Quest before using the Anvil.');
                 }
                 self.keyPress.second = false;
             }
@@ -2780,6 +2781,15 @@ Player = function(param){
                         state:'ask',
                         message:'You are not strong enough to hold the skill of using an anvil. ',
                         response1:'Ok.',
+                    });
+                }
+                else if(self.questStage === 7 && self.quest === 'Broken Piano'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You need Piano Parts? I think I can make one for you.',
+                        response1:'*End conversation*',
                     });
                 }
                 else{
@@ -2825,6 +2835,51 @@ Player = function(param){
                         state:'ask',
                         message:'Did you get Wally\'s rubies?',
                         response1:'Yes I did!',
+                    });
+                }
+                else{
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'mia' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Broken Piano';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Hey, my piano broke, can you help me fix it? You will need Piano Parts.',
+                        response1:'I would love to!',
+                        response2:'Not really...',
+                    });
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Broken Piano';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'My piano\'s broken... I need some rubies to fix it.',
+                        response1:'*End conversation*',
+                    });
+                }
+                else if(self.questStage === 5 && self.quest === 'Broken Piano'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'I think Wally might be able to make some Piano Parts.',
+                        response1:'*End conversation*',
+                    });
+                }
+                else if(self.questStage === 14 && self.quest === 'Broken Piano'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Do you have the Piano Parts?',
+                        response1:'Yeah, I have them.',
                     });
                 }
                 else{
@@ -2964,6 +3019,9 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Missing Person'){
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            var woodObtained = Math.round(15 + Math.random() * 10);
+            socket.emit('notification','You obtained ' + woodObtained + ' wood.');
+            self.inventory.materials.wood += woodObtained;
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -2978,7 +3036,8 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(1000 * self.stats.xp);
+            self.xp += Math.round(5000 * self.stats.xp);
+            self.coins += Math.round(5000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Weird Tower'){
@@ -3310,7 +3369,8 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(2000 * self.stats.xp);
+            self.xp += Math.round(10000 * self.stats.xp);
+            self.coins += Math.round(10000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Clear River'){
@@ -3428,6 +3488,9 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Clear River'){
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            var woodObtained = Math.round(10 + Math.random() * 15);
+            socket.emit('notification','You obtained ' + woodObtained + ' wood.');
+            self.inventory.materials.wood += woodObtained;
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3442,7 +3505,8 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(5000 * self.stats.xp);
+            self.xp += Math.round(15000 * self.stats.xp);
+            self.coins += Math.round(15000 * self.stats.xp);
         }
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.quest === 'Enchanter'){
@@ -3853,6 +3917,9 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Clear Tower'){
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            var steelObtained = Math.round(15 + Math.random() * 10);
+            socket.emit('notification','You obtained ' + steelObtained + ' steel.');
+            self.inventory.materials.steel += steelObtained;
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3868,6 +3935,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(25000 * self.stats.xp);
+            self.coins += Math.round(25000 * self.stats.xp);
         }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Clear Tower'){
             self.quest = false;
@@ -4149,7 +4217,8 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(250000 * self.stats.xp);
+            self.xp += Math.round(75000 * self.stats.xp);
+            self.coins += Math.round(75000 * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.questInfo.quest + '.');
         }
 
@@ -4257,7 +4326,7 @@ Player = function(param){
                 }
             }
         }
-        if(self.questStage === 8 && self.quest === 'Lost Rubies' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+        if(self.questStage === 8 && self.quest === 'Lost Rubies'){
             self.questStage += 1;
             self.invincible = true;
             socket.emit('dialougeLine',{
@@ -4289,7 +4358,6 @@ Player = function(param){
             var rubiesObtained = Math.round(5 + Math.random() * 10);
             socket.emit('notification','You obtained ' + rubiesObtained + ' rubies.');
             self.inventory.materials.ruby += rubiesObtained;
-            self.inventory.refreshRender();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4305,6 +4373,170 @@ Player = function(param){
             });
             self.currentResponse = 0;
             self.xp += Math.round(125000 * self.stats.xp);
+            self.coins += Math.round(125000 * self.stats.xp);
+        }
+        
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Broken Piano'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Broken Piano'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Broken Piano',
+                questDescription:'Find Piano Parts to fix Mia\'s piano.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Broken Piano'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 3 && self.questInfo.quest === 'Broken Piano'){
+            self.quest = 'Broken Piano';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I should talk with Mia.',
+                response1:'...',
+            });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Broken Piano'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Broken Piano'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 7 && self.quest === 'Broken Piano' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Broken Piano' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 8;
+                }
+            }
+        }
+        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'Broken Piano'){
+            setTimeout(function(){
+                self.questStage += 1;
+            },1000);
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 9 && self.quest === 'Broken Piano'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Nice! I got one Piano Part!',
+                response1:'...',
+            });
+            socket.emit('notification','1 / 5 Piano Parts');
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Broken Piano'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.questInfo.pianoParts = 1;
+            self.questInfo.activators = {
+                'activator1':false,
+                'activator2':false,
+                'activator3':false,
+                'activator4':false,
+            }
+        }
+        if(self.questStage === 11 && self.quest === 'Broken Piano' && self.mapChange > 10){
+            var pianoPartGained = false;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Broken Piano' && self.isColliding(QuestInfo.list[i])){
+                    for(var j in self.questInfo.activators){
+                        if(j === QuestInfo.list[i].info && self.questInfo.activators[j] === false){
+                            pianoPartGained = true;
+                            self.questInfo.activators[j] = true;
+                        }
+                    }
+                }
+            }
+            if(pianoPartGained){
+                self.questInfo.pianoParts += 1;
+                socket.emit('notification','' + self.questInfo.pianoParts + ' / 5 Piano Parts');
+                if(self.questInfo.pianoParts === 5){
+                    self.questStage = 12;
+                }
+            }
+        }
+        if(self.questStage === 12 && self.quest === 'Broken Piano'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'I got all the Piano Parts. Time to return them to Mia.',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Broken Piano'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 15 && self.quest === 'Broken Piano'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
+            var goldObtained = Math.round(15 + Math.random() * 10);
+            socket.emit('notification','You obtained ' + goldObtained + ' gold.');
+            self.inventory.materials.gold += goldObtained;
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(1250000 * self.stats.xp);
+            self.coins += Math.round(1250000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -6546,8 +6778,8 @@ Player.onConnect = function(socket,username){
             player.questInfo.started = true;
         });
         socket.on('waypoint',function(data){
-            if(player.quest !== false){
-                socket.emit('notification','[!] You cannot use waypoints in a quest.');
+            if(player.quest === 'Lightning Lizard Boss' || player.quest === 'Weird Tower' || player.quest === 'Clear Tower'){
+                socket.emit('notification','[!] Waypoints have been disabled in this quest.');
             }
             else if(data === 'The Village'){
                 player.teleport(2080,1760,data);
@@ -7362,16 +7594,28 @@ Monster = function(param){
                 self.attackState = "attackRedBird";
                 break;
             case "attackRedBird":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
                 if(!self.target){
                     self.target = undefined;
-                    self.attackState = 'passiveRedBird';
+                    self.attackState = 'passivePossessedSpirit';
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.isDead){
                     self.target = undefined;
-                    self.attackState = 'passiveRedBird';
+                    self.attackState = 'passivePossessedSpirit';
                     self.damagedEntity = false;
                     self.damaged = false;
                     self.randomWalk(true,false,self.x,self.y);
@@ -7379,7 +7623,7 @@ Monster = function(param){
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
-                    self.attackState = 'passiveRedBird';
+                    self.attackState = 'passivePossessedSpirit';
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;

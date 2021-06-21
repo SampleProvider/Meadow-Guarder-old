@@ -78,18 +78,22 @@ Inventory = function(socket,server){
         }
         else if(id === 'wood'){
             self.materials.wood += 1;
+            self.refreshRender();
             return self.materials.wood;
         }
         else if(id === 'steel'){
             self.materials.steel += 1;
+            self.refreshRender();
             return self.materials.steel;
         }
         else if(id === 'gold'){
             self.materials.gold += 1;
+            self.refreshRender();
             return self.materials.gold;
         }
         else if(id === 'ruby'){
             self.materials.ruby += 1;
+            self.refreshRender();
             return self.materials.ruby;
         }
         else{

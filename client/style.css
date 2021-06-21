@@ -1227,3 +1227,26 @@ audio {
     opacity: 1;
     overflow: auto;
 }
+
+#loadingDiv {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+}
+#loadingBar {
+    position: absolute;
+    font-family: 'pixel';
+    color: #ffffff;
+    border: none;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 30px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 30px;
+}

@@ -671,7 +671,7 @@
         "event":"self.stats.xp += 5;",
         "enchantments":["smashing"],
         "rarity":4,
-        "description":"<span style='color: #33ee33'>+500% increased xp gain.</span>"
+        "description":"<span style='color: #33ee33'>+500% increased xp and coin gain.</span>"
     },
     "leaf":{
         "name":"Leaf",
@@ -910,7 +910,7 @@
         "event":"self.stats.xp += 1.5;self.offhandPassive = 'spiritProtect';",
         "enchantments":["smashing"],
         "rarity":8,
-        "description":"<span style='color: #33ee33'>+150% increased xp gain.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
+        "description":"<span style='color: #33ee33'>+150% increased xp and coin gain.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "lightningarrow":{
         "name":"Lightning Arrow",
