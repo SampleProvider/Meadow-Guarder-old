@@ -2440,7 +2440,7 @@ setInterval(function(){
             setTimeout(function(){
                 loading = false;
                 gameDiv.style.display = 'inline-block';
-                loadingDiv.style.display = 'none';
+                //loadingDiv.style.display = 'none';
             },500 + Math.random() * 500);
         }
     }
