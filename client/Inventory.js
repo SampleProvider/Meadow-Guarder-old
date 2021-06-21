@@ -944,6 +944,7 @@ catch(err){
         // There was a connection error of some sort
     };
 
+<<<<<<< HEAD
     request.send();
 }
 try{
@@ -968,6 +969,12 @@ catch(err){
             // We reached our target server, but it returned an error
         }
     };
+=======
+});
+Item("shield","Shield",function(player){
+    player.stats.defense = player.stats.defense * 2;
+},function(player){
+>>>>>>> parent of 6bfdcbc (Add Green Monsters)
 
     request.onerror = function(){
         // There was a connection error of some sort

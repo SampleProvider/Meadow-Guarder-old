@@ -1,10 +1,5 @@
 
-if(process.env.PORT){
-	SERVER = 'heroku';
-}
-else{
-	SERVER = 'localhost';
-}
+SERVER = 'heroku';
 
 var colors = require('colors');
 

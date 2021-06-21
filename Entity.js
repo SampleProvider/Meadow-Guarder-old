@@ -1698,11 +1698,33 @@ Actor = function(param){
             projectilePattern:projectilePattern,
             stats:projectileStats,
             onCollision:function(self,pt){
+<<<<<<< HEAD
                 if(self.pierce === 0){
                     self.toRemove = true;
                 }
                 else{
                     self.pierce -= 1;
+=======
+                pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
+                if(parentType === 'Player'){
+                    if(pt.hp < 1 && self.toRemove === false){
+                        if(Math.random() < 0.5){   
+                            Player.list[self.parent].inventory.addItem('sword',1);
+                        }
+                        if(Math.random() < 0.5){   
+                            Player.list[self.parent].inventory.addItem('helmet',1);
+                        }
+                        if(Math.random() < 0.2){   
+                            Player.list[self.parent].inventory.addItem('amulet',1);
+                        }
+                        if(Math.random() < 0.2){   
+                            Player.list[self.parent].inventory.addItem('shield',1);
+                        }
+                        if(Math.random() < 0.1){   
+                            Player.list[self.parent].inventory.addItem('fish',1);
+                        }
+                    }
+>>>>>>> parent of 6bfdcbc (Add Green Monsters)
                 }
             }
 		});
@@ -3135,6 +3157,7 @@ Player = function(param){
                     self.questInfo.maxMonsters = 0;
                 }
             }
+<<<<<<< HEAD
         }
         if(self.questStage === 10 && self.quest === 'Weird Tower' && self.mapChange > 10){
             for(var i in QuestInfo.list){
@@ -3156,6 +3179,19 @@ Player = function(param){
                             heal:0 * ENV.MonsterStrength,
                             damageReduction:0,
                         },
+=======
+            self.mapWidth = self.transporter.mapx;
+            self.mapHeight = self.transporter.mapy;
+            playerMap[self.map] += 1;
+            for(var i in Spawner.list){
+                if(Spawner.list[i].map === self.map && Spawner.list[i].spawned === false){
+                    var monster = new Monster({
+                        spawnId:i,
+                        x:Spawner.list[i].x,
+                        y:Spawner.list[i].y,
+                        map:Spawner.list[i].map,
+                        moveSpeed:2,
+>>>>>>> parent of 6bfdcbc (Add Green Monsters)
                         onDeath:function(pt){
                             pt.toRemove = true;
                             if(pt.spawnId){
@@ -4262,6 +4298,7 @@ Player = function(param){
             self.currentResponse = 0;
         }
 
+<<<<<<< HEAD
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Lost Rubies'){
             self.invincible = false;
             self.questInfo = {
@@ -4271,6 +4308,35 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
+=======
+
+Monster = function(param){
+    var self = Actor(param);
+    self.spawnId = param.spawnId;
+    self.attackState = "passive";
+    self.direction = 0;
+    self.hp = 10000;
+    self.hpMax = 10000;
+    self.width = 24;
+    self.height = 24;
+    self.toRemove = false;
+    self.reload = 0;
+    self.target = {};
+    self.type = 'Monster';
+    self.stats = {
+        attack:1,
+        defense:1,
+        heal:1,
+    }
+    var lastSelf = {};
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+        self.updateAttack();
+        if(self.target && self.target.state === "dead"){
+            self.target = {};
+            self.attackState = "passive";
+>>>>>>> parent of 6bfdcbc (Add Green Monsters)
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Lost Rubies'){
             self.questInfo.started = false;
@@ -4543,6 +4609,21 @@ Player = function(param){
             self.xp += Math.round(1250000 * self.stats.xp);
             self.coins += Math.round(1250000 * self.stats.xp);
         }
+<<<<<<< HEAD
+=======
+        return pack;
+    }
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.hp = self.hp;
+        pack.hpMax = self.hpMax;
+        pack.map = self.map;
+        pack.type = self.type;
+        return pack;
+>>>>>>> parent of 6bfdcbc (Add Green Monsters)
     }
     self.updateStats = function(){
         if(self.inventory.refresh){
@@ -11212,7 +11293,29 @@ spawnEnemies = function(){
     for(var i in Spawner.list){
         if(playerMap[Spawner.list[i].map] !== 0){
             if(Math.random() < 0.0005 && Spawner.list[i].spawned === false){
+<<<<<<< HEAD
                 spawnMonster(Spawner.list[i],i);
+=======
+                var monster = new Monster({
+                    spawnId:i,
+                    x:Spawner.list[i].x,
+                    y:Spawner.list[i].y,
+                    map:Spawner.list[i].map,
+                    moveSpeed:2,
+                    onDeath:function(pt){
+                        pt.toRemove = true;
+                        if(pt.spawnId){
+                            Spawner.list[pt.spawnId].spawned = false;
+                        }
+                        for(var i in Projectile.list){
+                            if(Projectile.list[i].parent === pt.id){
+                                Projectile.list[i].toRemove = true;
+                            }
+                        }
+                    },
+                });
+                Spawner.list[i].spawned = true;
+>>>>>>> parent of 6bfdcbc (Add Green Monsters)
             }
         }
     }
