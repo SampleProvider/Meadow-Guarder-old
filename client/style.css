@@ -1239,7 +1239,7 @@ audio {
 #loadingBar {
     position: absolute;
     font-family: 'pixel';
-    color: #ffffff;
+    color: #000000;
     border: none;
     left: 50%;
     top: 50%;
@@ -1249,4 +1249,15 @@ audio {
     text-align: center;
     vertical-align: middle;
     line-height: 30px;
+}
+#loadingProgress {
+    position: absolute;
+    background-color: #dddddd;
+    border: 2px solid #ffffff;
+    left: 25%;
+    top: 50%;
+    width: 0%;
+    height: 30px;
+    text-align: center;
+    vertical-align: middle;
 }

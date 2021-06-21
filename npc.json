@@ -80,7 +80,7 @@
         "canChangeMap":false,
         "shop":false
     },
-    "blacksmith":{
+    "wally":{
         "name":"Wally",
         "randomWalk":"wander",
         "canChangeMap":false,

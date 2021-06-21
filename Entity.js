@@ -2761,7 +2761,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'blacksmith' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Lightning Lizard Boss"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -4245,7 +4245,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
             for(var i in Npc.list){
-                if(Npc.list[i].entityId === 'blacksmith'){
+                if(Npc.list[i].entityId === 'wally'){
                     self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
                     socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
                 }

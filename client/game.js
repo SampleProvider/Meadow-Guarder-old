@@ -454,6 +454,45 @@ var renderLayers = function(json,name){
                 }
             }
         }
+        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('NpcMarker')){
+            var size = json.tilewidth;
+            for(var j = 0;j < json.layers[i].data.length;j++){
+                tile_idx = json.layers[i].data[j];
+                if(tile_idx !== 0){
+                    if(tile_idx === 1950){
+                        var type = "";
+                        var typej = 0;
+                        var id = "";
+                        var idj = 0;
+                        var npcName = "";
+                        for(var k = 0;k < json.layers[i].name.length;k++){
+                            if(json.layers[i].name[k] === ':'){
+                                if(type === ""){
+                                    type = json.layers[i].name.substr(0,k);
+                                    typej = k;
+                                }
+                                else if(id === ""){
+                                    id = json.layers[i].name.substr(typej + 1,k - typej - 1);
+                                    idj = k;
+                                }
+                                else if(npcName === ""){
+                                    npcName = json.layers[i].name.substr(idj + 1,json.layers[i].name.length - idj - 2);
+                                }
+                            }
+                        }
+                        s_x = (j % json.layers[i].width) * size;
+                        s_y = ~~(j / json.layers[i].width) * size;
+                        waypoints.push({
+                            id:'quest',
+                            x:Math.round(s_x * 4),
+                            y:Math.round(s_y * 4),
+                            map:name,
+                            info:npcName,
+                        });
+                    }
+                }
+            }
+        }
         setTimeout(function(){
             loadingProgress += 1;
         },500 + 1500 * Math.random());
@@ -2395,8 +2434,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 227';
-        if(loadingProgress === 227){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 230';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 230 * window.innerWidth / 2 + 'px';
+        if(loadingProgress === 230){
             setTimeout(function(){
                 loading = false;
                 gameDiv.style.display = 'inline-block';
