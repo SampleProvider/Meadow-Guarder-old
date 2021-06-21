@@ -3022,6 +3022,7 @@ Player = function(param){
             var woodObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
+            self.inventory.refreshRender();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3491,6 +3492,7 @@ Player = function(param){
             var woodObtained = Math.round(10 + Math.random() * 15);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
+            self.inventory.refreshRender();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3920,6 +3922,7 @@ Player = function(param){
             var steelObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + steelObtained + ' steel.');
             self.inventory.materials.steel += steelObtained;
+            self.inventory.refreshRender();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4358,6 +4361,7 @@ Player = function(param){
             var rubiesObtained = Math.round(5 + Math.random() * 10);
             socket.emit('notification','You obtained ' + rubiesObtained + ' rubies.');
             self.inventory.materials.ruby += rubiesObtained;
+            self.inventory.refreshRender();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4521,6 +4525,7 @@ Player = function(param){
             var goldObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + goldObtained + ' gold.');
             self.inventory.materials.gold += goldObtained;
+            self.inventory.refreshRender();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
