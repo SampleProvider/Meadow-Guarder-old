@@ -1698,33 +1698,11 @@ Actor = function(param){
             projectilePattern:projectilePattern,
             stats:projectileStats,
             onCollision:function(self,pt){
-<<<<<<< HEAD
                 if(self.pierce === 0){
                     self.toRemove = true;
                 }
                 else{
                     self.pierce -= 1;
-=======
-                pt.hp -= Math.round(self.stats.attack * (50 + Math.random() * 50) / pt.stats.defense);
-                if(parentType === 'Player'){
-                    if(pt.hp < 1 && self.toRemove === false){
-                        if(Math.random() < 0.5){   
-                            Player.list[self.parent].inventory.addItem('sword',1);
-                        }
-                        if(Math.random() < 0.5){   
-                            Player.list[self.parent].inventory.addItem('helmet',1);
-                        }
-                        if(Math.random() < 0.2){   
-                            Player.list[self.parent].inventory.addItem('amulet',1);
-                        }
-                        if(Math.random() < 0.2){   
-                            Player.list[self.parent].inventory.addItem('shield',1);
-                        }
-                        if(Math.random() < 0.1){   
-                            Player.list[self.parent].inventory.addItem('fish',1);
-                        }
-                    }
->>>>>>> parent of 6bfdcbc (Add Green Monsters)
                 }
             }
 		});
