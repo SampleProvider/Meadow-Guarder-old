@@ -7856,6 +7856,9 @@ Player.onConnect = function(socket,username){
             if(player.petType === 'sphere'){
                 pet.name = 'Sphere' + pet.name;
             }
+            if(player.petType === 'thunderbird'){
+                pet.name = 'Thunderbird' + pet.name;
+            }
             player.pet = pet.id;
             for(var i in SOCKET_LIST){
                 SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
@@ -8036,10 +8039,13 @@ Player.onConnect = function(socket,username){
                 player.teleport(2080,1760,'The Village');
             }
             else if(player.map === 'Lilypad Temple Room 1'){
-                player.teleport(2080,1760,'The Village');
+                player.teleport(1376,1632,'Lilypad Pathway Part 1');
             }
             else if(player.map === 'Town Cave'){
                 player.teleport(2144,2144,'Deserted Town');
+            }
+            else if(player.map === 'The Pet Arena'){
+                player.teleport(288,608,'The Guarded Citadel');
             }
             //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
             var newTiles = [];
