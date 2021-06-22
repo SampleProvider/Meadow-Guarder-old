@@ -2887,6 +2887,51 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'petmaster' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
+                    self.questStage = 2;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Pet Master';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Do you like pets?',
+                        response1:'Yes.',
+                        response2:'No.',
+                    });
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Pet Master';
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'You need rubies to upgrade your pet.',
+                        response1:'*End conversation*',
+                    });
+                }
+                else if(self.questStage === 5 && self.quest === 'Broken Piano'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'I think Wally might be able to make some Piano Parts.',
+                        response1:'*End conversation*',
+                    });
+                }
+                else if(self.questStage === 14 && self.quest === 'Broken Piano'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialougeLine',{
+                        state:'ask',
+                        message:'Do you have the Piano Parts?',
+                        response1:'Yeah, I have them.',
+                    });
+                }
+                else{
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
+                }
+                self.keyPress.second = false;
+            }
         }
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Missing Person'){
             self.questInfo.started = false;
@@ -4543,6 +4588,262 @@ Player = function(param){
             self.xp += Math.round(1250000 * self.stats.xp);
             self.coins += Math.round(1250000 * self.stats.xp);
         }
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Pet Master'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Pet Master'){
+            self.questStage += 2;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'Do you want to change your pet?',
+                response1:'What can I change my pet into?',
+                response2:'No.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Pet Master'){
+            self.questStage += 1;
+            socket.emit('dialougeLine',{
+                state:'ask',
+                message:'You don\'t like pets?',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Pet Master'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            s.smite(self.username);
+        }
+        if(self.currentResponse === 1 && self.questStage === 4 && self.questInfo.quest === 'Pet Master'){
+            self.questStage += 1;
+            if(self.petType === 'kiol'){
+                socket.emit('dialougeLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for 25 Rubies.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                });
+            }
+            else if(self.petType === 'cherrier'){
+                socket.emit('dialougeLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiolfor free.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                });
+            }
+            else if(self.petType === 'sphere'){
+                socket.emit('dialougeLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                });
+            }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 4 && self.questInfo.quest === 'Pet Master'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.questInfo.quest === 'Pet Master'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            if(self.petType === 'kiol'){
+                if(self.inventory.materials.ruby >= 25){
+                    self.inventory.materials.ruby -= 25;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'cherrier';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'cherrier',
+                        name:'Cherrier Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','[!] You used 25 rubies to change your pet into a Cherrier.');
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
+                }
+            }
+            else if(self.petType === 'cherrier'){
+                for(var i in Pet.list){
+                    if(Pet.list[i].parent === self.id){
+                        Pet.list[i].toRemove = true;
+                    }
+                }
+                self.petType = 'kiol';
+                var pet = Pet({
+                    parent:self.id,
+                    x:self.x + 128 * (Math.random() - 0.5),
+                    y:self.y + 128 * (Math.random() - 0.5),
+                    petType:'kiol',
+                    name:'Kiol Lvl.' + self.level,
+                    moveSpeed:5 + self.level / 5,
+                });
+                self.pet = pet.id;
+                for(var i in SOCKET_LIST){
+                    SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                }
+            }
+            else if(self.petType === 'sphere'){
+                for(var i in Pet.list){
+                    if(Pet.list[i].parent === self.id){
+                        Pet.list[i].toRemove = true;
+                    }
+                }
+                self.petType = 'kiol';
+                var pet = Pet({
+                    parent:self.id,
+                    x:self.x + 128 * (Math.random() - 0.5),
+                    y:self.y + 128 * (Math.random() - 0.5),
+                    petType:'kiol',
+                    name:'Kiol Lvl.' + self.level,
+                    moveSpeed:5 + self.level / 5,
+                });
+                self.pet = pet.id;
+                for(var i in SOCKET_LIST){
+                    SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                }
+            }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 5 && self.questInfo.quest === 'Pet Master'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialougeLine',{
+                state:'remove',
+            });
+            for(var i in Pet.list){
+                if(Pet.list[i].parent === self.id){
+                    Pet.list[i].toRemove = true;
+                }
+            }
+            if(self.petType === 'kiol'){
+                if(self.inventory.materials.ruby >= 200){
+                    self.inventory.materials.ruby -= 200;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'sphere';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'sphere',
+                        name:'Sphere Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','[!] You used 200 rubies to change your pet into a Sphere.');
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
+                }
+            }
+            else if(self.petType === 'cherrier'){
+                if(self.inventory.materials.ruby >= 200){
+                    self.inventory.materials.ruby -= 200;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'sphere';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'sphere',
+                        name:'Sphere Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','[!] You used 200 rubies to change your pet into a Sphere.');
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
+                }
+            }
+            else if(self.petType === 'sphere'){
+                if(self.inventory.materials.ruby >= 25){
+                    self.inventory.materials.ruby -= 25;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'cherrier';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'cherrier',
+                        name:'Cherrier Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','[!] You used 25 rubies to change your pet into a Cherrier.');
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
+                }
+            }
+            self.currentResponse = 0;
+        }
     }
     self.updateStats = function(){
         if(self.inventory.refresh){
@@ -4776,8 +5077,35 @@ Player = function(param){
             self.xpMax = xpLevels[self.level];
             addToChat('style="color: #00ff00">',self.displayName + ' is now level ' + self.level + '.');
             if(Pet.list[self.pet]){
-                Pet.list[self.pet].name = 'Kiol Lvl.' + self.level;
                 Pet.list[self.pet].maxSpeed = 5 + self.level / 5;
+                if(self.petType === 'kiol'){
+                    Pet.list[self.pet].width = 40;
+                    Pet.list[self.pet].height = 28;
+                    Pet.list[self.pet].stats = {
+                        attack:Math.ceil(self.level / 10) * 10,
+                        defense:0,
+                        heal:1,
+                        range:1,
+                        speed:1,
+                        damageReduction:0,
+                        debuffs:[],
+                    }
+                    Pet.list[self.pet].name = 'Kiol Lvl.' + self.level;
+                }
+                else if(self.petType === 'cherrier'){
+                    Pet.list[self.pet].width = 36;
+                    Pet.list[self.pet].height = 32;
+                    Pet.list[self.pet].stats = {
+                        attack:Math.ceil(self.level / 10) * 15,
+                        defense:0,
+                        heal:1,
+                        range:1,
+                        speed:1,
+                        damageReduction:0,
+                        debuffs:[],
+                    }
+                    Pet.list[self.pet].name = 'Cherrier Lvl.' + self.level;
+                }
             }
             self.inventory.refresh = true;
         }
@@ -6565,14 +6893,30 @@ Player.onConnect = function(socket,username){
             moveSpeed:0,
             param:param,
         });
+        if(param.petType){
+            player.petType = param.petType;
+        }
+        else{
+            player.petType = 'kiol';
+        }
         if(!ENV.Peaceful){
             var pet = Pet({
                 parent:player.id,
                 x:player.x + 128 * (Math.random() - 0.5),
                 y:player.y + 128 * (Math.random() - 0.5),
-                name:'Kiol Lvl.' + player.level,
+                petType:param.petType || 'kiol',
+                name:' Lvl.' + player.level,
                 moveSpeed:5 + player.level / 5,
             });
+            if(player.petType === 'kiol'){
+                pet.name = 'Kiol' + pet.name;
+            }
+            if(player.petType === 'cherrier'){
+                pet.name = 'Cherrier' + pet.name;
+            }
+            if(player.petType === 'sphere'){
+                pet.name = 'Sphere' + pet.name;
+            }
             player.pet = pet.id;
             for(var i in SOCKET_LIST){
                 SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
@@ -8945,11 +9289,42 @@ Pet = function(param){
     self.manaMax = 200;
     self.hp = 1000;
     self.hpMax = 1000;
+    self.petType = param.petType;
+    self.direction = 0;
     self.stats = {
-        attack:0,
+        attack:Math.ceil(Player.list[self.parent].level / 10) * 10,
         defense:0,
         heal:1,
-        damageReduction:0.999
+        range:1,
+        speed:1,
+        damageReduction:0,
+        debuffs:[],
+    }
+    if(self.petType === 'cherrier'){
+        self.width = 36;
+        self.height = 32;
+        self.stats = {
+            attack:Math.ceil(Player.list[self.parent].level / 10) * 15,
+            defense:0,
+            heal:1,
+            range:1,
+            speed:1,
+            damageReduction:0,
+            debuffs:[],
+        }
+    }
+    if(self.petType === 'sphere'){
+        self.width = 44;
+        self.height = 44;
+        self.stats = {
+            attack:Math.ceil(Player.list[self.parent].level / 10) * 35,
+            defense:0,
+            heal:1,
+            range:1,
+            speed:1,
+            damageReduction:0,
+            debuffs:[],
+        }
     }
     self.canChangeMap = false;
     self.trackEntity(Player.list[self.parent],128);
@@ -9034,39 +9409,92 @@ Pet = function(param){
             isFireMap = true;
         }
         self.mana = Math.min(self.mana + 1,self.manaMax);
-        if(self.mana >= 100 && Player.list[self.parent].isDead === false){
-            if(Player.list[self.parent].hp < Player.list[self.parent].hpMax / 3){
-                var heal = 200 * Player.list[self.parent].stats.heal;
-                heal = Math.min(Player.list[self.parent].hpMax - Player.list[self.parent].hp,heal);
-                Player.list[self.parent].hp += heal;
-                if(heal){
-                    var particle = new Particle({
-                        x:Player.list[self.parent].x + Math.random() * 64 - 32,
-                        y:Player.list[self.parent].y + Math.random() * 64 - 32,
-                        map:Player.list[self.parent].map,
-                        particleType:'greenDamage',
-                        value:'+' + heal,
-                    });
+        if(self.petType === 'kiol'){
+            if(self.mana >= 100 && Player.list[self.parent].isDead === false){
+                if(Player.list[self.parent].hp < Player.list[self.parent].hpMax / 3){
+                    var heal = 200 * Player.list[self.parent].stats.heal;
+                    heal = Math.min(Player.list[self.parent].hpMax - Player.list[self.parent].hp,heal);
+                    Player.list[self.parent].hp += heal;
+                    if(heal){
+                        var particle = new Particle({
+                            x:Player.list[self.parent].x + Math.random() * 64 - 32,
+                            y:Player.list[self.parent].y + Math.random() * 64 - 32,
+                            map:Player.list[self.parent].map,
+                            particleType:'greenDamage',
+                            value:'+' + heal,
+                        });
+                    }
+                    self.mana -= 100;
                 }
-                self.mana -= 100;
             }
-        }
-        if(self.reload >= 10 && Player.list[self.parent].isDead === false){
-            var closestMonster = undefined;
-            for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
-                    closestMonster = Monster.list[i];
-                }
-                else if(closestMonster !== undefined){
-                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+            if(self.reload >= 10 && Player.list[self.parent].isDead === false){
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map){
                         closestMonster = Monster.list[i];
                     }
+                    else if(closestMonster !== undefined){
+                        if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                            closestMonster = Monster.list[i];
+                        }
+                    }
+                }
+                if(closestMonster){
+                    self.direction = Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180;
+                    self.shootProjectile(self.parent,'Player',self.direction,self.direction,'earthBullet',0,function(t){return 25;},0,self.stats);
+                    self.reload = 0;
                 }
             }
-            if(closestMonster){
-                self.direction = Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180;
-                self.shootProjectile(self.parent,'Player',self.direction,self.direction,'earthBullet',0,function(t){return 25;},0,Player.list[self.parent].stats);
-                self.reload = 0;
+        }
+        else if(self.petType === 'cherrier'){
+            self.animation += 0.5;
+            if(self.animation >= 2){
+                self.animation = 0;
+            }
+            if(self.reload >= 7 && Player.list[self.parent].isDead === false){
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                    else if(closestMonster !== undefined){
+                        if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                            closestMonster = Monster.list[i];
+                        }
+                    }
+                }
+                if(closestMonster){
+                    self.direction = Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180;
+                    self.shootProjectile(self.parent,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25;},0,self.stats);
+                    self.reload = 0;
+                }
+            }
+        }
+        else if(self.petType === 'sphere'){
+            self.animation += 25;
+            if(self.animation >= 360){
+                self.animation = 0;
+            }
+            if(self.reload >= 1 && Player.list[self.parent].isDead === false){
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                    else if(closestMonster !== undefined){
+                        if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                            closestMonster = Monster.list[i];
+                        }
+                    }
+                }
+                if(closestMonster){
+                    //self.direction = Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180;
+                    self.direction += 5;
+                    for(var i = 0;i < 12;i++){
+                        self.shootProjectile(self.parent,'Player',self.direction + i * 30,self.direction + i * 30,'bullet',30,function(t){return 0;},0,self.stats);
+                    }
+                    self.reload = 0;
+                }
             }
         }
         self.reload += 1;
@@ -9098,6 +9526,14 @@ Pet = function(param){
             pack.manaMax = self.manaMax;
             lastSelf.manaMax = self.manaMax;
         }
+        if(lastSelf.petType !== self.petType){
+            pack.petType = self.petType;
+            lastSelf.petType = self.petType;
+        }
+        if(lastSelf.animation !== self.animation){
+            pack.animation = self.animation;
+            lastSelf.animation = self.animation;
+        }
         return pack;
 	}
     self.getInitPack = function(){
@@ -9109,6 +9545,8 @@ Pet = function(param){
         pack.name = self.name;
         pack.mana = self.mana;
         pack.manaMax = self.manaMax;
+        pack.petType = self.petType;
+        pack.animation = self.animation;
         pack.type = self.type;
         return pack;
     }

@@ -80,6 +80,12 @@
         "canChangeMap":false,
         "shop":false
     },
+    "petmaster":{
+        "name":"Pet Master",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false
+    },
     "wally":{
         "name":"Wally",
         "randomWalk":"wander",

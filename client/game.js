@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f2a';
+var VERSION = '024f3a';
 
 var DEBUG = false;
 
@@ -616,6 +616,10 @@ Img.lightningRammer = new Image();
 Img.lightningRammer.src = '/client/img/lightningRammer.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
+Img.cherrier = new Image();
+Img.cherrier.src = '/client/img/cherrier.png';
+Img.sphere = new Image();
+Img.sphere.src = '/client/img/sphere.png';
 Img.healthBar = new Image();
 Img.healthBar.src = '/client/img/healthBar.png';
 Img.healthBarEnemy = new Image();
@@ -1621,6 +1625,8 @@ var Pet = function(initPack){
     self.name = initPack.name;
     self.mana = initPack.mana;
     self.manaMax = initPack.manaMax;
+    self.petType = initPack.petType;
+    self.animation = initPack.animation;
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){
@@ -1632,15 +1638,34 @@ var Pet = function(initPack){
         }
     }
     self.draw = function(){
-        ctx0.drawImage(Img.kiol,self.x - 20,self.y - 14,40,28);
+        if(self.petType === 'kiol'){
+            ctx0.drawImage(Img.kiol,self.x - 20,self.y - 14,40,28);
+        }
+        if(self.petType === 'cherrier'){
+            ctx0.drawImage(Img.cherrier,Math.floor(self.animation) * 10,0,9,8,self.x - 18,self.y - 16,36,32);
+        }
+        if(self.petType === 'sphere'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.animation * Math.PI / 180);
+            ctx0.drawImage(Img.sphere,-22,-22,44,44);
+            ctx0.rotate(-self.animation * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
     }
     self.drawName = function(){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
         ctx1.textAlign = "center";
-        ctx1.fillText(self.name,self.x,self.y - 52);
-        ctx1.drawImage(Img.manaBar,0,0,42,5,self.x - 63,self.y - 36,126,15);
-        ctx1.drawImage(Img.manaBar,0,6,Math.round(42 * self.mana / self.manaMax),5,self.x - 63,self.y - 36,Math.round(126 * self.mana / self.manaMax),15);
+        if(self.petType === 'sphere'){
+            ctx1.fillText(self.name,self.x,self.y - 68);
+            ctx1.drawImage(Img.manaBar,0,0,42,5,self.x - 63,self.y - 48,126,15);
+            ctx1.drawImage(Img.manaBar,0,6,Math.round(42 * self.mana / self.manaMax),5,self.x - 63,self.y - 48,Math.round(126 * self.mana / self.manaMax),15);
+        }
+        else{
+            ctx1.fillText(self.name,self.x,self.y - 52);
+            ctx1.drawImage(Img.manaBar,0,0,42,5,self.x - 63,self.y - 36,126,15);
+            ctx1.drawImage(Img.manaBar,0,6,Math.round(42 * self.mana / self.manaMax),5,self.x - 63,self.y - 36,Math.round(126 * self.mana / self.manaMax),15);
+        }
         if(DEBUG){
             ctx1.strokeStyle = '#ff0000';
             ctx1.lineWidth = 4;
@@ -2152,6 +2177,9 @@ socket.on('update',function(data){
                     if(data.pet[i].manaMax !== undefined){
                         Pet.list[data.pet[i].id].manaMax = data.pet[i].manaMax;
                     }
+                    if(data.pet[i].petType !== undefined){
+                        Pet.list[data.pet[i].id].petType = data.pet[i].petType;
+                    }
                     if(data.pet[i].animation !== undefined){
                         Pet.list[data.pet[i].id].animation = data.pet[i].animation;
                     }
@@ -2434,9 +2462,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 230';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 230 * window.innerWidth / 2 + 'px';
-        if(loadingProgress === 230){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 231';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 231 * window.innerWidth / 2 + 'px';
+        if(loadingProgress >= 231){
             setTimeout(function(){
                 loading = false;
                 gameDiv.style.display = 'inline-block';
@@ -2699,6 +2727,12 @@ setInterval(function(){
     for(var i in Player.list){
         Player.list[i].update();
     }
+
+    ctx1.fillStyle = '#000000';
+    ctx1.fillRect(-WIDTH,-HEIGHT,Player.list[selfId].mapWidth + WIDTH,HEIGHT);
+    ctx1.fillRect(-WIDTH,0,WIDTH,Player.list[selfId].mapHeight + HEIGHT);
+    ctx1.fillRect(0,Player.list[selfId].mapHeight,Player.list[selfId].mapWidth + WIDTH,HEIGHT);
+    ctx1.fillRect(Player.list[selfId].mapWidth,0,WIDTH,Player.list[selfId].mapHeight + HEIGHT);
     
     ctx1.restore();
     if(mapShadeAmount >= 2){
