@@ -136,6 +136,9 @@ var firableMap = function(map){
     if(map.includes('Arena')){
         isFireMap = true;
     }
+    if(map === 'The Pet Arena'){
+        isFireMap = false;
+    }
     if(ENV.PVP){
         isFireMap = true;
     }
@@ -4630,6 +4633,7 @@ Player = function(param){
                     message:'Your current pet is a Kiol. Please choose a pet to change it into.',
                     response1:'Change it into a Cherrier for 25 Rubies.',
                     response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Keep my Kiol.',
                 });
             }
             else if(self.petType === 'cherrier'){
@@ -4638,6 +4642,7 @@ Player = function(param){
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Keep my Cherrier.',
                 });
             }
             else if(self.petType === 'sphere'){
@@ -4646,6 +4651,7 @@ Player = function(param){
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Keep my Sphere.',
                 });
             }
             self.currentResponse = 0;
@@ -4844,6 +4850,16 @@ Player = function(param){
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
                 }
             }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 3 && self.questStage === 5 && self.questInfo.quest === 'Pet Training'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 6 && self.questInfo.quest === 'Pet Training'){
