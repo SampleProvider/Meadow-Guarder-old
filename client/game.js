@@ -552,6 +552,12 @@ loadMap('Town Hall');
 loadMap('Fishing Hut');
 loadMap('Tiny House');
 loadMap('House');
+loadMap('Town Cave');
+loadMap('The Arena');
+loadMap('The Guarded Citadel');
+loadMap('The Pet Arena');
+loadMap("Lilypad Temple Room 0");
+loadMap("Lilypad Temple Room 1");
 
 var documentHidden = false;
 
@@ -2298,7 +2304,7 @@ socket.on('changeMap',function(data){
     currentMap = data.teleport;
     shadeSpeed = 3 / 40;
 });
-socket.on('dialougeLine',function(data){
+socket.on('dialogueLine',function(data){
     if(data.state === 'remove'){
         interactMenu.style.display = 'none';
         talking = false;
@@ -2462,9 +2468,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 231';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 231 * window.innerWidth / 2 + 'px';
-        if(loadingProgress >= 231){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 288';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 288 * window.innerWidth / 2 + 'px';
+        if(loadingProgress >= 288){
             setTimeout(function(){
                 loading = false;
                 gameDiv.style.display = 'inline-block';

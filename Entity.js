@@ -2230,6 +2230,7 @@ Player = function(param){
         "Plantera":false,
         "Lost Rubies":false,
         "Broken Piano":false,
+        "Pet Training":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -2449,7 +2450,7 @@ Player = function(param){
                 for(var i in self.questDependent){
                     self.questDependent[i].toRemove = true;
                 }
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'remove',
                 });
             }
@@ -2497,7 +2498,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Missing Person';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescue Mark for me?',
                         response1:'Sure, I can rescue Mark.',
@@ -2508,7 +2509,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Missing Person';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Hey, my friend Mark went to map The River to collect some wood. He hasn\'t come back in two hours! Can you rescue Mark for me?',
                         response1:'Sure, I can rescue Mark.',
@@ -2519,7 +2520,7 @@ Player = function(param){
                 else if(self.questStage === 4 && self.quest === 'Missing Person'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Thanks. The map The River is to the west of The Village, which is where you are now.',
                         response1:'*End conversation*',
@@ -2528,7 +2529,7 @@ Player = function(param){
                 else if(self.questStage === 11){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Oh, Mark is fine? That\'s great!',
                         response1:'*End conversation*',
@@ -2544,7 +2545,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Weird Tower';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'What do you want?',
                         response1:'Do you have a quest for me?',
@@ -2555,7 +2556,7 @@ Player = function(param){
                     self.questStage = 3;
                     self.invincible = true;
                     self.questInfo.quest = 'Weird Tower';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Can you go on a quest for me?',
                         response1:'Sure!',
@@ -2565,7 +2566,7 @@ Player = function(param){
                 else if(self.questStage === 7 && self.quest === 'Weird Tower'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Thanks. Go investigate that weird tower.',
                         response1:'*End conversation*',
@@ -2574,7 +2575,7 @@ Player = function(param){
                 else if(self.questStage === 13){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'What did you find?',
                         response1:'I found diamonds!',
@@ -2592,7 +2593,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear River';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Go away. I\'m fishing.',
                         response1:'*End conversation*',
@@ -2602,7 +2603,7 @@ Player = function(param){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear River';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You talked to John and defeated the monsters in that weird tower right?',
                         response1:'Yeah!',
@@ -2613,7 +2614,7 @@ Player = function(param){
                 else if(self.questStage === 6 && self.quest === 'Clear River'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Ok, go kill those Monsters!',
                         response1:'*End conversation*',
@@ -2622,7 +2623,7 @@ Player = function(param){
                 else if(self.questStage === 11 && self.quest === 'Clear River'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You did it? Thanks! Here is a reward.',
                         response1:'*End conversation*',
@@ -2638,7 +2639,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.quest = 'Enchanter';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You seem worthy enough to enchant an item. Do you want me to help you enchant an item?',
                         response1:'Yes, please.',
@@ -2655,7 +2656,7 @@ Player = function(param){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear Tower';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Rumor is that the last player who helped Fisherman saw a red monster infused with evil in the weird tower. I really don\'t want evil red monsters roaming in the forest, so could you please kill it?',
                         response1:'Sure! I can help you!',
@@ -2666,7 +2667,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear Tower';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Leave. I\'m already stranded on this island.',
                         response1:'Fine.',
@@ -2675,7 +2676,7 @@ Player = function(param){
                 else if(self.questStage === 5 && self.quest === 'Clear Tower'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Thanks for helping me confirm this rumor.',
                         response1:'*End conversation*',
@@ -2684,7 +2685,7 @@ Player = function(param){
                 else if(self.questStage === 11 && self.quest === 'Clear Tower'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You found the tower? Were the rumors true?',
                         response1:'Yes.',
@@ -2701,7 +2702,7 @@ Player = function(param){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Lightning Lizard Boss';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'I came to Lilypad Pathway Part 1 because some guy called Joe said there were strong monsters here for me to fight. I saw this old temple and decided to go in, and there was this huge lizard. You seem strong enough to kill it. Could you kill this lizard?',
                         response1:'Sure! I will kill this lizard.',
@@ -2712,7 +2713,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Lightning Lizard Boss';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'I don\'t need help from a weakling like you. Go talk to Joe in The Docks and defeat the red monster first.',
                         response1:'Ok.',
@@ -2721,7 +2722,7 @@ Player = function(param){
                 else if(self.questStage === 5 && self.quest === 'Lightning Lizard Boss'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Thanks for killing this giant Lizard.',
                         response1:'*End conversation*',
@@ -2730,7 +2731,7 @@ Player = function(param){
                 else if(self.questStage === 13 && self.quest === 'Lightning Lizard Boss'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Did you kill the Lightning Lizard?',
                         response1:'Yes I did!',
@@ -2766,7 +2767,7 @@ Player = function(param){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Blacksmith';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You seem strong enough to hold the skill of using an anvil. Do you want to buy some metals?',
                         response1:'Sure! I would love to buy some metals!',
@@ -2777,7 +2778,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Blacksmith';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You are not strong enough to hold the skill of using an anvil. ',
                         response1:'Ok.',
@@ -2786,7 +2787,7 @@ Player = function(param){
                 else if(self.questStage === 7 && self.quest === 'Broken Piano'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You need Piano Parts? I think I can make one for you.',
                         response1:'*End conversation*',
@@ -2802,7 +2803,7 @@ Player = function(param){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Lost Rubies';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Hey, my friend Wally lost some rubies in the Town Cave the other day. Could you please find them and return it to me?',
                         response1:'Sure! I can help you!',
@@ -2813,7 +2814,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Lost Rubies';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'My friend Wally lost some rubies in the Town Cave. I don\'t think you are strong enough to find them. Defeat a giant beast in the Forest to be worthy enough.',
                         response1:'Ok.',
@@ -2822,7 +2823,7 @@ Player = function(param){
                 else if(self.questStage === 5 && self.quest === 'Lost Rubies'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'If you don\'t know, the Town Cave is northwest of The Guarded Citadel.',
                         response1:'*End conversation*',
@@ -2831,7 +2832,7 @@ Player = function(param){
                 else if(self.questStage === 10 && self.quest === 'Lost Rubies'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Did you get Wally\'s rubies?',
                         response1:'Yes I did!',
@@ -2847,7 +2848,7 @@ Player = function(param){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Broken Piano';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Hey, my piano broke, can you help me fix it? You will need Piano Parts.',
                         response1:'I would love to!',
@@ -2858,7 +2859,7 @@ Player = function(param){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Broken Piano';
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'My piano\'s broken... I need some rubies to fix it.',
                         response1:'*End conversation*',
@@ -2867,7 +2868,7 @@ Player = function(param){
                 else if(self.questStage === 5 && self.quest === 'Broken Piano'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'I think Wally might be able to make some Piano Parts.',
                         response1:'*End conversation*',
@@ -2876,7 +2877,7 @@ Player = function(param){
                 else if(self.questStage === 14 && self.quest === 'Broken Piano'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Do you have the Piano Parts?',
                         response1:'Yeah, I have them.',
@@ -2891,8 +2892,8 @@ Player = function(param){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
                     self.questStage = 2;
                     self.invincible = true;
-                    self.questInfo.quest = 'Pet Master';
-                    socket.emit('dialougeLine',{
+                    self.questInfo.quest = 'Pet Training';
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Do you like pets?',
                         response1:'Yes.',
@@ -2902,29 +2903,20 @@ Player = function(param){
                 else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === false){
                     self.questStage = 1;
                     self.invincible = true;
-                    self.questInfo.quest = 'Pet Master';
-                    socket.emit('dialougeLine',{
+                    self.questInfo.quest = 'Pet Training';
+                    socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You need rubies to upgrade your pet.',
                         response1:'*End conversation*',
                     });
                 }
-                else if(self.questStage === 5 && self.quest === 'Broken Piano'){
+                else if(self.questStage === 9 && self.quest === 'Pet Training'){
                     self.questStage += 1;
                     self.invincible = true;
-                    socket.emit('dialougeLine',{
+                    socket.emit('dialogueLine',{
                         state:'ask',
-                        message:'I think Wally might be able to make some Piano Parts.',
+                        message:'I will teleport you to the training arena.',
                         response1:'*End conversation*',
-                    });
-                }
-                else if(self.questStage === 14 && self.quest === 'Broken Piano'){
-                    self.questStage += 1;
-                    self.invincible = true;
-                    socket.emit('dialougeLine',{
-                        state:'ask',
-                        message:'Do you have the Piano Parts?',
-                        response1:'Yeah, I have them.',
                     });
                 }
                 else{
@@ -2937,7 +2929,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -2954,7 +2946,7 @@ Player = function(param){
             for(var i in self.questDependent){
                 self.questDependent[i].toRemove = true;
             }
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -2967,7 +2959,7 @@ Player = function(param){
             for(var i in self.questDependent){
                 self.questDependent[i].toRemove = true;
             }
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             for(var i in Npc.list){
@@ -2982,7 +2974,7 @@ Player = function(param){
             self.quest = 'Missing Person'
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with Bob.',
                 response1:'...',
@@ -2992,7 +2984,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Missing Person'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3000,7 +2992,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Missing Person'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3039,7 +3031,7 @@ Player = function(param){
         if(self.questStage === 8 && self.quest === 'Missing Person'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Oh! Hey, who are you?',
                 response1:'Um, your friend Bob sent me to rescue you.',
@@ -3047,7 +3039,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'Missing Person'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Oh, because I was gone for a long time? I\'m completely fine! Just collecting wood. Go tell Bob.',
                 response1:'Ok, I can tell Bob you are fine.',
@@ -3057,7 +3049,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Missing Person'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3078,7 +3070,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3088,7 +3080,7 @@ Player = function(param){
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Weird Tower'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'No, I don\'t have a quest for you. If you want a quest, talk to my friend Bob in the map The Village.',
                 response1:'*End conversation*',
@@ -3100,7 +3092,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3110,14 +3102,14 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Weird Tower'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'There is a weird tower in the map The River, and every time I go with Mark to collect wood, it gives me the creeps. Can you investigate that tower?',
                 response1:'Ok.',
@@ -3129,7 +3121,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3138,7 +3130,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -3151,7 +3143,7 @@ Player = function(param){
             self.quest = 'Weird Tower';
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with John.',
                 response1:'...',
@@ -3160,14 +3152,14 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Weird Tower'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'Weird Tower'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3298,7 +3290,7 @@ Player = function(param){
         if(self.questStage === 11 && self.quest === 'Weird Tower' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I killed the monsters, now I should talk back to John.',
                 response1:'...',
@@ -3307,7 +3299,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Weird Tower'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             for(var i in SOCKET_LIST){
@@ -3332,7 +3324,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Weird Tower'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'You found diamonds! I guess that is your reward for finishing this quest.',
                 response1:'What! That isn\'t fair!',
@@ -3341,7 +3333,7 @@ Player = function(param){
         }
         if(self.currentResponse === 2 && self.questStage === 14 && self.quest === 'Weird Tower'){
             self.questStage += 2;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Monsters? Did you kill them?',
                 response1:'Yes.',
@@ -3351,7 +3343,7 @@ Player = function(param){
         }
         if(self.currentResponse === 3 && self.questStage === 14 && self.quest === 'Weird Tower'){
             self.questStage += 3;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'What! I know there is something in the tower! Go back and try again!',
                 response1:'*End conversation*',
@@ -3368,14 +3360,14 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 16 && self.quest === 'Weird Tower'){
             self.questStage += 2;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Woo! Now I can go collect wood with Mark without worring about that tower.',
                 response1:'*End conversation*',
@@ -3384,7 +3376,7 @@ Player = function(param){
         }
         if(self.currentResponse === 2 && self.questStage === 16 && self.quest === 'Weird Tower'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'You found the Monsters but you didn\'t kill them? Go back and kill them!',
                 response1:'*End conversation*',
@@ -3394,7 +3386,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 17 && self.quest === 'Weird Tower'){
             self.questStage = 9;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3411,7 +3403,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3424,14 +3416,14 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Clear River'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Mark keeps complaining about Monsters attacking him while he is collecting wood. I don\'t have a weapon or anything, just a wooden fishing pole. And how do I fight monsters with that? Anyway, if you defeated the Monsters on that weird tower, you should be able to defeat all the Monsters in the map The River. Remember, Monsters will spawn natually.',
                 response1:'Ok, I can defeat all the Monsters in the map The River.',
@@ -3443,7 +3435,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3453,7 +3445,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3468,7 +3460,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -3481,7 +3473,7 @@ Player = function(param){
             self.quest = 'Clear River';
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with Fisherman.',
                 response1:'...',
@@ -3491,7 +3483,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Clear River'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3499,7 +3491,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'Clear River'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3518,7 +3510,7 @@ Player = function(param){
         if(self.questStage === 9 && self.quest === 'Clear River'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I did it! I defeated all the Monsters in the map The River! Let me go tell Fisherman.',
                 response1:'...',
@@ -3527,7 +3519,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Clear River'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3548,7 +3540,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3558,7 +3550,7 @@ Player = function(param){
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.quest === 'Enchanter'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Okay, now select an item you want to enchant.',
                 response1:'...',
@@ -3568,7 +3560,7 @@ Player = function(param){
         if(self.currentResponse === 2 && self.questStage === 1 && self.quest === 'Enchanter'){
             self.quest = false;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3576,7 +3568,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'Enchanter'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('showInventory');
@@ -3588,7 +3580,7 @@ Player = function(param){
             self.invincible = true;
             var item = Item.list[self.inventory.items[self.selectedItem].id];
             if(item.enchantments.length === 0){
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'ask',
                     message:'This item has no possible enchants. Choose another item.',
                     response1:'...',
@@ -3603,7 +3595,7 @@ Player = function(param){
                 self.questInfo.enchant2 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
                 self.questInfo.enchant3 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
                 self.questInfo.enchant4 = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Good, now choose an enchantment.',
                     response1:Enchantment.list[self.questInfo.enchant1].name + ' I',
@@ -3617,7 +3609,7 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Enchanter'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant1].name + ' I enchantment!',
                 response1:'Thank you.',
@@ -3628,7 +3620,7 @@ Player = function(param){
         }
         if(self.currentResponse === 2 && self.questStage === 4 && self.quest === 'Enchanter'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant2].name + ' I enchantment!',
                 response1:'Thank you.',
@@ -3639,7 +3631,7 @@ Player = function(param){
         }
         if(self.currentResponse === 3 && self.questStage === 4 && self.quest === 'Enchanter'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant3].name + ' I enchantment!',
                 response1:'Thank you.',
@@ -3650,7 +3642,7 @@ Player = function(param){
         }
         if(self.currentResponse === 4 && self.questStage === 4 && self.quest === 'Enchanter'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'And there you go! Your item now has the ' + Enchantment.list[self.questInfo.enchant4].name + ' II enchantment!',
                 response1:'Thank you.',
@@ -3662,7 +3654,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Enchanter'){
             self.quest = false;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3682,7 +3674,7 @@ Player = function(param){
             }
             if(item.enchantments.length === 0 || canEnchant === false){
                 self.invincible = true;
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'ask',
                     message:'I can\'t enchant this item...',
                     response1:'...',
@@ -3702,7 +3694,7 @@ Player = function(param){
                 socket.emit('toggleSelect');
                 socket.emit('showInventory');
                 self.quest = false;
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'remove',
                 });
                 self.selectedItem = false;
@@ -3712,7 +3704,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 2 && self.quest === 'Enchant'){
             self.questStage = 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('showInventory');
@@ -3724,7 +3716,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3733,7 +3725,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -3747,7 +3739,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3756,7 +3748,7 @@ Player = function(param){
             self.quest = 'Clear Tower';
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with Joe.',
                 response1:'...',
@@ -3766,7 +3758,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Clear Tower'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3774,7 +3766,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Clear Tower'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3910,7 +3902,7 @@ Player = function(param){
         if(self.questStage === 9 && self.quest === 'Clear Tower' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I killed the monsters, now I should talk back to Joe.',
                 response1:'...',
@@ -3919,7 +3911,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Clear Tower'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             for(var i in SOCKET_LIST){
@@ -3945,7 +3937,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Clear Tower'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'The rumors were true? Here, have a reward!',
                 response1:'*End conversation*',
@@ -3955,7 +3947,7 @@ Player = function(param){
         if(self.currentResponse === 2 && self.questStage === 12 && self.quest === 'Clear Tower'){
             self.questStage += 2;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'The rumors weren\'t true? I was gonna give you a reward if they were true.',
                 response1:'*End conversation*',
@@ -3978,7 +3970,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -3994,7 +3986,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4006,7 +3998,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4015,7 +4007,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -4029,7 +4021,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4038,7 +4030,7 @@ Player = function(param){
             self.quest = 'Lightning Lizard Boss';
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with Hunter.',
                 response1:'...',
@@ -4048,7 +4040,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4056,7 +4048,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4150,7 +4142,7 @@ Player = function(param){
         if(self.questStage === 9 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Who dares come in here? I will kill you!',
                 response1:'*End conversation*',
@@ -4159,7 +4151,7 @@ Player = function(param){
         if(self.questStage === 10 && self.quest === 'Lightning Lizard Boss' && self.currentResponse === 1){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4207,7 +4199,7 @@ Player = function(param){
         if(self.questStage === 11 && self.quest === 'Lightning Lizard Boss' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Woo! Lightning Lizard is dead! Let me go tell Hunter!',
                 response1:'...',
@@ -4216,7 +4208,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             for(var i in SOCKET_LIST){
@@ -4242,7 +4234,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Here is your reward!',
                 response1:'*End conversation*',
@@ -4261,7 +4253,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4275,7 +4267,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4285,7 +4277,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4301,7 +4293,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4312,7 +4304,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4321,7 +4313,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -4335,7 +4327,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4344,7 +4336,7 @@ Player = function(param){
             self.quest = 'Lost Rubies';
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with Sally.',
                 response1:'...',
@@ -4354,7 +4346,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Lost Rubies'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4362,7 +4354,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Lost Rubies'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4377,7 +4369,7 @@ Player = function(param){
         if(self.questStage === 8 && self.quest === 'Lost Rubies'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I found the rubies, I should return them to Sally.',
                 response1:'...',
@@ -4386,7 +4378,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'Lost Rubies'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4394,7 +4386,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 11 && self.quest === 'Lost Rubies'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'You got the rubies? Here, let me give you a reward.',
                 response1:'*End conversation*',
@@ -4417,7 +4409,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4430,7 +4422,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4439,7 +4431,7 @@ Player = function(param){
             self.questInfo.started = false;
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             socket.emit('questInfo',{
@@ -4453,7 +4445,7 @@ Player = function(param){
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4462,7 +4454,7 @@ Player = function(param){
             self.quest = 'Broken Piano';
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I should talk with Mia.',
                 response1:'...',
@@ -4472,7 +4464,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 4 && self.quest === 'Broken Piano'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4480,7 +4472,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Broken Piano'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4497,7 +4489,7 @@ Player = function(param){
                 self.questStage += 1;
             },1000);
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4505,7 +4497,7 @@ Player = function(param){
         if(self.questStage === 9 && self.quest === 'Broken Piano'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Nice! I got one Piano Part!',
                 response1:'...',
@@ -4515,7 +4507,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Broken Piano'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4550,7 +4542,7 @@ Player = function(param){
         if(self.questStage === 12 && self.quest === 'Broken Piano'){
             self.questStage += 1;
             self.invincible = true;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'I got all the Piano Parts. Time to return them to Mia.',
                 response1:'*End conversation*',
@@ -4560,7 +4552,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Broken Piano'){
             self.questStage += 1;
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4581,7 +4573,7 @@ Player = function(param){
                 self.questDependent[i].toRemove = true;
             }
             self.invincible = false;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
@@ -4589,50 +4581,51 @@ Player = function(param){
             self.coins += Math.round(1250000 * self.stats.xp);
         }
 
-        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Pet Training'){
             self.invincible = false;
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Pet Training'){
             self.questStage += 2;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'Do you want to change your pet?',
                 response1:'What can I change my pet into?',
                 response2:'No.',
+                response3:'No, can I train my pet instead?',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 2 && self.questStage === 2 && self.questInfo.quest === 'Pet Training'){
             self.questStage += 1;
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'ask',
                 message:'You don\'t like pets?',
                 response1:'*End conversation*',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Pet Training'){
             self.invincible = false;
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
             s.smite(self.username);
         }
-        if(self.currentResponse === 1 && self.questStage === 4 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 1 && self.questStage === 4 && self.questInfo.quest === 'Pet Training'){
             self.questStage += 1;
             if(self.petType === 'kiol'){
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Kiol. Please choose a pet to change it into.',
                     response1:'Change it into a Cherrier for 25 Rubies.',
@@ -4640,15 +4633,15 @@ Player = function(param){
                 });
             }
             else if(self.petType === 'cherrier'){
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiolfor free.',
+                    response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Sphere for 200 Rubies.',
                 });
             }
             else if(self.petType === 'sphere'){
-                socket.emit('dialougeLine',{
+                socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
@@ -4657,22 +4650,31 @@ Player = function(param){
             }
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 4 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 2 && self.questStage === 4 && self.questInfo.quest === 'Pet Training'){
             self.invincible = false;
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 1 && self.questStage === 5 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 3 && self.questStage === 4 && self.questInfo.quest === 'Pet Training'){
+            self.questStage += 2;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'Sure!',
+                response1:'*End conversation*',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.questInfo.quest === 'Pet Training'){
             self.invincible = false;
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             if(self.petType === 'kiol'){
@@ -4697,7 +4699,7 @@ Player = function(param){
                     for(var i in SOCKET_LIST){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
-                    socket.emit('notification','[!] You used 25 rubies to change your pet into a Cherrier.');
+                    socket.emit('notification','You used 25 rubies to change your pet into a Cherrier.');
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
@@ -4745,12 +4747,12 @@ Player = function(param){
             }
             self.currentResponse = 0;
         }
-        if(self.currentResponse === 2 && self.questStage === 5 && self.questInfo.quest === 'Pet Master'){
+        if(self.currentResponse === 2 && self.questStage === 5 && self.questInfo.quest === 'Pet Training'){
             self.invincible = false;
             self.questInfo = {
                 quest:false,
             };
-            socket.emit('dialougeLine',{
+            socket.emit('dialogueLine',{
                 state:'remove',
             });
             for(var i in Pet.list){
@@ -4780,7 +4782,7 @@ Player = function(param){
                     for(var i in SOCKET_LIST){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
-                    socket.emit('notification','[!] You used 200 rubies to change your pet into a Sphere.');
+                    socket.emit('notification','You used 200 rubies to change your pet into a Sphere.');
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
@@ -4808,7 +4810,7 @@ Player = function(param){
                     for(var i in SOCKET_LIST){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
-                    socket.emit('notification','[!] You used 200 rubies to change your pet into a Sphere.');
+                    socket.emit('notification','You used 200 rubies to change your pet into a Sphere.');
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
@@ -4836,13 +4838,368 @@ Player = function(param){
                     for(var i in SOCKET_LIST){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
-                    socket.emit('notification','[!] You used 25 rubies to change your pet into a Cherrier.');
+                    socket.emit('notification','You used 25 rubies to change your pet into a Cherrier.');
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
                 }
             }
             self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 6 && self.questInfo.quest === 'Pet Training'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Pet Training',
+                questDescription:'Train your pet to become stronger.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 7 && self.questInfo.quest === 'Pet Training'){
+            self.quest = 'Pet Training';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'I should talk with the Pet Master.',
+                response1:'...',
+            });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.teleport(640,1056,'The Pet Arena');
+        }
+        if(self.questStage === 11 && self.quest === 'Pet Training' && self.mapChange > 10){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'You can\'t fight, but your pet can! Make your pet kill all 5 waves of monsters!',
+                response1:'*End conversation*',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 13 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 1: Green Lizard x4");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:monsterData['greenLizard'].moveSpeed,
+                        hp:monsterData['greenLizard'].hp * ENV.MonsterStrength,
+                        monsterType:'greenLizard',
+                        attackState:'passiveLizard',
+                        width:monsterData['greenLizard'].width,
+                        height:monsterData['greenLizard'].height,
+                        xpGain:monsterData['greenLizard'].xpGain,
+                        stats:{
+                            attack:monsterData['greenLizard'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['greenLizard'].stats.defense,
+                            heal:monsterData['greenLizard'].stats.heal,
+                            damageReduction:monsterData['greenLizard'].stats.damageReduction,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+        }
+        if(self.questStage === 14 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 16 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 2: Green Lizard x6");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner2'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:monsterData['greenLizard'].moveSpeed,
+                        hp:monsterData['greenLizard'].hp * ENV.MonsterStrength,
+                        monsterType:'greenLizard',
+                        attackState:'passiveLizard',
+                        width:monsterData['greenLizard'].width,
+                        height:monsterData['greenLizard'].height,
+                        xpGain:monsterData['greenLizard'].xpGain,
+                        stats:{
+                            attack:monsterData['greenLizard'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['greenLizard'].stats.defense,
+                            heal:monsterData['greenLizard'].stats.heal,
+                            damageReduction:monsterData['greenLizard'].stats.damageReduction,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+        }
+        if(self.questStage === 17 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 19 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 3: Lost Spirit x6");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner3'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:monsterData['lostSpirit'].moveSpeed,
+                        hp:monsterData['lostSpirit'].hp * ENV.MonsterStrength,
+                        monsterType:'lostSpirit',
+                        attackState:'passiveLostSpirit',
+                        width:monsterData['lostSpirit'].width,
+                        height:monsterData['lostSpirit'].height,
+                        xpGain:monsterData['lostSpirit'].xpGain,
+                        stats:{
+                            attack:monsterData['lostSpirit'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['lostSpirit'].stats.defense,
+                            heal:monsterData['lostSpirit'].stats.heal,
+                            damageReduction:monsterData['lostSpirit'].stats.damageReduction,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+        }
+        if(self.questStage === 20 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 22 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 4: Cherry Bomb x12");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner4'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:monsterData['redCherryBomb'].moveSpeed,
+                        hp:monsterData['redCherryBomb'].hp * ENV.MonsterStrength,
+                        monsterType:'redCherryBomb',
+                        attackState:'passiveCherryBomb',
+                        width:monsterData['redCherryBomb'].width,
+                        height:monsterData['redCherryBomb'].height,
+                        xpGain:monsterData['redCherryBomb'].xpGain,
+                        stats:{
+                            attack:monsterData['redCherryBomb'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['redCherryBomb'].stats.defense,
+                            heal:monsterData['redCherryBomb'].stats.heal,
+                            damageReduction:monsterData['redCherryBomb'].stats.damageReduction,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+        }
+        if(self.questStage === 23 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 25 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 5: Lightning Lizard");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner5'){
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:monsterData['lightningLizard'].moveSpeed,
+                        hp:monsterData['lightningLizard'].hp * ENV.MonsterStrength,
+                        monsterType:'lightningLizard',
+                        attackState:'passiveLightningLizard',
+                        width:monsterData['lightningLizard'].width,
+                        height:monsterData['lightningLizard'].height,
+                        xpGain:monsterData['lightningLizard'].xpGain,
+                        stats:{
+                            attack:monsterData['lightningLizard'].stats.attack * ENV.MonsterStrength,
+                            defense:monsterData['lightningLizard'].stats.defense,
+                            heal:monsterData['lightningLizard'].stats.heal,
+                            damageReduction:monsterData['lightningLizard'].stats.damageReduction,
+                        },
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+            }
+        }
+        if(self.questStage === 26 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 28 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'Wow! I can\'t believe you killed all the monsters!',
+                response1:'*End conversation*',
+            });
+            self.teleport(288,544,"The Guarded Citadel");
+            if(self.questStats["Pet Training"] === false){
+                socket.emit('notification','Your pets are now 3 times stronger.');
+            }
+        }
+        if(self.currentResponse === 1 && self.questStage === 29 && self.quest === 'Pet Training'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(250000 * self.stats.xp);
+            self.coins += Math.round(250000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -9326,6 +9683,9 @@ Pet = function(param){
             debuffs:[],
         }
     }
+    if(Player.list[self.parent].questStats["Pet Training"] === true){
+        self.stats.attack *= 3;
+    }
     self.canChangeMap = false;
     self.trackEntity(Player.list[self.parent],128);
     var lastSelf = {};
@@ -11548,6 +11908,7 @@ load("Lilypad Temple Room 1");
 load("The Arena");
 load("The Guarded Citadel");
 load("Town Cave");
+load("The Pet Arena");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;
