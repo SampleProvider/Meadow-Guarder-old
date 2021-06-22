@@ -8330,14 +8330,14 @@ Monster = function(param){
                 }
                 if(!self.target){
                     self.target = undefined;
-                    self.attackState = 'passivePossessedSpirit';
+                    self.attackState = 'passiveRedBird';
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
                 }
                 if(self.target.isDead){
                     self.target = undefined;
-                    self.attackState = 'passivePossessedSpirit';
+                    self.attackState = 'passiveRedBird';
                     self.damagedEntity = false;
                     self.damaged = false;
                     self.randomWalk(true,false,self.x,self.y);
@@ -8345,7 +8345,7 @@ Monster = function(param){
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
-                    self.attackState = 'passivePossessedSpirit';
+                    self.attackState = 'passiveRedBird';
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
