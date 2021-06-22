@@ -644,6 +644,8 @@ Img.cherrier = new Image();
 Img.cherrier.src = '/client/img/cherrier.png';
 Img.sphere = new Image();
 Img.sphere.src = '/client/img/sphere.png';
+Img.thunderbird = new Image();
+Img.thunderbird.src = '/client/img/thunderbird.png';
 Img.healthBar = new Image();
 Img.healthBar.src = '/client/img/healthBar.png';
 Img.healthBarEnemy = new Image();
@@ -1675,6 +1677,9 @@ var Pet = function(initPack){
             ctx0.rotate(-self.animation * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
+        if(self.petType === 'thunderbird'){
+            ctx0.drawImage(Img.thunderbird,Math.floor(self.animation) % 4 * 17,Math.floor(self.animation / 4) * 16,16,15,self.x - 32,self.y - 30,64,60);
+        }
     }
     self.drawName = function(){
         ctx1.font = "15px pixel";
@@ -1684,6 +1689,11 @@ var Pet = function(initPack){
             ctx1.fillText(self.name,self.x,self.y - 68);
             ctx1.drawImage(Img.manaBar,0,0,42,5,self.x - 63,self.y - 48,126,15);
             ctx1.drawImage(Img.manaBar,0,6,Math.round(42 * self.mana / self.manaMax),5,self.x - 63,self.y - 48,Math.round(126 * self.mana / self.manaMax),15);
+        }
+        else if(self.petType === 'thunderbird'){
+            ctx1.fillText(self.name,self.x,self.y - 78);
+            ctx1.drawImage(Img.manaBar,0,0,42,5,self.x - 63,self.y - 58,126,15);
+            ctx1.drawImage(Img.manaBar,0,6,Math.round(42 * self.mana / self.manaMax),5,self.x - 63,self.y - 58,Math.round(126 * self.mana / self.manaMax),15);
         }
         else{
             ctx1.fillText(self.name,self.x,self.y - 52);

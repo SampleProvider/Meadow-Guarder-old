@@ -1476,6 +1476,28 @@ Actor = function(param){
                     }
                     stats.defense -= 150;
                 }
+                if(self.debuffs[i].id === 'thundered'){
+                    var damage = 250;
+                    var particleType = 'redDamage';
+                    self.hp -= damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'-' + damage,
+                        });
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'electricity',
+                            value:'-' + damage,
+                        });
+                    }
+                    stats.defense -= 1500;
+                }
                 if(self.hp < 1 && self.monsterType !== 'plantera'){
                     self.willBeDead = true;
                 }
@@ -2234,6 +2256,9 @@ Player = function(param){
         "Lost Rubies":false,
         "Broken Piano":false,
         "Pet Training":false,
+        "Cherrier":false,
+        "Sphere":false,
+        "Thunderbird":false,
     }
     self.type = 'Player';
     self.username = param.username;
@@ -4627,31 +4652,324 @@ Player = function(param){
         }
         if(self.currentResponse === 1 && self.questStage === 4 && self.questInfo.quest === 'Pet Training'){
             self.questStage += 1;
-            if(self.petType === 'kiol'){
+            if(self.petType === 'kiol' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Kiol. Please choose a pet to change it into.',
                     response1:'Change it into a Cherrier for 25 Rubies.',
                     response2:'Change it into a Sphere for 200 Rubies.',
-                    response3:'Keep my Kiol.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Kiol.',
                 });
             }
-            else if(self.petType === 'cherrier'){
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for free.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for free.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for free.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for 25 Rubies.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for 25 Rubies.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for free.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'kiol' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Kiol. Please choose a pet to change it into.',
+                    response1:'Change it into a Cherrier for 25 Rubies.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Kiol.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Sphere for 200 Rubies.',
-                    response3:'Keep my Cherrier.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Cherrier.',
                 });
             }
-            else if(self.petType === 'sphere'){
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for free.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Sphere for 200 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Cherrier.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Keep my Sphere.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for free.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Sphere.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for free.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response3:'Change it into a Thunderbird for free.',
+                    response4:'Keep my Thunderbird.',
                 });
             }
             self.currentResponse = 0;
@@ -4684,7 +5002,28 @@ Player = function(param){
                 state:'remove',
             });
             if(self.petType === 'kiol'){
-                if(self.inventory.materials.ruby >= 25){
+                if(self.questStats['Cherrier']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'cherrier';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'cherrier',
+                        name:'Cherrier Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Cherrier.');
+                }
+                else if(self.inventory.materials.ruby >= 25){
                     self.inventory.materials.ruby -= 25;
                     self.inventory.refreshRender();
                     for(var i in Pet.list){
@@ -4706,6 +5045,7 @@ Player = function(param){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
                     socket.emit('notification','You used 25 rubies to change your pet into a Cherrier.');
+                    self.questStats['Cherrier'] = true;
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
@@ -4732,6 +5072,26 @@ Player = function(param){
                 }
             }
             else if(self.petType === 'sphere'){
+                for(var i in Pet.list){
+                    if(Pet.list[i].parent === self.id){
+                        Pet.list[i].toRemove = true;
+                    }
+                }
+                self.petType = 'kiol';
+                var pet = Pet({
+                    parent:self.id,
+                    x:self.x + 128 * (Math.random() - 0.5),
+                    y:self.y + 128 * (Math.random() - 0.5),
+                    petType:'kiol',
+                    name:'Kiol Lvl.' + self.level,
+                    moveSpeed:5 + self.level / 5,
+                });
+                self.pet = pet.id;
+                for(var i in SOCKET_LIST){
+                    SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                }
+            }
+            else if(self.petType === 'thunderbird'){
                 for(var i in Pet.list){
                     if(Pet.list[i].parent === self.id){
                         Pet.list[i].toRemove = true;
@@ -4767,7 +5127,28 @@ Player = function(param){
                 }
             }
             if(self.petType === 'kiol'){
-                if(self.inventory.materials.ruby >= 200){
+                if(self.questStats['Sphere']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'sphere';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'sphere',
+                        name:'Sphere Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Sphere.');
+                }
+                else if(self.inventory.materials.ruby >= 200){
                     self.inventory.materials.ruby -= 200;
                     self.inventory.refreshRender();
                     for(var i in Pet.list){
@@ -4789,13 +5170,35 @@ Player = function(param){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
                     socket.emit('notification','You used 200 rubies to change your pet into a Sphere.');
+                    self.questStats['Sphere'] = true;
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
                 }
             }
             else if(self.petType === 'cherrier'){
-                if(self.inventory.materials.ruby >= 200){
+                if(self.questStats['Sphere']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'sphere';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'sphere',
+                        name:'Sphere Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Sphere.');
+                }
+                else if(self.inventory.materials.ruby >= 200){
                     self.inventory.materials.ruby -= 200;
                     self.inventory.refreshRender();
                     for(var i in Pet.list){
@@ -4817,13 +5220,35 @@ Player = function(param){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
                     socket.emit('notification','You used 200 rubies to change your pet into a Sphere.');
+                    self.questStats['Sphere'] = true;
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
                 }
             }
             else if(self.petType === 'sphere'){
-                if(self.inventory.materials.ruby >= 25){
+                if(self.questStats['Cherrier']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'cherrier';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'cherrier',
+                        name:'Cherrier Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Cherrier.');
+                }
+                else if(self.inventory.materials.ruby >= 25){
                     self.inventory.materials.ruby -= 25;
                     self.inventory.refreshRender();
                     for(var i in Pet.list){
@@ -4845,6 +5270,57 @@ Player = function(param){
                         SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
                     }
                     socket.emit('notification','You used 25 rubies to change your pet into a Cherrier.');
+                    self.questStats['Cherrier'] = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
+                }
+            }
+            else if(self.petType === 'thunderbird'){
+                if(self.questStats['Cherrier']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'cherrier';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'cherrier',
+                        name:'Cherrier Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Cherrier.');
+                }
+                else if(self.inventory.materials.ruby >= 25){
+                    self.inventory.materials.ruby -= 25;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'cherrier';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'cherrier',
+                        name:'Cherrier Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You used 25 rubies to change your pet into a Cherrier.');
+                    self.questStats['Cherrier'] = true;
                 }
                 else{
                     socket.emit('notification','[!] You do not have enough rubies to change your pet into a Cherrier.');
@@ -4853,6 +5329,221 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 3 && self.questStage === 5 && self.questInfo.quest === 'Pet Training'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            for(var i in Pet.list){
+                if(Pet.list[i].parent === self.id){
+                    Pet.list[i].toRemove = true;
+                }
+            }
+            if(self.petType === 'kiol'){
+                if(self.questStats['Thunderbird']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'thunderbird';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'thunderbird',
+                        name:'Thunderbird Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Thunderbird.');
+                }
+                else if(self.inventory.materials.ruby >= 500){
+                    self.inventory.materials.ruby -= 500;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'thunderbird';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'thunderbird',
+                        name:'Thunderbird Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You used 500 rubies to change your pet into a Thunderbird.');
+                    self.questStats['Thunderbird'] = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Thunderbird.');
+                }
+            }
+            else if(self.petType === 'cherrier'){
+                if(self.questStats['Thunderbird']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'thunderbird';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'thunderbird',
+                        name:'Thunderbird Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Thunderbird.');
+                }
+                else if(self.inventory.materials.ruby >= 500){
+                    self.inventory.materials.ruby -= 500;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'thunderbird';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'thunderbird',
+                        name:'Thunderbird Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You used 500 rubies to change your pet into a Thunderbird.');
+                    self.questStats['Thunderbird'] = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Thunderbird.');
+                }
+            }
+            else if(self.petType === 'sphere'){
+                if(self.questStats['Thunderbird']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'thunderbird';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'thunderbird',
+                        name:'Thunderbird Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Thunderbird.');
+                }
+                else if(self.inventory.materials.ruby >= 500){
+                    self.inventory.materials.ruby -= 500;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'thunderbird';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'thunderbird',
+                        name:'Thunderbird Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You used 500 rubies to change your pet into a Thunderbird.');
+                    self.questStats['Thunderbird'] = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Thunderbird.');
+                }
+            }
+            else if(self.petType === 'thunderbird'){
+                if(self.questStats['Sphere']){
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'sphere';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'sphere',
+                        name:'Sphere Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You changed your pet into a Sphere.');
+                }
+                else if(self.inventory.materials.ruby >= 200){
+                    self.inventory.materials.ruby -= 200;
+                    self.inventory.refreshRender();
+                    for(var i in Pet.list){
+                        if(Pet.list[i].parent === self.id){
+                            Pet.list[i].toRemove = true;
+                        }
+                    }
+                    self.petType = 'sphere';
+                    var pet = Pet({
+                        parent:self.id,
+                        x:self.x + 128 * (Math.random() - 0.5),
+                        y:self.y + 128 * (Math.random() - 0.5),
+                        petType:'sphere',
+                        name:'Sphere Lvl.' + self.level,
+                        moveSpeed:5 + self.level / 5,
+                    });
+                    self.pet = pet.id;
+                    for(var i in SOCKET_LIST){
+                        SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+                    }
+                    socket.emit('notification','You used 200 rubies to change your pet into a Sphere.');
+                    self.questStats['Sphere'] = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not have enough rubies to change your pet into a Sphere.');
+                }
+            }
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 4 && self.questStage === 5 && self.questInfo.quest === 'Pet Training'){
             self.invincible = false;
             self.questInfo = {
                 quest:false,
@@ -8097,6 +8788,28 @@ Monster = function(param){
                 }
                 break;
             case "retreatBird":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
                 var bestSpawner = undefined;
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map){
@@ -8459,29 +9172,51 @@ Monster = function(param){
                     }
                 }
                 if(self.spdX > 0){
-                    if(self.animation >= 2){
-                        self.animation = 0;
-                    }
-                    else if(self.animation !== -1){
+                    if(self.animation !== -1){
                         self.animation += 0.2;
                     }
                     else{
+                        self.animation = 0;
+                    }
+                    if(self.animation >= 2){
                         self.animation = 0;
                     }
                 }
                 else{
-                    if(self.animation >= 4){
-                        self.animation = 2;
-                    }
-                    else if(self.animation !== -1){
+                    if(self.animation !== -1){
                         self.animation += 0.2;
                     }
                     else{
+                        self.animation = 2;
+                    }
+                    if(self.animation >= 4){
                         self.animation = 2;
                     }
                 }
                 break;
             case "retreatLizard":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveBird';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
                 var bestSpawner = undefined;
                 for(var i in Spawner.list){
                     if(Spawner.list[i].map === self.map){
@@ -8642,24 +9377,24 @@ Monster = function(param){
                     }
                 }
                 if(self.spdX > 0){
-                    if(self.animation >= 2){
-                        self.animation = 0;
-                    }
-                    else if(self.animation !== -1){
+                    if(self.animation !== -1){
                         self.animation += 0.2;
                     }
                     else{
+                        self.animation = 0;
+                    }
+                    if(self.animation >= 2){
                         self.animation = 0;
                     }
                 }
                 else{
-                    if(self.animation >= 4){
-                        self.animation = 2;
-                    }
-                    else if(self.animation !== -1){
+                    if(self.animation !== -1){
                         self.animation += 0.2;
                     }
                     else{
+                        self.animation = 2;
+                    }
+                    if(self.animation >= 4){
                         self.animation = 2;
                     }
                 }
@@ -9699,6 +10434,33 @@ Pet = function(param){
             debuffs:[],
         }
     }
+    if(self.petType === 'thunderbird'){
+        self.maxSpeed *= 1.5;
+        self.width = 64;
+        self.height = 60;
+        self.stats = {
+            attack:0,
+            defense:0,
+            heal:1,
+            range:10,
+            speed:5,
+            damageReduction:0,
+            debuffs:[
+                {id:'frozen',time:200},
+                {id:'frostbite',time:200},
+                {id:'frostburn',time:200},
+                {id:'burning',time:200},
+                {id:'electrified',time:200},
+                {id:'death',time:200},
+                {id:'shocked',time:200},
+                {id:'thundered',time:200},
+            ],
+        }
+        self.shootSpeed = 1;
+        if(Player.list[self.parent].questStats["Pet Training"] === true){
+            self.shootSpeed *= 2;
+        }
+    }
     if(Player.list[self.parent].questStats["Pet Training"] === true){
         self.stats.attack *= 3;
     }
@@ -9869,6 +10631,48 @@ Pet = function(param){
                     for(var i = 0;i < 12;i++){
                         self.shootProjectile(self.parent,'Player',self.direction + i * 30,self.direction + i * 30,'bullet',30,function(t){return 0;},0,self.stats);
                     }
+                    self.reload = 0;
+                }
+            }
+        }
+        else if(self.petType === 'thunderbird'){
+            if(self.spdX < 0){
+                if(self.animation !== -1){
+                    self.animation += 0.5;
+                }
+                else{
+                    self.animation = 0;
+                }
+                if(self.animation >= 4){
+                    self.animation = 0;
+                }
+            }
+            else{
+                if(self.animation !== -1){
+                    self.animation += 0.5;
+                }
+                else{
+                    self.animation = 4;
+                }
+                if(self.animation >= 8){
+                    self.animation = 4;
+                }
+            }
+            if(self.reload >= 8 / self.shootSpeed && Player.list[self.parent].isDead === false){
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                    else if(closestMonster !== undefined){
+                        if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                            closestMonster = Monster.list[i];
+                        }
+                    }
+                }
+                if(closestMonster){
+                    self.direction = Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180;
+                    self.shootProjectile(self.parent,'Player',self.direction,self.direction,'frostBullet',0,function(t){return 25;},3,self.stats,'monsterHoming');
                     self.reload = 0;
                 }
             }
