@@ -148,12 +148,30 @@ socket.on('signInResponse',function(data){
     }
     else if(data.success === 2){
         alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. The other account will be disconnected shortly. Please try to sign again.");
+        pageDiv.style.display = 'inline-block';
+        loadingDiv.style.display = 'none';
+        disconnectedDiv.style.display = 'none';
+        spectatorDiv.style.display = 'none';
+        gameDiv.style.display = 'none';
+        loading = false;
     }
     else if(data.success === 1){
         alert("Incorrect Password.");
+        pageDiv.style.display = 'inline-block';
+        loadingDiv.style.display = 'none';
+        disconnectedDiv.style.display = 'none';
+        spectatorDiv.style.display = 'none';
+        gameDiv.style.display = 'none';
+        loading = false;
     }
     else{
         alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+        pageDiv.style.display = 'inline-block';
+        loadingDiv.style.display = 'none';
+        loading = false;
+        disconnectedDiv.style.display = 'none';
+        spectatorDiv.style.display = 'none';
+        gameDiv.style.display = 'none';
     }
 });
 socket.on('createAccountResponse',function(data){
@@ -2472,8 +2490,10 @@ setInterval(function(){
         document.getElementById('loadingProgress').style.width = loadingProgress / 288 * window.innerWidth / 2 + 'px';
         if(loadingProgress >= 288){
             setTimeout(function(){
-                loading = false;
-                gameDiv.style.display = 'inline-block';
+                if(loading){
+                    loading = false;
+                    gameDiv.style.display = 'inline-block';
+                }
                 //loadingDiv.style.display = 'none';
             },500 + Math.random() * 500);
         }
