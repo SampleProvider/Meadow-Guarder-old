@@ -4732,7 +4732,7 @@ Player = function(param){
                     response4:'Keep my Kiol.',
                 });
             }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+            else if(self.petType === 'cherrier' && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
@@ -4742,17 +4742,7 @@ Player = function(param){
                     response4:'Keep my Cherrier.',
                 });
             }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Sphere for 200 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Cherrier.',
-                });
-            }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+            else if(self.petType === 'cherrier' && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
@@ -4762,7 +4752,7 @@ Player = function(param){
                     response4:'Keep my Cherrier.',
                 });
             }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+            else if(self.petType === 'cherrier' && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
@@ -4772,27 +4762,7 @@ Player = function(param){
                     response4:'Keep my Cherrier.',
                 });
             }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Sphere for free.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Cherrier.',
-                });
-            }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Sphere for free.',
-                    response3:'Change it into a Thunderbird for free.',
-                    response4:'Keep my Cherrier.',
-                });
-            }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
+            else if(self.petType === 'cherrier' && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
@@ -4802,17 +4772,7 @@ Player = function(param){
                     response4:'Keep my Cherrier.',
                 });
             }
-            else if(self.petType === 'cherrier' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Cherrier. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Sphere for 200 Rubies.',
-                    response3:'Change it into a Thunderbird for free.',
-                    response4:'Keep my Cherrier.',
-                });
-            }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
@@ -4822,27 +4782,17 @@ Player = function(param){
                     response4:'Keep my Sphere.',
                 });
             }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Thunderbird'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
+                    response2:'Change it into a Cherrier for free.',
                     response3:'Change it into a Thunderbird for 500 Rubies.',
                     response4:'Keep my Sphere.',
                 });
             }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Sphere.',
-                });
-            }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Thunderbird'] === true){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
@@ -4852,17 +4802,7 @@ Player = function(param){
                     response4:'Keep my Sphere.',
                 });
             }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Sphere.',
-                });
-            }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Thunderbird'] === true){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Sphere. Please choose a pet to change it into.',
@@ -4872,103 +4812,43 @@ Player = function(param){
                     response4:'Keep my Sphere.',
                 });
             }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for free.',
-                    response4:'Keep my Sphere.',
-                });
-            }
-            else if(self.petType === 'sphere' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Sphere. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for free.',
-                    response4:'Keep my Sphere.',
-                });
-            }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
+                    response3:'Change it into a Sphere for 200 Rubies.',
                     response4:'Keep my Thunderbird.',
                 });
             }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === false){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Thunderbird.',
-                });
-            }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Thunderbird.',
-                });
-            }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Cherrier for free.',
-                    response3:'Change it into a Thunderbird for free.',
+                    response3:'Change it into a Sphere for 200 Rubies.',
                     response4:'Keep my Thunderbird.',
                 });
             }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === false){
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === true){
+                socket.emit('dialogueLine',{
+                    state:'ask',
+                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
+                    response1:'Change it into a Kiol for free.',
+                    response2:'Change it into a Cherrier for free.',
+                    response3:'Change it into a Sphere for free.',
+                    response4:'Keep my Thunderbird.',
+                });
+            }
+            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true){
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
                     response1:'Change it into a Kiol for free.',
                     response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for 500 Rubies.',
-                    response4:'Keep my Thunderbird.',
-                });
-            }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === true && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for free.',
-                    response4:'Keep my Thunderbird.',
-                });
-            }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === true && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for free.',
-                    response4:'Keep my Thunderbird.',
-                });
-            }
-            else if(self.petType === 'thunderbird' && self.questStats['Cherrier'] === false && self.questStats['Sphere'] === false && self.questStats['Thunderbird'] === true){
-                socket.emit('dialogueLine',{
-                    state:'ask',
-                    message:'Your current pet is a Thunderbird. Please choose a pet to change it into.',
-                    response1:'Change it into a Kiol for free.',
-                    response2:'Change it into a Cherrier for 25 Rubies.',
-                    response3:'Change it into a Thunderbird for free.',
+                    response3:'Change it into a Sphere for free.',
                     response4:'Keep my Thunderbird.',
                 });
             }
