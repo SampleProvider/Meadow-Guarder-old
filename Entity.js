@@ -5216,11 +5216,6 @@ Player = function(param){
             socket.emit('dialogueLine',{
                 state:'remove',
             });
-            for(var i in Pet.list){
-                if(Pet.list[i].parent === self.id){
-                    Pet.list[i].toRemove = true;
-                }
-            }
             if(self.petType === 'kiol'){
                 if(self.questStats['Thunderbird']){
                     for(var i in Pet.list){
