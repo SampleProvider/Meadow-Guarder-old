@@ -10289,6 +10289,7 @@ Pet = function(param){
         damageReduction:0,
         debuffs:[],
     }
+    self.animate = false;
     if(self.petType === 'cherrier'){
         self.width = 36;
         self.height = 32;
@@ -10415,18 +10416,6 @@ Pet = function(param){
         self.updateAttack();
     }
     self.updateAttack = function(){
-        var isFireMap = false;
-        for(var i in worldMap){
-            if(worldMap[i].fileName.slice(0,-4) === self.map){
-                isFireMap = true;
-            }
-        }
-        if(self.map === 'The Village'){
-            isFireMap = false;
-        }
-        if(ENV.PVP){
-            isFireMap = true;
-        }
         self.mana = Math.min(self.mana + 1,self.manaMax);
         if(self.petType === 'kiol'){
             if(self.mana >= 100 && Player.list[self.parent].isDead === false){
@@ -10469,6 +10458,16 @@ Pet = function(param){
             self.animation += 0.5;
             if(self.animation >= 2){
                 self.animation = 0;
+            }
+            if(self.mana >= 100 && Player.list[self.parent].isDead === false){
+                if(Player.list[self.parent].hp < Player.list[self.parent].hpMax / 3){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.parent,'Player',i * 45,i * 45,'fireBullet',0,function(t){return 25;},2,self.stats,'playerSeed');
+                        self.shootProjectile(self.parent,'Player',i * 45,i * 45,'fireBullet',32,function(t){return 25;},2,self.stats,'playerSeed');
+                        self.shootProjectile(self.parent,'Player',i * 45,i * 45,'fireBullet',64,function(t){return 25;},2,self.stats,'playerSeed');
+                    }
+                    self.mana -= 100;
+                }
             }
             if(self.reload >= 7 && Player.list[self.parent].isDead === false){
                 var closestMonster = undefined;
