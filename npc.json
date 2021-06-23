@@ -100,6 +100,10 @@
                 "enchantments":[]
             },
             {
+                "id":"ruby",
+                "enchantments":[]
+            },
+            {
                 "id":"advancedgoldensword",
                 "enchantments":[]
             },
@@ -131,6 +135,7 @@
         "shopPrices":[
             1000,
             10000,
+            50000,
             100000,
             100000,
             100000,
