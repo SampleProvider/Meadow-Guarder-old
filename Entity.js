@@ -12846,7 +12846,7 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
-                    if(ENV.PVP){
+                    if(ENV.PVP || Player.list[i].map === 'The Arena'){
                         Player.list[i].onCollision(Projectile.list[j],1);
                         Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                     }
@@ -12860,7 +12860,7 @@ updateCrashes = function(){
         for(var j in Player.list){
             if(Player.list[i] && Player.list[j]){
                 if(Player.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Player.list[i].invincible === false && i !== j){
-                    if(ENV.PVP){
+                    if(ENV.PVP || Player.list[i].map === 'The Arena'){
                         Player.list[j].onPush(Player.list[i],0.05);
                         Player.list[i].onPush(Player.list[j],0.05);
                     }
