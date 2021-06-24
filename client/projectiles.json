@@ -47,6 +47,18 @@
             "critChance":1
         }
     },
+    "waterTower":{
+        "width":48,
+        "height":108,
+        "stats":{
+            "attack":5,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
     "ballBullet":{
         "width":42,
         "height":42,
@@ -660,6 +672,18 @@
         }
     },
     "waterslasher":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "staffofthewhirlwind":{
         "width":64,
         "height":64,
         "stats":{

@@ -705,6 +705,14 @@
         "description":"Summons Red Bird.<br>Used in The River.",
         "rarity":3
     },
+    "bluefish":{
+        "name":"Blue Fish",
+        "equip":"consume",
+        "event":"if(self.map === 'Lilypad Temple Room 2'){s.createMonster('whirlwind',{x:1824,y:1408,map:'Lilypad Temple Room 2'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('bluefish',[]);",
+        "enchantments":[],
+        "description":"Summons Whirlwind.<br>Used in Lilypad Temple Room 2.",
+        "rarity":6
+    },
     "ectocannon":{
         "name":"Ecto Cannon",
         "equip":"weapon",
@@ -912,6 +920,14 @@
         "rarity":8,
         "description":"<span style='color: #33ee33'>+150% increased xp and coin gain.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
+    "frozentreads":{
+        "name":"Frozen Treads",
+        "equip":"offhand",
+        "event":"self.immuneDebuffs.push('frozen');self.stats.debuffs.push({id:'frozen',time:60});",
+        "enchantments":["smashing"],
+        "rarity":8,
+        "description":"Gives immunity to frozen.<br>All of your attacks inflict frozen.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
+    },
     "lightningarrow":{
         "name":"Lightning Arrow",
         "equip":"offhand",
@@ -953,5 +969,17 @@
         "critChance":0.04,
         "useTime":8,
         "rarity":6
+    },
+    "staffofthewhirlwind":{
+        "name":"Staff Of The Whirlwind",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:60});",
+        "enchantments":["speed","burst","cost"],
+        "damage":824,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":15,
+        "rarity":6,
+        "description":"Summons a whirlwind at your cursor location."
     }
 }

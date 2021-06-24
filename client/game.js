@@ -16,7 +16,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f3a';
+var VERSION = '024f4a';
 
 var DEBUG = false;
 
@@ -562,6 +562,7 @@ socket.on('loadMap',function(data){
     for(var i in world){
         loadMap(world[i].fileName.slice(0,-4));
     }
+    loadingProgress += 1;
 });
 const times = [];
 let fps;
@@ -641,6 +642,8 @@ Img.lightningRammer = new Image();
 Img.lightningRammer.src = '/client/img/lightningRammer.png';
 Img.waterRammer = new Image();
 Img.waterRammer.src = '/client/img/waterRammer.png';
+Img.whirlwind = new Image();
+Img.whirlwind.src = '/client/img/whirlwind.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -1435,6 +1438,10 @@ var Monster = function(initPack){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'Plantera ' + self.hp + '/' + self.hpMax;
     }
+    if(self.monsterType === 'whirlwind'){
+        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
+        document.getElementById('bossbar').innerHTML = 'Whirlwind ' + self.hp + '/' + self.hpMax;
+    }
     self.update = function(){
         if(self.moveNumber > 0){
             self.x += self.moveX;
@@ -1562,6 +1569,13 @@ var Monster = function(initPack){
             ctx0.rotate(-self.animation * 45 * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
+        if(self.monsterType === 'whirlwind'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.animation * Math.PI / 180);
+            ctx0.drawImage(Img.whirlwind,-46,-46,92,92);
+            ctx0.rotate(-self.animation * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
     }
     self.drawCtx1 = function(){
         if(self.monsterType === 'ghost'){
@@ -1587,6 +1601,13 @@ var Monster = function(initPack){
             ctx1.rotate(-self.animation * 10 * Math.PI / 180);
             ctx1.translate(-self.x,-self.y);
         }
+        if(self.monsterType === 'whirlwind'){
+            ctx1.translate(self.x,self.y);
+            ctx1.rotate(self.animation * Math.PI / 180);
+            ctx1.drawImage(Img.whirlwind,-46,-46,92,92);
+            ctx1.rotate(-self.animation * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
@@ -1598,6 +1619,10 @@ var Monster = function(initPack){
             ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 100,Math.round(126 * self.hp / self.hpMax),15);
         }
         else if(self.monsterType === 'plantera'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 70,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 70,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'whirlwind'){
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 70,126,15);
             ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 70,Math.round(126 * self.hp / self.hpMax),15);
         }
@@ -2162,6 +2187,10 @@ socket.on('update',function(data){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'Plantera ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
+                        if(Monster.list[data.monster[i].id].monsterType === 'whirlwind'){
+                            document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
+                            document.getElementById('bossbar').innerHTML = 'Whirlwind ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                        }
                     }
                     if(data.monster[i].hpMax !== undefined){
                         Monster.list[data.monster[i].id].hpMax = data.monster[i].hpMax;
@@ -2200,6 +2229,10 @@ socket.on('update',function(data){
                     if(monster.monsterType === 'plantera'){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
                         document.getElementById('bossbar').innerHTML = 'Plantera ' + monster.hp + '/' + monster.hpMax;
+                    }
+                    if(monster.monsterType === 'whirlwind'){
+                        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
+                        document.getElementById('bossbar').innerHTML = 'Whirlwind ' + monster.hp + '/' + monster.hpMax;
                     }
                 }
             }
@@ -2306,6 +2339,10 @@ socket.on('update',function(data){
                 document.getElementById('bossbar').style.display = 'none';
             }
             if(Monster.list[i].monsterType === 'plantera'){
+                document.getElementById('bossHealth').style.display = 'none';
+                document.getElementById('bossbar').style.display = 'none';
+            }
+            if(Monster.list[i].monsterType === 'whirlwind'){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
@@ -2539,9 +2576,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 301';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 301 * window.innerWidth / 2 + 'px';
-        if(loadingProgress >= 301){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 304';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 304 * window.innerWidth / 2 + 'px';
+        if(loadingProgress >= 304){
             setTimeout(function(){
                 if(loading){
                     loading = false;
@@ -2748,6 +2785,9 @@ setInterval(function(){
         if(Monster.list[i].monsterType === 'plantera'){
             bossAlive = true;
         }
+        if(Monster.list[i].monsterType === 'whirlwind'){
+            bossAlive = true;
+        }
     }
     if(bossAlive && (document.getElementById('bossbar').style.display === 'none' || document.getElementById('bossbar').style.display === '')){
         document.getElementById('bossHealth').style.display = 'inline-block';
@@ -2768,6 +2808,10 @@ setInterval(function(){
             if(Monster.list[i].monsterType === 'plantera'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Plantera ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+            }
+            if(Monster.list[i].monsterType === 'whirlwind'){
+                document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
+                document.getElementById('bossbar').innerHTML = 'Whirlwind ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
         }
     }

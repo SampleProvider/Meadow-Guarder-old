@@ -232,6 +232,7 @@ s = {
                     width:monsterData[i].width,
                     height:monsterData[i].height,
                     xpGain:monsterData[i].xpGain,
+                    itemDrops:monsterData[i].itemDrops,
                     onDeath:function(pt){
                         pt.toRemove = true;
                         for(var i in Projectile.list){
@@ -6571,6 +6572,68 @@ Player = function(param){
                                 }
                             }
                             break;
+                        case "staffofthewhirlwindAttack":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'waterTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'waterTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
+                                    map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    pierce:0,
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
+                                });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                var turnAmount = 0;
+                                for(var j = 0;j < 2;j++){
+                                    self.shootProjectile(self.id,'Player',turnAmount + j * 180,turnAmount + j * 180,'waterBullet',50,function(t){return 0},0,self.stats,'noCollision');
+                                }
+                                for(var k = 0;k < 12;k++){
+                                    setTimeout(function(){
+                                        turnAmount += 32;
+                                        var x = self.x;
+                                        var y = self.y;
+                                        self.x = mouseX;
+                                        self.y = mouseY;
+                                        for(var j = 0;j < 2;j++){
+                                            self.shootProjectile(self.id,'Player',turnAmount + j * 180,turnAmount + j * 180,'waterBullet',50,function(t){return 0},0,self.stats,'noCollision');
+                                        }
+                                        self.x = x;
+                                        self.y = y;
+                                    },250 * k);
+                                }
+                                self.x = x;
+                                self.y = y;
+                            }
+                            break;
                         case "unholytridentAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
@@ -8555,6 +8618,13 @@ Monster = function(param){
     if(self.monsterType === 'thorn'){
         self.canCollide = false;
     }
+    if(self.monsterType === 'whirlwind'){
+        self.canCollide = false;
+        addToChat('style="color: #ff00ff">','Whirlwind has awoken!');
+        self.stage2 = false;
+        self.stage3 = false;
+        self.randomWalk(false,false,self.x,self.y);
+    }
     self.oldMoveSpeed = self.maxSpeed;
     var lastSelf = {};
     var super_update = self.update;
@@ -8591,6 +8661,14 @@ Monster = function(param){
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map){
                         Player.list[i].questStats["Plantera"] = true;
+                    }
+                }
+            }
+            if(self.monsterType === 'whirlwind'){
+                addToChat('style="color: #ff00ff">','Whirlwind has been defeated!');
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map){
+                        Player.list[i].questStats["Whirlwind"] = true;
                     }
                 }
             }
@@ -10009,7 +10087,7 @@ Monster = function(param){
                 }
                 if(self.target.toRemove){
                     self.target = undefined;
-                    self.attackState = 'passivePossessedSpirit';
+                    self.attackState = 'passivePlantera';
                     self.damagedEntity = false;
                     self.damaged = false;
                     break;
@@ -10361,6 +10439,262 @@ Monster = function(param){
                 self.spdY = 0;
                 self.x = self.lastX;
                 self.y = self.lastY;
+                break;
+            case "passiveWhirlwind":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveWhirlwind";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveWhirlwind";
+                }
+                break;
+            case "moveWhirlwind":
+                self.followEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackPhase1Whirlwind";
+                break;
+            case "attackPhase1Whirlwind":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveWhirlwind';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveWhirlwind';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveWhirlwind';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'waterBullet',0,function(t){return 25},0,self.stats);
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'waterBullet',0,function(t){return 25},0,self.stats,'noCollision');
+                }
+                if((self.reload % 50) % 5 === 0 && self.reload % 100 < 20 && self.reload > 50 && self.target.invincible === false){
+                    for(var i = 0;i < 18;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'waterBullet'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        projectileStats.damageReduction = 0;
+                        projectileStats.debuffs = self.stats.debuffs;
+                        projectileStats.speed *= 0.1;
+                        projectileStats.speed *= 2;
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'waterBullet',
+                            angle:i * 20 + 180,
+                            direction:i * 20,
+                            x:self.target.x - Math.cos(i / 10 * Math.PI) * 128,
+                            y:self.target.y - Math.sin(i / 10 * Math.PI) * 128,
+                            map:self.map,
+                            parentType:'Monster',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 25},
+                            pierce:0,
+                            stats:projectileStats,
+                            projectilePattern:'accellerateNoCollision',
+                            onCollision:function(self,pt){
+                                if(self.pierce === 0){
+                                    self.toRemove = true;
+                                }
+                                else{
+                                    self.pierce -= 1;
+                                }
+                            }
+                        });
+                    }
+                }
+                if(self.reload % 100 > 80){
+                    self.animation += 50;
+                }
+                self.reload += 1;
+                if(self.hp < self.hpMax / 2){
+                    self.attackState = 'attackPhase2Whirlwind';
+                    for(var i = 0;i < 18;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'waterBullet'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        projectileStats.damageReduction = 0;
+                        projectileStats.debuffs = self.stats.debuffs;
+                        projectileStats.speed *= 0.1;
+                        projectileStats.speed *= 2;
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'waterBullet',
+                            angle:i * 20 + 180,
+                            direction:i * 20,
+                            x:self.target.x - Math.cos(i / 10 * Math.PI) * 128,
+                            y:self.target.y - Math.sin(i / 10 * Math.PI) * 128,
+                            map:self.map,
+                            parentType:'Monster',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 25},
+                            pierce:0,
+                            stats:projectileStats,
+                            projectilePattern:'accellerateNoCollision',
+                            onCollision:function(self,pt){
+                                if(self.pierce === 0){
+                                    self.toRemove = true;
+                                }
+                                else{
+                                    self.pierce -= 1;
+                                }
+                            }
+                        });
+                    }
+                }
+                self.animation += 25;
+                break;
+            case "attackPhase2Whirlwind":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(self.map === 'The Arena'){
+                    allPlayersDead = false;
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveWhirlwind';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveWhirlwind';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveWhirlwind';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + i * 45,self.direction + i * 45,'waterBullet',0,function(t){return 25},0,self.stats);
+                    }
+                }
+                if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + i * 45,self.direction + i * 45,'waterBullet',0,function(t){return 25},0,self.stats,'noCollision');
+                    }
+                }
+                if((self.reload % 50) % 5 === 0 && self.reload % 70 < 20 && self.reload > 50 && self.target.invincible === false){
+                    for(var i = 0;i < 18;i++){
+                        var projectileWidth = 0;
+                        var projectileHeight = 0;
+                        var projectileStats = {};
+                        for(var j in projectileData){
+                            if(j === 'waterBullet'){
+                                projectileWidth = projectileData[j].width;
+                                projectileHeight = projectileData[j].height;
+                                projectileStats = Object.create(projectileData[j].stats);
+                            }
+                        }
+                        for(var j in projectileStats){
+                            projectileStats[j] *= self.stats[j];
+                        }
+                        projectileStats.damageReduction = 0;
+                        projectileStats.debuffs = self.stats.debuffs;
+                        projectileStats.speed *= 0.1;
+                        projectileStats.speed *= 2;
+                        var projectile = Projectile({
+                            id:self.id,
+                            projectileType:'waterBullet',
+                            angle:i * 20 + 180,
+                            direction:i * 20,
+                            x:self.target.x - Math.cos(i / 10 * Math.PI) * 128,
+                            y:self.target.y - Math.sin(i / 10 * Math.PI) * 128,
+                            map:self.map,
+                            parentType:'Monster',
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 25},
+                            pierce:0,
+                            stats:projectileStats,
+                            projectilePattern:'accellerateNoCollision',
+                            onCollision:function(self,pt){
+                                if(self.pierce === 0){
+                                    self.toRemove = true;
+                                }
+                                else{
+                                    self.pierce -= 1;
+                                }
+                            }
+                        });
+                    }
+                }
+                if(self.reload % 70 > 30){
+                    self.animation += 50;
+                }
+                self.reload += 1;
+                self.animation += 50;
                 break;
         }
     }
@@ -10889,6 +11223,9 @@ Projectile = function(param){
         self.state = 0;
     }
     if(param.projectilePattern === 'noCollision'){
+        self.canCollide = false;
+    }
+    if(param.projectilePattern === 'accellerateNoCollision'){
         self.canCollide = false;
     }
     if(param.projectilePattern === 'lightningStrike'){
@@ -11438,6 +11775,10 @@ Projectile = function(param){
         else if(param.projectilePattern === 'lightningStrike' && self.timer < 5){
             self.x -= self.spdX;
             self.y -= self.spdY;
+        }
+        else if(param.projectileType === 'accellerateNoCollision'){
+            self.spdX *= 1.5;
+            self.spdY *= 1.5;
         }
         else{
             if(param.spin !== undefined){
