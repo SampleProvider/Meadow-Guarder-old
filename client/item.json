@@ -734,7 +734,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 10;self.stats.debuffs.push({id:'death',time:100});",
         "enchantments":["speed","burst","cost"],
-        "damage":650,
+        "damage":824,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":10,
@@ -746,7 +746,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'death',time:40});",
         "enchantments":["speed","burst"],
-        "damage":200,
+        "damage":245,
         "damageType":"melee",
         "critChance":0.04,
         "useTime":15,
@@ -800,9 +800,9 @@
     "bookofnature":{
         "name":"Book Of Nature",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.range -= 0.5;",
         "enchantments":["speed","burst","cost"],
-        "damage":650,
+        "damage":529,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":12,
@@ -919,5 +919,39 @@
         "enchantments":[],
         "rarity":4,
         "description":"<span style='color: #33ee33'>+50% ranged damage.</span><br><span style='color: #33ee33'>Greatly increased ranged projectile speed.</span><br>Ranged weapons inflict shocked for 3 seconds."
+    },
+    "voidbook":{
+        "name":"Void Book",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["burst","cost"],
+        "damage":723,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":6,
+        "description":"Conjure a astral force field to trap your enemies."
+    },
+    "tsunami":{
+        "name":"Tsunami",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":646,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":6
+    },
+    "waterslasher":{
+        "name":"Water Slasher",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":834,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":8,
+        "rarity":6
     }
 }

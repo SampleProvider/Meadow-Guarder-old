@@ -576,6 +576,7 @@ loadMap('The Guarded Citadel');
 loadMap('The Pet Arena');
 loadMap("Lilypad Temple Room 0");
 loadMap("Lilypad Temple Room 1");
+loadMap("Lilypad Temple Room 2");
 
 var documentHidden = false;
 
@@ -638,6 +639,8 @@ Img.lightningTurret = new Image();
 Img.lightningTurret.src = '/client/img/lightningTurret.png';
 Img.lightningRammer = new Image();
 Img.lightningRammer.src = '/client/img/lightningRammer.png';
+Img.waterRammer = new Image();
+Img.waterRammer.src = '/client/img/waterRammer.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -956,6 +959,9 @@ document.getElementById('lilypad2Waypoint').onclick = function(){
 document.getElementById('desertedTownWaypoint').onclick = function(){
     socket.emit('waypoint','Deserted Town');
 }
+document.getElementById('lilypad3Waypoint').onclick = function(){
+    socket.emit('waypoint','Lilypad Temple Room 2');
+}
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
     var animationValue = 0;
@@ -990,7 +996,6 @@ var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
 }
 
 var arrayIsEqual = function(arr1,arr2){
-    console.log(arr1,arr2)
 	if(arr1.length !== arr2.length){
         return false;
     }
@@ -1159,6 +1164,14 @@ var Player = function(initPack){
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
+            else if(self.currentItem === 'tsunami'){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
             else if(self.currentItem.includes('book')){
                 turnAmount = 270;
                 var drawX = -35;
@@ -1297,6 +1310,7 @@ var Projectile = function(initPack){
     self.direction = initPack.direction;
     self.projectileType = initPack.projectileType;
     self.canCollide = initPack.canCollide;
+    self.relativeToPlayer = initPack.relativeToPlayer;
     self.type = initPack.type;
     self.moveNumber = 4;
     self.hp = initPack.hp;
@@ -1311,7 +1325,12 @@ var Projectile = function(initPack){
         self.moveNumber -= 1;
     }
     self.draw = function(){
-        ctx0.translate(self.x,self.y);
+        if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
+            ctx0.translate(self.x + Player.list[self.relativeToPlayer].x,self.y + Player.list[self.relativeToPlayer].y);
+        }
+        else{
+            ctx0.translate(self.x,self.y);
+        }
         ctx0.rotate(self.direction * Math.PI / 180);
         if(self.projectileType === 'stoneArrow'){
             ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
@@ -1336,7 +1355,12 @@ var Projectile = function(initPack){
             ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
         ctx0.rotate(-self.direction * Math.PI / 180);
-        ctx0.translate(-self.x,-self.y);
+        if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
+            ctx0.translate(-self.x - Player.list[self.relativeToPlayer].x,-self.y - Player.list[self.relativeToPlayer].y);
+        }
+        else{
+            ctx0.translate(-self.x,-self.y);
+        }
     }
     self.drawCtx1 = function(){
         ctx1.translate(self.x,self.y);
@@ -1471,6 +1495,17 @@ var Monster = function(initPack){
                 ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
             }
         }
+        if(self.monsterType === 'deathBomb'){
+            if(self.animation === 0){
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 2,12,10,self.x - 24,self.y - 20,48,40);
+            }
+            else if(self.animation === 1){
+                ctx0.drawImage(Img.cherryBomb,self.animation * 13,11 * 2,12,10,self.x - 24,self.y - 20,48,40);
+            }
+            else{
+                ctx0.drawImage(Img.cherryBomb,Math.floor(self.animation) * 19 + 26,18 * 0,18,18,self.x - 72,self.y - 72,72 * 2,72 * 2);
+            }
+        }
         if(self.monsterType === 'greenLizard'){
             if(self.animation < 2){
                 ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13,9 * 0,12,8,self.x - 24,self.y - 16,48,32);
@@ -1517,6 +1552,13 @@ var Monster = function(initPack){
             ctx0.translate(self.x,self.y);
             ctx0.rotate(self.animation * 45 * Math.PI / 180);
             ctx0.drawImage(Img.lightningRammer,0,0,9,9,-18,-18,36,36);
+            ctx0.rotate(-self.animation * 45 * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+        }
+        if(self.monsterType === 'waterRammer'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate(self.animation * 45 * Math.PI / 180);
+            ctx0.drawImage(Img.waterRammer,0,0,9,9,-18,-18,36,36);
             ctx0.rotate(-self.animation * 45 * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
@@ -2613,8 +2655,15 @@ setInterval(function(){
         entities.push(Player.list[i]);
     }
     for(var i in Projectile.list){
-        if(Projectile.list[i].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
-            entities.push(Projectile.list[i]);
+        if(Projectile.list[i].relativeToPlayer){
+            if(Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
+                entities.push(Projectile.list[i]);
+            }
+        }
+        else{
+            if(Projectile.list[i].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
+                entities.push(Projectile.list[i]);
+            }
         }
     }
     for(var i in Monster.list){

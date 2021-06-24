@@ -6266,7 +6266,7 @@ Player = function(param){
                             break;
                         case "simplewoodenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplewoodensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplewoodensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6275,7 +6275,7 @@ Player = function(param){
                             break;
                         case "simplesteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplesteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplesteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6284,7 +6284,7 @@ Player = function(param){
                             break;
                         case "simpledarksteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simpledarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simpledarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6293,8 +6293,8 @@ Player = function(param){
                             break;
                         case "simplegoldenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplegoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplegoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplegoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'simplegoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6303,8 +6303,8 @@ Player = function(param){
                             break;
                         case "simplerubyswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'simplerubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'simplerubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplerubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'simplerubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6313,7 +6313,7 @@ Player = function(param){
                             break;
                         case "advancedwoodenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedwoodensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedwoodensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6322,8 +6322,8 @@ Player = function(param){
                             break;
                         case "advancedsteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedsteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advancedsteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedsteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'advancedsteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6332,8 +6332,8 @@ Player = function(param){
                             break;
                         case "advanceddarksteelswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advanceddarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 90) / 180 * Math.PI,(self.direction + 90) / 180 * Math.PI,'advanceddarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advanceddarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'advanceddarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6342,9 +6342,9 @@ Player = function(param){
                             break;
                         case "advancedgoldenswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 30,self.direction + 30,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 150,self.direction + 150,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6353,9 +6353,9 @@ Player = function(param){
                             break;
                         case "advancedrubyswordAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',(self.direction + 270) / 180 * Math.PI,(self.direction + 270) / 180 * Math.PI,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 30) / 180 * Math.PI,(self.direction + 30) / 180 * Math.PI,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',(self.direction + 150) / 180 * Math.PI,(self.direction + 150) / 180 * Math.PI,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 30,self.direction + 30,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction + 150,self.direction + 150,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 Sound({
                                     type:'ninjaStar',
                                     map:self.map,
@@ -6529,6 +6529,31 @@ Player = function(param){
                                 for(var j = 0;j < 8;j++){
                                     self.shootProjectile(self.id,'Player',j * 45,j * 45,'seed',32,function(t){return 0},3,self.stats,'playerSeed');
                                 }
+                            }
+                            break;
+                        case "voidbookAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',0,0,'void',0,function(t){return 25},1000,self.stats,'followPlayerStationary');
+                                for(var j = 0;j < 8;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 45,self.direction + j * 45,'unholySoul',192,function(t){return 25},0,self.stats,'monsterHoming');
+                                }
+                            }
+                            break;
+                        case "tsunamiAttack":
+                            if(isFireMap){
+                                for(var j = -2;j < 3;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 15,self.direction + j * 15,'waterBullet',70,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                }
+                            }
+                            break;
+                        case "waterslasherAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'waterslasher',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'waterslasher',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 0},0,self.stats,'bounceOffCollisions');
                             }
                             break;
                         case "flamethrowerAttack":
@@ -8105,6 +8130,14 @@ Player.onConnect = function(socket,username){
                 }
                 else{
                     socket.emit('notification','[!] Complete the Lightning Lizard Boss quest to gain access to this waypoint.');
+                }
+            }
+            else if(data === 'Lilypad Temple Room 2'){
+                if(player.questStats['Plantera']){
+                    player.teleport(96,3104,data);
+                }
+                else{
+                    socket.emit('notification','[!] Defeat Plantera to gain access to this waypoint.');
                 }
             }
             else if(data === 'Deserted Town'){
@@ -10052,6 +10085,33 @@ Monster = function(param){
                     break;
                 }
                 self.reload += 1;
+                if(self.getSquareDistance(self.target) < 64 && ENV.Difficulty === 'Expert'){
+                    if(self.target.mapChange !== undefined){
+                        if(self.target.mapChange > 10){
+                            self.stats.defense += 2000000;
+                            self.stats.attack += 2000000;
+                            self.oldStats.defense += 2000000;
+                            self.oldStats.attack += 2000000;
+                            self.attackState = 'explodeDeathBomb';
+                            self.monsterType = 'deathBomb'
+                            Sound({
+                                type:'cherryBomb',
+                                map:self.map,
+                            });
+                            self.target = undefined;
+                            self.trackingEntity = undefined;
+                            self.randomWalk(false,false,self.x,self.y);
+                            self.spdX = 0;
+                            self.spdY = 0;
+                        }
+                    }
+                    else{
+                        self.stats.defense += 2000000;
+                        self.stats.attack += 2000000;
+                        self.attackState = 'explodeDeathBomb';
+                    }
+                    break;
+                }
                 if(self.getSquareDistance(self.target) > 512 || self.target.isDead){
                     if(!self.damaged){
                         self.target = undefined;
@@ -10191,6 +10251,116 @@ Monster = function(param){
                         self.animation = 0;
                     }
                 }
+                break;
+            case "passiveDeathBomb":
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveDeathBomb";
+                        self.target = Player.list[i];
+                        self.damaged = false;
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveDeathBomb";
+                }
+                break;
+            case "moveDeathBomb":
+                self.trackEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackDeathBomb";
+                break;
+            case "attackDeathBomb":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveDeathBomb';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveDeathBomb';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    self.randomWalk(true,false,self.x,self.y);
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveDeathBomb';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                self.reload += 1;
+                if(self.reload % 20 === 0 && self.reload > 20 && self.target.invincible === false && self.hp < self.hpMax / 2){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'unholySoul',45,function(t){return 0},0,self.stats,'seed');
+                    }
+                }
+                if(self.getSquareDistance(self.target) < 64){
+                    if(self.target.mapChange !== undefined){
+                        if(self.target.mapChange > 10){
+                            self.stats.defense += 2000000;
+                            self.stats.attack += 2000000;
+                            self.oldStats.defense += 2000000;
+                            self.oldStats.attack += 2000000;
+                            self.attackState = 'explodeDeathBomb';
+                            Sound({
+                                type:'cherryBomb',
+                                map:self.map,
+                            });
+                            self.target = undefined;
+                            self.trackingEntity = undefined;
+                            self.randomWalk(false,false,self.x,self.y);
+                            self.spdX = 0;
+                            self.spdY = 0;
+                        }
+                    }
+                    else{
+                        self.stats.defense += 2000000;
+                        self.stats.attack += 2000000;
+                        self.attackState = 'explodeDeathBomb';
+                    }
+                    break;
+                }
+                else if(self.animation < 2){
+                    if(self.animation === 0){
+                        self.animation = 1;
+                    }
+                    else if(self.animation === 1){
+                        self.animation = 0;
+                    }
+                }
+                if(self.damaged && self.damagedEntity.type === 'Player'){
+                    self.stats.defense *= 200;
+                    self.stats.attack *= 200;
+                    self.attackState = 'explodeDeathBomb';
+                }
+                break;
+            case "explodeDeathBomb":
+                self.target = undefined;
+                self.trackingEntity = undefined;
+                if(self.animation === 0){
+                    self.animation = 1;
+                }
+                self.animation += 0.2;
+                if(self.animation > 4){
+                    self.width = 18 * 8;
+                    self.height = 18 * 8;
+                    self.pushPower = 300;
+                }
+                if(self.animation > 5){
+                    param.onDeath(self);
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'unholySoul',45,function(t){return 0},0,self.stats);
+                    }
+                }
+                self.spdX = 0;
+                self.spdY = 0;
+                self.x = self.lastX;
+                self.y = self.lastY;
                 break;
         }
     }
@@ -10648,23 +10818,27 @@ Projectile = function(param){
     if(param.pierce){
         self.pierce = param.pierce;
     }
+    self.relativeToPlayer = false;
     if(param.projectilePattern === 'followPlayerStationary'){
         self.distanceFromParentX = Player.list[self.parent].x - self.x;
         self.distanceFromParentY = Player.list[self.parent].y - self.y;
         self.spdX = 0;
         self.spdY = 0;
+        self.relativeToPlayer = self.parent;
     }
     if(param.projectilePattern === 'spinAroundPlayer'){
-        self.angle = param.angle;
+        self.angle = param.angle / 180 * Math.PI;
         self.canCollide = false;
         self.spdX = 0;
         self.spdY = 0;
+        self.relativeToPlayer = self.parent;
     }
     if(param.projectilePattern === 'auraPlayer'){
         self.angle = param.angle;
         self.canCollide = false;
         self.spdX = 0;
         self.spdY = 0;
+        self.relativeToPlayer = self.parent;
     }
     if(param.projectilePattern === 'spinAroundPoint'){
         self.canCollide = false;
@@ -10784,6 +10958,9 @@ Projectile = function(param){
         if(param.projectilePattern === 'followPlayerStationary'){
             self.x = Player.list[self.parent].x - self.distanceFromParentX;
             self.y = Player.list[self.parent].y - self.distanceFromParentY;
+            if(param.spin !== undefined){
+                self.direction += param.spin(self.timer);
+            }
         }
         else if(param.projectilePattern === 'spinAroundPlayer'){
             self.x = Player.list[self.parent].x;
@@ -10813,7 +10990,6 @@ Projectile = function(param){
             var angle = Math.atan2(self.y - self.parentStartY,self.x - self.parentStartX);
             self.spdX = -Math.sin(angle) * param.stats.speed * 25;
             self.spdY = Math.cos(angle) * param.stats.speed * 25;
-            self.timer -= 0.5;
             if(param.spin(self.timer) !== 0){
                 self.direction += param.spin(self.timer);
             }
@@ -11920,13 +12096,25 @@ Projectile = function(param){
 	self.getUpdatePack = function(){
         var pack = {};
         pack.id = self.id;
-        if(lastSelf.x !== self.x){
-            pack.x = self.x;
-            lastSelf.x = self.x;
+        if(self.relativeToPlayer !== false && Player.list[self.parent]){
+            if(lastSelf.x !== self.x - Player.list[self.parent].x){
+                pack.x = self.x - Player.list[self.parent].x;
+                lastSelf.x = self.x - Player.list[self.parent].x;
+            }
+            if(lastSelf.y !== self.y - Player.list[self.parent].y){
+                pack.y = self.y - Player.list[self.parent].y;
+                lastSelf.y = self.y - Player.list[self.parent].y;
+            }
         }
-        if(lastSelf.y !== self.y){
-            pack.y = self.y;
-            lastSelf.y = self.y;
+        else{
+            if(lastSelf.x !== self.x){
+                pack.x = self.x;
+                lastSelf.x = self.x;
+            }
+            if(lastSelf.y !== self.y){
+                pack.y = self.y;
+                lastSelf.y = self.y;
+            }
         }
         if(lastSelf.spdX !== self.spdX){
             pack.spdX = self.spdX;
@@ -11960,13 +12148,23 @@ Projectile = function(param){
             pack.canCollide = self.canCollide;
             lastSelf.canCollide = self.canCollide;
         }
+        if(lastSelf.relativeToPlayer !== self.relativeToPlayer){
+            pack.relativeToPlayer = self.relativeToPlayer;
+            lastSelf.relativeToPlayer = self.relativeToPlayer;
+        }
         return pack;
 	}
     self.getInitPack = function(){
         var pack = {};
         pack.id = self.id;
-        pack.x = self.x;
-        pack.y = self.y;
+        if(self.relativeToPlayer !== false && Player.list[self.parent]){
+            pack.x = self.x - Player.list[self.parent].x;
+            pack.y = self.y - Player.list[self.parent].y;
+        }
+        else{
+            pack.x = self.x;
+            pack.y = self.y;
+        }
         pack.spdX = self.spdX;
         pack.spdY = self.spdY;
         pack.width = self.width;
@@ -11974,7 +12172,8 @@ Projectile = function(param){
         pack.map = self.map;
         pack.type = self.type;
         pack.projectileType = self.projectileType;
-        pack.canCollide = pack.canCollide;
+        pack.canCollide = self.canCollide;
+        pack.relativeToPlayer = self.relativeToPlayer;
         pack.direction = self.direction;
         return pack;
     }
@@ -12607,6 +12806,7 @@ load("House");
 load("Tiny House");
 load("Lilypad Temple Room 0");
 load("Lilypad Temple Room 1");
+load("Lilypad Temple Room 2");
 load("The Arena");
 load("The Guarded Citadel");
 load("Town Cave");
