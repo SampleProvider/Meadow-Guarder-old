@@ -1,10 +1,10 @@
 ENV = {
-    PVP:true,
-    Hardcore:true,
+    PVP:false,
+    Hardcore:false,
     Peaceful:false,
-    MonsterStrength:0.3,
-    DisplayMapChanges:false,
-    Difficulty:'Classic',
+    MonsterStrength:1,
+    DisplayMapChanges:true,
+    Difficulty:'Expert',
     Spawnpoint:{
         x:2080,
         y:1760,
