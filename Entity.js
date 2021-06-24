@@ -6542,18 +6542,18 @@ Player = function(param){
                         case "tsunamiAttack":
                             if(isFireMap){
                                 for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 15,self.direction + j * 15,'waterBullet',70,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 15,self.direction + j * 15,'waterBullet',70,function(t){return 25},0,self.stats,'bounceOffCollisions');
                                 }
                             }
                             break;
                         case "waterslasherAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'waterslasher',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 0},0,self.stats,'bounceOffCollisions');
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 25},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 25},0,self.stats,'bounceOffCollisions');
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'waterslasher',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 0},0,self.stats,'bounceOffCollisions');
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 25},0,self.stats,'bounceOffCollisions');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 25},0,self.stats,'bounceOffCollisions');
                             }
                             break;
                         case "flamethrowerAttack":
