@@ -923,7 +923,7 @@
     "voidbook":{
         "name":"Void Book",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'death',time:60});",
         "enchantments":["burst","cost"],
         "damage":723,
         "damageType":"magic",

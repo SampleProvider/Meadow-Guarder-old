@@ -504,7 +504,7 @@
             "damageReduction":0,
             "debuffs":[{
                 "id":"death",
-                "time":20
+                "time":40
             }]
         },
         "moveSpeed":15,

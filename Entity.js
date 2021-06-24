@@ -6533,7 +6533,7 @@ Player = function(param){
                             break;
                         case "voidbookAttack":
                             if(isFireMap){
-                                self.shootProjectile(self.id,'Player',0,0,'void',0,function(t){return 25},1000,self.stats,'followPlayerStationary');
+                                self.shootProjectile(self.id,'Player',0,0,'void',0,function(t){return 25},1000,self.stats,'followPlayerStationaryNoCollision');
                                 for(var j = 0;j < 8;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 45,self.direction + j * 45,'unholySoul',192,function(t){return 25},0,self.stats,'monsterHoming');
                                 }
@@ -10826,6 +10826,13 @@ Projectile = function(param){
         self.spdY = 0;
         self.relativeToPlayer = self.parent;
     }
+    if(param.projectilePattern === 'followPlayerStationaryNoCollision'){
+        self.distanceFromParentX = Player.list[self.parent].x - self.x;
+        self.distanceFromParentY = Player.list[self.parent].y - self.y;
+        self.spdX = 0;
+        self.spdY = 0;
+        self.relativeToPlayer = self.parent;
+    }
     if(param.projectilePattern === 'spinAroundPlayer'){
         self.angle = param.angle / 180 * Math.PI;
         self.canCollide = false;
@@ -10956,6 +10963,13 @@ Projectile = function(param){
             }
         }
         if(param.projectilePattern === 'followPlayerStationary'){
+            self.x = Player.list[self.parent].x - self.distanceFromParentX;
+            self.y = Player.list[self.parent].y - self.distanceFromParentY;
+            if(param.spin !== undefined){
+                self.direction += param.spin(self.timer);
+            }
+        }
+        else if(param.projectilePattern === 'followPlayerStationaryNoCollision'){
             self.x = Player.list[self.parent].x - self.distanceFromParentX;
             self.y = Player.list[self.parent].y - self.distanceFromParentY;
             if(param.spin !== undefined){
