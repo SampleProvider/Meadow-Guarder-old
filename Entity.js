@@ -5903,8 +5903,10 @@ Player = function(param){
                         spawnMonster(Spawner.list[i],i);
                     }
                 }
-                addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
-                self.inventory.refreshRender();
+                if(ENV.DisplayMapChanges){
+                    addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
+                }
+                //self.inventory.refreshRender();
                 socket.emit('closeShop');
                 socket.emit('closeCraft');
                 self.questInfo.quest = false;
@@ -12684,15 +12686,6 @@ updateCrashes = function(){
                 if(Monster.list[i].isColliding(Monster.list[j]) && Monster.list[j].invincible === false && Monster.list[i].invincible === false && i !== j){
                     Monster.list[j].onPush(Monster.list[i],0);
                     Monster.list[i].onPush(Monster.list[j],0);
-                }
-            }
-        }
-    }
-    for(var i in Npc.list){
-        for(var j in Projectile.list){
-            if(Npc.list[i] && Projectile.list[j]){
-                if(Npc.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent != i && Projectile.list[j].map === Npc.list[i].map){
-                    Projectile.list[j].toRemove = true;
                 }
             }
         }

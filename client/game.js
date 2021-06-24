@@ -990,6 +990,7 @@ var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
 }
 
 var arrayIsEqual = function(arr1,arr2){
+    console.log(arr1,arr2)
 	if(arr1.length !== arr2.length){
         return false;
     }
@@ -1950,7 +1951,7 @@ socket.on('update',function(data){
                         if(!arrayIsEqual(data.player[i].img.pants,Player.list[data.player[i].id].img.pants)){
                             Player.list[data.player[i].id].renderedImg.pants = renderPlayer(Img.playerPants,data.player[i].img.pants);
                         }
-                        if(!arrayIsEqual(data.player[i].img.hair,Player.list[data.player[i].id].img.hair)){
+                        if(data.player[i].img.hair !== Player.list[data.player[i].id].img.hair){
                             Player.list[data.player[i].id].renderedImg.hair = renderPlayer(Img.playerHair[data.player[i].img.hairType],data.player[i].img.hair);
                         }
                         if(!arrayIsEqual(data.player[i].img.hairType,Player.list[data.player[i].id].img.hairType)){
