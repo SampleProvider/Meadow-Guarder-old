@@ -8622,7 +8622,6 @@ Monster = function(param){
         self.canCollide = false;
         addToChat('style="color: #ff00ff">','Whirlwind has awoken!');
         self.stage2 = false;
-        self.stage3 = false;
         self.randomWalk(false,false,self.x,self.y);
     }
     self.oldMoveSpeed = self.maxSpeed;
