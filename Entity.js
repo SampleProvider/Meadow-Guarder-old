@@ -6381,7 +6381,7 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
-        if(self.questStage === 37 && self.quest === 'Monster Search'){
+        if(self.currentResponse === 1 && self.questStage === 37 && self.quest === 'Monster Search'){
             self.questStage += 1;
             self.invincible = true;
             self.questDependent.monsterking.toRemove = true;
@@ -8765,6 +8765,9 @@ Player.onConnect = function(socket,username){
             }
             else if(player.map === 'The Pet Arena'){
                 player.teleport(288,608,'The Guarded Citadel');
+            }
+            else if(player.map === 'The Pet Arena'){
+                player.teleport(608,2848,'Deserted Town');
             }
             //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
             var newTiles = [];
