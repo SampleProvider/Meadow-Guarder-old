@@ -6097,7 +6097,7 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:monsterData['lightningRammer'].moveSpeed,
-                        hp:monsterData['lightningRammer'].hp * ENV.MonsterStrength * 5,
+                        hp:monsterData['lightningRammer'].hp * ENV.MonsterStrength * 2,
                         monsterType:'lightningRammer',
                         attackState:'passiveLightningRammer',
                         width:monsterData['lightningRammer'].width,
@@ -6141,13 +6141,13 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner2'){
                     var monsterStats = Object.create(monsterData['lightningLizard'].stats);
-                    monsterStats.attack *= 4;
+                    monsterStats.attack *= 2;
                     self.questDependent[i] = new Monster({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:monsterData['lightningLizard'].moveSpeed,
-                        hp:monsterData['lightningLizard'].hp * ENV.MonsterStrength * 12,
+                        hp:monsterData['lightningLizard'].hp * ENV.MonsterStrength * 4,
                         monsterType:'lightningLizard',
                         attackState:'passiveLightningLizard',
                         width:monsterData['lightningLizard'].width,
@@ -6191,13 +6191,13 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner3'){
                     var monsterStats = Object.create(monsterData['possessedSpirit'].stats);
-                    monsterStats.attack *= 3;
+                    monsterStats.attack *= 2;
                     self.questDependent[i] = new Monster({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:monsterData['possessedSpirit'].moveSpeed,
-                        hp:monsterData['possessedSpirit'].hp * ENV.MonsterStrength * 10,
+                        hp:monsterData['possessedSpirit'].hp * ENV.MonsterStrength * 5,
                         monsterType:'possessedSpirit',
                         attackState:'passivePossessedSpirit',
                         width:monsterData['possessedSpirit'].width,
