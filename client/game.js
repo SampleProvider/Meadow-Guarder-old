@@ -6,6 +6,9 @@ if(isFirefox === true) {
     alert('This game uses OffscreenCanvas, which is not supported in Firefox.');
 }
 
+window.onerror = function(error) {
+    window.location.reload();
+}
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
