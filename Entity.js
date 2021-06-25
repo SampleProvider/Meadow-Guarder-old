@@ -1538,12 +1538,6 @@ Actor = function(param){
                     }
                     stats.defense -= 1500;
                 }
-                if(self.hp < 1 && self.monsterType !== 'plantera'){
-                    self.willBeDead = true;
-                }
-                if(self.hp < 1 && self.monsterType !== 'plantera' && self.stage2 === true){
-                    self.willBeDead = true;
-                }
             }
             self.debuffs[i].time -= 1;
             if(self.debuffs[i].time <= 0){
@@ -1554,6 +1548,76 @@ Actor = function(param){
             self.debuffs.splice(debuffRemoveList[i],1);
         }
         self.stats = JSON.parse(JSON.stringify(stats));
+        if(self.hp < 1 && self.debuffInflicted){
+            if(Player.list[self.debuffInflicted]){
+                var pt = Player.list[self.debuffInflicted];
+            }
+            else if(Projectile.list[self.debuffInflicted]){
+                var pt = Projectile.list[self.debuffInflicted];
+            }
+            if(pt){
+                if(self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
+                    if(pt.parentType === 'Player' && self.type === 'Monster'){
+                        if(Player.list[pt.parent].isDead === false){
+                            if(self.itemDrops === {}){
+                                
+                            }
+                            else{
+                                for(var i in self.itemDrops){
+                                    if(i === 'enchantmentbook' && Player.list[pt.parent].stats.luck > 0){
+                                        var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
+                                        Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,10);
+                                        for(var j = 0;j < self.itemDrops[i] - 1;j++){
+                                            var itemIndex2 = Player.list[pt.parent].inventory.addItem(i,[]);
+                                            Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex2,10);
+                                        }
+                                        var item = Player.list[pt.parent].inventory.items[itemIndex];
+                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
+                                    }
+                                    else if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
+                                        var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
+                                        Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,Player.list[pt.parent].stats.luck);
+                                        var item = Player.list[pt.parent].inventory.items[itemIndex];
+                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
+                                    }
+                                }
+                            }
+                            Player.list[pt.parent].xp += self.xpGain * Math.round((10 + Math.random() * 10) * Player.list[pt.parent].stats.xp);
+                            Player.list[pt.parent].coins += self.xpGain * Math.round((50 + Math.random() * 25) * Player.list[pt.parent].stats.xp);
+                        }
+                    }
+                    if(pt.type === 'Player' && self.type === 'Monster'){
+                        if(self.itemDrops === {}){
+                                
+                        }
+                        else{
+                            for(var i in self.itemDrops){
+                                if(i === 'enchantmentbook' && pt.stats.luck > 0){
+                                    var itemIndex = pt.inventory.addItem(i,[]);
+                                    pt.inventory.addRandomizedEnchantments(itemIndex,10);
+                                    for(var j = 0;j < self.itemDrops[i] - 1;j++){
+                                        var itemIndex2 = pt.inventory.addItem(i,[]);
+                                        pt.inventory.addRandomizedEnchantments(itemIndex2,10);
+                                    }
+                                    var item = pt.inventory.items[itemIndex];
+                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
+                                }
+                                else if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                                    var itemIndex = pt.inventory.addItem(i,[]);
+                                    pt.inventory.addRandomizedEnchantments(itemIndex,pt.stats.luck);
+                                    var item = pt.inventory.items[itemIndex];
+                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                                }
+                            }
+                        }
+                        pt.xp += Math.round(self.xpGain * (10 + Math.random() * 10) * pt.stats.xp);
+                        pt.coins += Math.round(self.xpGain * (50 + Math.random() * 25) * pt.stats.xp);
+                    }
+                }
+            }
+            self.willBeDead = true;
+            self.toRemove = true;
+        }
     }
     self.onHit = function(pt){
     }
@@ -9251,13 +9315,16 @@ Monster = function(param){
             self.target = Player.list[pt.parent];
             self.damagedEntity = pt;
             self.damaged = true;
+            self.debuffInflicted = pt.parent;
         }
         else if(pt.type === 'Player'){
             self.target = pt;
             self.damagedEntity = pt;
             self.damaged = true;
+            self.debuffInflicted = pt.id;
         }
     }
+    self.debuffInflicted = false;
     self.randomWalk(true,false,self.x,self.y);
     if(self.monsterType === 'redBird'){
         addToChat('style="color: #ff00ff">','Red Bird has awoken!');
