@@ -347,5 +347,11 @@
             ]
         },
         "quote":"Use me to craft items out of rubies."
+    },
+    "andrew":{
+        "name":"Andrew",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false
     }
 }

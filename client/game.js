@@ -578,6 +578,7 @@ loadMap('The Pet Arena');
 loadMap("Lilypad Temple Room 0");
 loadMap("Lilypad Temple Room 1");
 loadMap("Lilypad Temple Room 2");
+loadMap("Mysterious Room");
 
 var documentHidden = false;
 
