@@ -873,6 +873,47 @@ Entity.getFrameUpdateData = function(){
                 }
             }
             else if(ENV.BossRushStage === 6){
+                addToChat('style="color: #00aadd">','I\'m not done yet!');
+                for(var i in monsterData){
+                    if(i === 'whirlwind'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 10;
+                        monsterStats.attack *= 5;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1600,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                }
+            }
+            else if(ENV.BossRushStage === 7){
                 addToChat('style="color: #00aadd">','You expected a reward beyond this mere leaf? Patience, the true reward will come apparent in time...');
                 ENV.BossRushStage = 0;
                 ENV.BossRush = false;
