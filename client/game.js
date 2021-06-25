@@ -2577,9 +2577,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 304';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 304 * window.innerWidth / 2 + 'px';
-        if(loadingProgress >= 304){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 318';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 318 * window.innerWidth / 2 + 'px';
+        if(loadingProgress >= 318){
             setTimeout(function(){
                 if(loading){
                     loading = false;
