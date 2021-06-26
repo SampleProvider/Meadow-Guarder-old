@@ -2500,7 +2500,7 @@ Player = function(param){
             self.ability[i] = param.param.ability[i];
         }
     }
-    self.hpMax = 100 + self.level * 10;
+    self.hpMax = 100 + self.level * 20;
     self.maxSpeed = 20 + Math.floor(self.level / 10);
     self.inventory.refreshRender();
     self.stats = {
@@ -6557,7 +6557,7 @@ Player = function(param){
             self.passive = '';
             self.offhandPassive = '';
             self.textColor = '#ffff00';
-            self.hpMax = 100 + self.level * 10;
+            self.hpMax = 100 + self.level * 20;
             self.attackCost = 10;
             self.secondCost = 40;
             self.healCost = 50;
@@ -6767,13 +6767,15 @@ Player = function(param){
             return;
         }
         if(self.xp >= self.xpMax){
+            self.hpMax = 100 + self.level * 20;
+            self.maxSpeed = 20 + Math.floor(self.level / 10);
             self.xp = self.xp - self.xpMax;
             self.level += 1;
             self.xpMax = xpLevels[self.level];
             addToChat('style="color: #00ff00">',self.displayName + ' is now level ' + self.level + '.');
             if(Pet.list[self.pet]){
                 Pet.list[self.pet].maxSpeed = 5 + self.level / 5;
-                if(self.petType === 'kiol'){
+                if(Pet.list[self.pet].petType === 'kiol'){
                     Pet.list[self.pet].width = 40;
                     Pet.list[self.pet].height = 28;
                     Pet.list[self.pet].stats = {
@@ -6785,9 +6787,9 @@ Player = function(param){
                         damageReduction:0,
                         debuffs:[],
                     }
-                    Pet.list[self.pet].name = 'Kiol Lvl.' + self.level;
+                    Pet.list[self.pet].name = 'Kiol Lvl. ' + self.level;
                 }
-                else if(self.petType === 'cherrier'){
+                if(Pet.list[self.pet].petType === 'cherrier'){
                     Pet.list[self.pet].width = 36;
                     Pet.list[self.pet].height = 32;
                     Pet.list[self.pet].stats = {
@@ -6799,7 +6801,52 @@ Player = function(param){
                         damageReduction:0,
                         debuffs:[],
                     }
-                    Pet.list[self.pet].name = 'Cherrier Lvl.' + self.level;
+                    Pet.list[self.pet].name = 'Cherrier Lvl. ' + self.level;
+                }
+                if(Pet.list[self.pet].petType === 'sphere'){
+                    Pet.list[self.pet].width = 44;
+                    Pet.list[self.pet].height = 44;
+                    Pet.list[self.pet].stats = {
+                        attack:Math.ceil(self.level / 10) * 35,
+                        defense:0,
+                        heal:1,
+                        range:1,
+                        speed:1,
+                        damageReduction:0,
+                        debuffs:[],
+                    }
+                    Pet.list[self.pet].name = 'Sphere Lvl. ' + self.level;
+                }
+                if(Pet.list[self.pet].petType === 'thunderbird'){
+                    Pet.list[self.pet].maxSpeed *= 1.5;
+                    Pet.list[self.pet].width = 64;
+                    Pet.list[self.pet].height = 60;
+                    Pet.list[self.pet].stats = {
+                        attack:0,
+                        defense:0,
+                        heal:1,
+                        range:10,
+                        speed:5,
+                        damageReduction:0,
+                        debuffs:[
+                            {id:'frozen',time:200},
+                            {id:'frostbite',time:200},
+                            {id:'frostburn',time:200},
+                            {id:'burning',time:200},
+                            {id:'electrified',time:200},
+                            {id:'death',time:200},
+                            {id:'shocked',time:200},
+                            {id:'thundered',time:200},
+                        ],
+                    }
+                    Pet.list[self.pet].shootSpeed = 1;
+                    if(self.questStats["Pet Training"] === true){
+                        Pet.list[self.pet].shootSpeed *= 2;
+                    }
+                    Pet.list[self.pet].name = 'Thunderbird Lvl. ' + self.level;
+                }
+                if(self.questStats["Pet Training"] === true){
+                    Pet.list[self.pet].stats.attack *= 3;
                 }
             }
             self.inventory.refresh = true;
