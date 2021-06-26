@@ -981,5 +981,46 @@
         "useTime":15,
         "rarity":6,
         "description":"Summons a whirlwind at your cursor location."
+    },
+    "whirlwindhelmet":{
+        "name":"Whirlwind Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.35;self.stats.critChance += 0.2;}self.stats.debuffs.push({id:'frozen',time:60});",
+        "enchantments":["smashing"],
+        "defense":19,
+        "rarity":6,
+        "description":"<span style='color: #33ee33'>+35% ranged damage.</span><br><span style='color: #33ee33'>+20% ranged critical strike chance.</span><br>You inflict the frozen debuff for 3 seconds."
+    },
+    "whirlwindarmor":{
+        "name":"Whirlwind Armor",
+        "equip":"armor",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.3;self.stats.critChance += 0.35;}self.immuneDebuffs.push('frozen');",
+        "enchantments":["smashing"],
+        "defense":26,
+        "rarity":6,
+        "description":"<span style='color: #33ee33'>+30% ranged damage.</span><br><span style='color: #33ee33'>+35% ranged critical strike chance.</span><br>You gain immunity to the frozen debuff."
+    },
+    "typhoonstorm":{
+        "name":"Typhoon Storm",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:60});",
+        "enchantments":["speed","burst","cost"],
+        "damage":521,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":15,
+        "rarity":6,
+        "description":"Shoots a homing piercing typhoon."
+    },
+    "iceboomerang":{
+        "name":"Ice Boomerang",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:60});",
+        "enchantments":["speed","burst"],
+        "damage":1089,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":10,
+        "rarity":6
     }
 }

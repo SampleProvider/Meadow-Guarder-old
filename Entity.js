@@ -7364,6 +7364,16 @@ Player = function(param){
                                 self.y = y;
                             }
                             break;
+                        case "typhoonstormAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'typhoon',32,function(t){return 25},1000,self.stats,'monsterHoming');
+                            }
+                            break;
+                        case "iceboomerangAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'iceboomerang',0,function(t){return 25},1000,self.stats,'boomerang');
+                            }
+                            break;
                         case "unholytridentAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
@@ -11972,6 +11982,9 @@ Projectile = function(param){
     if(param.projectilePattern === 'playerSeed'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'boomerang'){
+        self.canCollide = false;
+    }
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
@@ -12086,7 +12099,7 @@ Projectile = function(param){
         }
         else if(param.projectilePattern === 'playerHoming'){
             if(Monster.list[self.parent] === undefined){
-                self.timer = 0;
+                self.toRemove = true;
             }
             else if(Monster.list[self.parent].target !== undefined){
                 self.spdX = Math.cos(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 25 * self.stats.speed;
@@ -12200,7 +12213,7 @@ Projectile = function(param){
         }
         else if(param.projectilePattern === 'seed'){
             if(Monster.list[self.parent] === undefined){
-                self.timer = 0;
+                self.toRemove = true;
             }
             else if(Monster.list[self.parent].target !== undefined){
                 self.spdX += Math.cos(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 5;
@@ -12209,7 +12222,7 @@ Projectile = function(param){
                 self.spdY *= 0.95;
             }
             else{
-                self.timer = 0;
+                self.toRemove = true;
             }
             if(param.spin(self.timer) !== 0){
                 self.direction += param.spin(self.timer);
@@ -12514,6 +12527,26 @@ Projectile = function(param){
         else if(param.projectileType === 'accellerateNoCollision'){
             self.spdX *= 1.5;
             self.spdY *= 1.5;
+        }
+        else if(param.projectilePattern === 'boomerang'){
+            if(Player.list[self.parent] === undefined){
+                self.toRemove = true;
+            }
+            else if(Math.abs(Player.list[self.parent].x - self.x) < 32 && Math.abs(Player.list[self.parent].y - self.y) < 32 && self.timer > 10){
+                self.toRemove = true;
+            }
+            else{
+                self.spdX += Math.cos(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 5;
+                self.spdY += Math.sin(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 5;
+                self.spdX *= 0.95;
+                self.spdY *= 0.95;
+            }
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
         }
         else{
             if(param.spin !== undefined){

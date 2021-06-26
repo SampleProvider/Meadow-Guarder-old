@@ -532,6 +532,10 @@
         "moveSpeed":10,
         "itemDrops":{
             "staffofthewhirlwind":0.5,
+            "typhoonstorm":0.5,
+            "iceboomerang":0.5,
+            "whirlwindhelmet":0.5,
+            "whirlwindhood":0.5,
             "frozentreads":0.01,
             "enchantmentbook":9
         }

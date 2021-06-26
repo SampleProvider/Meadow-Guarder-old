@@ -19,7 +19,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f4a';
+var VERSION = '024f5a';
 
 var DEBUG = false;
 
@@ -1180,6 +1180,14 @@ var Player = function(initPack){
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
             else if(self.currentItem.includes('book')){
+                turnAmount = 270;
+                var drawX = -35;
+                var drawY = 15;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'typhoonstorm'){
                 turnAmount = 270;
                 var drawX = -35;
                 var drawY = 15;
@@ -2580,9 +2588,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 318';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 318 * window.innerWidth / 2 + 'px';
-        if(loadingProgress >= 318){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 321';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 321 * window.innerWidth / 2 + 'px';
+        if(loadingProgress >= 321){
             setTimeout(function(){
                 if(loading){
                     loading = false;
