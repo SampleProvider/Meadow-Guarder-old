@@ -1005,7 +1005,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:60});",
         "enchantments":["speed","burst","cost"],
-        "damage":521,
+        "damage":421,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":15,
