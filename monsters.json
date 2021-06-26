@@ -521,7 +521,7 @@
         "attackState":"passiveWhirlwind",
         "hp":1000000,
         "stats":{
-            "attack":100,
+            "attack":50,
             "defense":0,
             "heal":0,
             "speed":1,
