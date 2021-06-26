@@ -1337,6 +1337,7 @@ Actor = function(param){
         self.followingEntity = pt;
     }
     self.doDebuffs = function(){
+        var hp = self.hp;
         if(self.invincible || self.type === 'Pet'){
             return;
         }
@@ -1618,6 +1619,14 @@ Actor = function(param){
             self.willBeDead = true;
             self.toRemove = true;
         }
+        if(Player.list[self.debuffInflicted]){
+            var pt = Player.list[self.debuffInflicted];
+            pt.damageArray[19] += hp - self.hp;
+        }
+        else if(Projectile.list[self.debuffInflicted]){
+            var pt = Projectile.list[self.debuffInflicted];
+            Player.list[pt.parent].damageArray[19] += hp - self.hp;
+        }
     }
     self.onHit = function(pt){
     }
@@ -1729,6 +1738,12 @@ Actor = function(param){
                         map:self.map,
                     });
                 }*/
+            }
+            if(pt.type === 'Player' && self.type === 'Monster'){
+                pt.damageArray[19] += damage;
+            }
+            if(pt.parentType === 'Player' && self.type === 'Monster'){
+                Player.list[pt.parent].damageArray[19] += damage;
             }
         }
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
@@ -2511,6 +2526,8 @@ Player = function(param){
         self.devCoins = param.param.devCoins;
     }
     self.currentItem = '';
+    self.damageDone = 0;
+    self.damageArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
     var lastSelf = {};
     self.update = function(){
         self.tick += 1;
@@ -2610,6 +2627,10 @@ Player = function(param){
                 }
             }
         }
+        self.damageDone = 0;
+        for(var i in self.damageArray){
+            self.damageDone += self.damageArray[i];
+        }
         self.updateQuest();
         if(!self.invincible && self.isDead === false){
             self.updateAttack();
@@ -2624,6 +2645,8 @@ Player = function(param){
             self.dazed = self.maxSpeed * 2;
         }
         self.pushPt = undefined;
+        self.damageArray.splice(0,1);
+        self.damageArray.push(0);
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
@@ -8593,6 +8616,10 @@ Player = function(param){
             pack.devCoins = self.devCoins;
             lastSelf.devCoins = self.devCoins;
         }
+        if(lastSelf.damageDone !== self.damageDone){
+            pack.damageDone = self.damageDone;
+            lastSelf.damageDone = self.damageDone;
+        }
         for(var i in self.stats){
             if(lastSelf.stats){
                 if(lastSelf.stats[i]){
@@ -8644,6 +8671,7 @@ Player = function(param){
         pack.currentItem = self.currentItem;
         pack.coins = self.coins;
         pack.devCoins = self.devCoins;
+        pack.damageDone = self.damageDone;
         pack.stats = self.stats;
         pack.type = self.type;
         return pack;

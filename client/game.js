@@ -1127,7 +1127,7 @@ var Player = function(initPack){
     self.currentItem = initPack.currentItem;
     self.coins = initPack.coins;
     self.devCoins = initPack.devCoins;
-    self.materials = initPack.materials;
+    self.damageDone = initPack.damageDone;
     self.stats = initPack.stats;
     self.type = initPack.type;
     self.moveNumber = 4;
@@ -1291,6 +1291,7 @@ var Player = function(initPack){
         document.getElementById('goldcoinDiv').innerHTML = Math.floor(self.coins / 10000);
         document.getElementById('silvercoinDiv').innerHTML = Math.floor(self.coins / 100) % 100;
         document.getElementById('bronzecoinDiv').innerHTML = self.coins % 100;
+        document.getElementById('dps').innerHTML = self.damageDone + ' DPS';
     }
     self.drawLight = function(){
         if(self.id !== selfId){
@@ -2120,6 +2121,9 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].devCoins !== undefined){
                         Player.list[data.player[i].id].devCoins = data.player[i].devCoins;
+                    }
+                    if(data.player[i].damageDone !== undefined){
+                        Player.list[data.player[i].id].damageDone = data.player[i].damageDone;
                     }
                     Player.list[data.player[i].id].updated = true;
                 }

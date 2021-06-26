@@ -270,6 +270,12 @@ canvas {
     user-select: none;
     color: white;
 }
+#dps {
+    bottom: 40px;
+    left: 10px;
+    user-select: none;
+    color: white;
+}
 
 #chat-text {
     position: absolute;
