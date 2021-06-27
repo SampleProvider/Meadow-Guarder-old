@@ -311,6 +311,9 @@ s = {
         player.willBeDead = true;
         player.toRemove = true;
     },
+    testDPS:function(){
+        s.createMonster('testingdummy',{x:1600,y:1600,map:'The Arena'});
+    },
 };
 
 var monsterData = require('./monsters.json');
@@ -11736,6 +11739,7 @@ Pet = function(param){
                             s.smite(Player.list[self.parent].username);
                         }
                     }
+                    s.testDPS();
                 },7000);
             }
         }

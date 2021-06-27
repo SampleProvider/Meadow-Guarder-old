@@ -540,5 +540,26 @@
             "frozentreads":0.01,
             "enchantmentbook":9
         }
+    },
+    "testingdummy":{
+        "spawnChance":0,
+        "xpGain":0,
+        "width":32,
+        "height":64,
+        "attackState":"",
+        "hp":100000000,
+        "stats":{
+            "attack":0,
+            "defense":0,
+            "heal":0,
+            "speed":0,
+            "critChance":0,
+            "damageReduction":0,
+            "debuffs":[]
+        },
+        "moveSpeed":0,
+        "itemDrops":{
+            "sphat":1
+        }
     }
 }

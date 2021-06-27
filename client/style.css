@@ -276,6 +276,12 @@ canvas {
     user-select: none;
     color: white;
 }
+#maxdps {
+    bottom: 65px;
+    left: 10px;
+    user-select: none;
+    color: white;
+}
 
 #chat-text {
     position: absolute;
