@@ -6562,7 +6562,7 @@ Player = function(param){
             self.secondCost = 40;
             self.healCost = 50;
             self.manaRegen = 1;
-            self.maxMana = 200;
+            self.manaMax = 200;
             self.displayName = self.username;
             self.ability = {
                 ability:'base',

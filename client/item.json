@@ -1022,5 +1022,12 @@
         "critChance":0.04,
         "useTime":10,
         "rarity":6
+    },
+    "iceflower":{
+        "name":"Ice Flower",
+        "equip":"offhand",
+        "event":"self.manaMax += 50;self.manaRegen += 0.3;",
+        "enchantments":["smashing"],
+        "rarity":6
     }
 }
