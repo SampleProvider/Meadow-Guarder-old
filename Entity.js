@@ -12010,7 +12010,7 @@ Monster = function(param){
                     self.hp = 1000000;
                     self.reload = 0;
                     self.invincible = true;
-                    s.testDPS();
+                    addToChat('style="color: #00aadd">','The fight isn\'t over yet...');
                 }
                 break;
             case "attackPhase4Sp":
