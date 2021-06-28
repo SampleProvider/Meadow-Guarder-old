@@ -9037,11 +9037,23 @@ Player.onConnect = function(socket,username){
                 socket.emit('notification','Stop hacking.');
             }
         });
-
-
+        socket.on('changeDifficulty',function(data){
+            if(data === 'Classic'){
+                ENV.MonsterStrength = 1;
+                ENV.Difficulty = data;
+            }
+            else if(data === 'Expert'){
+                ENV.MonsterStrength = 2;
+                ENV.Difficulty = data;
+            }
+            for(var i in Player.list){
+                SOCKET_LIST[i].emit('changeDifficulty',data);
+            }
+        });
         socket.on('init',function(data){
             Player.getAllInitPack(socket);
         });
+        socket.emit('changeDifficulty',ENV.Difficulty);
         Player.getAllInitPack(socket);
         addToChat('style="color: #00ff00">',player.displayName + " just logged on.");
         for(var i in tiles){

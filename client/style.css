@@ -895,7 +895,7 @@ canvas {
     position: relative;
     display: block;
     left: 120px;
-    top: 15px;
+    top: 45px;
     width: 100px;
     background: #d3d3d3;
     outline: none;
@@ -910,7 +910,7 @@ canvas {
     position: relative;
     display: block;
     left: 230px;
-    top: -75px;
+    top: -45px;
     width: 100px;
     background: #d3d3d3;
     outline: none;
@@ -1125,6 +1125,11 @@ audio {
 #fullscreen {
     position: absolute;
     left: 120px;
+    top: 195px;
+}
+#difficulty {
+    position: absolute;
+    left: 120px;
     top: 165px;
 }
 #particles {
@@ -1209,6 +1214,7 @@ audio {
     display: none;
     width: 50%;
     height: 30px;
+    transform: translate(-2px, 0);
 }
 
 #notificationsHolder {
@@ -1251,7 +1257,7 @@ audio {
 #loadingBar {
     position: absolute;
     font-family: 'pixel';
-    color: #000000;
+    color: #999999;
     border: none;
     left: 50%;
     top: 50%;
@@ -1264,11 +1270,23 @@ audio {
 }
 #loadingProgress {
     position: absolute;
-    background-color: #dddddd;
-    border: 2px solid #ffffff;
+    background-color: #ffffff;
+    border: 2px solid #999999;
+    left: 0px;
+    top: 0px;
+    width: 0%;
+    height: 30px;
+    text-align: center;
+    vertical-align: middle;
+    transform: translate(-2px, -2px);
+}
+#loadingHolder {
+    position: absolute;
+    background-color: #000000;
+    border: 2px solid #999999;
     left: 25%;
     top: 50%;
-    width: 0%;
+    width: 50%;
     height: 30px;
     text-align: center;
     vertical-align: middle;

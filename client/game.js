@@ -19,7 +19,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f5a';
+var VERSION = '024f6a';
 
 var DEBUG = false;
 
@@ -77,10 +77,191 @@ var respawnTimer = 0;
 
 var loading = false;
 var loadingProgress = 0;
+var loadingProgressDisplay = 0;
 
 var canSignIn = true;
 var changePasswordState = 0;
 var deletePasswordState = 0;
+var loadedMap = {};
+var waypoints = [];
+var maps = {};
+var world;
+var tileset = new Image();
+tileset.src = '/client/maps/roguelikeSheet.png';
+var tilesetLoaded = false;
+tileset.onload = function(){
+    tilesetLoaded = true;
+    loadingProgress += 1;
+};
+
+var projectileData = {};
+var renderLayers = function(json,name){
+    if(isFirefox){
+        var tempLower = document.createElement('canvas');
+        var tempUpper = document.createElement('canvas');
+        tempLower.canvas.width = json.layers[0].width * 64;
+        tempLower.canvas.heiht = json.layers[0].height * 64;
+        tempUpper.canvas.width = json.layers[0].width * 64;
+        tempUpper.canvas.heiht = json.layers[0].height * 64;
+        console.log('Firefox!!!')
+    }
+    else{
+        var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+        var tempUpper = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+    }
+    var glLower = tempLower.getContext('2d');
+    var glUpper = tempUpper.getContext('2d');
+    resetCanvas(glLower);
+    resetCanvas(glUpper);
+    var tile = json.tilesets[0];
+    mapTiles[name] = {
+        tile:tile,
+        width:json.layers[0].width,
+    };
+    for(var i = 0;i < json.layers.length;i++){
+        if(json.layers[i].type === "tilelayer" && json.layers[i].visible){
+            var size = json.tilewidth;
+            for(var j = 0;j < json.layers[i].data.length;j++){
+                tile_idx = json.layers[i].data[j];
+                if(tile_idx !== 0){
+                    var img_x, img_y, s_x, s_y;
+                    tile_idx -= 1;
+                    img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+                    img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
+                    s_x = (j % json.layers[i].width) * size;
+                    s_y = ~~(j / json.layers[i].width) * size;
+                    if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1'){
+                        glUpper.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
+                    }
+                    else{
+                        glLower.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
+                    }
+                }
+            }
+        }
+        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('Npc')){
+            var size = json.tilewidth;
+            for(var j = 0;j < json.layers[i].data.length;j++){
+                tile_idx = json.layers[i].data[j];
+                if(tile_idx !== 0){
+                    if(tile_idx === 1950){
+                        var type = "";
+                        var typej = 0;
+                        var id = "";
+                        var idj = 0;
+                        var npcName = "";
+                        for(var k = 0;k < json.layers[i].name.length;k++){
+                            if(json.layers[i].name[k] === ':'){
+                                if(type === ""){
+                                    type = json.layers[i].name.substr(0,k);
+                                    typej = k;
+                                }
+                                else if(id === ""){
+                                    id = json.layers[i].name.substr(typej + 1,k - typej - 1);
+                                    idj = k;
+                                }
+                                else if(npcName === ""){
+                                    npcName = json.layers[i].name.substr(idj + 1,json.layers[i].name.length - idj - 2);
+                                }
+                            }
+                        }
+                        s_x = (j % json.layers[i].width) * size;
+                        s_y = ~~(j / json.layers[i].width) * size;
+                        waypoints.push({
+                            id:'quest',
+                            x:Math.round(s_x * 4),
+                            y:Math.round(s_y * 4),
+                            map:name,
+                            info:npcName,
+                        });
+                    }
+                }
+            }
+        }
+        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('NpcMarker')){
+            var size = json.tilewidth;
+            for(var j = 0;j < json.layers[i].data.length;j++){
+                tile_idx = json.layers[i].data[j];
+                if(tile_idx !== 0){
+                    if(tile_idx === 1950){
+                        var type = "";
+                        var typej = 0;
+                        var id = "";
+                        var idj = 0;
+                        var npcName = "";
+                        for(var k = 0;k < json.layers[i].name.length;k++){
+                            if(json.layers[i].name[k] === ':'){
+                                if(type === ""){
+                                    type = json.layers[i].name.substr(0,k);
+                                    typej = k;
+                                }
+                                else if(id === ""){
+                                    id = json.layers[i].name.substr(typej + 1,k - typej - 1);
+                                    idj = k;
+                                }
+                                else if(npcName === ""){
+                                    npcName = json.layers[i].name.substr(idj + 1,json.layers[i].name.length - idj - 2);
+                                }
+                            }
+                        }
+                        s_x = (j % json.layers[i].width) * size;
+                        s_y = ~~(j / json.layers[i].width) * size;
+                        waypoints.push({
+                            id:'quest',
+                            x:Math.round(s_x * 4),
+                            y:Math.round(s_y * 4),
+                            map:name,
+                            info:npcName,
+                        });
+                    }
+                }
+            }
+        }
+        loadingProgress += 1;
+    }
+    loadedMap[name] = {
+        lower:tempLower,
+        upper:tempUpper,
+    }
+    loadingProgress += 1;
+}
+var loadTileset = function(json,name){
+    if(tilesetLoaded){
+        renderLayers(json,name);
+    }
+    else{
+        setTimeout(function(){
+            loadTileset(json,name);
+        },10);
+    }
+}
+var loadMap = function(name){
+    var request = new XMLHttpRequest();
+    request.open('GET',"/client/maps/" + name + ".json",true);
+
+    request.onload = function(){
+        if(this.status >= 200 && this.status < 400){
+            // Success!
+            var json = JSON.parse(this.response);
+            maps[name] = json.backgroundcolor;
+            tempMap[name] = [];
+            loadTileset(json,name);
+        }
+        else{
+            // We reached our target server, but it returned an error
+        }
+    };
+
+    request.onerror = function(){
+        // There was a connection error of some sort
+    };
+
+    request.send();
+}
+socket.on('loadMap',function(data){
+    world = data;
+    loadingProgress += 1;
+});
 signDivSignIn.onclick = function(){
     if(canSignIn){
         socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
@@ -93,6 +274,48 @@ signDivSignIn.onclick = function(){
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
+        for(var i in world){
+            loadMap(world[i].fileName.slice(0,-4));
+        }
+        loadMap('Town Hall');
+        loadMap('Fishing Hut');
+        loadMap('Tiny House');
+        loadMap('House');
+        loadMap('Town Cave');
+        loadMap('The Arena');
+        loadMap('The Guarded Citadel');
+        loadMap('The Pet Arena');
+        loadMap("Lilypad Temple Room 0");
+        loadMap("Lilypad Temple Room 1");
+        loadMap("Lilypad Temple Room 2");
+        loadMap("Mysterious Room");
+        
+        var request = new XMLHttpRequest();
+        request.open('GET',"/client/projectiles.json",true);
+        
+        request.onload = function(){
+            if(this.status >= 200 && this.status < 400){
+                // Success!
+                var json = JSON.parse(this.response);
+                for(var i in json){
+                    Img[i] = new Image();
+                    Img[i].src = '/client/img/' + i + '.png';
+                    setTimeout(function(){
+                        loadingProgress += 1;
+                    },500 + 1500 * Math.random());
+                }
+                projectileData = json;
+            }
+            else{
+                // We reached our target server, but it returned an error
+            }
+        };
+        
+        request.onerror = function(){
+            // There was a connection error of some sort
+        };
+        
+        request.send();
     }
 }
 signDivCreateAccount.onclick = function(){
@@ -125,24 +348,6 @@ signDivChangePassword.onclick = function(){
 socket.on('signInResponse',function(data){
     if(data.success === 3){
         document.getElementById('settingsPlayerName').innerHTML = data.username;
-        worldMap.save();
-        worldMap.fillStyle = '#000000';
-        worldMap.fillRect(0,0,1510,1130);
-        worldMap.translate(Math.round(mapX - 1510 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 1510 * (mapDragY - mapMouseY) / 600));
-        for(var i in world){
-            worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
-            worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
-            for(var j in waypoints){
-                if(waypoints[j].map === world[i].fileName.slice(0,-4)){
-                    worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 96),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
-                    worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
-                    worldMap.fillStyle = '#ff7700';
-                    worldMap.textAlign = "center";
-                    worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 + 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 80));
-                }
-            }
-        }
-        worldMap.restore();
         //gameDiv.style.display = 'inline-block';
         //loadingDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
@@ -379,209 +584,8 @@ var renderPlayer = function(img,shadeValues){
 }
 document.getElementById('bossbar').style.display === 'none'
 
-var maps = {};
-
-var tileset = new Image();
-tileset.src = '/client/maps/roguelikeSheet.png';
-var tilesetLoaded = false;
-tileset.onload = function(){
-    tilesetLoaded = true;
-    setTimeout(function(){
-        loadingProgress += 1;
-    },500 + 1500 * Math.random());
-};
-var loadedMap = {};
-var waypoints = [];
-var renderLayers = function(json,name){
-    if(isFirefox){
-        var tempLower = document.createElement('canvas');
-        var tempUpper = document.createElement('canvas');
-        tempLower.canvas.width = json.layers[0].width * 64;
-        tempLower.canvas.heiht = json.layers[0].height * 64;
-        tempUpper.canvas.width = json.layers[0].width * 64;
-        tempUpper.canvas.heiht = json.layers[0].height * 64;
-        console.log('Firefox!!!')
-    }
-    else{
-        var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
-        var tempUpper = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
-    }
-    var glLower = tempLower.getContext('2d');
-    var glUpper = tempUpper.getContext('2d');
-    resetCanvas(glLower);
-    resetCanvas(glUpper);
-    var tile = json.tilesets[0];
-    mapTiles[name] = {
-        tile:tile,
-        width:json.layers[0].width,
-    };
-    for(var i = 0;i < json.layers.length;i++){
-        if(json.layers[i].type === "tilelayer" && json.layers[i].visible){
-            var size = json.tilewidth;
-            for(var j = 0;j < json.layers[i].data.length;j++){
-                tile_idx = json.layers[i].data[j];
-                if(tile_idx !== 0){
-                    var img_x, img_y, s_x, s_y;
-                    tile_idx -= 1;
-                    img_x = (tile_idx % ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-                    img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
-                    s_x = (j % json.layers[i].width) * size;
-                    s_y = ~~(j / json.layers[i].width) * size;
-                    if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1'){
-                        glUpper.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
-                    }
-                    else{
-                        glLower.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
-                    }
-                }
-            }
-        }
-        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('Npc')){
-            var size = json.tilewidth;
-            for(var j = 0;j < json.layers[i].data.length;j++){
-                tile_idx = json.layers[i].data[j];
-                if(tile_idx !== 0){
-                    if(tile_idx === 1950){
-                        var type = "";
-                        var typej = 0;
-                        var id = "";
-                        var idj = 0;
-                        var npcName = "";
-                        for(var k = 0;k < json.layers[i].name.length;k++){
-                            if(json.layers[i].name[k] === ':'){
-                                if(type === ""){
-                                    type = json.layers[i].name.substr(0,k);
-                                    typej = k;
-                                }
-                                else if(id === ""){
-                                    id = json.layers[i].name.substr(typej + 1,k - typej - 1);
-                                    idj = k;
-                                }
-                                else if(npcName === ""){
-                                    npcName = json.layers[i].name.substr(idj + 1,json.layers[i].name.length - idj - 2);
-                                }
-                            }
-                        }
-                        s_x = (j % json.layers[i].width) * size;
-                        s_y = ~~(j / json.layers[i].width) * size;
-                        waypoints.push({
-                            id:'quest',
-                            x:Math.round(s_x * 4),
-                            y:Math.round(s_y * 4),
-                            map:name,
-                            info:npcName,
-                        });
-                    }
-                }
-            }
-        }
-        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('NpcMarker')){
-            var size = json.tilewidth;
-            for(var j = 0;j < json.layers[i].data.length;j++){
-                tile_idx = json.layers[i].data[j];
-                if(tile_idx !== 0){
-                    if(tile_idx === 1950){
-                        var type = "";
-                        var typej = 0;
-                        var id = "";
-                        var idj = 0;
-                        var npcName = "";
-                        for(var k = 0;k < json.layers[i].name.length;k++){
-                            if(json.layers[i].name[k] === ':'){
-                                if(type === ""){
-                                    type = json.layers[i].name.substr(0,k);
-                                    typej = k;
-                                }
-                                else if(id === ""){
-                                    id = json.layers[i].name.substr(typej + 1,k - typej - 1);
-                                    idj = k;
-                                }
-                                else if(npcName === ""){
-                                    npcName = json.layers[i].name.substr(idj + 1,json.layers[i].name.length - idj - 2);
-                                }
-                            }
-                        }
-                        s_x = (j % json.layers[i].width) * size;
-                        s_y = ~~(j / json.layers[i].width) * size;
-                        waypoints.push({
-                            id:'quest',
-                            x:Math.round(s_x * 4),
-                            y:Math.round(s_y * 4),
-                            map:name,
-                            info:npcName,
-                        });
-                    }
-                }
-            }
-        }
-        setTimeout(function(){
-            loadingProgress += 1;
-        },500 + 1500 * Math.random());
-    }
-    loadedMap[name] = {
-        lower:tempLower,
-        upper:tempUpper,
-    }
-    setTimeout(function(){
-        loadingProgress += 1;
-    },500 + 1500 * Math.random());
-}
-var loadTileset = function(json,name){
-    if(tilesetLoaded){
-        renderLayers(json,name);
-    }
-    else{
-        setTimeout(function(){
-            loadTileset(json,name);
-        },10);
-    }
-}
-var loadMap = function(name){
-    var request = new XMLHttpRequest();
-    request.open('GET',"/client/maps/" + name + ".json",true);
-
-    request.onload = function(){
-        if(this.status >= 200 && this.status < 400){
-            // Success!
-            var json = JSON.parse(this.response);
-            maps[name] = json.backgroundcolor;
-            tempMap[name] = [];
-            loadTileset(json,name);
-        }
-        else{
-            // We reached our target server, but it returned an error
-        }
-    };
-
-    request.onerror = function(){
-        // There was a connection error of some sort
-    };
-
-    request.send();
-}
-var world;
-socket.on('loadMap',function(data){
-    world = data;
-    for(var i in world){
-        loadMap(world[i].fileName.slice(0,-4));
-    }
-    loadingProgress += 1;
-});
 const times = [];
 let fps;
-
-loadMap('Town Hall');
-loadMap('Fishing Hut');
-loadMap('Tiny House');
-loadMap('House');
-loadMap('Town Cave');
-loadMap('The Arena');
-loadMap('The Guarded Citadel');
-loadMap('The Pet Arena');
-loadMap("Lilypad Temple Room 0");
-loadMap("Lilypad Temple Room 1");
-loadMap("Lilypad Temple Room 2");
-loadMap("Mysterious Room");
 
 var documentHidden = false;
 
@@ -666,35 +670,6 @@ Img.manaBar = new Image();
 Img.manaBar.src = '/client/img/manaBar.png';
 Img.quest = new Image();
 Img.quest.src = '/client/img/quest.png';
-
-var projectileData = {};
-
-var request = new XMLHttpRequest();
-request.open('GET',"/client/projectiles.json",true);
-
-request.onload = function(){
-    if(this.status >= 200 && this.status < 400){
-        // Success!
-        var json = JSON.parse(this.response);
-        for(var i in json){
-            Img[i] = new Image();
-            Img[i].src = '/client/img/' + i + '.png';
-            setTimeout(function(){
-                loadingProgress += 1;
-            },500 + 1500 * Math.random());
-        }
-        projectileData = json;
-    }
-    else{
-        // We reached our target server, but it returned an error
-    }
-};
-
-request.onerror = function(){
-    // There was a connection error of some sort
-};
-
-request.send();
 var mouseX = 0;
 var mouseY = 0;
 var mapMouseX = mouseX + WIDTH / 2;
@@ -809,6 +784,19 @@ document.getElementById('particles').onclick = function(){
     else{
         document.getElementById('particles').innerHTML = 'Particles: On';
         showParticles = true;
+    }
+}
+var difficulty = 'Classic';
+document.getElementById('difficulty').onclick = function(){
+    if(difficulty === 'Classic'){
+        document.getElementById('difficulty').innerHTML = 'Difficulty: Expert';
+        socket.emit('changeDifficulty','Expert');
+        difficulty = 'Expert';
+    }
+    else{
+        document.getElementById('difficulty').innerHTML = 'Difficulty: Classic';
+        socket.emit('changeDifficulty','Classic');
+        difficulty = 'Classic';
     }
 }
 
@@ -2603,6 +2591,10 @@ socket.on('notification',function(data){
         }
     }
 });
+socket.on('changeDifficulty',function(data){
+    document.getElementById('difficulty').innerHTML = 'Difficulty: ' + data;
+    difficulty = data;
+});
 
 startQuest = function(){
     socket.emit('startQuest');
@@ -2619,16 +2611,37 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 323';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 323 * window.innerWidth / 2 + 'px';
-        if(loadingProgress >= 323){
-            setTimeout(function(){
-                if(loading){
+        if(loadingProgress > loadingProgressDisplay){
+            loadingProgressDisplay += Math.ceil(Math.min((loadingProgress - loadingProgressDisplay) / 4),10 + 10 * Math.random());
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 323';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 323 * window.innerWidth / 2 + 'px';
+        }
+        if(loadingProgressDisplay >= 323){
+            if(loading){
+                setTimeout(function(){
                     loading = false;
                     gameDiv.style.display = 'inline-block';
-                }
-                //loadingDiv.style.display = 'none';
-            },500 + Math.random() * 500);
+                    worldMap.save();
+                    worldMap.fillStyle = '#000000';
+                    worldMap.fillRect(0,0,1510,1130);
+                    worldMap.translate(Math.round(mapX - 1510 * (mapDragX - mapMouseX) / 600),Math.round(mapY - 1510 * (mapDragY - mapMouseY) / 600));
+                    for(var i in world){
+                        worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].lower,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
+                        worldMap.drawImage(loadedMap[world[i].fileName.slice(0,-4)].upper,mapRatio / 1510 * world[i].x * 4,mapRatio / 1510 * world[i].y * 4,mapRatio / 1510 * 3200,mapRatio / 1510 * 3200);
+                        for(var j in waypoints){
+                            if(waypoints[j].map === world[i].fileName.slice(0,-4)){
+                                worldMap.drawImage(Img[waypoints[j].id],mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 - 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 - 96),mapRatio / 1510 * 128,mapRatio / 1510 * 128);
+                                worldMap.font = "" + Math.round(mapRatio / 30) + "px pixel";
+                                worldMap.fillStyle = '#ff7700';
+                                worldMap.textAlign = "center";
+                                worldMap.fillText(waypoints[j].info,mapRatio / 1510 * (waypoints[j].x + world[i].x * 4 + 32),mapRatio / 1510 * (waypoints[j].y + world[i].y * 4 + 80));
+                            }
+                        }
+                    }
+                    worldMap.restore();
+                },1000);
+            }
+            //loadingDiv.style.display = 'none';
         }
     }
 
