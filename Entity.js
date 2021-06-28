@@ -14588,7 +14588,7 @@ updateCrashes = function(){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
                 if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
-                    if(ENV.PVP || Player.list[i].map === 'The Arena'){
+                    if(ENV.PVP){
                         Player.list[i].onCollision(Projectile.list[j],1);
                         Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                     }
