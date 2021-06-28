@@ -648,8 +648,8 @@ Img.waterRammer = new Image();
 Img.waterRammer.src = '/client/img/waterRammer.png';
 Img.whirlwind = new Image();
 Img.whirlwind.src = '/client/img/whirlwind.png';
-Img.testingdummy = new Image();
-Img.testingdummy.src = '/client/img/testingdummy.png';
+Img.sp = new Image();
+Img.sp.src = '/client/img/sp.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -1462,9 +1462,9 @@ var Monster = function(initPack){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'Whirlwind ' + self.hp + '/' + self.hpMax;
     }
-    if(self.monsterType === 'testingdummy'){
+    if(self.monsterType === 'sp'){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
-        document.getElementById('bossbar').innerHTML = 'Testing Dummy' + self.hp + '/' + self.hpMax;
+        document.getElementById('bossbar').innerHTML = 'sp' + self.hp + '/' + self.hpMax;
     }
     self.update = function(){
         if(self.moveNumber > 0){
@@ -1600,8 +1600,8 @@ var Monster = function(initPack){
             ctx0.rotate(-self.animation * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
-        if(self.monsterType === 'testingdummy'){
-            ctx0.drawImage(Img.testingdummy,self.x - 16,self.y - 32,32,64);
+        if(self.monsterType === 'sp'){
+            ctx0.drawImage(Img.sp,self.x - 16,self.y - 32,32,64);
         }
     }
     self.drawCtx1 = function(){
@@ -2221,9 +2221,9 @@ socket.on('update',function(data){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'Whirlwind ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
-                        if(Monster.list[data.monster[i].id].monsterType === 'testingdummy'){
+                        if(Monster.list[data.monster[i].id].monsterType === 'sp'){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
-                            document.getElementById('bossbar').innerHTML = 'Testing Dummy ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                            document.getElementById('bossbar').innerHTML = 'sp ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
                     }
                     if(data.monster[i].hpMax !== undefined){
@@ -2268,9 +2268,9 @@ socket.on('update',function(data){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
                         document.getElementById('bossbar').innerHTML = 'Whirlwind ' + monster.hp + '/' + monster.hpMax;
                     }
-                    if(monster.monsterType === 'testingdummy'){
+                    if(monster.monsterType === 'sp'){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
-                        document.getElementById('bossbar').innerHTML = 'Testing Dummy ' + monster.hp + '/' + monster.hpMax;
+                        document.getElementById('bossbar').innerHTML = 'sp ' + monster.hp + '/' + monster.hpMax;
                     }
                 }
             }
@@ -2384,7 +2384,7 @@ socket.on('update',function(data){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
-            if(Monster.list[i].monsterType === 'testingdummy'){
+            if(Monster.list[i].monsterType === 'sp'){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
@@ -2453,6 +2453,7 @@ socket.on('changeMap',function(data){
     }
     currentMap = data.teleport;
     shadeSpeed = 3 / 40;
+    Particle.list = [];
 });
 socket.on('dialogueLine',function(data){
     if(data.state === 'remove'){
@@ -2618,9 +2619,9 @@ var MGHC = function(){};
 var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
-        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 321';
-        document.getElementById('loadingProgress').style.width = loadingProgress / 321 * window.innerWidth / 2 + 'px';
-        if(loadingProgress >= 321){
+        document.getElementById('loadingBar').innerHTML = loadingProgress + ' / 323';
+        document.getElementById('loadingProgress').style.width = loadingProgress / 323 * window.innerWidth / 2 + 'px';
+        if(loadingProgress >= 323){
             setTimeout(function(){
                 if(loading){
                     loading = false;
@@ -2830,7 +2831,7 @@ setInterval(function(){
         if(Monster.list[i].monsterType === 'whirlwind'){
             bossAlive = true;
         }
-        if(Monster.list[i].monsterType === 'testingdummy'){
+        if(Monster.list[i].monsterType === 'sp'){
             bossAlive = true;
         }
     }
@@ -2858,9 +2859,9 @@ setInterval(function(){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Whirlwind ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
-            if(Monster.list[i].monsterType === 'testingdummy'){
+            if(Monster.list[i].monsterType === 'sp'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
-                document.getElementById('bossbar').innerHTML = 'Testing Dummy ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+                document.getElementById('bossbar').innerHTML = 'sp ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
         }
     }
