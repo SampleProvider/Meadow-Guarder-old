@@ -621,12 +621,12 @@
     "shieldoflightning":{
         "name":"Shield of Lightning",
         "equip":"offhand",
-        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.2;self.stats.critChance += 0.1;}",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.2;self.stats.critChance += 0.1;}self.stats.aggro += 1;",
         "enchantments":["smashing"],
         "defense":20,
         "damageReduction":0.05,
         "rarity":4,
-        "description":"<span style='color: #33ee33'>+20% melee damage.</span><br><span style='color: #33ee33'>+10% melee critical strike chance.</span>"
+        "description":"<span style='color: #33ee33'>+20% melee damage.</span><br><span style='color: #33ee33'>+10% melee critical strike chance.</span><br>Increased aggro."
     },
     "ghastlyamulet":{
         "name":"Ghastly Amulet",
@@ -828,12 +828,12 @@
     "brokenheroshield":{
         "name":"Broken Hero Shield",
         "equip":"offhand",
-        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.35;self.stats.critChance += 0.25;}",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.35;self.stats.critChance += 0.25;}self.stats.aggro += 2;",
         "enchantments":["smashing"],
         "defense":45,
         "damageReduction":0.15,
         "rarity":5,
-        "description":"<span style='color: #33ee33'>+35% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>The shield of a fallen hero..."
+        "description":"<span style='color: #33ee33'>+35% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>Increased aggro.<br>The shield of a fallen hero..."
     },
     "lightningmask":{
         "name":"Lightning Mask",
@@ -913,12 +913,12 @@
     "heroshield":{
         "name":"Hero Shield",
         "equip":"offhand",
-        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.5;self.stats.critChance += 0.35;}",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.5;self.stats.critChance += 0.35;}self.stats.aggro += 3;",
         "enchantments":["smashing"],
         "defense":72,
         "damageReduction":0.2,
         "rarity":8,
-        "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+35% melee critical strike chance.</span><br>A hero's shield.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
+        "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+35% melee critical strike chance.</span><br>Increased aggro.<br>A hero's shield.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "ringofaspirit":{
         "name":"Ring of a Spirit",
