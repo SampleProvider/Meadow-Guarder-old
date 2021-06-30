@@ -6,8 +6,25 @@ if(isFirefox === true) {
     alert('This game uses OffscreenCanvas, which is not supported in Firefox.');
 }
 
-window.onerror = function(error) {
-    window.location.reload();
+window.onerror = function(error){
+    //window.location.reload();
+    var scroll = false;
+    if(chatText.scrollTop + chatText.clientHeight >= chatText.scrollHeight - 5){
+        scroll = true;
+    }
+    var d = new Date();
+    var m = '' + d.getMinutes();
+    if(m.length === 1){
+        m = '' + 0 + m;
+    }
+    if(m === '0'){
+        m = '00';
+    }
+    chat += '<div class="text" style="color: #ff0000">[' + d.getHours() + ":" + m + "] An error occurred. <br>STOP CODE: " + error + '</div>';
+    chatText.innerHTML = chat;
+    if(scroll){
+        chatText.scrollTop = chatText.scrollHeight;
+    }
 }
 
 var WIDTH = window.innerWidth;
@@ -1425,6 +1442,7 @@ var Monster = function(initPack){
     self.monsterType = initPack.monsterType;
     self.type = initPack.type;
     self.animation = initPack.animation;
+    self.animationDirection = initPack.animationDirection;
     self.direction = initPack.direction;
     self.width = initPack.width;
     self.height = initPack.height;
@@ -1453,6 +1471,68 @@ var Monster = function(initPack){
     if(self.monsterType === 'sp'){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'sp' + self.hp + '/' + self.hpMax;
+        self.renderedImg = {
+            body:renderPlayer(Img.playerBody,initPack.img.body),
+            shirt:renderPlayer(Img.playerShirt,initPack.img.shirt),
+            pants:renderPlayer(Img.playerPants,initPack.img.pants),
+            hair:renderPlayer(Img.playerHair[initPack.img.hairType],initPack.img.hair),
+        }
+        self.render = document.createElement('canvas');
+        var ctx = self.render.getContext('2d');
+        ctx.canvas.width = 72 * 4;
+        ctx.canvas.height = 152 * 4;
+        ctx.drawImage(self.renderedImg.body,0,0);
+        ctx.drawImage(self.renderedImg.shirt,0,0);
+        ctx.drawImage(self.renderedImg.pants,0,0);
+        ctx.drawImage(self.renderedImg.hair,0,0);
+    }
+    if(self.monsterType === 'tianmuGuarder'){
+        self.renderedImg = {
+            body:renderPlayer(Img.playerBody,initPack.img.body),
+            shirt:renderPlayer(Img.playerShirt,initPack.img.shirt),
+            pants:renderPlayer(Img.playerPants,initPack.img.pants),
+            hair:renderPlayer(Img.playerHair[initPack.img.hairType],initPack.img.hair),
+        }
+        self.render = document.createElement('canvas');
+        var ctx = self.render.getContext('2d');
+        ctx.canvas.width = 72 * 4;
+        ctx.canvas.height = 152 * 4;
+        ctx.drawImage(self.renderedImg.body,0,0);
+        ctx.drawImage(self.renderedImg.shirt,0,0);
+        ctx.drawImage(self.renderedImg.pants,0,0);
+        ctx.drawImage(self.renderedImg.hair,0,0);
+    }
+    if(self.monsterType === 'sampleprovidersp'){
+        self.renderedImg = {
+            body:renderPlayer(Img.playerBody,initPack.img.body),
+            shirt:renderPlayer(Img.playerShirt,initPack.img.shirt),
+            pants:renderPlayer(Img.playerPants,initPack.img.pants),
+            hair:renderPlayer(Img.playerHair[initPack.img.hairType],initPack.img.hair),
+        }
+        self.render = document.createElement('canvas');
+        var ctx = self.render.getContext('2d');
+        ctx.canvas.width = 72 * 4;
+        ctx.canvas.height = 152 * 4;
+        ctx.drawImage(self.renderedImg.body,0,0);
+        ctx.drawImage(self.renderedImg.shirt,0,0);
+        ctx.drawImage(self.renderedImg.pants,0,0);
+        ctx.drawImage(self.renderedImg.hair,0,0);
+    }
+    if(self.monsterType === 'suvanth'){
+        self.renderedImg = {
+            body:renderPlayer(Img.playerBody,initPack.img.body),
+            shirt:renderPlayer(Img.playerShirt,initPack.img.shirt),
+            pants:renderPlayer(Img.playerPants,initPack.img.pants),
+            hair:renderPlayer(Img.playerHair[initPack.img.hairType],initPack.img.hair),
+        }
+        self.render = document.createElement('canvas');
+        var ctx = self.render.getContext('2d');
+        ctx.canvas.width = 72 * 4;
+        ctx.canvas.height = 152 * 4;
+        ctx.drawImage(self.renderedImg.body,0,0);
+        ctx.drawImage(self.renderedImg.shirt,0,0);
+        ctx.drawImage(self.renderedImg.pants,0,0);
+        ctx.drawImage(self.renderedImg.hair,0,0);
     }
     self.update = function(){
         if(self.moveNumber > 0){
@@ -1589,7 +1669,38 @@ var Monster = function(initPack){
             ctx0.translate(-self.x,-self.y);
         }
         if(self.monsterType === 'sp'){
-            ctx0.drawImage(Img.sp,self.x - 16,self.y - 32,32,64);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'tianmuGuarder'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate((self.direction + 225) * Math.PI / 180);
+            ctx0.drawImage(Img['halibutcannon'],-49,-15,64,64);
+            ctx0.rotate((-self.direction - 225) * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'sampleprovidersp'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate((self.direction + 270) * Math.PI / 180);
+            ctx0.drawImage(Img['bookofdeath'],-35,15,64,64);
+            ctx0.rotate((-self.direction - 270) * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'suvanth'){
+            ctx0.translate(self.x,self.y);
+            ctx0.rotate((self.direction + 45) * Math.PI / 180);
+            ctx0.drawImage(Img['holytrident'],5,-89,84,84);
+            ctx0.rotate((-self.direction - 45) * Math.PI / 180);
+            ctx0.translate(-self.x,-self.y);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx0,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'spgem'){
+            ctx0.drawImage(Img.spgem,self.x - 27,self.y - 24,54,48);
         }
     }
     self.drawCtx1 = function(){
@@ -1623,6 +1734,40 @@ var Monster = function(initPack){
             ctx1.rotate(-self.animation * Math.PI / 180);
             ctx1.translate(-self.x,-self.y);
         }
+        if(self.monsterType === 'sp'){
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx1,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'tianmuGuarder'){
+            ctx1.translate(self.x,self.y);
+            ctx1.rotate((self.direction + 225) * Math.PI / 180);
+            ctx1.drawImage(Img['halibutcannon'],-49,-15,64,64);
+            ctx1.rotate((-self.direction - 225) * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx1,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'sampleprovidersp'){
+            ctx1.translate(self.x,self.y);
+            ctx1.rotate((self.direction + 270) * Math.PI / 180);
+            ctx1.drawImage(Img['bookofdeath'],-35,15,64,64);
+            ctx1.rotate((-self.direction - 270) * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx1,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'suvanth'){
+            ctx1.translate(self.x,self.y);
+            ctx1.rotate((self.direction + 45) * Math.PI / 180);
+            ctx1.drawImage(Img['holytrident'],5,-89,84,84);
+            ctx1.rotate((-self.direction - 45) * Math.PI / 180);
+            ctx1.translate(-self.x,-self.y);
+            self.animation = Math.round(self.animation);
+            drawPlayer(self.render,ctx1,self.animationDirection,self.animation,self.x,self.y + 18,4);
+        }
+        if(self.monsterType === 'spgem'){
+            ctx1.drawImage(Img.spgem,self.x - 27,self.y - 24,54,48);
+        }
     }
     self.drawHp = function(){
         if(self.monsterType === 'redBird'){
@@ -1640,6 +1785,22 @@ var Monster = function(initPack){
         else if(self.monsterType === 'whirlwind'){
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 70,126,15);
             ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 70,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'sp'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'tianmuGuarder'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'sampleprovidersp'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
+        }
+        else if(self.monsterType === 'suvanth'){
+            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
+            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
         }
         else{
             ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
@@ -2219,6 +2380,9 @@ socket.on('update',function(data){
                     }
                     if(data.monster[i].animation !== undefined){
                         Monster.list[data.monster[i].id].animation = data.monster[i].animation;
+                    }
+                    if(data.monster[i].animationDirection !== undefined){
+                        Monster.list[data.monster[i].id].animationDirection = data.monster[i].animationDirection;
                     }
                     if(data.monster[i].direction !== undefined){
                         Monster.list[data.monster[i].id].direction = data.monster[i].direction;

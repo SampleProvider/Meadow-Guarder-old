@@ -543,11 +543,11 @@
     },
     "sp":{
         "spawnChance":0,
-        "xpGain":0,
+        "xpGain":10000,
         "width":32,
         "height":64,
         "attackState":"passiveSp",
-        "hp":50000000,
+        "hp":25000000,
         "stats":{
             "attack":100,
             "defense":0,
@@ -560,6 +560,86 @@
         "moveSpeed":20,
         "itemDrops":{
             "sphat":1
+        }
+    },
+    "tianmuGuarder":{
+        "spawnChance":0,
+        "xpGain":2500,
+        "width":32,
+        "height":64,
+        "attackState":"passiveTianmuGuarder",
+        "hp":10000000,
+        "stats":{
+            "attack":55,
+            "defense":0,
+            "heal":0,
+            "speed":1,
+            "critChance":0,
+            "damageReduction":0,
+            "debuffs":[]
+        },
+        "moveSpeed":10,
+        "itemDrops":{
+        }
+    },
+    "sampleprovidersp":{
+        "spawnChance":0,
+        "xpGain":2500,
+        "width":32,
+        "height":64,
+        "attackState":"passiveSampleprovidersp",
+        "hp":10000000,
+        "stats":{
+            "attack":40,
+            "defense":0,
+            "heal":0,
+            "speed":1,
+            "critChance":0,
+            "damageReduction":0,
+            "debuffs":[]
+        },
+        "moveSpeed":15,
+        "itemDrops":{
+        }
+    },
+    "suvanth":{
+        "spawnChance":0,
+        "xpGain":2500,
+        "width":32,
+        "height":64,
+        "attackState":"passiveSuvanth",
+        "hp":10000000,
+        "stats":{
+            "attack":50,
+            "defense":0,
+            "heal":0,
+            "speed":1,
+            "critChance":0,
+            "damageReduction":0,
+            "debuffs":[]
+        },
+        "moveSpeed":25,
+        "itemDrops":{
+        }
+    },
+    "spgem":{
+        "spawnChance":0,
+        "xpGain":0,
+        "width":54,
+        "height":48,
+        "attackState":"passiveSpgem",
+        "hp":2500000,
+        "stats":{
+            "attack":100,
+            "defense":0,
+            "heal":0,
+            "speed":1,
+            "critChance":0,
+            "damageReduction":0,
+            "debuffs":[]
+        },
+        "moveSpeed":15,
+        "itemDrops":{
         }
     }
 }

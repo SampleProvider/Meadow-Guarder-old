@@ -1263,36 +1263,36 @@ Actor = function(param){
         if(!self.animate){
             return;
         }
-        if(self.spdX === 1){
-            if(self.spdY === 1){
+        if(self.spdX >= 0.1){
+            if(self.spdY >= 0.1){
                 self.animationDirection = "rightdown";
             }
-            else if(self.spdY === -1){
+            else if(self.spdY <= -0.1){
                 self.animationDirection = "rightup";
             }
-            else if(self.spdY === 0){
+            else{
                 self.animationDirection = "right";
             }
         }
-        else if(self.spdX === -1){
-            if(self.spdY === 1){
+        else if(self.spdX <= -0.1){
+            if(self.spdY >= 0.1){
                 self.animationDirection = "leftdown";
             }
-            else if(self.spdY === -1){
+            else if(self.spdY <= -0.1){
                 self.animationDirection = "leftup";
             }
-            else if(self.spdY === 0){
+            else{
                 self.animationDirection = "left";
             }
         }
-        else if(self.spdX === 0){
-            if(self.spdY === 1){
+        else{
+            if(self.spdY >= 0.1){
                 self.animationDirection = "down";
             }
-            else if(self.spdY === -1){
+            else if(self.spdY <= -0.1){
                 self.animationDirection = "up";
             }
-            else if(self.spdY === 0){
+            else{
                 self.animation = -1;
             }
         }
@@ -7450,16 +7450,12 @@ Player = function(param){
                             break;
                         case "unholytridentAttack":
                             if(isFireMap){
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction,self.direction,'unholytrident',32,function(t){return 0},3,self.stats,'unholyTrident');
-                                }
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'unholytrident',32,function(t){return 0},3,self.stats,'unholyTrident');
                             }
                             break;
                         case "holytridentAttack":
                             if(isFireMap){
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction,self.direction,'holytrident',32,function(t){return 0},3,self.stats,'holyTrident');
-                                }
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'holytrident',32,function(t){return 0},3,self.stats,'holyTrident');
                             }
                             break;
                         case "earthbook1Attack":
@@ -8944,10 +8940,7 @@ Player.onConnect = function(socket,username){
             player.toRemove = false;
             player.dazed = 0;
             player.debuffs = [];
-            if(player.map === 'The Arena'){
-                player.teleport(2080,1760,'The Village');
-            }
-            else if(player.map === 'Lilypad Temple Room 1'){
+            if(player.map === 'Lilypad Temple Room 1'){
                 player.teleport(1376,1632,'Lilypad Pathway Part 1');
             }
             else if(player.map === 'Town Cave'){
@@ -9470,6 +9463,64 @@ Monster = function(param){
         self.stage3 = false;
         self.stage4 = false;
         self.stage5 = false;
+        self.img = {
+            body:[-1,-1,-1,0],
+            shirt:[0,30,220,0.7],
+            pants:[0,135,115,0.8],
+            hair:[0,250,0,0.5],
+            hairType:'shortHair',
+        }
+    }
+    if(self.monsterType === 'tianmuGuarder'){
+        self.canCollide = false;
+        addToChat('style="color: #ff00ff">','TianmuGuarder has awoken!');
+        self.dashSpdX = 0;
+        self.dashSpdY = 0;
+        self.stage2 = false;
+        self.stage3 = false;
+        self.img = {
+            body:[35,0,215,0],
+            shirt:[245,5,0,0.5],
+            pants:[0,230,20,0.6],
+            hair:[5,0,245,0.4],
+            hairType:'vikingHat',
+        }
+    }
+    if(self.monsterType === 'sampleprovidersp'){
+        self.canCollide = false;
+        addToChat('style="color: #ff00ff">','Sampleprovider(sp) has awoken!');
+        self.dashSpdX = 0;
+        self.dashSpdY = 0;
+        self.stage2 = false;
+        self.stage3 = false;
+        self.img = {
+            body:[250,0,0,1],
+            shirt:[250,0,0,1],
+            pants:[250,0,0,1],
+            hair:[250,0,0,1],
+            hairType:'longHat',
+        }
+    }
+    if(self.monsterType === 'suvanth'){
+        self.canCollide = false;
+        addToChat('style="color: #ff00ff">','Suvanth has awoken!');
+        self.dashSpdX = 0;
+        self.dashSpdY = 0;
+        self.stage2 = false;
+        self.stage3 = false;
+        self.img = {
+            body:[141,196,53,1],
+            shirt:[141,196,53,1],
+            pants:[141,196,53,1],
+            hair:[141,196,53,1],
+            hairType:'bald',
+        }
+    }
+    if(self.monsterType === 'spgem'){
+        self.canCollide = false;
+        self.dashSpdX = 0;
+        self.dashSpdY = 0;
+        self.stage2 = false;
     }
     self.oldMoveSpeed = self.maxSpeed;
     var lastSelf = {};
@@ -9483,10 +9534,14 @@ Monster = function(param){
                 self.animation = 0;
             }
             else{
-                self.animation += 1;
+                self.animation += 0.5;
+                if(self.animation > 5){
+                    self.animation = 0;
+                }
             }
         }
         self.updateAttack();
+        self.updateAnimation();
         if(self.hp < 1){
             if(self.monsterType === 'redBird'){
                 addToChat('style="color: #ff00ff">','Red Bird has been defeated!');
@@ -9525,6 +9580,15 @@ Monster = function(param){
                         Player.list[i].questStats["sp"] = true;
                     }
                 }
+            }
+            if(self.monsterType === 'tianmuGuarder'){
+                addToChat('style="color: #ff00ff">','TianmuGuarder has been defeated!');
+            }
+            if(self.monsterType === 'sampleprovidersp'){
+                addToChat('style="color: #ff00ff">','Sampleprovider(sp) has been defeated!');
+            }
+            if(self.monsterType === 'suvanth'){
+                addToChat('style="color: #ff00ff">','Suvanth has been defeated!');
             }
             param.onDeath(self);
         }
@@ -9684,6 +9748,7 @@ Monster = function(param){
                 }
                 break;
             case "passiveBall":
+                self.animate = false;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveBall";
@@ -11551,7 +11616,7 @@ Monster = function(param){
                 self.animation += 50;
                 break;
             case "passiveSp":
-                self.animate = false;
+                self.animate = true;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
                         self.attackState = "moveSp";
@@ -11664,9 +11729,6 @@ Monster = function(param){
                     if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
                         allPlayersDead = false;
                     }
-                }
-                if(self.map === 'The Arena'){
-                    allPlayersDead = false;
                 }
                 if(allPlayersDead){
                     self.toRemove = true;
@@ -11817,6 +11879,9 @@ Monster = function(param){
                     self.attackState = 'attackPhase3Sp';
                     self.stage3 = true;
                     self.hp = self.hpMax;
+                    s.createMonster('tianmuGuarder',{x:self.x + 256,y:self.y,map:self.map});
+                    s.createMonster('sampleprovidersp',{x:self.x - 256,y:self.y,map:self.map});
+                    s.createMonster('suvanth',{x:self.x,y:self.y - 256,map:self.map});
                 }
                 break;
             case "attackPhase3Sp":
@@ -11825,9 +11890,6 @@ Monster = function(param){
                     if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
                         allPlayersDead = false;
                     }
-                }
-                if(self.map === 'The Arena'){
-                    allPlayersDead = false;
                 }
                 if(allPlayersDead){
                     self.toRemove = true;
@@ -11858,153 +11920,126 @@ Monster = function(param){
                         self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
                     }
                 }
-                if(self.reload % 200 > 30 && self.reload % 200 < 70 && self.target.invincible === false){
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                if(self.reload % 200 === 30 && self.target.invincible === false){
+                    self.stats.speed = 0.2;
+                    self.stats.attack = 1000;
+                    for(var i = 0;i < 40;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload,self.reload,'splaser',36 * i,function(t){return 0},1000,self.stats,'splaser');
                     }
+                    self.stats.speed = 1;
                 }
                 if(self.reload % 200 === 100 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 100 && self.reload % 200 < 110 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 110 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 110 && self.reload % 200 < 120 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 120 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 120 && self.reload % 200 < 130 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 130 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 130 && self.reload % 200 < 140 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 140 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 140 && self.reload % 200 < 150 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 150 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 150 && self.reload % 200 < 160 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 160 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 160 && self.reload % 200 < 170 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 170 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 170 && self.reload % 200 < 180 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 180 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 180 && self.reload % 200 < 190 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 if(self.reload % 200 === 190 && self.target.invincible === false){
                     self.dashSpdX = (self.target.x - self.x) / 5;
                     self.dashSpdY = (self.target.y - self.y) / 5;
                     for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
                     }
                 }
                 if(self.reload % 200 > 190 && self.reload % 200 < 200 && self.target.invincible === false){
                     self.x += self.dashSpdX;
                     self.y += self.dashSpdY;
-                    for(var i = 0;i < 8;i++){
-                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    }
                 }
                 self.reload += 1;
-                if(self.hp < 100000000){
+                if(self.hp < 1000000){
                     self.attackState = 'attackPhase4Sp';
                     self.stage4 = true;
                     self.hp = 1000000;
@@ -12019,9 +12054,6 @@ Monster = function(param){
                     if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
                         allPlayersDead = false;
                     }
-                }
-                if(self.map === 'The Arena'){
-                    allPlayersDead = false;
                 }
                 if(allPlayersDead){
                     self.toRemove = true;
@@ -12051,14 +12083,771 @@ Monster = function(param){
                 if(self.reload >= 1200){
                     self.attackState = 'attackPhase5Sp';
                 }
+                if(self.reload === 100){
+                    s.createMonster('spgem',{x:self.x + 128,y:self.y,map:self.map});
+                    s.createMonster('spgem',{x:self.x + 90,y:self.y + 90,map:self.map});
+                    s.createMonster('spgem',{x:self.x,y:self.y + 128,map:self.map});
+                    s.createMonster('spgem',{x:self.x - 90,y:self.y + 90,map:self.map});
+                    s.createMonster('spgem',{x:self.x - 128,y:self.y,map:self.map});
+                    s.createMonster('spgem',{x:self.x - 90,y:self.y - 90,map:self.map});
+                    s.createMonster('spgem',{x:self.x,y:self.y - 128,map:self.map});
+                    s.createMonster('spgem',{x:self.x + 90,y:self.y - 90,map:self.map});
+                }
                 self.reload += 1;
                 break;
             case "attackPhase5Sp":
                 self.invincible = false;
-                if(self.hp > 1){
-                    self.hp = 1;
+                if(self.hp > 1000000){
+                    self.hp = 1000000;
                 }
-                self.hpMax = 1;
+                break;
+            case "passiveTianmuGuarder":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveTianmuGuarder";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveTianmuGuarder";
+                }
+                break;
+            case "moveTianmuGuarder":
+                self.followEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackPhase1TianmuGuarder";
+                break;
+            case "attackPhase1TianmuGuarder":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 < 50 && self.target.invincible === false){
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction - 15 - 10 + Math.random() * 20,self.direction - 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 15 - 10 + Math.random() * 20,self.direction + 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 150 && self.target.invincible === false){
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction - 15 - 10 + Math.random() * 20,self.direction - 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 15 - 10 + Math.random() * 20,self.direction + 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                }
+                self.reload += 1;
+                if(self.hp < self.hpMax / 2 || self.stage2){
+                    self.attackState = 'attackPhase2TianmuGuarder';
+                    self.stage2 = true;
+                }
+                break;
+            case "attackPhase2TianmuGuarder":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 < 70 && self.target.invincible === false){
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction - 15 - 10 + Math.random() * 20,self.direction - 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 15 - 10 + Math.random() * 20,self.direction + 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 170 && self.target.invincible === false){
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction - 15 - 10 + Math.random() * 20,self.direction - 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 15 - 10 + Math.random() * 20,self.direction + 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                }
+                if(self.hp < self.hpMax / 6 || self.stage3){
+                    self.attackState = 'attackPhase3TianmuGuarder';
+                    self.stage3 = true;
+                }
+                self.reload += 1;
+                break;
+            case "attackPhase3TianmuGuarder":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveTianmuGuarder';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.target.invincible === false){
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction - 15 - 10 + Math.random() * 20,self.direction - 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                    for(var i = 0;i < 10;i++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 15 - 10 + Math.random() * 20,self.direction + 15 - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                    }
+                }
+                self.reload += 1;
+                break;
+            case "passiveSampleprovidersp":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveSampleprovidersp";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveSampleprovidersp";
+                }
+                break;
+            case "moveSampleprovidersp":
+                self.followEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackPhase1Sampleprovidersp";
+                break;
+            case "attackPhase1Sampleprovidersp":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 < 30 && self.reload % 10 === 0 && self.target.invincible === false){
+                    for(var j = 0;j < 3;j++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'monsterSkull');
+                    }
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 130 && self.reload % 10 === 0 && self.target.invincible === false){
+                    for(var j = 0;j < 3;j++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'monsterSkull');
+                    }
+                }
+                self.reload += 1;
+                if(self.hp < self.hpMax / 2 || self.stage2){
+                    self.attackState = 'attackPhase2Sampleprovidersp';
+                    self.stage2 = true;
+                }
+                break;
+            case "attackPhase2Sampleprovidersp":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 < 50 && self.reload % 10 === 0 && self.target.invincible === false){
+                    for(var j = 0;j < 3;j++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'monsterSkull');
+                    }
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 150 && self.reload % 10 === 0 && self.target.invincible === false){
+                    for(var j = 0;j < 3;j++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'monsterSkull');
+                    }
+                }
+                if(self.hp < self.hpMax / 6 || self.stage3){
+                    self.attackState = 'attackPhase3Sampleprovidersp';
+                    self.stage3 = true;
+                }
+                self.reload += 1;
+                break;
+            case "attackPhase3Sampleprovidersp":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSampleprovidersp';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 < 70 && self.reload % 5 === 0 && self.target.invincible === false){
+                    for(var j = 0;j < 3;j++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'monsterSkull');
+                    }
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 170 && self.reload % 5 === 0 && self.target.invincible === false){
+                    for(var j = 0;j < 3;j++){
+                        self.shootProjectile(self.id,'Monster',self.direction + 60 - j * 60 + Math.random() * 15,self.direction + 60 - j * 60 + Math.random() * 15,'skull',32 + 12 * Math.random(),function(t){return 0},10,self.stats,'monsterSkull');
+                    }
+                }
+                self.reload += 1;
+                break;
+            case "passiveSuvanth":
+                self.animate = true;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveSuvanth";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveSuvanth";
+                }
+                break;
+            case "moveSuvanth":
+                self.followEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackPhase1Suvanth";
+                break;
+            case "attackPhase1Suvanth":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 > 30 && self.reload % 10 === 0 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'holytrident',32,function(t){return 0},3,self.stats,'monsterHolyTrident');
+                }
+                self.reload += 1;
+                if(self.hp < self.hpMax / 2 || self.stage2){
+                    self.attackState = 'attackPhase2Suvanth';
+                    self.stage2 = true;
+                }
+                break;
+            case "attackPhase2Suvanth":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 > 30 && self.reload % 7 === 0 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'holytrident',32,function(t){return 0},3,self.stats,'monsterHolyTrident');
+                }
+                if(self.hp < self.hpMax / 6 || self.stage3){
+                    self.attackState = 'attackPhase3Suvanth';
+                    self.stage3 = true;
+                }
+                self.reload += 1;
+                break;
+            case "attackPhase3Suvanth":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSuvanth';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 > 30 && self.reload % 5 === 0 && self.target.invincible === false){
+                    self.shootProjectile(self.id,'Monster',self.direction,self.direction,'holytrident',32,function(t){return 0},3,self.stats,'monsterHolyTrident');
+                }
+                self.reload += 1;
+                break;
+            case "passiveSpgem":
+                self.animate = false;
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10){
+                        self.attackState = "moveSpgem";
+                        self.target = Player.list[i];
+                    }
+                }
+                if(self.damaged){
+                    self.attackState = "moveSpgem";
+                }
+                break;
+            case "moveSpgem":
+                self.followEntity(self.target,0);
+                self.reload = 0;
+                self.animation = 0;
+                self.attackState = "attackPhase1Spgem";
+                break;
+            case "attackPhase1Spgem":
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSpgem';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSpgem';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSpgem';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 > 50 && self.reload % 200 < 70 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                    }
+                }
+                if(self.reload % 200 === 100 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 10;
+                    self.dashSpdY = (self.target.y - self.y) / 10;
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 120 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 120 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 10;
+                    self.dashSpdY = (self.target.y - self.y) / 10;
+                }
+                if(self.reload % 200 > 120 && self.reload % 200 < 140 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 140 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 10;
+                    self.dashSpdY = (self.target.y - self.y) / 10;
+                }
+                if(self.reload % 200 > 140 && self.reload % 200 < 160 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 160 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 10;
+                    self.dashSpdY = (self.target.y - self.y) / 10;
+                }
+                if(self.reload % 200 > 160 && self.reload % 200 < 180 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 180 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 10;
+                    self.dashSpdY = (self.target.y - self.y) / 10;
+                }
+                if(self.reload % 200 > 180 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                self.reload += 1;
+                if(self.hp < self.hpMax / 2 || self.stage2){
+                    self.attackState = 'attackPhase2Spgem';
+                    self.stage2 = true;
+                }
+                break;
+            case "attackPhase2Spgem":
+                var allPlayersDead = true;
+                for(var i in Player.list){
+                    if(Player.list[i].hp > 1 && Player.list[i].map === self.map){
+                        allPlayersDead = false;
+                    }
+                }
+                if(allPlayersDead){
+                    self.toRemove = true;
+                }
+                if(!self.target){
+                    self.target = undefined;
+                    self.attackState = 'passiveSpgem';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.isDead){
+                    self.target = undefined;
+                    self.attackState = 'passiveSpgem';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.target.toRemove){
+                    self.target = undefined;
+                    self.attackState = 'passiveSpgem';
+                    self.damagedEntity = false;
+                    self.damaged = false;
+                    break;
+                }
+                if(self.reload % 200 === 0 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',i * 45,i * 45,'spgem',64,function(t){return 0},1000,self.stats,'spinAroundMonster');
+                    }
+                }
+                if(self.reload % 200 > 30 && self.reload % 200 < 70 && self.target.invincible === false){
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                    }
+                }
+                if(self.reload % 200 === 100 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 100 && self.reload % 200 < 110 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 110 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 110 && self.reload % 200 < 120 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 120 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 120 && self.reload % 200 < 130 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 130 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 130 && self.reload % 200 < 140 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 140 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 140 && self.reload % 200 < 150 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 150 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 150 && self.reload % 200 < 160 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 160 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 160 && self.reload % 200 < 170 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 170 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 170 && self.reload % 200 < 180 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 180 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 180 && self.reload % 200 < 190 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                if(self.reload % 200 === 190 && self.target.invincible === false){
+                    self.dashSpdX = (self.target.x - self.x) / 5;
+                    self.dashSpdY = (self.target.y - self.y) / 5;
+                    for(var i = 0;i < 8;i++){
+                        self.shootProjectile(self.id,'Monster',self.reload * 2 + i * 45,self.reload * 2 + i * 45,'splaser',64,function(t){return 0},1000,self.stats,'seed');
+                    }
+                }
+                if(self.reload % 200 > 190 && self.reload % 200 < 200 && self.target.invincible === false){
+                    self.x += self.dashSpdX;
+                    self.y += self.dashSpdY;
+                }
+                self.reload += 1;
                 break;
         }
     }
@@ -12093,6 +12882,10 @@ Monster = function(param){
             pack.animation = self.animation;
             lastSelf.animation = self.animation;
         }
+        if(lastSelf.animationDirection !== self.animationDirection){
+            pack.animationDirection = self.animationDirection;
+            lastSelf.animationDirection = self.animationDirection;
+        }
         if(lastSelf.direction !== self.direction){
             pack.direction = self.direction;
             lastSelf.direction = self.direction;
@@ -12109,6 +12902,10 @@ Monster = function(param){
             pack.height = self.height;
             lastSelf.height = self.height;
         }
+        if(lastSelf.img !== self.img){
+            pack.img = self.img;
+            lastSelf.img = self.img;
+        }
         return pack;
     }
     self.getInitPack = function(){
@@ -12121,8 +12918,10 @@ Monster = function(param){
         pack.map = self.map;
         pack.monsterType = self.monsterType;
         pack.animation = self.animation;
+        pack.animationDirection = self.animationDirection;
         pack.direction = self.direction;
         pack.canCollide = self.canCollide;
+        pack.img = self.img;
         pack.type = self.type;
         return pack;
     }
@@ -12309,7 +13108,7 @@ Pet = function(param){
             if(self.reload >= 10 && Player.list[self.parent].isDead === false){
                 var closestMonster = undefined;
                 for(var i in Monster.list){
-                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                         closestMonster = Monster.list[i];
                     }
                     else if(closestMonster !== undefined){
@@ -12343,7 +13142,7 @@ Pet = function(param){
             if(self.reload >= 7 && Player.list[self.parent].isDead === false){
                 var closestMonster = undefined;
                 for(var i in Monster.list){
-                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                         closestMonster = Monster.list[i];
                     }
                     else if(closestMonster !== undefined){
@@ -12367,7 +13166,7 @@ Pet = function(param){
             if(self.reload >= 1 && Player.list[self.parent].isDead === false){
                 var closestMonster = undefined;
                 for(var i in Monster.list){
-                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                         closestMonster = Monster.list[i];
                     }
                     else if(closestMonster !== undefined){
@@ -12412,7 +13211,7 @@ Pet = function(param){
             if(self.reload >= 8 / self.shootSpeed && Player.list[self.parent].isDead === false){
                 var closestMonster = undefined;
                 for(var i in Monster.list){
-                    if(closestMonster === undefined && Monster.list[i].map === self.map){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                         closestMonster = Monster.list[i];
                     }
                     else if(closestMonster !== undefined){
@@ -12545,6 +13344,12 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
     }
+    if(param.projectilePattern === 'splaser'){
+        self.angle = param.angle / 180 * Math.PI;
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
+    }
     if(param.projectilePattern === 'auraPlayer'){
         self.angle = param.angle;
         self.canCollide = false;
@@ -12577,10 +13382,16 @@ Projectile = function(param){
     if(param.projectilePattern === 'skull'){
         self.canCollide = false;
     }
+    if(param.projectilePattern === 'monsterSkull'){
+        self.canCollide = false;
+    }
     if(param.projectilePattern === 'unholyTrident'){
         self.canCollide = false;
     }
     if(param.projectilePattern === 'holyTrident'){
+        self.canCollide = false;
+    }
+    if(param.projectilePattern === 'monsterHolyTrident'){
         self.canCollide = false;
     }
     if(param.projectilePattern === 'playerSoul'){
@@ -12637,7 +13448,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.x < self.width / 2){
+        if(self.x < self.width / 2 && self.canCollide){
             self.x = self.width / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdX = -self.spdX;
@@ -12646,7 +13457,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.x > self.mapWidth - self.width / 2){
+        if(self.x > self.mapWidth - self.width / 2 && self.canCollide){
             self.x = self.mapWidth - self.width / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdX = -self.spdX;
@@ -12655,7 +13466,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.y < self.height / 2){
+        if(self.y < self.height / 2 && self.canCollide){
             self.y = self.height / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdY = -self.spdY;
@@ -12664,7 +13475,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.y > self.mapHeight - self.height / 2){
+        if(self.y > self.mapHeight - self.height / 2 && self.canCollide){
             self.y = self.mapHeight - self.height / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdY = -self.spdY;
@@ -12708,6 +13519,19 @@ Projectile = function(param){
                 self.y += Math.cos(self.angle) * param.distance;
                 self.angle += param.stats.speed / 2;
                 self.direction = self.angle * 180 / Math.PI + 180;
+            }
+            else{
+                self.toRemove = true;
+            }
+        }
+        else if(param.projectilePattern === 'splaser'){
+            if(Monster.list[self.parent]){
+                self.x = Monster.list[self.parent].x;
+                self.y = Monster.list[self.parent].y;
+                self.x += -Math.sin(self.angle) * param.distance;
+                self.y += Math.cos(self.angle) * param.distance;
+                self.angle += param.stats.speed / 2;
+                self.direction = self.angle * 180 / Math.PI + 90;
             }
             else{
                 self.toRemove = true;
@@ -12760,7 +13584,7 @@ Projectile = function(param){
         else if(param.projectilePattern === 'monsterHoming'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
@@ -12784,7 +13608,7 @@ Projectile = function(param){
         else if(param.projectilePattern === 'skull'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
@@ -12855,6 +13679,69 @@ Projectile = function(param){
                 self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
             }
         }
+        else if(param.projectilePattern === 'monsterSkull'){
+            if(Monster.list[self.parent]){
+                if(Monster.list[self.parent].target !== undefined){
+                    self.spdX += Math.cos(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 5;
+                    self.spdY += Math.sin(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 5;
+                    self.spdX *= 0.95;
+                    self.spdY *= 0.95;
+                }
+                self.timer -= 0.5;
+                if(self.timer % 2 === 0 && Monster.list[self.parent].target){
+                    var projectileWidth = 0;
+                    var projectileHeight = 0;
+                    var projectileStats = {};
+                    for(var i in projectileData){
+                        if(i === 'bullet'){
+                            projectileWidth = projectileData[i].width;
+                            projectileHeight = projectileData[i].height;
+                            projectileStats = Object.create(projectileData[i].stats);
+                        }
+                    }
+                    for(var i in projectileStats){
+                        projectileStats[i] *= self.stats[i];
+                    }
+                    projectileStats.attack = Math.round(projectileStats.attack / 3);
+                    projectileStats.speed = 2;
+                    projectileStats.damageReduction = 0;
+                    projectileStats.debuffs = self.stats.debuffs;
+                    var projectile = Projectile({
+                        id:self.parent,
+                        projectileType:'bullet',
+                        angle:Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x) / Math.PI * 180,
+                        direction:Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x) / Math.PI * 180,
+                        x:self.x + Math.cos(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x) / 180 * Math.PI) * 32,
+                        y:self.y + Math.sin(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x) / 180 * Math.PI) * 32,
+                        distance:32,
+                        map:self.map,
+                        parentType:'Monster',
+                        mapWidth:Monster.list[self.parent].mapWidth,
+                        mapHeight:Monster.list[self.parent].mapHeight,
+                        width:projectileWidth,
+                        height:projectileHeight,
+                        spin:function(t){return 0},
+                        pierce:0,
+                        projectilePattern:undefined,
+                        stats:projectileStats,
+                        onCollision:function(self,pt){
+                            if(self.pierce === 0){
+                                self.toRemove = true;
+                            }
+                            else{
+                                self.pierce -= 1;
+                            }
+                        }
+                    });
+                }
+            }
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
+        }
         else if(param.projectilePattern === 'seed'){
             if(Monster.list[self.parent] === undefined){
                 self.toRemove = true;
@@ -12878,7 +13765,7 @@ Projectile = function(param){
         else if(param.projectilePattern === 'playerSeed'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
@@ -13050,10 +13937,84 @@ Projectile = function(param){
                 });
             }
         }
+        else if(param.projectilePattern === 'monsterHolyTrident'){
+            if(self.timer % 6 === 0 && self.timer < 20 && Monster.list[self.parent]){
+                var projectileWidth = 0;
+                var projectileHeight = 0;
+                var projectileStats = {};
+                for(var i in projectileData){
+                    if(i === 'holySoul'){
+                        projectileWidth = projectileData[i].width;
+                        projectileHeight = projectileData[i].height;
+                        projectileStats = Object.create(projectileData[i].stats);
+                    }
+                }
+                for(var i in projectileStats){
+                    projectileStats[i] *= self.stats[i];
+                }
+                projectileStats.attack = Math.round(projectileStats.attack / 3);
+                projectileStats.damageReduction = 0;
+                projectileStats.debuffs = self.stats.debuffs;
+                var projectile = Projectile({
+                    id:self.parent,
+                    projectileType:'holySoul',
+                    angle:self.direction + 90,
+                    direction:self.direction + 90,
+                    x:self.x,
+                    y:self.y,
+                    distance:32,
+                    map:self.map,
+                    parentType:'Monster',
+                    mapWidth:Monster.list[self.parent].mapWidth,
+                    mapHeight:Monster.list[self.parent].mapHeight,
+                    width:projectileWidth,
+                    height:projectileHeight,
+                    spin:function(t){return 50},
+                    pierce:1,
+                    projectilePattern:'monsterSoulLaunch',
+                    stats:projectileStats,
+                    onCollision:function(self,pt){
+                        if(self.pierce === 0){
+                            self.toRemove = true;
+                        }
+                        else{
+                            self.pierce -= 1;
+                        }
+                    }
+                });
+                var projectile = Projectile({
+                    id:self.parent,
+                    projectileType:'holySoul',
+                    angle:self.direction + 270,
+                    direction:self.direction + 270,
+                    x:self.x,
+                    y:self.y,
+                    distance:32,
+                    map:self.map,
+                    parentType:'Monster',
+                    mapWidth:Monster.list[self.parent].mapWidth,
+                    mapHeight:Monster.list[self.parent].mapHeight,
+                    width:projectileWidth,
+                    height:projectileHeight,
+                    spin:function(t){return 50},
+                    pierce:1,
+                    projectilePattern:'monsterSoulLaunch',
+                    stats:projectileStats,
+                    onCollision:function(self,pt){
+                        if(self.pierce === 0){
+                            self.toRemove = true;
+                        }
+                        else{
+                            self.pierce -= 1;
+                        }
+                    }
+                });
+            }
+        }
         else if(param.projectilePattern === 'playerSoul' && self.timer < 10){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
@@ -13077,7 +14038,7 @@ Projectile = function(param){
         else if(param.projectilePattern === 'playerSoul'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
@@ -13112,7 +14073,7 @@ Projectile = function(param){
         else if(param.projectilePattern === 'playerSoulLaunch'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
@@ -13133,10 +14094,36 @@ Projectile = function(param){
                 self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
             }
         }
+        else if(param.projectilePattern === 'monsterSoulLaunch' && self.timer < 10){
+            self.spdX *= 0.9;
+            self.spdY *= 0.9;
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
+        }
+        else if(param.projectilePattern === 'monsterSoulLaunch'){
+            if(Monster.list[self.parent]){
+                if(Monster.list[self.parent].target){
+                    self.spdX = Math.cos(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 75 * self.stats.speed;
+                    self.spdY = Math.sin(Math.atan2(Monster.list[self.parent].target.y - self.y,Monster.list[self.parent].target.x - self.x)) * 75 * self.stats.speed;
+                }
+            }
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
+        }
         else if(param.projectilePattern === 'playerSoulWait'){
             var closestMonster = undefined;
             for(var i in Monster.list){
-                if(closestMonster === undefined && Monster.list[i].map === self.map){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
                     closestMonster = Monster.list[i];
                 }
                 else if(closestMonster !== undefined){
