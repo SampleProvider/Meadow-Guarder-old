@@ -9479,6 +9479,8 @@ Monster = function(param){
             hair:[0,250,0,0.5],
             hairType:'shortHair',
         }
+        self.animation = 0;
+        self.animationDirection = 'down';
     }
     if(self.monsterType === 'tianmuGuarder'){
         self.canCollide = false;
@@ -9494,6 +9496,8 @@ Monster = function(param){
             hair:[5,0,245,0.4],
             hairType:'vikingHat',
         }
+        self.animation = 0;
+        self.animationDirection = 'down';
     }
     if(self.monsterType === 'sampleprovidersp'){
         self.canCollide = false;
@@ -9509,6 +9513,8 @@ Monster = function(param){
             hair:[250,0,0,1],
             hairType:'longHat',
         }
+        self.animation = 0;
+        self.animationDirection = 'down';
     }
     if(self.monsterType === 'suvanth'){
         self.canCollide = false;
@@ -9524,6 +9530,8 @@ Monster = function(param){
             hair:[141,196,53,1],
             hairType:'bald',
         }
+        self.animation = 0;
+        self.animationDirection = 'down';
     }
     if(self.monsterType === 'spgem'){
         self.canCollide = false;
@@ -11655,7 +11663,7 @@ Monster = function(param){
                 self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
                         self.attackState = "moveSp";
                         self.target = Player.list[i];
                         maxAggro = Player.list[i].stats.aggro;
@@ -12140,7 +12148,7 @@ Monster = function(param){
                 self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
                         self.attackState = "moveTianmuGuarder";
                         self.target = Player.list[i];
                         maxAggro = Player.list[i].stats.aggro;
@@ -12322,7 +12330,7 @@ Monster = function(param){
                 self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
                         self.attackState = "moveSampleprovidersp";
                         self.target = Player.list[i];
                         maxAggro = Player.list[i].stats.aggro;
@@ -12494,7 +12502,7 @@ Monster = function(param){
                 self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
                         self.attackState = "moveSuvanth";
                         self.target = Player.list[i];
                         maxAggro = Player.list[i].stats.aggro;
@@ -12645,7 +12653,7 @@ Monster = function(param){
                 self.animate = false;
                 var maxAggro = -10;
                 for(var i in Player.list){
-                    if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
+                    if(Player.list[i].map === self.map && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
                         self.attackState = "moveSpgem";
                         self.target = Player.list[i];
                         maxAggro = Player.list[i].stats.aggro;
