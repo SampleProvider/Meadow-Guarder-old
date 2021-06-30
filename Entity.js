@@ -922,6 +922,7 @@ Entity.getFrameUpdateData = function(){
                     if(Player.list[i].map === 'The Arena'){
                         Player.list[i].xp += 500000 * Player.list[i].stats.xp;
                         Player.list[i].inventory.addItem('leaf',[]);
+                        Player.list[i].inventory.addItem('purplefish',[]);
                         if(Math.random() < 0.1){
                             Player.list[i].inventory.addItem('halibutcannon',[]);
                         }
@@ -933,6 +934,12 @@ Entity.getFrameUpdateData = function(){
                         }
                     }
                 }
+                setTimeout(function(){
+                    addToChat('style="color: #ff0000">','Impending Developer Approaching..');
+                },60000);
+                setTimeout(function(){
+                    s.testDPS();
+                },70000);
             }
         }
     }

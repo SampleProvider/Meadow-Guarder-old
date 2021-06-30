@@ -713,6 +713,14 @@
         "description":"Summons Whirlwind.<br>Used in Lilypad Temple Room 2.",
         "rarity":6
     },
+    "purplefish":{
+        "name":"Purple Fish",
+        "equip":"consume",
+        "event":"s.testDPS();self.inventory.currentEquip['consume'] = {};self.inventory.addItem('purplefish',[]);",
+        "enchantments":[],
+        "description":"Summons sp.",
+        "rarity":6
+    },
     "ectocannon":{
         "name":"Ecto Cannon",
         "equip":"weapon",
