@@ -153,7 +153,6 @@ var renderLayers = function(json,name){
                     else{
                         glLower.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
                     }
-                    loadingProgress += 1;
                 }
             }
         }
@@ -2783,10 +2782,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min((loadingProgress - loadingProgressDisplay) / 4),10 + 10 * Math.random());
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 57450';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 57450 * window.innerWidth / 2 + 'px';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 357';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 357 * window.innerWidth / 2 + 'px';
         }
-        if(loadingProgressDisplay >= 57450){
+        if(loadingProgressDisplay >= 357){
             if(loading){
                 setTimeout(function(){
                     loading = false;
