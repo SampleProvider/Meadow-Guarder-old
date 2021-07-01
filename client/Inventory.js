@@ -63,6 +63,7 @@ Inventory = function(socket,server){
             steel:0,
             gold:0,
             ruby:0,
+            emeraldite:0,
         },
         shopItems:{items:[],prices:[]},
         craftItems:{items:[],materials:[]},
@@ -95,6 +96,11 @@ Inventory = function(socket,server){
             self.materials.ruby += 1;
             self.refreshRender();
             return self.materials.ruby;
+        }
+        else if(id === 'emeraldite'){
+            self.materials.emeraldite += 1;
+            self.refreshRender();
+            return self.materials.emeraldite;
         }
         else{
             return false;
@@ -486,6 +492,9 @@ Inventory = function(socket,server){
             else if(data.id === 'ruby'){
                 button.innerHTML = "Ruby ";
             }
+            else if(data.id === 'emeraldite'){
+                button.innerHTML = "Emeraldite ";
+            }
             button.style.display = 'inline-block';
             button.style.position = 'relative';
             enchantments.style.position = 'relative';
@@ -533,6 +542,9 @@ Inventory = function(socket,server){
                 enchantDisplayName += '' + Enchantment.list[data.enchantments[i].id].name + ' ' + enchantName[data.enchantments[i].level] + '<br>';
             }
             var description = '';
+            if(item === undefined){
+                item = {};
+            }
             if(item.damage || item.defense){
                 description += 'When Equipped:<br>';
             }
@@ -585,12 +597,29 @@ Inventory = function(socket,server){
             else{
                 enchantments.innerHTML = description + enchantDisplayName;
             }
+            if(item.name){
+                button.innerHTML = item.name + " ";
+            }
+            else if(data.id === 'wood'){
+                button.innerHTML = "Wood ";
+            }
+            else if(data.id === 'steel'){
+                button.innerHTML = "Steel ";
+            }
+            else if(data.id === 'gold'){
+                button.innerHTML = "Gold ";
+            }
+            else if(data.id === 'ruby'){
+                button.innerHTML = "Ruby ";
+            }
+            else if(data.id === 'emeraldite'){
+                button.innerHTML = "Emeraldite ";
+            }
             enchantments.style.padding = '0px';
             equip.onclick = function(){
                 self.socket.emit("craftItem",index);
                 equip.style.display = 'inline-block';
             }
-            button.innerHTML = item.name + " ";
             button.style.display = 'inline-block';
             button.style.position = 'relative';
             enchantments.style.position = 'relative';
@@ -850,6 +879,9 @@ Inventory = function(socket,server){
                 else if(item.id === 'ruby'){
                     socket.emit('notification','You successfully bought Ruby.');
                 }
+                else if(item.id === 'emeraldite'){
+                    socket.emit('notification','You successfully bought Emeraldite.');
+                }
             }
             catch(err){
                 console.error(err);
@@ -870,7 +902,24 @@ Inventory = function(socket,server){
                 self.addItem(item.id,item.enchantments);
                 //self.items.push(Object.create(item));
                 self.refreshRender();
-                socket.emit('notification','You successfully crafted ' + Item.list[item.id].name + '.');
+                if(Item.list[item.id]){
+                    socket.emit('notification','You successfully crafted ' + Item.list[item.id].name + '.');
+                }
+                else if(item.id === 'wood'){
+                    socket.emit('notification','You successfully crafted Wood.');
+                }
+                else if(item.id === 'steel'){
+                    socket.emit('notification','You successfully crafted Steel.');
+                }
+                else if(item.id === 'gold'){
+                    socket.emit('notification','You successfully crafted Gold.');
+                }
+                else if(item.id === 'ruby'){
+                    socket.emit('notification','You successfully crafted Ruby.');
+                }
+                else if(item.id === 'emeraldite'){
+                    socket.emit('notification','You successfully crafted Emeraldite.');
+                }
             }
             catch(err){
                 console.error(err);

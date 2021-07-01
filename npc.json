@@ -343,10 +343,83 @@
                         "id":"ruby",
                         "amount":10000
                     }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":1
+                    }
                 ]
             ]
         },
         "quote":"Use me to craft items out of rubies."
+    },
+    "natureblessing":{
+        "name":"Nature's Blessing",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "crafts":{
+            "items":[
+                {
+                    "id":"emeraldite",
+                    "enchantments":[]
+                },
+                {
+                    "id":"emeralditecrystal",
+                    "enchantments":[]
+                },
+                {
+                    "id":"emeralditestaff",
+                    "enchantments":[]
+                },
+                {
+                    "id":"emeralditehat",
+                    "enchantments":[]
+                },
+                {
+                    "id":"emeralditearmor",
+                    "enchantments":[]
+                }
+            ],
+            "materials":[
+                [
+                    {
+                        "id":"gold",
+                        "amount":5
+                    },
+                    {
+                        "id":"ruby",
+                        "amount":5
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":50
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":150
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":150
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":150
+                    }
+                ]
+            ]
+        },
+        "quote":"A blessing from nature itself."
     },
     "andrew":{
         "name":"Andrew",

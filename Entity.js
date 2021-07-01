@@ -2662,7 +2662,7 @@ Player = function(param){
     }
     self.updateQuest = function(){
         for(var i in Npc.list){
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
                     self.questStage = 1;
                     self.invincible = true;
@@ -2713,7 +2713,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
                     self.questStage = 1;
                     self.invincible = true;
@@ -2765,7 +2765,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fisherman' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fisherman' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === false){
                     self.questStage = 1;
                     self.invincible = true;
@@ -2815,7 +2815,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wizard' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wizard' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === true){
                     self.questStage = 1;
                     self.invincible = true;
@@ -2833,7 +2833,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'joe' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'joe' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -2883,7 +2883,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'hunter' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'hunter' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -2932,7 +2932,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'anvil' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'anvil' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.questStats["Lightning Lizard Boss"] === true){
                     self.inventory.craftItems = Npc.list[i].crafts;
                     socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
@@ -2942,7 +2942,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'rubyforge' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'rubyforge' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.questStats["Lost Rubies"] === true){
                     self.inventory.craftItems = Npc.list[i].crafts;
                     socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
@@ -2952,7 +2952,17 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'natureblessing' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.questStats["Plantera"] === true){
+                    self.inventory.craftItems = Npc.list[i].crafts;
+                    socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
+                }
+                else{
+                    socket.emit('notification','[!] Defeat Plantera to gain access to Nature\'s Blessing.');
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Lightning Lizard Boss"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -2991,7 +3001,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -3040,7 +3050,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'mia' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'mia' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -3089,7 +3099,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'petmaster' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'petmaster' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -3138,7 +3148,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'andrew' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'andrew' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
                     self.questStage = 2;
                     self.invincible = true;
@@ -3177,7 +3187,7 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
-            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'monsterking' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 32 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'monsterking' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.questStage === 14 && self.quest === 'Monster Search'){
                     self.questStage += 1;
                     self.invincible = true;
@@ -6929,6 +6939,11 @@ Player = function(param){
                 }
             }
         }
+        if(self.passive === 'emeraldite'){
+            self.shootProjectile(self.id,'Player',self.direction,self.direction,'seed',32,function(t){return 0},0,self.stats,'playerSeed');
+            self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'seed',32,function(t){return 0},0,self.stats,'playerSeed');
+            self.shootProjectile(self.id,'Player',self.direction + 240,self.direction + 240,'seed',32,function(t){return 0},0,self.stats,'playerSeed');
+        }
         if(self.offhandPassive === 'spirit'){
             self.shootProjectile(self.id,'Player',self.direction,self.direction,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
             self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
@@ -7445,6 +7460,55 @@ Player = function(param){
                                 }
                                 self.x = x;
                                 self.y = y;
+                            }
+                            break;
+                        case "emeralditestaffAttack":
+                            if(isFireMap){
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'seed'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'seed',
+                                    angle:self.direction + Math.random() * 30 - 15,
+                                    direction:self.direction + Math.random() * 30 - 15,
+                                    x:self.x + Math.cos(self.direction / 180 * Math.PI) * 70,
+                                    y:self.y + Math.sin(self.direction / 180 * Math.PI) * 70,
+                                    map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    pierce:0,
+                                    projectilePattern:'monsterHoming',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        if(self.pierce === 0){
+                                            self.toRemove = true;
+                                            for(var i = 0;i < 3 + Math.round(3 * Math.random());i++){
+                                                if(Player.list[self.parent]){
+                                                    var x = Player.list[self.parent].x
+                                                    var y = Player.list[self.parent].y;
+                                                    Player.list[self.parent].x = self.x;
+                                                    Player.list[self.parent].y = self.y;
+                                                    Player.list[self.parent].shootProjectile(self.parent,'Player',360 * Math.random(),360 * Math.random(),'seed',24,function(t){return 0},0,self.stats,'playerSeed');
+                                                    Player.list[self.parent].x = x;
+                                                    Player.list[self.parent].y = y;
+                                                }
+                                            }
+                                        }
+                                        else{
+                                            self.pierce -= 1;
+                                        }
+                                    }
+                                });
                             }
                             break;
                         case "typhoonstormAttack":
@@ -9035,6 +9099,14 @@ Player.onConnect = function(socket,username){
                     socket.emit('notification','[!] Defeat Plantera to gain access to this waypoint.');
                 }
             }
+            else if(data === 'Lilypad Kingdom'){
+                if(player.questStats['Plantera']){
+                    player.teleport(1600,2144,data);
+                }
+                else{
+                    socket.emit('notification','[!] Defeat Plantera to gain access to this waypoint.');
+                }
+            }
             else{
                 socket.emit('notification','Stop hacking.');
             }
@@ -9546,6 +9618,7 @@ Monster = function(param){
         self.lastX = self.x;
         self.lastY = self.y;
         super_update();
+        self.updateAnimation();
         if(self.animate){
             if(self.animation === -1){
                 self.animation = 0;
@@ -9558,7 +9631,6 @@ Monster = function(param){
             }
         }
         self.updateAttack();
-        self.updateAnimation();
         if(self.hp < 1){
             if(self.monsterType === 'redBird'){
                 addToChat('style="color: #ff00ff">','Red Bird has been defeated!');
@@ -9636,7 +9708,7 @@ Monster = function(param){
         }
         switch(self.attackState){
             case "passiveBird":
-                self.animate = true;
+                //self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
@@ -9767,7 +9839,7 @@ Monster = function(param){
                 }
                 break;
             case "passiveBall":
-                self.animate = false;
+                //self.animate = false;
                 var maxAggro = -10;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
@@ -9945,7 +10017,7 @@ Monster = function(param){
                 self.y = self.lastY;
                 break;
             case "passiveRedBird":
-                self.animate = true;
+                //self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
@@ -10037,7 +10109,7 @@ Monster = function(param){
                 }
                 break;
             case "passiveLizard":
-                self.animate = true;
+                //self.animate = true;
                 var maxAggro = -10;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){

@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f6a';
+var VERSION = '024f7a';
 
 var DEBUG = false;
 
@@ -153,6 +153,7 @@ var renderLayers = function(json,name){
                     else{
                         glLower.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
                     }
+                    loadingProgress += 1;
                 }
             }
         }
@@ -192,6 +193,7 @@ var renderLayers = function(json,name){
                             info:npcName,
                         });
                     }
+                    loadingProgress += 1;
                 }
             }
         }
@@ -231,6 +233,7 @@ var renderLayers = function(json,name){
                             info:npcName,
                         });
                     }
+                    loadingProgress += 1;
                 }
             }
         }
@@ -975,6 +978,9 @@ document.getElementById('desertedTownWaypoint').onclick = function(){
 }
 document.getElementById('lilypad3Waypoint').onclick = function(){
     socket.emit('waypoint','Lilypad Temple Room 2');
+}
+document.getElementById('lilypad4Waypoint').onclick = function(){
+    socket.emit('waypoint','Lilypad Kingdom');
 }
 
 var drawPlayer = function(img,canvas,animationDirection,animation,x,y,size){
@@ -2777,10 +2783,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min((loadingProgress - loadingProgressDisplay) / 4),10 + 10 * Math.random());
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 323';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 323 * window.innerWidth / 2 + 'px';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 57450';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 57450 * window.innerWidth / 2 + 'px';
         }
-        if(loadingProgressDisplay >= 323){
+        if(loadingProgressDisplay >= 57450){
             if(loading){
                 setTimeout(function(){
                     loading = false;

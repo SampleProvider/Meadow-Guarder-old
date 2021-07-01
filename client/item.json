@@ -577,6 +577,14 @@
         "description":"Harness the power of lightning.",
         "rarity":3
     },
+    "emeralditecrystal":{
+        "name":"Emeraldite Crystal",
+        "equip":"crystal",
+        "event":"self.passive = 'emeraldite';",
+        "enchantments":[],
+        "description":"Harness the power of nature.",
+        "rarity":7
+    },
     "yellowfish":{
         "name":"Yellow Fish",
         "equip":"consume",
@@ -1037,5 +1045,35 @@
         "event":"self.manaMax += 50;self.manaRegen += 0.3;",
         "enchantments":["smashing"],
         "rarity":6
+    },
+    "emeralditehat":{
+        "name":"Emeraldite Hat",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.45;self.stats.critChance += 0.25;}self.manaMax += 60;",
+        "enchantments":["smashing"],
+        "defense":14,
+        "rarity":7,
+        "description":"<span style='color: #33ee33'>+45% magic damage.</span><br><span style='color: #33ee33'>+25% magic critical strike chance.</span><br><span style='color: #33ee33'>+60 extra mana.</span>"
+    },
+    "emeralditearmor":{
+        "name":"Emeraldite Armor",
+        "equip":"armor",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.25;self.stats.critChance += 0.55;}self.manaMax += 100;",
+        "enchantments":["smashing"],
+        "defense":18,
+        "rarity":7,
+        "description":"<span style='color: #33ee33'>+25% magic damage.</span><br><span style='color: #33ee33'>+55% magic critical strike chance.</span><br><span style='color: #33ee33'>+100 extra mana.</span>"
+    },
+    "emeralditestaff":{
+        "name":"Emeraldite Staff",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 1;",
+        "enchantments":["speed","burst","cost"],
+        "damage":1923,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":4,
+        "rarity":7,
+        "description":"Shoots a seed that explodes on impact."
     }
 }
