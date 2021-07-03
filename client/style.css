@@ -848,6 +848,35 @@ canvas {
     border: 1px solid #00aa00;
     margin-left: 2px;
 }
+.itemEquip:hover {
+    background-color: #009900;
+}
+.itemBuy {
+    position: relative;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #00ff00;
+    border: 1px solid #00aa00;
+    margin-left: 2px;
+}
+.itemBuy:hover {
+    background-color: #009900;
+}
+.itemCraft {
+    position: relative;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #00ff00;
+    border: 1px solid #00aa00;
+    margin-left: 2px;
+}
+.itemCraft:hover {
+    background-color: #009900;
+}
 .itemDismantle {
     position: relative;
     font-family: 'pixel';
@@ -857,9 +886,6 @@ canvas {
     background-color: #ff0000;
     border: 1px solid #aa0000;
     margin-left: 2px;
-}
-.itemEquip:hover {
-    background-color: #009900;
 }
 .itemDismantle:hover {
     background-color: #990000;

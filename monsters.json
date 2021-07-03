@@ -393,7 +393,8 @@
             "brokenheroshield":0.5,
             "skullofdeath":0.5,
             "enchantmentbook":7,
-            "heroshield":0.01
+            "heroshield":0.01,
+            "essenceofnature":10
         }
     },
     "thorn":{

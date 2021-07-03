@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f7a';
+var VERSION = '024f7b';
 
 var DEBUG = false;
 
@@ -922,6 +922,22 @@ socket.on('updateInventory',function(pack){
     inventory.currentEquip = pack.currentEquip;
     inventory.materials = pack.materials;
     inventory.refreshRender();
+});
+socket.on('updateItem',function(pack){
+    inventory.items = pack.items;
+    inventory.refreshItem(pack.index);
+});
+socket.on('updateItems',function(pack){
+    inventory.items = pack.items;
+    inventory.refreshAllItems();
+});
+socket.on('updateEquip',function(pack){
+    inventory.currentEquip = pack.currentEquip;
+    inventory.refreshEquip();
+});
+socket.on('updateMaterial',function(pack){
+    inventory.materials = pack.materials;
+    inventory.refreshMaterial();
 });
 
 var disableAllMenu = function(){
@@ -2678,7 +2694,7 @@ socket.on('toggleSelect',function(data){
     inventory.refreshRender();
 });
 socket.on('updateLeaderboard',function(data){
-    document.getElementById('leaderboardScreen').innerHTML = '<div class="window-body">Leaderboards</div><div style="font-size:18px;">Leaderboards update every five minutes.</div><br>';
+    document.getElementById('leaderboardScreen').innerHTML = '<div style="font-size:18px;">Leaderboards: </div><br><div style="font-size:15px;">Leaderboards update every five minutes.</div><br>';
     var j = 1;
     for(var i in data){
         if(data[i].level === 0){
@@ -2726,7 +2742,7 @@ socket.on('openShop',function(data){
     document.getElementById('shopDescription').innerHTML = '"' + data.quote + '"';
     state.isHidden = false;
     inventory.shopItems = data.inventory;
-    inventory.refreshRender();
+    inventory.refreshShop();
 });
 socket.on('closeShop',function(data){
     if(document.getElementById('shopScreen').style.display === 'inline-block'){
@@ -2742,7 +2758,7 @@ socket.on('openCraft',function(data){
     document.getElementById('craftDescription').innerHTML = '"' + data.quote + '"';
     state.isHidden = false;
     inventory.craftItems = data.crafts;
-    inventory.refreshRender();
+    inventory.refreshCraft();
 });
 socket.on('closeCraft',function(data){
     if(document.getElementById('craftScreen').style.display === 'inline-block'){
@@ -3091,7 +3107,7 @@ setInterval(function(){
     }
 
     ctx1.fillStyle = '#000000';
-    ctx1.fillRect(-WIDTH,-HEIGHT,Player.list[selfId].mapWidth + WIDTH,HEIGHT);
+    ctx1.fillRect(-WIDTH,-HEIGHT,Player.list[selfId].mapWidth + WIDTH * 2,HEIGHT);
     ctx1.fillRect(-WIDTH,0,WIDTH,Player.list[selfId].mapHeight + HEIGHT);
     ctx1.fillRect(0,Player.list[selfId].mapHeight,Player.list[selfId].mapWidth + WIDTH,HEIGHT);
     ctx1.fillRect(Player.list[selfId].mapWidth,0,WIDTH,Player.list[selfId].mapHeight + HEIGHT);
@@ -3113,6 +3129,7 @@ setInterval(function(){
     mapShadeAmount += mapShadeSpeed;
     if(shadeAmount >= -1){
         blackShade.style.opacity = shadeAmount;
+        Particle.list = [];
     }
     if(mapShadeAmount >= -1){
         document.getElementById('mapName').style.opacity = mapShadeAmount;

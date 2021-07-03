@@ -1575,21 +1575,30 @@ Actor = function(param){
                             }
                             else{
                                 for(var i in self.itemDrops){
-                                    if(i === 'enchantmentbook' && Player.list[pt.parent].stats.luck > 0){
-                                        var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
-                                        Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,10);
-                                        for(var j = 0;j < self.itemDrops[i] - 1;j++){
-                                            var itemIndex2 = Player.list[pt.parent].inventory.addItem(i,[]);
-                                            Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex2,10);
+                                    if(i === 'enchantmentbook' && pt.stats.luck > 0){
+                                        for(var j = 0;j < self.itemDrops[i];j++){
+                                            pt.inventory.addRandomItemAndRandomizedEnchantments(i,3);
                                         }
-                                        var item = Player.list[pt.parent].inventory.items[itemIndex];
-                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
+                                        addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
                                     }
-                                    else if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
-                                        var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
-                                        Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,Player.list[pt.parent].stats.luck);
-                                        var item = Player.list[pt.parent].inventory.items[itemIndex];
-                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
+                                    else{
+                                        var materialAdded = false;
+                                        for(var j in pt.inventory.materials){
+                                            if(i === j){
+                                                materialAdded = true;
+                                                var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
+                                                pt.inventory.materials[i] += materialAmount;
+                                                pt.inventory.refreshMaterial();
+                                                addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + pt.inventory.getMaterialName(i) + " x" + materialAmount + ".");
+                                            }
+                                        }
+                                        if(materialAdded === false){
+                                            if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                                                var itemIndex = pt.inventory.addRandomItemAndRandomizedEnchantments(i,pt.stats.luck);
+                                                var item = pt.inventory.items[itemIndex];
+                                                addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -1604,20 +1613,29 @@ Actor = function(param){
                         else{
                             for(var i in self.itemDrops){
                                 if(i === 'enchantmentbook' && pt.stats.luck > 0){
-                                    var itemIndex = pt.inventory.addItem(i,[]);
-                                    pt.inventory.addRandomizedEnchantments(itemIndex,10);
-                                    for(var j = 0;j < self.itemDrops[i] - 1;j++){
-                                        var itemIndex2 = pt.inventory.addItem(i,[]);
-                                        pt.inventory.addRandomizedEnchantments(itemIndex2,10);
+                                    for(var j = 0;j < self.itemDrops[i];j++){
+                                        pt.inventory.addRandomItemAndRandomizedEnchantments(i,3);
                                     }
-                                    var item = pt.inventory.items[itemIndex];
-                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
+                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
                                 }
-                                else if(self.itemDrops[i] * pt.stats.luck > Math.random()){
-                                    var itemIndex = pt.inventory.addItem(i,[]);
-                                    pt.inventory.addRandomizedEnchantments(itemIndex,pt.stats.luck);
-                                    var item = pt.inventory.items[itemIndex];
-                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                                else{
+                                    var materialAdded = false;
+                                    for(var j in pt.inventory.materials){
+                                        if(i === j){
+                                            materialAdded = true;
+                                            var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
+                                            pt.inventory.materials[i] += materialAmount;
+                                            pt.inventory.refreshMaterial();
+                                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + pt.inventory.getMaterialName(i) + " x" + materialAmount + ".");
+                                        }
+                                    }
+                                    if(materialAdded === false){
+                                        if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                                            var itemIndex = pt.inventory.addRandomItemAndRandomizedEnchantments(i,pt.stats.luck);
+                                            var item = pt.inventory.items[itemIndex];
+                                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1765,20 +1783,29 @@ Actor = function(param){
                     else{
                         for(var i in self.itemDrops){
                             if(i === 'enchantmentbook' && Player.list[pt.parent].stats.luck > 0){
-                                var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
-                                Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,10);
-                                for(var j = 0;j < self.itemDrops[i] - 1;j++){
-                                    var itemIndex2 = Player.list[pt.parent].inventory.addItem(i,[]);
-                                    Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex2,10);
+                                for(var j = 0;j < self.itemDrops[i];j++){
+                                    Player.list[pt.parent].inventory.addRandomItemAndRandomizedEnchantments(i,3);
                                 }
-                                var item = Player.list[pt.parent].inventory.items[itemIndex];
-                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
+                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
                             }
-                            else if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
-                                var itemIndex = Player.list[pt.parent].inventory.addItem(i,[]);
-                                Player.list[pt.parent].inventory.addRandomizedEnchantments(itemIndex,Player.list[pt.parent].stats.luck);
-                                var item = Player.list[pt.parent].inventory.items[itemIndex];
-                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
+                            else{
+                                var materialAdded = false;
+                                for(var j in Player.list[pt.parent].inventory.materials){
+                                    if(i === j){
+                                        materialAdded = true;
+                                        var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
+                                        Player.list[pt.parent].inventory.materials[i] += materialAmount;
+                                        Player.list[pt.parent].inventory.refreshMaterial();
+                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Player.list[pt.parent].inventory.getMaterialName(i) + " x" + materialAmount + ".");
+                                    }
+                                }
+                                if(materialAdded === false){
+                                    if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
+                                        var itemIndex = Player.list[pt.parent].inventory.addRandomItemAndRandomizedEnchantments(i,Player.list[pt.parent].stats.luck);
+                                        var item = Player.list[pt.parent].inventory.items[itemIndex];
+                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
+                                    }
+                                }
                             }
                         }
                     }
@@ -1793,20 +1820,29 @@ Actor = function(param){
                 else{
                     for(var i in self.itemDrops){
                         if(i === 'enchantmentbook' && pt.stats.luck > 0){
-                            var itemIndex = pt.inventory.addItem(i,[]);
-                            pt.inventory.addRandomizedEnchantments(itemIndex,10);
-                            for(var j = 0;j < self.itemDrops[i] - 1;j++){
-                                var itemIndex2 = pt.inventory.addItem(i,[]);
-                                pt.inventory.addRandomizedEnchantments(itemIndex2,10);
+                            for(var j = 0;j < self.itemDrops[i];j++){
+                                pt.inventory.addRandomItemAndRandomizedEnchantments(i,3);
                             }
-                            var item = pt.inventory.items[itemIndex];
-                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + " x" + Math.round(self.itemDrops[i]) + ".");
+                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
                         }
-                        else if(self.itemDrops[i] * pt.stats.luck > Math.random()){
-                            var itemIndex = pt.inventory.addItem(i,[]);
-                            pt.inventory.addRandomizedEnchantments(itemIndex,pt.stats.luck);
-                            var item = pt.inventory.items[itemIndex];
-                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                        else{
+                            var materialAdded = false;
+                            for(var j in pt.inventory.materials){
+                                if(i === j){
+                                    materialAdded = true;
+                                    var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
+                                    pt.inventory.materials[i] += materialAmount;
+                                    pt.inventory.refreshMaterial();
+                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + pt.inventory.getMaterialName(i) + " x" + materialAmount + ".");
+                                }
+                            }
+                            if(materialAdded === false){
+                                if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                                    var itemIndex = pt.inventory.addRandomItemAndRandomizedEnchantments(i,pt.stats.luck);
+                                    var item = pt.inventory.items[itemIndex];
+                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
+                                }
+                            }
                         }
                     }
                 }
@@ -3339,7 +3375,7 @@ Player = function(param){
             var woodObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
-            self.inventory.refreshRender();
+            self.inventory.refreshMaterial();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -3809,7 +3845,7 @@ Player = function(param){
             var woodObtained = Math.round(10 + Math.random() * 15);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
-            self.inventory.refreshRender();
+            self.inventory.refreshMaterial();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4239,7 +4275,7 @@ Player = function(param){
             var steelObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + steelObtained + ' steel.');
             self.inventory.materials.steel += steelObtained;
-            self.inventory.refreshRender();
+            self.inventory.refreshMaterial();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4677,7 +4713,7 @@ Player = function(param){
             var rubiesObtained = Math.round(5 + Math.random() * 10);
             socket.emit('notification','You obtained ' + rubiesObtained + ' rubies.');
             self.inventory.materials.ruby += rubiesObtained;
-            self.inventory.refreshRender();
+            self.inventory.refreshMaterial();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -4841,7 +4877,7 @@ Player = function(param){
             var goldObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + goldObtained + ' gold.');
             self.inventory.materials.gold += goldObtained;
-            self.inventory.refreshRender();
+            self.inventory.refreshMaterial();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -5156,7 +5192,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 25){
                     self.inventory.materials.ruby -= 25;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5281,7 +5317,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 200){
                     self.inventory.materials.ruby -= 200;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5331,7 +5367,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 200){
                     self.inventory.materials.ruby -= 200;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5381,7 +5417,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 25){
                     self.inventory.materials.ruby -= 25;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5431,7 +5467,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 25){
                     self.inventory.materials.ruby -= 25;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5491,7 +5527,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 500){
                     self.inventory.materials.ruby -= 500;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5541,7 +5577,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 500){
                     self.inventory.materials.ruby -= 500;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5591,7 +5627,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 500){
                     self.inventory.materials.ruby -= 500;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -5641,7 +5677,7 @@ Player = function(param){
                 }
                 else if(self.inventory.materials.ruby >= 200){
                     self.inventory.materials.ruby -= 200;
-                    self.inventory.refreshRender();
+                    self.inventory.refreshMaterial();
                     for(var i in Pet.list){
                         if(Pet.list[i].parent === self.id){
                             Pet.list[i].toRemove = true;
@@ -6683,7 +6719,6 @@ Player = function(param){
                 if(ENV.DisplayMapChanges){
                     addToChat('style="color: ' + self.textColor + '">',self.displayName + " went to map " + self.map + ".");
                 }
-                //self.inventory.refreshRender();
                 socket.emit('closeShop');
                 socket.emit('closeCraft');
                 self.questInfo.quest = false;
