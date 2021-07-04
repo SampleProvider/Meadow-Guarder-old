@@ -585,6 +585,22 @@
         "description":"Harness the power of nature.",
         "rarity":7
     },
+    "whirlwindcrystal":{
+        "name":"Whirlwind Crystal",
+        "equip":"crystal",
+        "event":"self.passive = 'whirlwind';",
+        "enchantments":[],
+        "description":"Harness the power of water.",
+        "rarity":7
+    },
+    "truefirecrystal":{
+        "name":"True Fire Crystal",
+        "equip":"crystal",
+        "event":"self.passive = 'firespirit';",
+        "enchantments":[],
+        "description":"Harness the power of fire.",
+        "rarity":7
+    },
     "yellowfish":{
         "name":"Yellow Fish",
         "equip":"consume",
@@ -727,6 +743,14 @@
         "event":"s.testDPS();self.inventory.currentEquip['consume'] = {};self.inventory.addItem('purplefish',[]);",
         "enchantments":[],
         "description":"Summons sp.",
+        "rarity":6
+    },
+    "burntfish":{
+        "name":"Burnt Fish",
+        "equip":"consume",
+        "event":"if(self.map === 'The Flaming Sea'){s.createMonster('fireSpirit',{x:2400,y:928,map:'The Flaming Sea'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('burntfish',[]);",
+        "enchantments":[],
+        "description":"Summons Fire Spirit.<br>Used in The Flaming Sea.",
         "rarity":6
     },
     "ectocannon":{
@@ -1049,20 +1073,20 @@
     "emeralditehat":{
         "name":"Emeraldite Hat",
         "equip":"helmet",
-        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.45;self.stats.critChance += 0.25;}self.manaMax += 60;",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.45;self.stats.critChance += 0.45;}self.manaMax += 60;",
         "enchantments":["smashing"],
         "defense":14,
         "rarity":7,
-        "description":"<span style='color: #33ee33'>+45% magic damage.</span><br><span style='color: #33ee33'>+25% magic critical strike chance.</span><br><span style='color: #33ee33'>+60 extra mana.</span>"
+        "description":"<span style='color: #33ee33'>+45% magic damage.</span><br><span style='color: #33ee33'>+45% magic critical strike chance.</span><br><span style='color: #33ee33'>+60 extra mana.</span>"
     },
     "emeralditearmor":{
         "name":"Emeraldite Armor",
         "equip":"armor",
-        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.25;self.stats.critChance += 0.55;}self.manaMax += 100;",
+        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 0.4;self.stats.critChance += 0.55;}self.manaMax += 100;",
         "enchantments":["smashing"],
         "defense":18,
         "rarity":7,
-        "description":"<span style='color: #33ee33'>+25% magic damage.</span><br><span style='color: #33ee33'>+55% magic critical strike chance.</span><br><span style='color: #33ee33'>+100 extra mana.</span>"
+        "description":"<span style='color: #33ee33'>+40% magic damage.</span><br><span style='color: #33ee33'>+55% magic critical strike chance.</span><br><span style='color: #33ee33'>+100 extra mana.</span>"
     },
     "emeralditestaff":{
         "name":"Emeraldite Staff",
@@ -1075,5 +1099,47 @@
         "useTime":4,
         "rarity":7,
         "description":"Shoots a seed that explodes on impact."
+    },
+    "whirlwindcannon":{
+        "name":"Whirlwind Cannon",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":3719,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":5,
+        "rarity":7,
+        "description":"Shoots a whirlwind."
+    },
+    "firehelmet":{
+        "name":"Fire Helmet",
+        "equip":"helmet",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.65;self.stats.critChance += 0.25;}self.stats.debuffs.push({id:'incinerating',time:100});",
+        "enchantments":["smashing"],
+        "defense":43,
+        "rarity":7,
+        "description":"<span style='color: #33ee33'>+65% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>You inflict the incinerating debuff for 5 seconds."
+    },
+    "firearmor":{
+        "name":"Fire Armor",
+        "equip":"armor",
+        "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.5;self.stats.critChance += 0.15;}self.immuneDebuffs.push('incinerating');",
+        "enchantments":["smashing"],
+        "defense":56,
+        "rarity":7,
+        "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+15% melee critical strike chance.</span><br>You gain immunity to the incinerating debuff."
+    },
+    "fireboomerang":{
+        "name":"Fire Boomerang",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 1;",
+        "enchantments":["speed","burst"],
+        "damage":1923,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":10,
+        "rarity":7,
+        "description":"Shoots a flaming boomerang that splits into two flaming boomerangs when hitting an enemy."
     }
 }

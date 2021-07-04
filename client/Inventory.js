@@ -65,6 +65,10 @@ Inventory = function(socket,server){
             ruby:0,
             emeraldite:0,
             essenceofnature:0,
+            whirlwindbar:0,
+            essenceofwater:0,
+            firebar:0,
+            essenceoffire:0,
         },
         shopItems:{items:[],prices:[]},
         craftItems:{items:[],materials:[]},
@@ -236,6 +240,18 @@ Inventory = function(socket,server){
         if(id === 'essenceofnature'){
             return 'Essence of Nature';
         }
+        if(id === 'whirlwindbar'){
+            return 'Whirlwind Bar';
+        }
+        if(id === 'essenceofwater'){
+            return 'Essence of Water';
+        }
+        if(id === 'firebar'){
+            return 'Fire Bar';
+        }
+        if(id === 'essenceoffire'){
+            return 'Essence of Fire';
+        }
     }
 	self.refreshRender = function(){
         if(self.server){
@@ -273,6 +289,8 @@ Inventory = function(socket,server){
         }
         dismantleButton.style.display = 'inline-block';
         dismantleButton.style.position = 'relative';
+        var spacing = document.createElement('div');
+        inventory.appendChild(spacing);
         var dismantleEnchantButton = document.createElement('button');
         dismantleEnchantButton.innerHTML = 'Dismantle All Enchantment Books';
         dismantleEnchantButton.className = "UI-button-light";
@@ -291,6 +309,8 @@ Inventory = function(socket,server){
         }
         dismantleEnchantButton.style.display = 'inline-block';
         dismantleEnchantButton.style.position = 'relative';
+        var spacing = document.createElement('div');
+        inventory.appendChild(spacing);
         var addItem = function(data,index){
             let item = Item.list[data.id];
             let button = document.createElement('button');
@@ -742,8 +762,6 @@ Inventory = function(socket,server){
             materials.appendChild(div);
             div.appendChild(button);
             button.appendChild(image);
-            var spacing = document.createElement('div');
-            materials.appendChild(spacing);
         }
 		for(var i = 0;i < self.items.length;i++){
 			addItem(self.items[i],i);
@@ -984,6 +1002,8 @@ Inventory = function(socket,server){
         }
         dismantleButton.style.display = 'inline-block';
         dismantleButton.style.position = 'relative';
+        var spacing = document.createElement('div');
+        inventory.appendChild(spacing);
         var dismantleEnchantButton = document.createElement('button');
         dismantleEnchantButton.innerHTML = 'Dismantle All Enchantment Books';
         dismantleEnchantButton.className = "UI-button-light";
@@ -1002,6 +1022,8 @@ Inventory = function(socket,server){
         }
         dismantleEnchantButton.style.display = 'inline-block';
         dismantleEnchantButton.style.position = 'relative';
+        var spacing = document.createElement('div');
+        inventory.appendChild(spacing);
         var addItem = function(data,index){
             let item = Item.list[data.id];
             let button = document.createElement('button');
@@ -1494,8 +1516,6 @@ Inventory = function(socket,server){
             materials.appendChild(div);
             div.appendChild(button);
             button.appendChild(image);
-            var spacing = document.createElement('div');
-            materials.appendChild(spacing);
         }
         for(var i in self.materials){
             addMaterial(self.materials[i],i);

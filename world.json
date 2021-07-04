@@ -36,6 +36,9 @@
         ],
         "Lilypad Temple Room 2": [
             "waterRammer","deathBomb"
+        ],
+        "The Flaming Sea": [
+            "charredBird"
         ]
     }
 }

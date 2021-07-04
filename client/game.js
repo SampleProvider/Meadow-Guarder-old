@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f7b';
+var VERSION = '024f8a';
 
 var DEBUG = false;
 
@@ -671,8 +671,8 @@ Img.waterRammer = new Image();
 Img.waterRammer.src = '/client/img/waterRammer.png';
 Img.whirlwind = new Image();
 Img.whirlwind.src = '/client/img/whirlwind.png';
-Img.sp = new Image();
-Img.sp.src = '/client/img/sp.png';
+Img.fireSpirit = new Image();
+Img.fireSpirit.src = '/client/img/fireSpirit.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -1200,6 +1200,14 @@ var Player = function(initPack){
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
+            else if(self.currentItem === 'whirlwindcannon'){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
             else if(self.currentItem === 'tsunami'){
                 turnAmount = 225;
                 var drawX = -49;
@@ -1489,6 +1497,10 @@ var Monster = function(initPack){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'Whirlwind ' + self.hp + '/' + self.hpMax;
     }
+    if(self.monsterType === 'fireSpirit'){
+        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
+        document.getElementById('bossbar').innerHTML = 'Fire Spirit ' + self.hp + '/' + self.hpMax;
+    }
     if(self.monsterType === 'sp'){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
         document.getElementById('bossbar').innerHTML = 'sp' + self.hp + '/' + self.hpMax;
@@ -1578,6 +1590,10 @@ var Monster = function(initPack){
         if(self.monsterType === 'sandBird'){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 3,11,13,self.x - 22,self.y - 32,44,52);
+        }
+        if(self.monsterType === 'charredBird'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 4,11,13,self.x - 22,self.y - 32,44,52);
         }
         if(self.monsterType === 'blueBall'){
             ctx0.translate(self.x,self.y);
@@ -1722,6 +1738,10 @@ var Monster = function(initPack){
         }
         if(self.monsterType === 'spgem'){
             ctx0.drawImage(Img.spgem,self.x - 27,self.y - 24,54,48);
+        }
+        if(self.monsterType === 'fireSpirit'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.fireSpirit,self.animation % 2 * 13,14 * 0,12,13,self.x - 48,self.y - 52,96,104);
         }
     }
     self.drawCtx1 = function(){
@@ -2391,6 +2411,10 @@ socket.on('update',function(data){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'Whirlwind ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
                         }
+                        if(Monster.list[data.monster[i].id].monsterType === 'fireSpirit'){
+                            document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
+                            document.getElementById('bossbar').innerHTML = 'Fire Spirit ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
+                        }
                         if(Monster.list[data.monster[i].id].monsterType === 'sp'){
                             document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[data.monster[i].id].hp / Monster.list[data.monster[i].id].hpMax + 'px';
                             document.getElementById('bossbar').innerHTML = 'sp ' + Monster.list[data.monster[i].id].hp + '/' + Monster.list[data.monster[i].id].hpMax;
@@ -2440,6 +2464,10 @@ socket.on('update',function(data){
                     if(monster.monsterType === 'whirlwind'){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
                         document.getElementById('bossbar').innerHTML = 'Whirlwind ' + monster.hp + '/' + monster.hpMax;
+                    }
+                    if(monster.monsterType === 'fireSpirit'){
+                        document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
+                        document.getElementById('bossbar').innerHTML = 'Fire Spirit ' + monster.hp + '/' + monster.hpMax;
                     }
                     if(monster.monsterType === 'sp'){
                         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * monster.hp / monster.hpMax + 'px';
@@ -2554,6 +2582,10 @@ socket.on('update',function(data){
                 document.getElementById('bossbar').style.display = 'none';
             }
             if(Monster.list[i].monsterType === 'whirlwind'){
+                document.getElementById('bossHealth').style.display = 'none';
+                document.getElementById('bossbar').style.display = 'none';
+            }
+            if(Monster.list[i].monsterType === 'fireSpirit'){
                 document.getElementById('bossHealth').style.display = 'none';
                 document.getElementById('bossbar').style.display = 'none';
             }
@@ -2798,10 +2830,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min((loadingProgress - loadingProgressDisplay) / 4),10 + 10 * Math.random());
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 357';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 357 * window.innerWidth / 2 + 'px';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 368';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 368 * window.innerWidth / 2 + 'px';
         }
-        if(loadingProgressDisplay >= 357){
+        if(loadingProgressDisplay >= 368){
             if(loading){
                 setTimeout(function(){
                     loading = false;
@@ -3029,6 +3061,9 @@ setInterval(function(){
         if(Monster.list[i].monsterType === 'whirlwind'){
             bossAlive = true;
         }
+        if(Monster.list[i].monsterType === 'fireSpirit'){
+            bossAlive = true;
+        }
         if(Monster.list[i].monsterType === 'sp'){
             bossAlive = true;
         }
@@ -3056,6 +3091,10 @@ setInterval(function(){
             if(Monster.list[i].monsterType === 'whirlwind'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'Whirlwind ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
+            }
+            if(Monster.list[i].monsterType === 'fireSpirit'){
+                document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
+                document.getElementById('bossbar').innerHTML = 'Fire Spirit ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
             if(Monster.list[i].monsterType === 'sp'){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';

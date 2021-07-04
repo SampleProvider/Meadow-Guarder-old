@@ -731,7 +731,31 @@
             "critChance":1
         }
     },
+    "fireboomerang":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":100,
+            "speed":2,
+            "critChance":1
+        }
+    },
     "emeralditestaff":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "whirlwindcannon":{
         "width":64,
         "height":64,
         "stats":{
@@ -866,6 +890,18 @@
     "splaser":{
         "width":36,
         "height":36,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "giantsplaser":{
+        "width":72,
+        "height":72,
         "stats":{
             "attack":1,
             "defense":1,

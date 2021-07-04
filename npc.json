@@ -380,6 +380,46 @@
                 {
                     "id":"emeralditearmor",
                     "enchantments":[]
+                },
+                {
+                    "id":"whirlwindbar",
+                    "enchantments":[]
+                },
+                {
+                    "id":"whirlwindcrystal",
+                    "enchantments":[]
+                },
+                {
+                    "id":"whirlwindcannon",
+                    "enchantments":[]
+                },
+                {
+                    "id":"whirlwindhelmet",
+                    "enchantments":[]
+                },
+                {
+                    "id":"whirlwindarmor",
+                    "enchantments":[]
+                },
+                {
+                    "id":"firebar",
+                    "enchantments":[]
+                },
+                {
+                    "id":"truefirecrystal",
+                    "enchantments":[]
+                },
+                {
+                    "id":"fireboomerang",
+                    "enchantments":[]
+                },
+                {
+                    "id":"firehelmet",
+                    "enchantments":[]
+                },
+                {
+                    "id":"firearmor",
+                    "enchantments":[]
                 }
             ],
             "materials":[
@@ -396,11 +436,11 @@
                 [
                     {
                         "id":"emeraldite",
-                        "amount":35
+                        "amount":30
                     },
                     {
                         "id":"essenceofnature",
-                        "amount":35
+                        "amount":30
                     }
                 ],
                 [
@@ -431,6 +471,106 @@
                     {
                         "id":"essenceofnature",
                         "amount":36
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"whirlwindbar",
+                        "amount":30
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":15
+                    }
+                ],
+                [
+                    {
+                        "id":"whirlwindbar",
+                        "amount":6
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":6
+                    }
+                ],
+                [
+                    {
+                        "id":"whirlwindbar",
+                        "amount":12
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":12
+                    }
+                ],
+                [
+                    {
+                        "id":"whirlwindbar",
+                        "amount":18
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":18
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"firebar",
+                        "amount":30
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":15
+                    }
+                ],
+                [
+                    {
+                        "id":"firebar",
+                        "amount":6
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":6
+                    }
+                ],
+                [
+                    {
+                        "id":"firebar",
+                        "amount":12
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":12
+                    }
+                ],
+                [
+                    {
+                        "id":"firebar",
+                        "amount":18
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":18
                     }
                 ]
             ]

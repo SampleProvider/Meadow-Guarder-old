@@ -109,6 +109,7 @@
             "critChance":0,
             "damageReduction":0
         },
+        "immuneDebuffs":["burning"],
         "moveSpeed":5,
         "itemDrops":{
             "firecrystal":1,
@@ -135,6 +136,7 @@
                 "time":100
             }]
         },
+        "immuneDebuffs":["shocked"],
         "moveSpeed":5,
         "itemDrops":{
             "lightningarrow":0.01
@@ -196,6 +198,7 @@
                 "time":40
             }]
         },
+        "immuneDebuffs":["frostburn"],
         "moveSpeed":10,
         "itemDrops":{
             "woodenhood":0.1,
@@ -292,6 +295,7 @@
             "critChance":0,
             "damageReduction":0
         },
+        "immuneDebuffs":["electrified"],
         "moveSpeed":20,
         "itemDrops":{
             "lightningcrystal":1,
@@ -348,9 +352,9 @@
         "width":80,
         "height":168,
         "attackState":"passivePossessedSpirit",
-        "hp":25000,
+        "hp":75000,
         "stats":{
-            "attack":35,
+            "attack":55,
             "defense":35,
             "heal":0,
             "speed":0.3,
@@ -379,7 +383,7 @@
         "hp":1000,
         "stats":{
             "attack":100,
-            "defense":50,
+            "defense":150,
             "heal":0,
             "speed":0.3,
             "critChance":0,
@@ -433,6 +437,7 @@
             "damageReduction":0,
             "debuffs":[]
         },
+        "immuneDebuffs":["electrified"],
         "moveSpeed":0,
         "itemDrops":{
             "lightningmask":0.01,
@@ -458,6 +463,7 @@
                 "time":40
             }]
         },
+        "immuneDebuffs":["electrified"],
         "moveSpeed":20,
         "itemDrops":{
             "lightningarmor":0.01,
@@ -483,6 +489,7 @@
                 "time":20
             }]
         },
+        "immuneDebuffs":["frozen","frostbite","frostburn"],
         "moveSpeed":20,
         "itemDrops":{
             "tsunami":0.05,
@@ -509,6 +516,7 @@
                 "time":40
             }]
         },
+        "immuneDebuffs":["death"],
         "moveSpeed":15,
         "itemDrops":{
             "voidbook":0.1
@@ -523,23 +531,23 @@
         "hp":1000000,
         "stats":{
             "attack":50,
-            "defense":0,
+            "defense":50,
             "heal":0,
             "speed":1,
             "critChance":0,
             "damageReduction":0,
             "debuffs":[]
         },
+        "immuneDebuffs":["frozen","frostbite","frostburn"],
         "moveSpeed":10,
         "itemDrops":{
             "staffofthewhirlwind":0.5,
             "typhoonstorm":0.5,
             "iceboomerang":0.5,
-            "whirlwindhelmet":0.5,
-            "whirlwindarmor":0.5,
             "iceflower":0.5,
             "frozentreads":0.01,
-            "enchantmentbook":9
+            "enchantmentbook":9,
+            "essenceofwater":10
         }
     },
     "sp":{
@@ -558,6 +566,7 @@
             "damageReduction":0,
             "debuffs":[]
         },
+        "immuneDebuffs":["frozen","shocked"],
         "moveSpeed":20,
         "itemDrops":{
             "sphat":1
@@ -579,6 +588,7 @@
             "damageReduction":0,
             "debuffs":[]
         },
+        "immuneDebuffs":["frozen","shocked"],
         "moveSpeed":10,
         "itemDrops":{
         }
@@ -599,6 +609,7 @@
             "damageReduction":0,
             "debuffs":[]
         },
+        "immuneDebuffs":["frozen","shocked"],
         "moveSpeed":15,
         "itemDrops":{
         }
@@ -619,6 +630,7 @@
             "damageReduction":0,
             "debuffs":[]
         },
+        "immuneDebuffs":["frozen","shocked"],
         "moveSpeed":25,
         "itemDrops":{
         }
@@ -641,6 +653,54 @@
         },
         "moveSpeed":15,
         "itemDrops":{
+        }
+    },
+    "charredBird":{
+        "spawnChance":1,
+        "xpGain":50,
+        "width":44,
+        "height":40,
+        "attackState":"passiveCharredBird",
+        "hp":2000,
+        "stats":{
+            "attack":125,
+            "defense":0,
+            "heal":0,
+            "critChance":0,
+            "damageReduction":0.99,
+            "debuffs":[{
+                "id":"incinerating",
+                "time":40
+            }]
+        },
+        "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
+        "moveSpeed":20,
+        "itemDrops":{
+            "burntfish":0.01
+        }
+    },
+    "fireSpirit":{
+        "spawnChance":0,
+        "xpGain":250,
+        "width":96,
+        "height":104,
+        "attackState":"passiveFireSpirit",
+        "hp":250000,
+        "stats":{
+            "attack":85,
+            "defense":24,
+            "heal":0,
+            "critChance":0,
+            "damageReduction":0.95,
+            "debuffs":[{
+                "id":"incinerating",
+                "time":60
+            }]
+        },
+        "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
+        "moveSpeed":20,
+        "itemDrops":{
+            "essenceoffire":10
         }
     }
 }
