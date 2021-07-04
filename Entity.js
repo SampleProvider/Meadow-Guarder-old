@@ -9796,7 +9796,8 @@ Monster = function(param){
         self.dashSpdY = 0;
         self.stage2 = false;
     }
-    if(self.monsterType === 'charredBird'){
+    if(self.monsterType === 'fireSpirit'){
+        addToChat('style="color: #ff00ff">','Fire Spirit has awoken!');
         self.canCollide = false;
         self.stage2 = false;
     }
