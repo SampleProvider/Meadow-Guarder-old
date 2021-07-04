@@ -13141,6 +13141,8 @@ Monster = function(param){
             case "attackPhase4Sp":
                 self.spdX = 0;
                 self.spdY = 0;
+                self.x = 1600;
+                self.y = 1600;
                 self.followingEntity = undefined;
                 var allPlayersDead = true;
                 for(var i in Player.list){
