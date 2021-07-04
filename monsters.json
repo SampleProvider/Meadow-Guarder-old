@@ -569,7 +569,8 @@
         "immuneDebuffs":["frozen","shocked"],
         "moveSpeed":20,
         "itemDrops":{
-            "sphat":1
+            "sphat":1,
+            "bookoflasers":0.01
         }
     },
     "tianmuGuarder":{
@@ -700,7 +701,8 @@
         "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
         "moveSpeed":20,
         "itemDrops":{
-            "essenceoffire":10
+            "essenceoffire":10,
+            "bookofflames":0.01
         }
     }
 }

@@ -1159,7 +1159,7 @@ var Player = function(initPack){
     self.maxDamageDone = initPack.damageDone;
     self.stats = initPack.stats;
     self.type = initPack.type;
-    self.moveNumber = 4;
+    self.moveNumber = 3;
     self.update = function(){
         if(talking && self.id === selfId){
             socket.emit('keyPress',{inputId:'releaseAll'});
@@ -1369,7 +1369,7 @@ var Projectile = function(initPack){
     self.canCollide = initPack.canCollide;
     self.relativeToPlayer = initPack.relativeToPlayer;
     self.type = initPack.type;
-    self.moveNumber = 4;
+    self.moveNumber = 3;
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
@@ -1420,7 +1420,12 @@ var Projectile = function(initPack){
         }
     }
     self.drawCtx1 = function(){
-        ctx1.translate(self.x,self.y);
+        if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
+            ctx1.translate(self.x + Player.list[self.relativeToPlayer].x,self.y + Player.list[self.relativeToPlayer].y);
+        }
+        else{
+            ctx1.translate(self.x,self.y);
+        }
         ctx1.rotate(self.direction * Math.PI / 180);
         if(self.projectileType === 'stoneArrow'){
             ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
@@ -1442,7 +1447,12 @@ var Projectile = function(initPack){
             ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
         }
         ctx1.rotate(-self.direction * Math.PI / 180);
-        ctx1.translate(-self.x,-self.y);
+        if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
+            ctx1.translate(-self.x - Player.list[self.relativeToPlayer].x,-self.y - Player.list[self.relativeToPlayer].y);
+        }
+        else{
+            ctx1.translate(-self.x,-self.y);
+        }
     }
     self.drawHp = function(){
         if(DEBUG){
@@ -1475,7 +1485,7 @@ var Monster = function(initPack){
     self.direction = initPack.direction;
     self.width = initPack.width;
     self.height = initPack.height;
-    self.moveNumber = 4;
+    self.moveNumber = 3;
     self.updated = true;
     if(self.monsterType === 'lightningLizard'){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
@@ -2218,7 +2228,7 @@ socket.on('update',function(data){
                         Player.list[data.player[i].id].nextY = data.player[i].y;
                     }
                     Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].nextY - Player.list[data.player[i].id].y) / 4;
-                    Player.list[data.player[i].id].moveNumber = 4;
+                    Player.list[data.player[i].id].moveNumber = 3;
                     if(data.player[i].spdX !== undefined){
                         Player.list[data.player[i].id].spdX = data.player[i].spdX;
                     }
@@ -2349,7 +2359,7 @@ socket.on('update',function(data){
                         Projectile.list[data.projectile[i].id].nextY = data.projectile[i].y;
                     }
                     Projectile.list[data.projectile[i].id].moveY = (Projectile.list[data.projectile[i].id].nextY - Projectile.list[data.projectile[i].id].y) / 4;
-                    Projectile.list[data.projectile[i].id].moveNumber = 4;
+                    Projectile.list[data.projectile[i].id].moveNumber = 3;
                     if(data.projectile[i].map !== undefined){
                         Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
                     }
@@ -2388,7 +2398,7 @@ socket.on('update',function(data){
                         Monster.list[data.monster[i].id].nextY = data.monster[i].y;
                     }
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
-                    Monster.list[data.monster[i].id].moveNumber = 4;
+                    Monster.list[data.monster[i].id].moveNumber = 3;
                     if(data.monster[i].hp !== undefined){
                         Monster.list[data.monster[i].id].hp = Math.max(data.monster[i].hp,0);
                         if(Monster.list[data.monster[i].id].monsterType === 'lightningLizard'){
@@ -2830,10 +2840,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min((loadingProgress - loadingProgressDisplay) / 4),10 + 10 * Math.random());
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 368';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 368 * window.innerWidth / 2 + 'px';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 370';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 370 * window.innerWidth / 2 + 'px';
         }
-        if(loadingProgressDisplay >= 368){
+        if(loadingProgressDisplay >= 370){
             if(loading){
                 setTimeout(function(){
                     loading = false;
@@ -3201,7 +3211,7 @@ setInterval(function(){
         document.getElementById('respawn').style.display = 'none';
     }
     MGHC();
-},1000/80);
+},1000/60);
 setInterval(function(){
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){

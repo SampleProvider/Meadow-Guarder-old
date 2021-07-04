@@ -899,6 +899,30 @@
         "rarity":8,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
+    "bookofflames":{
+        "name":"Book of Flames",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 15;self.stats.debuffs.push({id:'incinerating',time:60});",
+        "enchantments":["burst","cost"],
+        "damage":10000,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":2,
+        "rarity":8,
+        "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
+    },
+    "bookoflasers":{
+        "name":"Book of Lasers",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 100;",
+        "enchantments":["burst","cost"],
+        "damage":100000,
+        "damageType":"magic",
+        "critChance":1,
+        "useTime":20,
+        "rarity":8,
+        "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
+    },
     "lightningboots":{
         "name":"Lightning Boots",
         "equip":"offhand",

@@ -68,6 +68,10 @@
  <tile id="781" terrain=",,,4"/>
  <tile id="782" terrain=",,4,4"/>
  <tile id="783" terrain=",,4,"/>
+ <tile id="802" probability="0.25"/>
+ <tile id="803" probability="0.25"/>
+ <tile id="804" probability="0.25"/>
+ <tile id="805" probability="0.25"/>
  <tile id="860" terrain="6,,6,6"/>
  <tile id="861" terrain=",6,6,6"/>
  <tile id="862" terrain=",6,,6"/>

@@ -49,56 +49,56 @@ var xpLevels = [
     4000000,
     7000000,
     10000000,
-    50000,
-    100000,
-    150000,
-    200000,
-    250000,
-    300000,
-    350000,
-    400000,
-    450000,
     500000,
-    550000,
-    600000,
-    650000,
-    700000,
-    750000,
-    800000,
-    850000,
-    900000,
-    950000,
     1000000,
-    1100000,
-    1200000,
-    1300000,
-    1400000,
     1500000,
-    1600000,
-    1700000,
-    1800000,
-    1900000,
     2000000,
-    2200000,
-    2400000,
-    2600000,
-    2800000,
+    2500000,
     3000000,
+    3500000,
     4000000,
+    4500000,
+    5000000,
     5500000,
+    6000000,
+    6500000,
     7000000,
+    7500000,
+    8000000,
+    8500000,
+    9000000,
+    9500000,
     10000000,
+    11000000,
+    12000000,
+    13000000,
     14000000,
+    15000000,
+    16000000,
+    17000000,
+    18000000,
+    19000000,
     20000000,
-    27500000,
+    22000000,
+    24000000,
+    26000000,
+    28000000,
+    30000000,
     40000000,
-    72500000,
+    55000000,
+    70000000,
     100000000,
-    150000000,
-    250000000,
+    140000000,
+    200000000,
+    275000000,
     400000000,
-    700000000,
+    725000000,
     1000000000,
+    1500000000,
+    2500000000,
+    4000000000,
+    7000000000,
+    10000000000,
 ];
 var fs = require('fs');
 var PF = require('pathfinding');
@@ -7643,6 +7643,20 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'typhoon',32,function(t){return 25},1000,self.stats,'monsterHoming');
                             }
                             break;
+                        case "bookofflamesAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 18,self.direction + j * 18,'fireBullet',320,function(t){return 25},1000,self.stats,'spinAroundPlayer');
+                                }
+                            }
+                            break;
+                        case "bookoflasersAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 20;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction,self.direction,'giantsplaser',64 + 64 * j,function(t){return 0},1000,self.stats,'playerSplaser');
+                                }
+                            }
+                            break;
                         case "iceboomerangAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'iceboomerang',0,function(t){return 25},1000,self.stats,'boomerang');
@@ -13215,20 +13229,20 @@ Monster = function(param){
                     s.createMonster('spgem',{x:self.x,y:self.y - 128,map:self.map});
                     s.createMonster('spgem',{x:self.x + 90,y:self.y - 90,map:self.map});
                 }
-                if(self.reload > 100 && self.reload % 100 === 0 && self.target.invincible === false){
+                if(self.reload > 100 && self.reload % 60 === 0 && self.target.invincible === false){
                     self.stats.attack = 0;
-                    self.stats.speed = 0.2;
+                    self.stats.speed = 0.5;
                     self.stats.range = 3;
                     var direction = 360 * Math.random();
-                    self.shootProjectile(self.id,'Monster',direction - 5,direction - 5,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
-                    self.shootProjectile(self.id,'Monster',direction + 5,direction + 5,'splaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',direction - 5,direction - 5,'splaser',32,function(t){return 0},1000,self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',direction + 5,direction + 5,'splaser',32,function(t){return 0},1000,self.stats,'noCollision');
                     self.firstDirection = direction;
                 }
-                if(self.reload > 100 && self.reload % 100 === 40 && self.target.invincible === false){
+                if(self.reload > 100 && self.reload % 60 === 40 && self.target.invincible === false){
                     self.stats.attack = 750;
                     self.stats.speed = 1.3;
-                    for(var i = 0;i < 71;i++){
-                        self.shootProjectile(self.id,'Monster',self.firstDirection - 5 - 5 * i,self.firstDirection - 5 - 5 * i,'giantsplaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                    for(var i = 0;i < 67;i++){
+                        self.shootProjectile(self.id,'Monster',self.firstDirection - 10 - 5 * i,self.firstDirection - 10 - 5 * i,'giantsplaser',64,function(t){return 0},1000,self.stats,'noCollision');
                     }
                 }
                 self.reload += 1;
@@ -14351,7 +14365,6 @@ Monster = function(param){
                     self.animation = 0;
                 }
                 break;
-            
             case "attackPhase2FireSpirit":
                 var allPlayersDead = true;
                 for(var i in Player.list){
@@ -15038,6 +15051,13 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
     }
+    if(param.projectilePattern === 'playerSplaser'){
+        self.angle = param.angle / 180 * Math.PI;
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
+        self.relativeToPlayer = self.parent;
+    }
     if(param.projectilePattern === 'auraPlayer'){
         self.angle = param.angle;
         self.canCollide = false;
@@ -15220,6 +15240,18 @@ Projectile = function(param){
                 self.y += Math.cos(self.angle) * param.distance;
                 self.angle += param.stats.speed / 2;
                 self.direction = self.angle * 180 / Math.PI + 75;
+            }
+            else{
+                self.toRemove = true;
+            }
+        }
+        else if(param.projectilePattern === 'playerSplaser'){
+            if(Player.list[self.parent]){
+                self.x = Player.list[self.parent].x;
+                self.y = Player.list[self.parent].y;
+                self.x += -Math.sin((Player.list[self.parent].direction - 90) / 180 * Math.PI) * param.distance;
+                self.y += Math.cos((Player.list[self.parent].direction - 90) / 180 * Math.PI) * param.distance;
+                self.direction = Player.list[self.parent].direction;
             }
             else{
                 self.toRemove = true;
@@ -15844,8 +15876,8 @@ Projectile = function(param){
             self.y -= self.spdY;
         }
         else if(param.projectileType === 'accellerateNoCollision'){
-            self.spdX *= 1.5;
-            self.spdY *= 1.5;
+            self.spdX += self.spdX / 10;
+            self.spdY += self.spdY / 10;
         }
         else if(param.projectilePattern === 'boomerang'){
             if(Player.list[self.parent] === undefined){
