@@ -312,6 +312,10 @@ MGHC = function(){
                 ctx1.strokeStyle = '#332200';
                 ctx1.lineWidth = 6;
             }
+            if(Monster.list[i].monsterType === 'whirlwind'){
+                ctx1.strokeStyle = '#00bbdd';
+                ctx1.lineWidth = 10;
+            }
             if(Monster.list[i].monsterType === 'sp'){
                 ctx1.strokeStyle = '#ff9000';
                 ctx1.lineWidth = 12;

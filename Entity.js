@@ -12307,7 +12307,7 @@ Monster = function(param){
                 self.y = self.lastY;
                 break;
             case "passiveWhirlwind":
-                self.animate = true;
+                self.animate = false;
                 var maxAggro = -10;
                 for(var i in Player.list){
                     if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 512 && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
