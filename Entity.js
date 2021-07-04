@@ -948,7 +948,7 @@ Entity.getFrameUpdateData = function(){
                     }
                 }
                 setTimeout(function(){
-                    addToChat('style="color: #ff0000">','Impending Developer Approaching..');
+                    addToChat('style="color: #ff0000">','Impending Developer Approaches...');
                 },60000);
                 setTimeout(function(){
                     s.testDPS();
@@ -7614,7 +7614,7 @@ Player = function(param){
                                     height:projectileHeight,
                                     spin:function(t){return 25},
                                     pierce:0,
-                                    projectilePattern:'monsterHoming',
+                                    projectilePattern:'bounceOffCollisions',
                                     stats:self.stats,
                                     onCollision:function(self,pt){
                                         if(self.pierce === 0){
