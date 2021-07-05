@@ -13232,18 +13232,18 @@ Monster = function(param){
                 }
                 if(self.reload > 100 && self.reload % 60 === 0 && self.target.invincible === false){
                     self.stats.attack = 0;
-                    self.stats.speed = 0.5;
+                    self.stats.speed = 0.3;
                     self.stats.range = 3;
                     var direction = 360 * Math.random();
-                    self.shootProjectile(self.id,'Monster',direction - 5,direction - 5,'splaser',32,function(t){return 0},1000,self.stats,'noCollision');
-                    self.shootProjectile(self.id,'Monster',direction + 5,direction + 5,'splaser',32,function(t){return 0},1000,self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',direction - 10,direction - 10,'splaser',32,function(t){return 0},1000,self.stats,'noCollision');
+                    self.shootProjectile(self.id,'Monster',direction + 10,direction + 10,'splaser',32,function(t){return 0},1000,self.stats,'noCollision');
                     self.firstDirection = direction;
                 }
                 if(self.reload > 100 && self.reload % 60 === 40 && self.target.invincible === false){
                     self.stats.attack = 750;
                     self.stats.speed = 1.3;
-                    for(var i = 0;i < 67;i++){
-                        self.shootProjectile(self.id,'Monster',self.firstDirection - 10 - 5 * i,self.firstDirection - 10 - 5 * i,'giantsplaser',64,function(t){return 0},1000,self.stats,'noCollision');
+                    for(var i = 0;i < 66;i++){
+                        self.shootProjectile(self.id,'Monster',self.firstDirection - 15 - 5 * i,self.firstDirection - 15 - 5 * i,'giantsplaser',64,function(t){return 0},1000,self.stats,'noCollision');
                     }
                 }
                 self.reload += 1;
