@@ -604,7 +604,7 @@
     "yellowfish":{
         "name":"Yellow Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Forest'){s.spawnMonster('lightningLizard',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('yellowfish',[]);",
+        "event":"if(self.map === 'The Forest'){s.spawnMonster('lightningLizard',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('yellowfish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons the Lightning Lizard.<br>Used in The Forest.",
         "rarity":3
@@ -708,7 +708,7 @@
     "orangefish":{
         "name":"Orange Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Graveyard'){s.spawnMonster('possessedSpirit',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('orangefish',[]);",
+        "event":"if(self.map === 'The Graveyard'){s.spawnMonster('possessedSpirit',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('orangefish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons the Possessed Spirit.<br>Used in The Graveyard.",
         "rarity":4
@@ -716,7 +716,7 @@
     "greenfish":{
         "name":"Green Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Forest'){s.spawnMonster('plantera',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('greenfish',[]);",
+        "event":"if(self.map === 'The Forest'){s.spawnMonster('plantera',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('greenfish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons Plantera.<br>Used in The Forest.",
         "rarity":7
@@ -724,7 +724,7 @@
     "redfish":{
         "name":"Red Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The River'){s.spawnMonster('redBird',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('redfish',[]);",
+        "event":"if(self.map === 'The River'){s.spawnMonster('redBird',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('redfish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons Red Bird.<br>Used in The River.",
         "rarity":3
@@ -732,7 +732,7 @@
     "bluefish":{
         "name":"Blue Fish",
         "equip":"consume",
-        "event":"if(self.map === 'Lilypad Temple Room 2'){s.createMonster('whirlwind',{x:1824,y:1408,map:'Lilypad Temple Room 2'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('bluefish',[]);",
+        "event":"if(self.map === 'Lilypad Temple Room 2'){s.createMonster('whirlwind',{x:1824,y:1408,map:'Lilypad Temple Room 2'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('bluefish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons Whirlwind.<br>Used in Lilypad Temple Room 2.",
         "rarity":6
@@ -740,7 +740,7 @@
     "purplefish":{
         "name":"Purple Fish",
         "equip":"consume",
-        "event":"s.testDPS();self.inventory.currentEquip['consume'] = {};self.inventory.addItem('purplefish',[]);",
+        "event":"s.testDPS();self.inventory.currentEquip['consume'] = {};self.inventory.addItem('purplefish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons sp.",
         "rarity":6
@@ -748,7 +748,7 @@
     "burntfish":{
         "name":"Burnt Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Flaming Sea'){s.createMonster('fireSpirit',{x:2400,y:928,map:'The Flaming Sea'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('burntfish',[]);",
+        "event":"if(self.map === 'The Flaming Sea'){s.createMonster('fireSpirit',{x:2400,y:928,map:'The Flaming Sea'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('burntfish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons Fire Spirit.<br>Used in The Flaming Sea.",
         "rarity":6

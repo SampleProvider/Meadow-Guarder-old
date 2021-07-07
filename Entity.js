@@ -1245,7 +1245,7 @@ Actor = function(param){
                 else{
                     var waypoints = [];
                     for(var i in WayPoint.list){
-                        if(WayPoint.list[i].info.id === self.entityId && WayPoint.list[i].map === self.map){
+                        if(WayPoint.list[i].info.id === self.entityId && WayPoint.list[i].map === self.map && WayPoint.list[i].x > self.x - 14 * 64 && WayPoint.list[i].x < self.x + 14 * 64 && WayPoint.list[i].y > self.y - 14 * 64 && WayPoint.list[i].y < self.y + 14 * 64){
                             waypoints.push(WayPoint.list[i]);
                         }
                     }
@@ -2488,6 +2488,7 @@ Player = function(param){
         "Broken Piano":false,
         "Pet Training":false,
         "Monster Search":false,
+        "Missing Candies":false,
         "Cherrier":false,
         "Sphere":false,
         "Thunderbird":false,
@@ -3295,6 +3296,44 @@ Player = function(param){
                         state:'ask',
                         message:'Who are you?',
                         response1:'I have to kill you!',
+                    });
+                    self.currentResponse = 0;
+                }
+                else{
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'riley' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Missing Candies';
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'I lost my candies! Can you find them for me?',
+                        response1:'Sure, if I get a reward.',
+                        response2:'No, I am busy right now.',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 4 && self.quest === 'Missing Candies'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Thanks for helping me!',
+                        response1:'*End conversation*',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 9 && self.quest === 'Missing Candies'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Yay! You found my candies!',
+                        response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
                 }
@@ -6711,6 +6750,100 @@ Player = function(param){
             self.xp += Math.round(500000 * self.stats.xp);
             self.coins += Math.round(500000 * self.stats.xp);
         }
+        
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Missing Candies'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:'Missing Candies',
+                questDescription:'Find Riley\'s candies.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'Missing Candies'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 2 && self.questInfo.quest === 'Missing Candies'){
+            self.quest = 'Missing Candies';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'I should talk with Riley.',
+                response1:'...',
+            });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Missing Candies'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Missing Candies'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 6 && self.quest === 'Missing Candies' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Missing Candies' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 7;
+                }
+            }
+        }
+        if(self.questStage === 7 && self.quest === 'Missing Candies'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'I found the candies!',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'Missing Candies'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Missing Candies'){
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+            self.xp += Math.round(50000 * self.stats.xp);
+            self.coins += Math.round(50000 * self.stats.xp);
+        }
     }
     self.updateStats = function(){
         if(self.inventory.refresh){
@@ -9993,7 +10126,281 @@ Monster = function(param){
             self.hp = self.hpMax;
         }
     }
+    self.doMonsterAnimation = function(){
+        switch(self.attackState){
+            case "attackBird":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "retreatBird":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.8;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "attackCherryBomb":
+                if(self.animation < 2){
+                    if(self.animation === 0){
+                        self.animation = 1;
+                    }
+                    else if(self.animation === 1){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "explodeCherryBomb":
+                if(self.animation === 0){
+                    self.animation = 1;
+                }
+                self.animation += 0.3;
+                break;
+            case "attackRedBird":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "attackLizard":
+                if(self.spdX > 0){
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
+                    }
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                }
+                else{
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
+                    }
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                }
+                break;
+            case "retreatLizard":
+                if(self.spdX > 0){
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                    else if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
+                    }
+                }
+                else{
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                    else if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
+                    }
+                }
+                break;
+            case "attackLightningLizard":
+                if(self.spdX > 0){
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
+                    }
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                }
+                else{
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
+                    }
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                }
+                break;
+            case "enragedLightningLizard":
+                if(self.spdX > 0){
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                else{
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                    else{
+                        self.animation += 0.2;
+                    }
+                }
+                break;
+            case "attackGhost":
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackLostSpirit":
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackPhase1PossessedSpirit":
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "phase2TransitionPossessedSpirit":
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackPhase2PossessedSpirit":
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackPhase3PossessedSpirit":
+                if(self.animation === 1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 1;
+                }
+                break;
+            case "attackPhase1Plantera":
+                self.animation = 0;
+                break;
+            case "phase2TransitionPlantera":
+                self.animation = 1;
+                break;
+            case "attackPhase2Plantera":
+                self.animation = 1;
+                break;
+            case "attackThorn":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 36){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "attackLightningTurret":
+                self.animation += 0.5;
+                if(self.animation >= 4){
+                    self.animation = 0;
+                }
+                break;
+            case "attackLightningRammer":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 36){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "attackDeathBomb":
+                if(self.animation < 2){
+                    if(self.animation === 0){
+                        self.animation = 1;
+                    }
+                    else if(self.animation === 1){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "explodeDeathBomb":
+                if(self.animation === 0){
+                    self.animation = 1;
+                }
+                self.animation += 0.3;
+                break;
+            case "attackPhase1Whirlwind":
+                self.animation += 25;
+                break;
+            case "attackPhase2Whirlwind":
+                self.animation += 50;
+                break;
+            case "attackCharredBird":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
+            case "attackPhase1FireSpirit":
+                self.animation += 0.5;
+                if(self.animation >= 2){
+                    self.animation = 0;
+                }
+                break;
+            case "attackPhase2FireSpirit":
+                self.animation += 1;
+                if(self.animation === 2){
+                    self.animation = 0;
+                }
+                break;
+        }
+    }
     self.updateAttack = function(){
+        self.doMonsterAnimation();
         if(self.attackPhase === 'passive'){
             var maxAggro = -10;
             for(var i in Player.list){
@@ -10033,173 +10440,6 @@ Monster = function(param){
                 }
                 self.reload = 0;
                 self.animation = 0;
-            }
-            switch(self.attackState){
-                case "Bird":
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "CherryBomb":
-                    if(self.animation < 2){
-                        if(self.animation === 0){
-                            self.animation = 1;
-                        }
-                        else if(self.animation === 1){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "RedBird":
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "Lizard":
-                    if(self.spdX > 0){
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 0;
-                        }
-                        if(self.animation >= 2){
-                            self.animation = 0;
-                        }
-                    }
-                    else{
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 2;
-                        }
-                        if(self.animation >= 4){
-                            self.animation = 2;
-                        }
-                    }
-                    break;
-                case "LightningLizard":
-                    if(self.spdX > 0){
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 0;
-                        }
-                        if(self.animation >= 2){
-                            self.animation = 0;
-                        }
-                    }
-                    else{
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 2;
-                        }
-                        if(self.animation >= 4){
-                            self.animation = 2;
-                        }
-                    }
-                    break;
-                case "Ghost":
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
-                    break;
-                case "LostSpirit":
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
-                    break;
-                case "Phase1PossessedSpirit":
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
-                    break;
-                case "Phase1Plantera":
-                    self.animation = 0;
-                    break;
-                case "Thorn":
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 36){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "LightningTurret":
-                    self.animation += 0.5;
-                    if(self.animation >= 4){
-                        self.animation = 0;
-                    }
-                    break;
-                case "LightningRammer":
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 36){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "DeathBomb":
-                    if(self.animation < 2){
-                        if(self.animation === 0){
-                            self.animation = 1;
-                        }
-                        else if(self.animation === 1){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "Phase1Whirlwind":
-                    self.animation += 25;
-                    break;
-                case "CharredBird":
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
-                    }
-                    break;
-                case "FireSpirit":
-                    self.animation += 0.5;
-                    if(self.animation >= 2){
-                        self.animation = 0;
-                    }
-                    break;
             }
         }
         if(self.attackPhase === 'attack'){
@@ -10352,15 +10592,6 @@ Monster = function(param){
                         }
                         break;
                     }
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
-                    }
                     break;
                 case "retreatBird":
                     var bestSpawner = undefined;
@@ -10387,15 +10618,6 @@ Monster = function(param){
                         self.maxSpeed = param.moveSpeed;
                         self.target = undefined;
                         self.trackingEntity = undefined;
-                    }
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.8;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
                     }
                     break;
                 case "attackBall":
@@ -10450,14 +10672,6 @@ Monster = function(param){
                         }
                         break;
                     }
-                    else if(self.animation < 2){
-                        if(self.animation === 0){
-                            self.animation = 1;
-                        }
-                        else if(self.animation === 1){
-                            self.animation = 0;
-                        }
-                    }
                     if(self.damaged && self.damagedEntity.type === 'Player'){
                         self.stats.defense *= 200;
                         self.stats.attack *= 200;
@@ -10466,10 +10680,6 @@ Monster = function(param){
                     break;
                 case "explodeCherryBomb":
                     self.trackingEntity = undefined;
-                    if(self.animation === 0){
-                        self.animation = 1;
-                    }
-                    self.animation += 0.3;
                     if(self.animation > 4){
                         self.width = 18 * 8;
                         self.height = 18 * 8;
@@ -10511,15 +10721,6 @@ Monster = function(param){
                         });
                     }
                     self.reload += 1;
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
-                    }
                     break;
                 case "attackLizard":
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
@@ -10544,28 +10745,6 @@ Monster = function(param){
                             self.damaged = false;
                         }
                         break;
-                    }
-                    if(self.spdX > 0){
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 0;
-                        }
-                        if(self.animation >= 2){
-                            self.animation = 0;
-                        }
-                    }
-                    else{
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 2;
-                        }
-                        if(self.animation >= 4){
-                            self.animation = 2;
-                        }
                     }
                     break;
                 case "retreatLizard":
@@ -10593,28 +10772,6 @@ Monster = function(param){
                         self.maxSpeed = param.moveSpeed;
                         self.target = undefined;
                         self.trackingEntity = undefined;
-                    }
-                    if(self.spdX > 0){
-                        if(self.animation >= 2){
-                            self.animation = 0;
-                        }
-                        else if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 0;
-                        }
-                    }
-                    else{
-                        if(self.animation >= 4){
-                            self.animation = 2;
-                        }
-                        else if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 2;
-                        }
                     }
                     break;
                 case "attackLightningLizard":
@@ -10683,28 +10840,6 @@ Monster = function(param){
                         });
                     }
                     self.reload += 1;
-                    if(self.spdX > 0){
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 0;
-                        }
-                        if(self.animation >= 2){
-                            self.animation = 0;
-                        }
-                    }
-                    else{
-                        if(self.animation !== -1){
-                            self.animation += 0.2;
-                        }
-                        else{
-                            self.animation = 2;
-                        }
-                        if(self.animation >= 4){
-                            self.animation = 2;
-                        }
-                    }
                     if(self.map === 'The Forest'){
                         self.attackState = 'enragedLightningLizard';
                         addToChat('style="color: #ff00ff">','Lightning Lizard has enraged.');
@@ -10832,43 +10967,15 @@ Monster = function(param){
                         });
                     }
                     self.reload += 1;
-                    if(self.spdX > 0){
-                        if(self.animation >= 2){
-                            self.animation = 0;
-                        }
-                        else{
-                            self.animation += 0.2;
-                        }
-                    }
-                    else{
-                        if(self.animation >= 4){
-                            self.animation = 2;
-                        }
-                        else{
-                            self.animation += 0.2;
-                        }
-                    }
                     break;
                 case "attackGhost":
                     self.reload += 1;
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
                     break;
                 case "attackLostSpirit":
                     if(self.reload % 20 === 0 && self.reload > 20 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'soul',0,function(t){return 0},0,self.stats,'playerHoming');
                     }
                     self.reload += 1;
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
                     break;
                 case "attackPhase1PossessedSpirit":
                     if(self.reload % 50 < 8 && self.reload > 50 && self.target.invincible === false){
@@ -10890,12 +10997,6 @@ Monster = function(param){
                         }
                     }
                     self.reload += 1;
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
                     break;
                 case "phase2TransitionPossessedSpirit":
                     self.stage2 = true;
@@ -10913,12 +11014,6 @@ Monster = function(param){
                     self.maxSpeed = self.oldMoveSpeed * 3;
                     self.stats.attack = self.oldStats.attack * 1.5;
                     self.attackState = 'attackPhase2PossessedSpirit';
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
                     break;
                 case "attackPhase2PossessedSpirit":
                     if(self.reload % 30 < 8 && self.reload > 30 && self.target.invincible === false){
@@ -10953,12 +11048,6 @@ Monster = function(param){
                         }
                     }
                     self.reload += 1;
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
                     break;
                 case "attackPhase3PossessedSpirit":
                     if(self.reload % 3 === 0 && self.target.invincible === false){
@@ -10972,15 +11061,8 @@ Monster = function(param){
                         self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 280,self.direction + 10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
                     }
                     self.reload += 1;
-                    if(self.animation === 1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 1;
-                    }
                     break;
                 case "attackPhase1Plantera":
-                    self.animation = 0;
                     self.direction = 0;
                     self.spdX = 0;
                     self.spdY = 0;
@@ -11031,11 +11113,9 @@ Monster = function(param){
                     self.maxSpeed = self.oldMoveSpeed * 3;
                     self.followEntity(self.target);
                     self.reload = 0;
-                    self.animation = 1;
                     self.attackState = 'attackPhase2Plantera';
                     break;
                 case "attackPhase2Plantera":
-                    self.animation = 1;
                     if(self.reload % 30 === 0 && self.reload > 20 && self.target.invincible === false && self.thorns === 0){
                         for(var i = 0;i < 16;i++){
                             var monster = s.createMonster('thorn',{
@@ -11098,25 +11178,12 @@ Monster = function(param){
                         }
                         break;
                     }
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 36){
-                            self.animation = 0;
-                        }
-                    }
                     break;
                 case "attackLightningTurret":
                     if(self.reload % 10 === 0 && self.reload > 5 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},0,self.stats);
                     }
                     self.reload += 1;
-                    self.animation += 0.5;
-                    if(self.animation >= 4){
-                        self.animation = 0;
-                    }
                     break;
                 case "attackLightningRammer":
                     self.trackEntity(self.target,0);
@@ -11129,15 +11196,6 @@ Monster = function(param){
                         self.maxSpeed = self.oldMoveSpeed;
                     }
                     self.reload += 1;
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 36){
-                            self.animation = 0;
-                        }
-                    }
                     break;
                 case "attackDeathBomb":
                     self.trackEntity(self.target,0);
@@ -11173,14 +11231,6 @@ Monster = function(param){
                         }
                         break;
                     }
-                    else if(self.animation < 2){
-                        if(self.animation === 0){
-                            self.animation = 1;
-                        }
-                        else if(self.animation === 1){
-                            self.animation = 0;
-                        }
-                    }
                     if(self.damaged && self.damagedEntity.type === 'Player'){
                         self.stats.defense *= 200;
                         self.stats.attack *= 200;
@@ -11189,10 +11239,6 @@ Monster = function(param){
                     break;
                 case "explodeDeathBomb":
                     self.trackingEntity = undefined;
-                    if(self.animation === 0){
-                        self.animation = 1;
-                    }
-                    self.animation += 0.3;
                     if(self.animation > 4){
                         self.width = 18 * 8;
                         self.height = 18 * 8;
@@ -11315,7 +11361,6 @@ Monster = function(param){
                             });
                         }
                     }
-                    self.animation += 25;
                     break;
                 case "attackPhase2Whirlwind":
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
@@ -11379,7 +11424,6 @@ Monster = function(param){
                         self.animation += 50;
                     }
                     self.reload += 1;
-                    self.animation += 50;
                     break;
                 case "attackPhase1Sp":
                     if(self.reload % 200 === 0 && self.target.invincible === false){
@@ -11946,15 +11990,6 @@ Monster = function(param){
                         self.shootProjectile(self.id,'Monster',self.direction + 60,self.direction + 60,'fireBullet',32,function(t){return 25},0,self.stats,'playerHoming');
                     }
                     self.reload += 1;
-                    if(self.animation === -1){
-                        self.animation = 0;
-                    }
-                    else{
-                        self.animation += 0.5;
-                        if(self.animation > 5){
-                            self.animation = 0;
-                        }
-                    }
                     break;
                 case "attackPhase1FireSpirit":
                     if(self.reload % 100 === 0 && self.target.invincible === false){
@@ -12022,10 +12057,6 @@ Monster = function(param){
                     if(self.hp < self.hpMax / 2 || self.stage2){
                         self.attackState = 'attackPhase2FireSpirit';
                         self.stage2 = true;
-                    }
-                    self.animation += 0.5;
-                    if(self.animation >= 2){
-                        self.animation = 0;
                     }
                     break;
                 case "attackPhase2FireSpirit":
@@ -12141,10 +12172,6 @@ Monster = function(param){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'fireBullet',32,function(t){return 25},0,self.stats,'accellerateNoCollision');
                     }
                     self.reload += 1;
-                    self.animation += 1;
-                    if(self.animation === 2){
-                        self.animation = 0;
-                    }
                     break;
             }
         }
@@ -14879,6 +14906,8 @@ load("Tiny House");
 load("Lilypad Temple Room 0");
 load("Lilypad Temple Room 1");
 load("Lilypad Temple Room 2");
+load("Lilypad Castle");
+load("Lilypad Castle Basement");
 load("The Arena");
 load("The Guarded Citadel");
 load("Town Cave");

@@ -582,5 +582,11 @@
         "randomWalk":"wander",
         "canChangeMap":false,
         "shop":false
+    },
+    "riley":{
+        "name":"Riley",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false
     }
 }

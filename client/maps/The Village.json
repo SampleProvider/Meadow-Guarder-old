@@ -238,7 +238,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":26,
+ "nextlayerid":28,
  "nextobjectid":1,
  "orientation":"orthogonal",
  "renderorder":"right-down",
@@ -517,6 +517,22 @@
                 {
                  "id":783,
                  "terrain":[-1, -1, 4, -1]
+                }, 
+                {
+                 "id":802,
+                 "probability":0.25
+                }, 
+                {
+                 "id":803,
+                 "probability":0.25
+                }, 
+                {
+                 "id":804,
+                 "probability":0.25
+                }, 
+                {
+                 "id":805,
+                 "probability":0.25
                 }, 
                 {
                  "id":860,
