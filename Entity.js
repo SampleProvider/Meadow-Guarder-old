@@ -2712,6 +2712,24 @@ Player = function(param){
                 for(var i in self.questDependent){
                     self.questDependent[i].toRemove = true;
                 }
+                var newTiles = [];
+                for(var i in tiles){
+                    if(tiles[i].parent !== player.id){
+                        newTiles.push(tiles[i]);
+                    }
+                    else{
+                        for(var j in SOCKET_LIST){
+                            SOCKET_LIST[j].emit('removeTile',{
+                                x:tiles[i].x,
+                                y:tiles[i].y,
+                                map:tiles[i].map,
+                                tile_idx:tiles[i].tile_idx,
+                                canvas:tiles[i].canvas,
+                            });
+                        }
+                    }
+                }
+                tiles = newTiles;
                 socket.emit('dialogueLine',{
                     state:'remove',
                 });
@@ -8536,23 +8554,6 @@ Player.onConnect = function(socket,username){
                 player.teleport(608,2848,'Deserted Town');
             }
             //player.teleport(ENV.Spawnpoint.x,ENV.Spawnpoint.y,ENV.Spawnpoint.map);
-            var newTiles = [];
-            for(var i in tiles){
-                if(tiles[i].parent !== player.id){
-                    newTiles.push(tiles[i]);
-                }
-                else{
-                    for(var j in SOCKET_LIST){
-                        SOCKET_LIST[j].emit('removeTile',{
-                            x:tiles[i].x,
-                            y:tiles[i].y,
-                            map:tiles[i].map,
-                            tile_idx:tiles[i].tile_idx,
-                            canvas:tiles[i].canvas,
-                        });
-                    }
-                }
-            }
             addToChat('style="color: #00ff00">',player.displayName + ' respawned.');
         });
 

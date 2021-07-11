@@ -3272,6 +3272,12 @@ document.onkeydown = function(event){
                 document.getElementById('window').style.display = 'inline-block';
                 state.isHidden = false;
             }
+            else if(key === 'q'){
+                disableAllMenu();
+                document.getElementById('questScreen').style.display = 'inline-block';
+                document.getElementById('window').style.display = 'inline-block';
+                state.isHidden = false;
+            }
             else if(key === 'r' && !event.ctrlKey){
                 disableAllMenu();
                 document.getElementById('waypointScreen').style.display = 'inline-block';

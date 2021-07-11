@@ -47,7 +47,7 @@
     "Wood Delivery":{
         "description":"Deliver some wood to Wally in Deserted Town.",
         "xp":50000,
-        "startStage":3,
+        "startStage":2,
         "requirements":[
             "Lightning Lizard Boss"
         ],
