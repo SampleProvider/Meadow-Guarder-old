@@ -44,6 +44,15 @@
         ],
         "multiplePlayers":false
     },
+    "Wood Delivery":{
+        "description":"Deliver some wood to Wally in Deserted Town.",
+        "xp":50000,
+        "startStage":3,
+        "requirements":[
+            "Lightning Lizard Boss"
+        ],
+        "multiplePlayers":true
+    },
     "Lost Rubies":{
         "description":"Find some lost rubies in the Town Cave.",
         "xp":125000,

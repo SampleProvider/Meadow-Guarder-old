@@ -148,6 +148,9 @@ var firableMap = function(map){
     if(map === 'Lilypad Castle Basement'){
         isFireMap = false;
     }
+    if(map === 'Lilypad Castle Upstairs'){
+        isFireMap = false;
+    }
     if(map === 'The Pet Arena'){
         isFireMap = false;
     }
@@ -2468,6 +2471,7 @@ Player = function(param){
         "Clear River":false,
         "Clear Tower":false,
         "Lightning Lizard Boss":false,
+        "Wood Delivery":false,
         "Possessed Spirit":false,
         "Plantera":false,
         "Whirlwind":false,
@@ -2764,7 +2768,20 @@ Player = function(param){
     self.updateQuest = function(){
         for(var i in Npc.list){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Wood Delivery") === true){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Wood Delivery';
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Hey, I have another quest for you. Can you deliver this wood to Wally in Deserted Town? To get to Wally just keep going west.',
+                        response1:'Yeah, I can deliver the wood.',
+                        response2:'I don\'t have time right now.',
+                        response3:'Do you have any wood on sale right now?',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Missing Person';
@@ -2799,12 +2816,32 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.questStage === 11){
+                else if(self.questStage === 4 && self.quest === 'Wood Delivery'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Thanks for delivering the wood!',
+                        response1:'*End conversation*',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 11 && self.quest === 'Missing Person'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Oh, Mark is fine? That\'s great!',
+                        response1:'*End conversation*',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 8 && self.quest === 'Wood Delivery'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Wally said thanks? Well that\'s nice!',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -2849,7 +2886,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.questStage === 13){
+                else if(self.questStage === 13 && self.quest === 'Weird Tower'){
                     self.questStage += 1;
                     self.invincible = true;
                     socket.emit('dialogueLine',{
@@ -3103,6 +3140,16 @@ Player = function(param){
                     socket.emit('dialogueLine',{
                         state:'ask',
                         message:'You need Piano Parts? I think I can make one for you.',
+                        response1:'*End conversation*',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 6 && self.quest === 'Wood Delivery'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'My wood delivery is here? Go tell Bob thank you.',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -4697,6 +4744,109 @@ Player = function(param){
             self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
             self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Wood Delivery'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:self.questInfo.quest,
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'Wood Delivery'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 3 && self.questStage === 1 && self.questInfo.quest === 'Wood Delivery'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            for(var i in Npc.list){
+                if(Npc.list[i].entityId === 'bob'){
+                    self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                    socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
+                }
+            }
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 2 && self.questInfo.quest === 'Wood Delivery'){
+            self.quest = 'Wood Delivery'
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'I should talk with Bob.',
+                response1:'...',
+            });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Wood Delivery'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Wood Delivery'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'Wood Delivery'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 9 && self.quest === 'Wood Delivery'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
+            var woodObtained = Math.round(35 + Math.random() * 10);
+            socket.emit('notification','You obtained ' + woodObtained + ' wood.');
+            self.inventory.materials.wood += woodObtained;
+            self.inventory.refreshMaterial();
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
@@ -8456,8 +8606,11 @@ Player.onConnect = function(socket,username){
             }
         });
         socket.on('waypoint',function(data){
-            if(player.quest === 'Lightning Lizard Boss' || player.quest === 'Weird Tower' || player.quest === 'Clear Tower'){
+            if(player.quest === 'Lightning Lizard Boss' || player.quest === 'Weird Tower' || player.quest === 'Clear Tower' || player.quest === 'Wood Delivery' || player.quest === 'Lost Rubies'){
                 socket.emit('notification','[!] Waypoints have been disabled in this quest.');
+            }
+            else if(player.map === 'The Pet Arena' || player.map === 'Mysterious Room'){
+                socket.emit('notification','[!] Waypoints have been disabled in this map.');
             }
             else if(data === 'The Village'){
                 player.teleport(2080,1760,data);
