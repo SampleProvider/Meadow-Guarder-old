@@ -1173,7 +1173,7 @@
         "equip":"consume",
         "event":"self.addDebuff('apple',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":[],
-        "description":"An apple a day keeps the monster away!",
+        "description":"An apple a day keeps the monsters away!",
         "rarity":3
     },
     "milk":{
