@@ -1173,7 +1173,7 @@
         "equip":"consume",
         "event":"self.addDebuff('apple',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":[],
-        "description":"An apple a day keeps your DPS high!",
+        "description":"An apple a day keeps the monster away!",
         "rarity":3
     },
     "milk":{
@@ -1181,7 +1181,7 @@
         "equip":"consume",
         "event":"self.addDebuff('milk',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":[],
-        "description":"Will make your bones strong!",
+        "description":"Want to strengthen your bones? Just drink milk!",
         "rarity":6
     },
     "chocolatechipcookie":{

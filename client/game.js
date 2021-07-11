@@ -2810,10 +2810,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 411';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 411 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 415';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 415 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 411){
+        if(loadingProgressDisplay >= 415){
             if(loading){
                 setTimeout(function(){
                     loading = false;
