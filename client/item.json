@@ -873,7 +873,7 @@
         "event":"damageIncrease += 0.25;self.stats.critChance += 0.25;self.stats.debuffs.push({id:'electrified',time:60});",
         "enchantments":["smashing","burst"],
         "defense":31,
-        "damageReduction":0.15,
+        "damageReduction":0.1,
         "rarity":4,
         "description":"<span style='color: #33ee33'>+25% damage.</span><br><span style='color: #33ee33'>+25% critical strike chance.</span><br>You inflict the electrified debuff for 3 seconds."
     },
@@ -883,7 +883,7 @@
         "event":"damageIncrease += 0.3;self.stats.critChance += 0.15;self.immuneDebuffs.push('electrified');",
         "enchantments":["smashing","burst"],
         "defense":37,
-        "damageReduction":0.3,
+        "damageReduction":0.2,
         "rarity":4,
         "description":"<span style='color: #33ee33'>+30% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span><br>You gain immunity to the electrified debuff."
     },
@@ -1115,7 +1115,7 @@
     "emeralditestaff":{
         "name":"Emeraldite Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 1;",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 1;self.attackCost = 8;",
         "enchantments":["speed","burst","cost"],
         "damage":1923,
         "damageType":"magic",
@@ -1142,6 +1142,7 @@
         "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.65;self.stats.critChance += 0.25;}self.stats.debuffs.push({id:'incinerating',time:100});",
         "enchantments":["smashing"],
         "defense":43,
+        "damageReduction":0.15,
         "rarity":7,
         "description":"<span style='color: #33ee33'>+65% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>You inflict the incinerating debuff for 5 seconds."
     },
@@ -1151,6 +1152,7 @@
         "event":"if(self.stats.damageType === 'melee'){damageIncrease += 0.5;self.stats.critChance += 0.15;}self.immuneDebuffs.push('incinerating');",
         "enchantments":["smashing"],
         "defense":56,
+        "damageReduction":0.35,
         "rarity":7,
         "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+15% melee critical strike chance.</span><br>You gain immunity to the incinerating debuff."
     },
@@ -1165,5 +1167,29 @@
         "useTime":10,
         "rarity":7,
         "description":"Shoots a flaming boomerang that splits into two flaming boomerangs when hitting an enemy."
+    },
+    "apple":{
+        "name":"Apple",
+        "equip":"consume",
+        "event":"self.addDebuff('apple',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"An apple a day keeps your DPS high!",
+        "rarity":3
+    },
+    "milk":{
+        "name":"Milk",
+        "equip":"consume",
+        "event":"self.addDebuff('milk',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Will make your bones strong!",
+        "rarity":6
+    },
+    "chocolatechipcookie":{
+        "name":"Chocolate Chip Cookie",
+        "equip":"consume",
+        "event":"self.addDebuff('chocolatechipcookie',1200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"5g of sugar only!",
+        "rarity":6
     }
 }

@@ -60,8 +60,8 @@
         }
     },
     "typhoon":{
-        "width":60,
-        "height":60,
+        "width":120,
+        "height":120,
         "stats":{
             "attack":1,
             "defense":1,

@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f9a';
+var VERSION = '024f10a';
 
 var DEBUG = false;
 
@@ -112,6 +112,7 @@ tileset.onload = function(){
 };
 
 var projectileData = {};
+var questData = {};
 var renderLayers = function(json,name){
     if(isFirefox){
         var tempLower = document.createElement('canvas');
@@ -257,7 +258,6 @@ var loadTileset = function(json,name){
 var loadMap = function(name){
     var request = new XMLHttpRequest();
     request.open('GET',"/client/maps/" + name + ".json",true);
-
     request.onload = function(){
         if(this.status >= 200 && this.status < 400){
             // Success!
@@ -270,17 +270,33 @@ var loadMap = function(name){
             // We reached our target server, but it returned an error
         }
     };
-
     request.onerror = function(){
         // There was a connection error of some sort
     };
-
     request.send();
 }
 socket.on('loadMap',function(data){
     world = data;
     loadingProgress += 1;
 });
+
+var request = new XMLHttpRequest();
+request.open('GET',"/client/quest.json",true);
+request.onload = function(){
+    if(this.status >= 200 && this.status < 400){
+        var json = JSON.parse(this.response);
+        questData = json;
+        loadingProgress += 1;
+    }
+    else{
+
+    }
+};
+request.onerror = function(){
+
+};
+request.send();
+
 signDivSignIn.onclick = function(){
     if(canSignIn){
         socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
@@ -309,11 +325,11 @@ signDivSignIn.onclick = function(){
         loadMap("Lilypad Temple Room 2");
         loadMap("Lilypad Castle");
         loadMap("Lilypad Castle Basement");
+        loadMap("Lilypad Castle Upstairs");
         loadMap("Mysterious Room");
         
         var request = new XMLHttpRequest();
         request.open('GET',"/client/projectiles.json",true);
-        
         request.onload = function(){
             if(this.status >= 200 && this.status < 400){
                 // Success!
@@ -321,9 +337,7 @@ signDivSignIn.onclick = function(){
                 for(var i in json){
                     Img[i] = new Image();
                     Img[i].src = '/client/img/' + i + '.png';
-                    setTimeout(function(){
-                        loadingProgress += 1;
-                    },500 + 1500 * Math.random());
+                    loadingProgress += 1;
                 }
                 projectileData = json;
             }
@@ -331,11 +345,9 @@ signDivSignIn.onclick = function(){
                 // We reached our target server, but it returned an error
             }
         };
-        
         request.onerror = function(){
             // There was a connection error of some sort
         };
-        
         request.send();
     }
 }
@@ -917,6 +929,7 @@ var respawn = function(){
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
     },50);
+    document.getElementById('debuffs').innerHTML = '';
 }
 var inventory = new Inventory(socket,false);
 socket.on('updateInventory',function(pack){
@@ -973,7 +986,25 @@ document.getElementById('waypointButton').onclick = function(){
     disableAllMenu();
     document.getElementById('waypointScreen').style.display = 'inline-block';
 }
+document.getElementById('questButton').onclick = function(){
+    disableAllMenu();
+    document.getElementById('questScreen').style.display = 'inline-block';
+}
 
+var questChange = function(event){
+    var dropdown = document.getElementById('questDropdown');
+    try{
+        document.getElementById('questName').innerHTML = dropdown.options[dropdown.selectedIndex].text;
+        document.getElementById('questDescription').innerHTML = questData[dropdown.options[dropdown.selectedIndex].text].description
+        document.getElementById('questXp').innerHTML = 'This quest gives ' + questData[dropdown.options[dropdown.selectedIndex].text].xp + ' XP.';
+    }
+    catch(err){
+        console.log(err);
+        document.getElementById('questName').innerHTML = 'No quest selected';
+        document.getElementById('questDescription').innerHTML = '';
+        document.getElementById('questXp').innerHTML = '';
+    }
+}
 
 document.getElementById('villageWaypoint').onclick = function(){
     socket.emit('waypoint','The Village');
@@ -1160,6 +1191,21 @@ var Player = function(initPack){
     self.damageDone = initPack.damageDone;
     self.maxDamageDone = initPack.damageDone;
     self.stats = initPack.stats;
+    self.debuffs = initPack.debuffs;
+    self.questStats = initPack.questStats;
+    document.getElementById('questDropdown').innerHTML = '';
+    for(var i in questData){
+        var requirementsMet = true;
+        for(var j in questData[i].requirements){
+            if(self.questStats[questData[i].requirements[j]] === false){
+                requirementsMet = false;
+            }
+        }
+        if(requirementsMet){
+            document.getElementById('questDropdown').innerHTML += '<option>' + i + '</option>';
+        }
+    }
+    questChange();
     self.type = initPack.type;
     self.moveNumber = 3;
     self.update = function(){
@@ -1335,6 +1381,19 @@ var Player = function(initPack){
             self.maxDamageDone = self.damageDone;
         }
         document.getElementById('maxdps').innerHTML = self.maxDamageDone + ' Max DPS';
+        document.getElementById('debuffs').innerHTML = '';
+        if(self.hp > 0){
+            for(var i in self.debuffs){
+                var time = self.debuffs[i].time / 20;
+                if(time < 60){
+                    time += 'sec';
+                }
+                else{
+                    time = Math.ceil(time / 60) + 'min';
+                }
+                document.getElementById('debuffs').innerHTML += '<div class="debuff UI-display-light" style="opacity:' + self.debuffs[i].time / 20 + '"><image src="./client/icon/debuffs/' + self.debuffs[i].id + '.png"><br><div style="padding-top: -3px;padding-right: 0px;padding-bottom: 2px;padding-left: 2px;">' + time + '</div>';
+            }
+        }
     }
     self.drawLight = function(){
         if(self.id !== selfId){
@@ -1589,11 +1648,11 @@ var Monster = function(initPack){
     self.draw = function(){
         if(self.monsterType === 'blueBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 32,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 0,11,13,self.x - 22,self.y - 26,44,52);
         }
         if(self.monsterType === 'greenBird'){
             self.animation = Math.round(self.animation);
-            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 32,44,52);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 1,11,13,self.x - 22,self.y - 26,44,52);
         }
         if(self.monsterType === 'redBird'){
             self.animation = Math.round(self.animation);
@@ -1823,47 +1882,14 @@ var Monster = function(initPack){
         }
     }
     self.drawHp = function(){
-        if(self.monsterType === 'redBird'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 75,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 75,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'possessedSpirit'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 100,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 100,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'plantera'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 70,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 70,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'whirlwind'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 70,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 70,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'sp'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'tianmuGuarder'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'sampleprovidersp'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else if(self.monsterType === 'suvanth'){
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 60,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 60,Math.round(126 * self.hp / self.hpMax),15);
-        }
-        else{
-            ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - 50,126,15);
-            ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - 50,Math.round(126 * self.hp / self.hpMax),15);
-        }
+        ctx1.drawImage(Img.healthBarEnemy,0,0,42,5,self.x - 63,self.y - self.height / 2 - 24,126,15);
+        ctx1.drawImage(Img.healthBarEnemy,0,6,Math.round(42 * self.hp / self.hpMax),5,self.x - 63,self.y - self.height / 2 - 24,Math.round(126 * self.hp / self.hpMax),15);
         if(DEBUG){
             ctx1.strokeStyle = '#ff0000';
             ctx1.lineWidth = 4;
-            ctx1.strokeRect(Math.floor(self.x / 64) * 64 - 16 * 64,Math.floor(self.y / 64) * 64 - 16 * 64,33 * 64,33 * 64)
-            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64)
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64 - 16 * 64,Math.floor(self.y / 64) * 64 - 16 * 64,33 * 64,33 * 64);
+            ctx1.strokeRect(Math.floor(self.x / 64) * 64,Math.floor(self.y / 64) * 64,1 * 64,1 * 64);
+            ctx1.strokeRect(self.x,self.y,4,4);
         }
     }
     Monster.list[self.id] = self;
@@ -2108,91 +2134,6 @@ var Particle = function(initPack){
     return self;
 }
 Particle.list = {};
-var Sound = function(initPack){
-    /*
-    if(initPack.type === 'stoneArrow'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/arrowShoot.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'earthBullet'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/earthBullet.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'fireBullet'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/fireBullet.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'homingFireBullet'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/homingFireBullet.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'waterBullet'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/waterBullet.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'ninjaStar'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/ninjaStar.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'ballBullet'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/ballBullet.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'cherryBomb'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/cherryBomb.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'lizardSpit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/lizardSpit.mp3";
-        sound.play();
-    }
-    /*
-    if(initPack.type === 'arrowHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/arrowHit.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'waterHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/waterHit.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'fireHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/fireHit.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'earthHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/earthHit.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'fireHomingHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/fireHomingHit.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'playerHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/playerHit.mp3";
-        sound.play();
-    }
-    if(initPack.type === 'lizardHit'){
-        var sound = new Audio();
-        sound.src = "/client/websiteAssets/lizardHit.mp3";
-        sound.play();
-    }*/
-    sound.remove();
-}
 window.onoffline = function(event){
     socket.emit('timeout');
 };
@@ -2319,6 +2260,27 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].stats !== undefined){
                         Player.list[data.player[i].id].stats = data.player[i].stats;
+                    }
+                    if(data.player[i].debuffs !== undefined){
+                        Player.list[data.player[i].id].debuffs = data.player[i].debuffs;
+                    }
+                    if(data.player[i].questStats !== undefined){
+                        Player.list[data.player[i].id].questStats = data.player[i].questStats;
+                        if(questData !== {}){
+                            document.getElementById('questDropdown').innerHTML = '';
+                            for(var j in questData){
+                                var requirementsMet = true;
+                                for(var k in questData[j].requirements){
+                                    if(data.player[i].questStats[questData[j].requirements[k]] === false){
+                                        requirementsMet = false;
+                                    }
+                                }
+                                if(requirementsMet){
+                                    document.getElementById('questDropdown').innerHTML += '<option>' + j + '</option>';
+                                }
+                            }
+                            questChange();
+                        }
                     }
                     if(data.player[i].animation !== undefined){
                         Player.list[data.player[i].id].animation = data.player[i].animation;
@@ -2559,11 +2521,6 @@ socket.on('update',function(data){
                 new Particle(data.particle[i]);
             }
         }
-        if(data.sound.length > 0){
-            for(var i = 0;i < data.sound.length;i++){
-                Sound(data.sound[i]);
-            }
-        }
     }
     for(var i in Player.list){
         if(Player.list[i].updated === false){
@@ -2659,10 +2616,12 @@ socket.on('spectator',function(data){
     disconnectedDiv.style.display = 'none';
     spectatorDiv.style.display = 'inline-block';
     pageDiv.style.display = 'none';
-    respawnTimer = 15;
+    respawnTimer = 5;
     document.getElementById('respawnTimer').innerHTML = respawnTimer;
     document.getElementById('respawn').style.display = 'none';
     setTimeout(updateRespawn,1500);
+    document.getElementById('debuffs').innerHTML = '';
+    Player.list[selfId].debuffs = [];
 });
 socket.on('changeMap',function(data){
     if(shadeAmount < 0){
@@ -2713,8 +2672,15 @@ socket.on('dialogueLine',function(data){
     }
 });
 socket.on('questInfo',function(data){
+    var dropdown = document.getElementById('questDropdown');
+    //dropdown.options[dropdown.selectedIndex].text = data.questName;
+    dropdown.selectedIndex = 0;
+    while(dropdown.options[dropdown.selectedIndex].text !== data.questName){
+        dropdown.selectedIndex += 1;
+    }
     document.getElementById('questName').innerHTML = data.questName;
-    document.getElementById('questDescription').innerHTML = data.questDescription;
+    document.getElementById('questDescription').innerHTML = questData[data.questName].description;
+    document.getElementById('questXp').innerHTML = 'This quest gives ' + questData[data.questName].xp + ' XP.';
     disableAllMenu();
     document.getElementById('questScreen').style.display = 'inline-block';
     document.getElementById('window').style.display = 'inline-block';
@@ -2825,11 +2791,14 @@ socket.on('changeDifficulty',function(data){
 });
 
 startQuest = function(){
-    socket.emit('startQuest');
-    document.getElementById('window').style.display = 'none';
-    state.isHidden = true;
-    disableAllMenu();
-    document.getElementById('inventoryScreen').style.display = 'inline-block';
+    var dropdown = document.getElementById('questDropdown');
+    if(dropdown.options[dropdown.selectedIndex]){
+        socket.emit('startQuest',dropdown.options[dropdown.selectedIndex].text);
+        document.getElementById('window').style.display = 'none';
+        state.isHidden = true;
+        disableAllMenu();
+        document.getElementById('inventoryScreen').style.display = 'inline-block';
+    }
 };
 
 var response = function(data){
@@ -2840,11 +2809,11 @@ var MGHC1 = function(){};
 setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
-            loadingProgressDisplay += Math.ceil(Math.min((loadingProgress - loadingProgressDisplay) / 4),10 + 10 * Math.random());
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 392';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 392 * window.innerWidth / 2 + 'px';
+            loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 411';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 411 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 392){
+        if(loadingProgressDisplay >= 411){
             if(loading){
                 setTimeout(function(){
                     loading = false;
@@ -3163,7 +3132,7 @@ setInterval(function(){
     ctx1.fillRect(Player.list[selfId].mapWidth,0,WIDTH,Player.list[selfId].mapHeight + HEIGHT);
     
     ctx1.restore();
-    if(mapShadeAmount >= 2){
+    if(mapShadeAmount >= 3.5){
         mapShadeSpeed = -0.12;
     }
     if(Player.list[selfId].map === currentMap && shadeAmount > 1.5){
@@ -3235,6 +3204,10 @@ var updateRespawn = function(){
     respawnTimer = Math.max(respawnTimer - 1,0);
     document.getElementById('respawnTimer').innerHTML = respawnTimer;
     setTimeout(updateRespawn,1000);
+}
+
+var releaseAll = function(){
+    socket.emit('keyPress',{inputId:'releaseAll'});
 }
 
 function useMenuDropdown(){

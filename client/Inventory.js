@@ -83,6 +83,16 @@ Inventory = function(socket,server){
                 self.refreshMaterial();
                 return self.materials[i];
             }
+            else if(i + 'x10' === id){
+                self.materials[i] += 10;
+                self.refreshMaterial();
+                return self.materials[i];
+            }
+            else if(i + 'x100' === id){
+                self.materials[i] += 100;
+                self.refreshMaterial();
+                return self.materials[i];
+            }
         }
         if(Item.list[id]){
             self.items.push({id:id,enchantments:enchantments || [],displayButtons:false});
@@ -233,6 +243,30 @@ Inventory = function(socket,server){
         }
         if(id === 'ruby'){
             return 'Ruby';
+        }
+        if(id === 'woodx10'){
+            return 'Wood x10';
+        }
+        if(id === 'steelx10'){
+            return 'Steel x10';
+        }
+        if(id === 'goldx10'){
+            return 'Gold x10';
+        }
+        if(id === 'rubyx10'){
+            return 'Ruby x10';
+        }
+        if(id === 'woodx100'){
+            return 'Wood x100';
+        }
+        if(id === 'steelx100'){
+            return 'Steel x100';
+        }
+        if(id === 'goldx100'){
+            return 'Gold x100';
+        }
+        if(id === 'rubyx100'){
+            return 'Ruby x100';
         }
         if(id === 'emeraldite'){
             return 'Emeraldite';
@@ -1368,6 +1402,12 @@ Inventory = function(socket,server){
                 if(i === data.id){
                     button.innerHTML = self.getMaterialName(data.id) + ' ';
                 }
+                else if(i + 'x10' === data.id){
+                    button.innerHTML = self.getMaterialName(data.id) + ' ';
+                }
+                else if(i + 'x100' === data.id){
+                    button.innerHTML = self.getMaterialName(data.id) + ' ';
+                }
             }
             if(item.name){
                 button.innerHTML = item.name + " ";
@@ -1597,6 +1637,14 @@ Inventory = function(socket,server){
                 self.addItem(item.id,item.enchantments);
                 for(var i in self.materials){
                     if(i === item.id){
+                        socket.emit('notification','You successfully bought ' + self.getMaterialName(item.id) + '.');
+                        return;
+                    }
+                    if(i + 'x10' === item.id){
+                        socket.emit('notification','You successfully bought ' + self.getMaterialName(item.id) + '.');
+                        return;
+                    }
+                    if(i + 'x100' === item.id){
                         socket.emit('notification','You successfully bought ' + self.getMaterialName(item.id) + '.');
                         return;
                     }

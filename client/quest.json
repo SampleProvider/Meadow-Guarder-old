@@ -1,0 +1,92 @@
+{
+    "Missing Person":{
+        "description":"Find Mark who has been missing in the map The River. Test out some new quest mechanics.",
+        "xp":5000,
+        "startStage":2,
+        "requirements":[
+
+        ],
+        "multiplePlayers":true
+    },
+    "Weird Tower":{
+        "description":"Investigate a weird house in the map The River. Defeat Monsters to save The Village.",
+        "xp":10000,
+        "startStage":5,
+        "requirements":[
+            "Missing Person"
+        ],
+        "multiplePlayers":false
+    },
+    "Clear River":{
+        "description":"Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class='UI-link-light' href='https://github.com/maitian352/Meadow-Guarder/issues'>here</a>.",
+        "xp":15000,
+        "startStage":4,
+        "requirements":[
+            "Weird Tower"
+        ],
+        "multiplePlayers":true
+    },
+    "Clear Tower":{
+        "description":"Defeat all the monsters in the weird tower in the map The River.",
+        "xp":25000,
+        "startStage":3,
+        "requirements":[
+            "Clear River"
+        ],
+        "multiplePlayers":false
+    },
+    "Lightning Lizard Boss":{
+        "description":"Defeat the Lightning Lizard.",
+        "xp":75000,
+        "startStage":3,
+        "requirements":[
+            "Clear Tower"
+        ],
+        "multiplePlayers":false
+    },
+    "Lost Rubies":{
+        "description":"Find some lost rubies in the Town Cave.",
+        "xp":125000,
+        "startStage":3,
+        "requirements":[
+            "Plantera"
+        ],
+        "multiplePlayers":true
+    },
+    "Broken Piano":{
+        "description":"Find Piano Parts to fix Mia's piano.",
+        "xp":250000,
+        "startStage":3,
+        "requirements":[
+            "Lost Rubies"
+        ],
+        "multiplePlayers":true
+    },
+    "Pet Training":{
+        "description":"Train your pet to become stronger.",
+        "xp":250000,
+        "startStage":7,
+        "requirements":[
+            "Lost Rubies"
+        ],
+        "multiplePlayers":false
+    },
+    "Monster Search":{
+        "description":"Search for a way to kill all the monsters.",
+        "xp":400000,
+        "startStage":4,
+        "requirements":[
+            "Lost Rubies"
+        ],
+        "multiplePlayers":false
+    },
+    "Missing Candies":{
+        "description":"Find Riley's candies.",
+        "xp":50000,
+        "startStage":2,
+        "requirements":[
+            
+        ],
+        "multiplePlayers":true
+    }
+}

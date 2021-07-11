@@ -7,10 +7,25 @@
             {
                 "id":"wood",
                 "enchantments":[]
+            },
+            {
+                "id":"woodx10",
+                "enchantments":[]
+            },
+            {
+                "id":"woodx100",
+                "enchantments":[]
+            },
+            {
+                "id":"apple",
+                "enchantments":[]
             }
         ],
         "shopPrices":[
-            100
+            100,
+            950,
+            9250,
+            1000
         ],
         "quote":"My friend Mark gave me all this wood, you want some?"
     },
@@ -52,13 +67,28 @@
             {
                 "id":"greenfish",
                 "enchantments":[]
+            },
+            {
+                "id":"bluefish",
+                "enchantments":[]
+            },
+            {
+                "id":"burntfish",
+                "enchantments":[]
+            },
+            {
+                "id":"purplefish",
+                "enchantments":[]
             }
         ],
         "shopPrices":[
             10000,
             25000,
             100000,
-            350000
+            350000,
+            650000,
+            650000,
+            1000000
         ],
         "quote":"You want some fish?"
     },
@@ -96,11 +126,35 @@
                 "enchantments":[]
             },
             {
+                "id":"steelx10",
+                "enchantments":[]
+            },
+            {
+                "id":"steelx100",
+                "enchantments":[]
+            },
+            {
                 "id":"gold",
                 "enchantments":[]
             },
             {
+                "id":"goldx10",
+                "enchantments":[]
+            },
+            {
+                "id":"goldx100",
+                "enchantments":[]
+            },
+            {
                 "id":"ruby",
+                "enchantments":[]
+            },
+            {
+                "id":"rubyx10",
+                "enchantments":[]
+            },
+            {
+                "id":"rubyx100",
                 "enchantments":[]
             },
             {
@@ -134,8 +188,14 @@
         ],
         "shopPrices":[
             1000,
+            9500,
+            92500,
             10000,
+            95000,
+            925000,
             50000,
+            450000,
+            4250000,
             100000,
             100000,
             100000,
@@ -145,6 +205,93 @@
             100000
         ],
         "quote":"I can make anything out of metal!"
+    },
+    "fibb":{
+        "name":"Fibb",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":[
+            {
+                "id":"chocolatechipcookie",
+                "enchantments":[]
+            },
+            {
+                "id":"milk",
+                "enchantments":[]
+            }
+        ],
+        "shopPrices":[
+            50000,
+            50000
+        ],
+        "quote":"My food is the best in town!"
+    },
+    "woodenforge":{
+        "name":"Wooden Forge",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "crafts":{
+            "items":[
+                {
+                    "id":"advancedwoodensword",
+                    "enchantments":[]
+                },
+                {
+                    "id":"advancedwoodenbow",
+                    "enchantments":[]
+                },
+                {
+                    "id":"advancedwoodenstaff",
+                    "enchantments":[]
+                },
+                {
+                    "id":"bronzekey",
+                    "enchantments":[]
+                },
+                {
+                    "id":"silverkey",
+                    "enchantments":[]
+                }
+            ],
+            "materials":[
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":50
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"steel",
+                        "amount":50
+                    }
+                ]
+            ]
+        },
+        "quote":"Use me to craft items out of wood."
     },
     "anvil":{
         "name":"Anvil",

@@ -142,6 +142,12 @@ var firableMap = function(map){
     if(map === 'Lilypad Kingdom'){
         isFireMap = false;
     }
+    if(map === 'Lilypad Castle'){
+        isFireMap = false;
+    }
+    if(map === 'Lilypad Castle Basement'){
+        isFireMap = false;
+    }
     if(map === 'The Pet Arena'){
         isFireMap = false;
     }
@@ -331,6 +337,7 @@ var monsterData = require('./monsters.json');
 var worldData = require('./world.json');
 var projectileData = require('./client/projectiles.json');
 var npcData = require('./npc.json');
+var questData = require('./client/quest.json');
 
 var spawnMonster = function(spawner,spawnId){
     if(ENV.Peaceful){
@@ -549,15 +556,6 @@ Entity.getFrameUpdateData = function(){
             }
         }
     }
-    /*
-    for(var i in Sound.list){
-        if(!pack[Sound.list[i].map]){
-            pack[Sound.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
-        }
-        var updatePack = Sound.list[i].getUpdatePack();
-        pack[Sound.list[i].map].sound.push(updatePack);
-        delete Sound.list[i];
-    }*/
     for(var i in Pet.list){
         Pet.list[i].update();
         if(!pack[Pet.list[i].map]){
@@ -598,11 +596,6 @@ Entity.getFrameUpdateData = function(){
     for(var i in Collision.list){
         if(Collision.list[i].toRemove){
             delete Collision.list[i];
-        }
-    }
-    for(var i in Collision2.list){
-        if(Collision2.list[i].toRemove){
-            delete Collision2.list[i];
         }
     }
 	updateCrashes();
@@ -913,7 +906,7 @@ Entity.getFrameUpdateData = function(){
                 }
             }
             else if(ENV.BossRushStage === 6){
-                addToChat('style="color: #00aadd">','I\'m not done yet!');
+                addToChat('style="color: #00aadd">','Elemental Pairs, aid me!');
                 for(var i in monsterData){
                     if(i === 'whirlwind'){
                         var monsterHp = monsterData[i].hp;
@@ -924,7 +917,47 @@ Entity.getFrameUpdateData = function(){
                         monsterStats.attack *= 1.5;
                         var monster = new Monster({
                             spawnId:false,
-                            x:1600,
+                            x:1472,
+                            y:1600,
+                            map:'The Arena',
+                            moveSpeed:monsterData[i].moveSpeed,
+                            stats:monsterStats,
+                            hp:Math.round(monsterHp),
+                            monsterType:i,
+                            attackState:monsterData[i].attackState,
+                            width:monsterData[i].width,
+                            height:monsterData[i].height,
+                            immuneDebuffs:monsterData[i].immuneDebuffs,
+                            aggro:monsterData[i].aggro,
+                            boss:monsterData[i].boss,
+                            trackDistance:monsterData[i].trackDistance,
+                            xpGain:monsterData[i].xpGain,
+                            onDeath:function(pt){
+                                pt.toRemove = true;
+                                for(var i in Projectile.list){
+                                    if(Projectile.list[i].parent === pt.id){
+                                        Projectile.list[i].toRemove = true;
+                                    }
+                                }
+                                ENV.BossRushStage += 1;
+                            },
+                        });
+                        for(var i in Player.list){
+                            if(Player.list[i].map === monster.map){
+                                SOCKET_LIST[i].emit('initEntity',monster.getInitPack());
+                            }
+                        }
+                    }
+                    if(i === 'fireSpirit'){
+                        var monsterHp = monsterData[i].hp;
+                        var monsterStats = Object.create(monsterData[i].stats);
+                        monsterHp *= ENV.MonsterStrength;
+                        monsterStats.attack *= ENV.MonsterStrength;
+                        monsterHp *= 5;
+                        monsterStats.attack *= 1.5;
+                        var monster = new Monster({
+                            spawnId:false,
+                            x:1728,
                             y:1600,
                             map:'The Arena',
                             moveSpeed:monsterData[i].moveSpeed,
@@ -958,31 +991,58 @@ Entity.getFrameUpdateData = function(){
                 }
             }
             else if(ENV.BossRushStage === 7){
-                addToChat('style="color: #00aadd">','You expected a reward beyond this mere leaf? Patience, the true reward will come apparent in time...');
-                ENV.BossRushStage = 0;
-                ENV.BossRush = false;
+                var doSp = false;
                 for(var i in Player.list){
-                    if(Player.list[i].map === 'The Arena'){
-                        Player.list[i].xp += 500000 * Player.list[i].stats.xp;
-                        Player.list[i].inventory.addItem('leaf',[]);
-                        Player.list[i].inventory.addItem('purplefish',[]);
-                        if(Math.random() < 0.1){
-                            Player.list[i].inventory.addItem('halibutcannon',[]);
+                    if(Player.list[i].questStats['sp'] === false){
+                        doSp = true;
+                    }
+                }
+                if(doSp){
+                    addToChat('style="color: #ff0000">','You have no idea what you just did...');
+                    for(var i in Player.list){
+                        if(Player.list[i].map === 'The Arena'){
+                            Player.list[i].xp += 500000 * Player.list[i].stats.xp;
+                            Player.list[i].inventory.addItem('leaf',[]);
+                            Player.list[i].inventory.addItem('purplefish',[]);
+                            if(Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('halibutcannon',[]);
+                            }
+                            if(Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('bookofdeath',[]);
+                            }
+                            if(Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('holytrident',[]);
+                            }
                         }
-                        if(Math.random() < 0.1){
-                            Player.list[i].inventory.addItem('bookofdeath',[]);
-                        }
-                        if(Math.random() < 0.1){
-                            Player.list[i].inventory.addItem('holytrident',[]);
+                    }
+                    setTimeout(function(){
+                        addToChat('style="color: #ff0000">','Impending Developer Approaches...');
+                    },60000);
+                    setTimeout(function(){
+                        s.testDPS();
+                    },70000);
+                }
+                else{
+                    addToChat('style="color: #00aadd">','You expected a reward beyond this mere leaf? Patience, the true reward will come apparent in time...');
+                    for(var i in Player.list){
+                        if(Player.list[i].map === 'The Arena'){
+                            Player.list[i].xp += 500000 * Player.list[i].stats.xp;
+                            Player.list[i].inventory.addItem('leaf',[]);
+                            Player.list[i].inventory.addItem('purplefish',[]);
+                            if(Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('halibutcannon',[]);
+                            }
+                            if(Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('bookofdeath',[]);
+                            }
+                            if(Math.random() < 0.1){
+                                Player.list[i].inventory.addItem('holytrident',[]);
+                            }
                         }
                     }
                 }
-                setTimeout(function(){
-                    addToChat('style="color: #ff0000">','Impending Developer Approaches...');
-                },60000);
-                setTimeout(function(){
-                    s.testDPS();
-                },70000);
+                ENV.BossRushStage = 0;
+                ENV.BossRush = false;
             }
         }
     }
@@ -1166,12 +1226,6 @@ Actor = function(param){
                                     if(Collision.list[self.map][x / 64][y / 64]){
                                         grid.setWalkableAt(i,j,false);
                                     }
-                                }
-                                if(Collision2.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
-                                    grid.setWalkableAt(i,j,false);
-                                }
-                                if(Collision3.list['' + self.map + ':' + x + ':' + y + ':'] !== undefined){
-                                    grid.setWalkableAt(i,j,false);
                                 }
                                 if(x < 0 || x > self.mapWidth || y < 0 || y > self.mapHeight){
                                     grid.setWalkableAt(i,j,false);
@@ -1399,14 +1453,14 @@ Actor = function(param){
         var stats = JSON.parse(JSON.stringify(self.oldStats));
         var debuffRemoveList = [];
         for(var i = self.debuffs.length - 1;i >= 0;i--){
-            var debuffImmune = true;
+            var debuffImmune = false;
             for(var j in self.immuneDebuffs){
                 if(self.immuneDebuffs[j] === self.debuffs[i].id){
                     debuffRemoveList.push(i);
-                    debuffImmune = false;
+                    debuffImmune = true;
                 }
             }
-            if(debuffImmune === true){
+            if(debuffImmune === false){
                 if(self.debuffs[i].id === 'burning' && self.debuffTimer % 2 === 0){
                     var damage = 1;
                     var particleType = 'redDamage';
@@ -1613,6 +1667,56 @@ Actor = function(param){
                         });
                     }
                 }
+                if(self.debuffs[i].id === 'apple'){
+                    if(self.debuffTimer % 2 === 0){
+                        var damage = 1;
+                        var particleType = 'greenDamage';
+                        self.hp += damage;
+                        if(damage){
+                            var particle = new Particle({
+                                x:self.x + Math.random() * 64 - 32,
+                                y:self.y + Math.random() * 64 - 32,
+                                map:self.map,
+                                particleType:particleType,
+                                value:'+' + damage,
+                            });
+                        }
+                    }
+                    stats.attack += 5;
+                    stats.defense += 5;
+                }
+                if(self.debuffs[i].id === 'milk'){
+                    var damage = 2;
+                    var particleType = 'greenDamage';
+                    self.hp += damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'+' + damage,
+                        });
+                    }
+                    stats.attack += 15;
+                    stats.defense += 25;
+                }
+                if(self.debuffs[i].id === 'chocolatechipcookie'){
+                    var damage = 5;
+                    var particleType = 'greenDamage';
+                    self.hp += damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'+' + damage,
+                        });
+                    }
+                    stats.attack += 35;
+                    stats.defense += 25;
+                }
             }
             self.debuffs[i].time -= 1;
             if(self.debuffs[i].time <= 0){
@@ -1623,6 +1727,10 @@ Actor = function(param){
             self.debuffs.splice(debuffRemoveList[i],1);
         }
         self.stats = JSON.parse(JSON.stringify(stats));
+        if(self.hp < 1){
+            self.willBeDead = true;
+            self.toRemove = true;
+        }
         if(self.hp < 1 && self.debuffInflicted){
             if(Player.list[self.debuffInflicted]){
                 var pt = Player.list[self.debuffInflicted];
@@ -1720,6 +1828,15 @@ Actor = function(param){
             Player.list[pt.parent].damageArray[19] += hp - self.hp;
         }
     }
+    self.addDebuff = function(debuff,time){
+        for(var j in self.debuffs){
+            if(debuff === self.debuffs[j].id){
+                self.debuffs[j].time = Math.max(time,self.debuffs[j].time);
+                return;
+            }
+        }
+        self.debuffs.push({id:debuff,time:time});
+    }
     self.onHit = function(pt){
     }
     self.onCollision = function(pt,strength){
@@ -1743,23 +1860,14 @@ Actor = function(param){
                 });
             }
             for(var i in pt.stats.debuffs){
-                var debuffAdded = false;
-                for(var j in self.debuffs){
-                    if(pt.stats.debuffs[i].id === self.debuffs[j].id && !debuffAdded){
-                        self.debuffs[j].time = pt.stats.debuffs[i].time;
-                        debuffAdded = true;
-                    }
-                }
-                if(!debuffAdded){
-                    self.debuffs.push(Object.create(pt.stats.debuffs[i]));
-                }
+                self.addDebuff(pt.stats.debuffs[i].id,pt.stats.debuffs[i].time);
             }
             if(pt.projectileType){
                 if(pt.projectileType === 'fireBullet'){
                     var debuffAdded = false;
                     for(var j in self.debuffs){
                         if(self.debuffs[j].id === 'burning' && !debuffAdded){
-                            self.debuffs[j].time = 30;
+                            self.debuffs[j].time = Math.max(30,self.debuffs[j].time);
                             debuffAdded = true;
                         }
                     }
@@ -1779,57 +1887,6 @@ Actor = function(param){
                         self.debuffs.push({id:'electrified',time:30});
                     }
                 }
-            }
-            if(pt.projectileType){
-                /*
-                if(pt.projectileType === 'stoneArrow'){
-                    Sound({
-                        type:'arrowHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectileType === 'waterBullet'){
-                    Sound({
-                        type:'waterHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectileType === 'fireBullet'){
-                    Sound({
-                        type:'fireHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectileType === 'earthBullet'){
-                    Sound({
-                        type:'earthHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectilePattern === 'playerHoming' && pt.projectileType === 'fireBullet'){
-                    Sound({
-                        type:'fireHomingHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectilePattern === 'monsterHoming'){
-                    Sound({
-                        type:'fireHomingHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectileType === 'playerHit'){
-                    Sound({
-                        type:'playerHit',
-                        map:self.map,
-                    });
-                }
-                if(pt.projectileType === 'lizardSpit'){
-                    Sound({
-                        type:'lizardHit',
-                        map:self.map,
-                    });
-                }*/
             }
             if(pt.type === 'Player' && self.type === 'Monster'){
                 pt.damageArray[19] += damage;
@@ -1977,261 +2034,10 @@ Actor = function(param){
         self.eventQ.sort(sortByTime);
     }
     self.updateCollisions = function(){
-        if(self.canCollide === false){
-            return;
-        }
         var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
         var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
         var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
-        
-        if(self.spdX <= 0){
-            if(self.spdY <= 0){
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-            }
-            else if(self.spdY > 0){
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-            }
-        }
-        else if(self.spdX > 0){
-            if(self.spdY <= 0){
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-            }
-            else if(self.spdY > 0){
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
-                    }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doNormalCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
-                    }
-                }
-                if(Collision2.list[firstTile]){
-                    self.doCollision(Collision2.list[firstTile]);
-                }
-                if(Collision2.list[secondTile]){
-                    self.doCollision(Collision2.list[secondTile]);
-                }
-                if(Collision2.list[thirdTile]){
-                    self.doCollision(Collision2.list[thirdTile]);
-                }
-                if(Collision2.list[fourthTile]){
-                    self.doCollision(Collision2.list[fourthTile]);
-                }
-                if(Collision3.list[firstTile]){
-                    self.doCollision(Collision3.list[firstTile]);
-                }
-                if(Collision3.list[secondTile]){
-                    self.doCollision(Collision3.list[secondTile]);
-                }
-                if(Collision3.list[thirdTile]){
-                    self.doCollision(Collision3.list[thirdTile]);
-                }
-                if(Collision3.list[fourthTile]){
-                    self.doCollision(Collision3.list[fourthTile]);
-                }
-            }
-        }
-
-        if(SlowDown.list[firstTile]){
-            self.doSlowDown(SlowDown.list[firstTile]);
-        }
-        if(SlowDown.list[secondTile]){
-            self.doSlowDown(SlowDown.list[secondTile]);
-        }
-        if(SlowDown.list[thirdTile]){
-            self.doSlowDown(SlowDown.list[thirdTile]);
-        }
-        if(SlowDown.list[fourthTile]){
-            self.doSlowDown(SlowDown.list[fourthTile]);
-        }
-
-        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                self.justCollided = true;
-            }
-        }
-        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                self.justCollided = true;
-            }
-        }
-        if(Collision.list[self.map][Math.round((self.x) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                self.justCollided = true;
-            }
-        }
-        if(Collision.list[self.map][Math.round((self.x) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                self.justCollided = true;
-            }
-        }
-        if(Collision2.list[firstTile]){
-            self.justCollided = true;
-        }
-        if(Collision2.list[secondTile]){
-            self.justCollided = true;
-        }
-        if(Collision2.list[thirdTile]){
-            self.justCollided = true;
-        }
-        if(Collision2.list[fourthTile]){
-            self.justCollided = true;
-        }
-        if(Collision3.list[firstTile]){
-            self.justCollided = true;
-        }
-        if(Collision3.list[secondTile]){
-            self.justCollided = true;
-        }
-        if(Collision3.list[thirdTile]){
-            self.justCollided = true;
-        }
-        if(Collision3.list[fourthTile]){
-            self.justCollided = true;
-        }
-
         if(Transporter.list[firstTile] && self.canMove){
             var direction = Transporter.list[firstTile].teleportdirection;
             if(direction === "up" && self.spdY < 0){
@@ -2292,28 +2098,145 @@ Actor = function(param){
                 self.doTransport(Transporter.list[fourthTile]);
             }
         }
-    }
-    self.doCollision = function(collision){
-        if(self.isColliding(collision)){
-            var x = self.x;
-            self.x = self.lastX;
-            if(self.isColliding(collision)){
-                self.x = x;
-                self.y = self.lastY;
-                if(self.isColliding(collision)){
-                    self.x = self.lastX;
-                    self.y = self.lastY;
+        if(self.canCollide === false){
+            return;
+        }
+        if(self.spdX <= 0){
+            if(self.spdY <= 0){
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
                 }
-                else{
-                    
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
                 }
             }
-            else{
-                
+            else if(self.spdY > 0){
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
+                }
+            }
+        }
+        else if(self.spdX > 0){
+            if(self.spdY <= 0){
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+            }
+            else if(self.spdY > 0){
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    }
+                }
+                if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    }
+                }
+            }
+        }
+
+        if(SlowDown.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(SlowDown.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                self.doSlowDown(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+            }
+        }
+        if(SlowDown.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(SlowDown.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                self.doSlowDown(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+            }
+        }
+        if(SlowDown.list[self.map][Math.round((self.x) / 64)]){
+            if(SlowDown.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                self.doSlowDown(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+            }
+        }
+        if(SlowDown.list[self.map][Math.round((self.x) / 64)]){
+            if(SlowDown.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                self.doSlowDown(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+            }
+        }
+
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                self.justCollided = true;
+            }
+        }
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                self.justCollided = true;
+            }
+        }
+        if(Collision.list[self.map][Math.round((self.x) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                self.justCollided = true;
+            }
+        }
+        if(Collision.list[self.map][Math.round((self.x) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                self.justCollided = true;
             }
         }
     }
-    self.doNormalCollision = function(map,x,y){
+    self.doCollision = function(map,x,y){
         var collision = {
             map:map,
             x:x * 64,
@@ -2416,7 +2339,72 @@ Actor = function(param){
             self.transporter = transporter;
         }
     }
-    self.doSlowDown = function(slowDown){
+    self.doSlowDown = function(map,x,y){
+        var slowDown = {
+            map:map,
+            x:x * 64,
+            y:y * 64,
+        };
+        if(SlowDown.list[map][x][y] === 1){
+            slowDown.width = 64;
+            slowDown.height = 64;
+            slowDown.x += 32;
+            slowDown.y += 32;
+        }
+        if(SlowDown.list[map][x][y] === 2){
+            slowDown.width = 64;
+            slowDown.height = 32;
+            slowDown.x += 32;
+            slowDown.y += 48;
+        }
+        if(SlowDown.list[map][x][y] === 3){
+            slowDown.width = 64;
+            slowDown.height = 32;
+            slowDown.x += 32;
+            slowDown.y += 16;
+        }
+        if(SlowDown.list[map][x][y] === 4){
+            slowDown.width = 32;
+            slowDown.height = 64;
+            slowDown.x += 16;
+            slowDown.y += 32;
+        }
+        if(SlowDown.list[map][x][y] === 5){
+            slowDown.width = 32;
+            slowDown.height = 64;
+            slowDown.x += 48;
+            slowDown.y += 32;
+        }
+        if(SlowDown.list[map][x][y] === 6){
+            slowDown.width = 32;
+            slowDown.height = 32;
+            slowDown.x += 32;
+            slowDown.y += 32;
+        }
+        if(SlowDown.list[map][x][y] === 7){
+            slowDown.width = 32;
+            slowDown.height = 32;
+            slowDown.x += 16;
+            slowDown.y += 48;
+        }
+        if(SlowDown.list[map][x][y] === 8){
+            slowDown.width = 32;
+            slowDown.height = 32;
+            slowDown.x += 48;
+            slowDown.y += 48;
+        }
+        if(SlowDown.list[map][x][y] === 9){
+            slowDown.width = 32;
+            slowDown.height = 32;
+            slowDown.x += 48;
+            slowDown.y += 16;
+        }
+        if(SlowDown.list[map][x][y] === 10){
+            slowDown.width = 32;
+            slowDown.height = 32;
+            slowDown.x += 16;
+            slowDown.y += 16;
+        }
         if(self.isColliding(slowDown)){
             self.moveSpeed = self.maxSpeed / 2;
         }
@@ -2761,6 +2749,18 @@ Player = function(param){
         self.damageArray.splice(0,1);
         self.damageArray.push(0);
     }
+    self.checkQuestRequirements = function(quest){
+        for(var i in questData){
+            if(i === quest){
+                for(var j in questData[i].requirements){
+                    if(self.questStats[questData[i].requirements[j]] === false){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
     self.updateQuest = function(){
         for(var i in Npc.list){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'bob' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
@@ -2815,7 +2815,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'john' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === false){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Weird Tower") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Weird Tower';
@@ -2827,7 +2827,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Missing Person"] === true){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Weird Tower") === true){
                     self.questStage = 3;
                     self.invincible = true;
                     self.questInfo.quest = 'Weird Tower';
@@ -2867,7 +2867,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fisherman' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === false){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Clear River") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear River';
@@ -2878,7 +2878,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Weird Tower"] === true){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Clear River") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear River';
@@ -2935,7 +2935,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'joe' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Clear Tower") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear Tower';
@@ -2947,7 +2947,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear River"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Clear Tower") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Clear Tower';
@@ -2985,7 +2985,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'hunter' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Lightning Lizard Boss") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Lightning Lizard Boss';
@@ -2997,7 +2997,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Clear Tower"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Lightning Lizard Boss") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Lightning Lizard Boss';
@@ -3033,13 +3033,18 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'woodenforge' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                self.inventory.craftItems = Npc.list[i].crafts;
+                socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
+                self.keyPress.second = false;
+            }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'anvil' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.questStats["Lightning Lizard Boss"] === true){
                     self.inventory.craftItems = Npc.list[i].crafts;
                     socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
                 }
                 else{
-                    socket.emit('notification','[!] Complete the Lightnign Lizard Boss Quest before using the Anvil.');
+                    socket.emit('notification','[!] Complete the Lightning Lizard Boss Quest before using the Anvil.');
                 }
                 self.keyPress.second = false;
             }
@@ -3061,6 +3066,11 @@ Player = function(param){
                 else{
                     socket.emit('notification','[!] Defeat Plantera to gain access to Nature\'s Blessing.');
                 }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fibb' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
@@ -3103,7 +3113,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Lost Rubies") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Lost Rubies';
@@ -3115,7 +3125,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Plantera"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Lost Rubies") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Lost Rubies';
@@ -3152,7 +3162,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'mia' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Broken Piano") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Broken Piano';
@@ -3164,7 +3174,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Broken Piano") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Broken Piano';
@@ -3201,7 +3211,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'petmaster' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Pet Training") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Pet Training';
@@ -3213,7 +3223,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Pet Training") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Pet Training';
@@ -3250,7 +3260,7 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'andrew' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Monster Search") === true){
                     self.questStage = 2;
                     self.invincible = true;
                     self.questInfo.quest = 'Monster Search';
@@ -3262,7 +3272,7 @@ Player = function(param){
                     });
                     self.currentResponse = 0;
                 }
-                else if(self.quest === false && self.questInfo.quest === false && self.questStats["Lost Rubies"] === false){
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Monster Search") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Monster Search';
@@ -3305,7 +3315,19 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'riley' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
-                if(self.quest === false && self.questInfo.quest === false){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Missing Candies") === true){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Missing Candies';
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'I lost my candies! Can you find them for me?',
+                        response1:'Sure, if I get a reward.',
+                        response2:'No, I am busy right now.',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Missing Candies") === false){
                     self.questStage = 1;
                     self.invincible = true;
                     self.questInfo.quest = 'Missing Candies';
@@ -3351,8 +3373,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Missing Person',
-                questDescription:'Find Mark who has been missing in the map The River. Test out some new quest mechanics.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -3474,6 +3495,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Missing Person'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             var woodObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
@@ -3493,8 +3516,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(5000 * self.stats.xp);
-            self.coins += Math.round(5000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Weird Tower'){
@@ -3553,8 +3574,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Weird Tower',
-                questDescription:'Investigate a weird house in the map The River. Defeat Monsters to save The Village.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -3679,12 +3699,11 @@ Player = function(param){
             }
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Weird Tower' && QuestInfo.list[i].info === 'collision'){
-                    self.questDependent[i] = new Collision2({
+                    self.questDependent[i] = new Collision({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
-                        width:64,
-                        height:64,
                         map:QuestInfo.list[i].map,
+                        type:1,
                     });
                     tiles.push({
                         x:QuestInfo.list[i].x - 32,
@@ -3741,8 +3760,9 @@ Player = function(param){
             }
             tiles = newTiles;
             for(var i in self.questDependent){
-                if(self.questDependent[i].type === 'Collision2'){
+                if(self.questDependent[i].type === 'Collision'){
                     self.questDependent[i].toRemove = true;
+                    Collision.list[self.questDependent[i].map][Math.round(self.questDependent[i].x / 64)][Math.round(self.questDependent[i].y / 64)] = 0;
                 }
             }
             self.currentResponse = 0;
@@ -3817,6 +3837,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 18 && self.quest === 'Weird Tower'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
@@ -3832,8 +3854,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(10000 * self.stats.xp);
-            self.coins += Math.round(10000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Clear River'){
@@ -3889,8 +3909,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Clear River',
-                questDescription:'Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class="UI-link-light" href="https://github.com/maitian352/Meadow-Guarder/issues">here</a>.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -3950,6 +3969,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Clear River'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             var woodObtained = Math.round(10 + Math.random() * 15);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
@@ -3969,8 +3990,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(15000 * self.stats.xp);
-            self.coins += Math.round(15000 * self.stats.xp);
         }
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.quest === 'Enchanter'){
@@ -4062,6 +4081,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant3,1);
+            self.inventory.refreshItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4155,8 +4175,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Clear Tower',
-                questDescription:'Defeat all the monsters in the weird tower in the map The River.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -4290,20 +4309,15 @@ Player = function(param){
                         }
                     }
                     self.questInfo.maxMonsters += 1;
-                    Sound({
-                        type:'homingFireBullet',
-                        map:self.map,
-                    });
                 }
             }
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'collision'){
-                    self.questDependent[i] = new Collision2({
+                    self.questDependent[i] = new Collision({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
-                        width:64,
-                        height:64,
                         map:QuestInfo.list[i].map,
+                        type:1,
                     });
                     tiles.push({
                         x:QuestInfo.list[i].x - 32,
@@ -4360,8 +4374,9 @@ Player = function(param){
             }
             tiles = newTiles;
             for(var i in self.questDependent){
-                if(self.questDependent[i].type === 'Collision2'){
+                if(self.questDependent[i].type === 'Collision'){
                     self.questDependent[i].toRemove = true;
+                    Collision.list[self.questDependent[i].map][Math.round(self.questDependent[i].x / 64)][Math.round(self.questDependent[i].y / 64)] = 0;
                 }
             }
             self.currentResponse = 0;
@@ -4387,6 +4402,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Clear Tower'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             var steelObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + steelObtained + ' steel.');
@@ -4406,8 +4423,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(25000 * self.stats.xp);
-            self.coins += Math.round(25000 * self.stats.xp);
         }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Clear Tower'){
             self.quest = false;
@@ -4443,8 +4458,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Lightning Lizard Boss',
-                questDescription:'Defeat the Lightning Lizard.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -4541,12 +4555,11 @@ Player = function(param){
             }
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'collision'){
-                    self.questDependent[i] = new Collision2({
+                    self.questDependent[i] = new Collision({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
-                        width:64,
-                        height:64,
                         map:QuestInfo.list[i].map,
+                        type:1,
                     });
                     tiles.push({
                         x:QuestInfo.list[i].x - 32,
@@ -4663,8 +4676,9 @@ Player = function(param){
             }
             tiles = newTiles;
             for(var i in self.questDependent){
-                if(self.questDependent[i].type === 'Collision2'){
+                if(self.questDependent[i].type === 'Collision'){
                     self.questDependent[i].toRemove = true;
+                    Collision.list[self.questDependent[i].map][Math.round(self.questDependent[i].x / 64)][Math.round(self.questDependent[i].y / 64)] = 0;
                 }
             }
             self.currentResponse = 0;
@@ -4680,6 +4694,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 15 && self.quest === 'Lightning Lizard Boss'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
@@ -4695,8 +4711,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(75000 * self.stats.xp);
-            self.coins += Math.round(75000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Blacksmith'){
@@ -4754,8 +4768,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Lost Rubies',
-                questDescription:'Find some lost rubies in the Town Cave.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -4831,6 +4844,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Lost Rubies'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             var rubiesObtained = Math.round(5 + Math.random() * 10);
             socket.emit('notification','You obtained ' + rubiesObtained + ' rubies.');
@@ -4850,8 +4865,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(125000 * self.stats.xp);
-            self.coins += Math.round(125000 * self.stats.xp);
         }
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Broken Piano'){
@@ -4872,8 +4885,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Broken Piano',
-                questDescription:'Find Piano Parts to fix Mia\'s piano.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -4995,6 +5007,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 15 && self.quest === 'Broken Piano'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             var goldObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + goldObtained + ' gold.');
@@ -5014,8 +5028,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(1250000 * self.stats.xp);
-            self.coins += Math.round(1250000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Pet Training'){
@@ -5845,8 +5857,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Pet Training',
-                questDescription:'Train your pet to become stronger.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -6189,6 +6200,8 @@ Player = function(param){
             }
         }
         if(self.currentResponse === 1 && self.questStage === 29 && self.quest === 'Pet Training'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
@@ -6204,8 +6217,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(250000 * self.stats.xp);
-            self.coins += Math.round(250000 * self.stats.xp);
         }
 
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Monster Search'){
@@ -6236,8 +6247,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Monster Search',
-                questDescription:'Search for a way to kill all the monsters.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -6648,7 +6658,7 @@ Player = function(param){
         }
         if(self.questStage === 34 && self.quest === 'Monster Search'){
             self.questStage += 1;
-            socket.emit('notification',"Wave ???: Whirlwind");
+            socket.emit('notification',"Wave ???: Whirlwind + Fire Spirit");
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
@@ -6659,7 +6669,7 @@ Player = function(param){
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         moveSpeed:monsterData['whirlwind'].moveSpeed,
-                        hp:monsterData['whirlwind'].hp * ENV.MonsterStrength / 3,
+                        hp:monsterData['whirlwind'].hp * ENV.MonsterStrength / 2,
                         monsterType:'whirlwind',
                         attackState:monsterData['whirlwind'].attackState,
                         width:monsterData['whirlwind'].width,
@@ -6668,6 +6678,43 @@ Player = function(param){
                         aggro:monsterData['whirlwind'].aggro,
                         boss:monsterData['whirlwind'].boss,
                         trackDistance:monsterData['whirlwind'].trackDistance,
+                        stats:monsterStats,
+                        onDeath:function(pt){
+                            pt.toRemove = true;
+                            if(pt.spawnId){
+                                Spawner.list[pt.spawnId].spawned = false;
+                            }
+                            for(var i in Projectile.list){
+                                if(Projectile.list[i].parent === pt.id){
+                                    Projectile.list[i].toRemove = true;
+                                }
+                            }
+                            self.questInfo.monstersKilled += 1;
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent[i].getInitPack());
+                        }
+                    }
+                    self.questInfo.maxMonsters += 1;
+                }
+                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner7'){
+                    var monsterStats = Object.create(monsterData['fireSpirit'].stats);
+                    self.questDependent[i] = new Monster({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        moveSpeed:monsterData['fireSpirit'].moveSpeed,
+                        hp:monsterData['fireSpirit'].hp * ENV.MonsterStrength / 2,
+                        monsterType:'fireSpirit',
+                        attackState:monsterData['fireSpirit'].attackState,
+                        width:monsterData['fireSpirit'].width,
+                        height:monsterData['fireSpirit'].height,
+                        xpGain:monsterData['fireSpirit'].xpGain,
+                        aggro:monsterData['fireSpirit'].aggro,
+                        boss:monsterData['fireSpirit'].boss,
+                        trackDistance:monsterData['fireSpirit'].trackDistance,
                         stats:monsterStats,
                         onDeath:function(pt){
                             pt.toRemove = true;
@@ -6732,6 +6779,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 39 && self.quest === 'Monster Search'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
@@ -6747,8 +6796,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(500000 * self.stats.xp);
-            self.coins += Math.round(500000 * self.stats.xp);
         }
         
         if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Missing Candies'){
@@ -6759,8 +6806,7 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('questInfo',{
-                questName:'Missing Candies',
-                questDescription:'Find Riley\'s candies.',
+                questName:self.questInfo.quest,
             });
             self.currentResponse = 0;
         }
@@ -6826,6 +6872,8 @@ Player = function(param){
             self.currentResponse = 0;
         }
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Missing Candies'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
             addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
@@ -6841,8 +6889,6 @@ Player = function(param){
                 state:'remove',
             });
             self.currentResponse = 0;
-            self.xp += Math.round(50000 * self.stats.xp);
-            self.coins += Math.round(50000 * self.stats.xp);
         }
     }
     self.updateStats = function(){
@@ -7163,10 +7209,6 @@ Player = function(param){
     self.doPassive = function(){
         if(self.passive === 'homingFire'){
             self.shootProjectile(self.id,'Player',self.direction,self.direction,'fireBullet',0,function(t){return 25},0,self.stats,'monsterHoming');
-            Sound({
-                type:'fireBullet',
-                map:self.map,
-            });
         }
         if(self.passive === 'lightningShards'){
             var closestMonster = undefined;
@@ -7282,86 +7324,50 @@ Player = function(param){
                         case "baseAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',30,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplewoodenbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplesteelbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simpledarksteelbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplegoldenbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplerubybowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedwoodenbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedsteelbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advanceddarksteelbowAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 6,self.direction - 6,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 6,self.direction + 6,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedgoldenbowAttack":
@@ -7369,10 +7375,6 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction - 10,self.direction - 10,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 10,self.direction + 10,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedrubybowAttack":
@@ -7380,86 +7382,50 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction - 10,self.direction - 10,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'stoneArrow',70,function(t){return 0},0,self.stats);
                                 self.shootProjectile(self.id,'Player',self.direction + 10,self.direction + 10,'stoneArrow',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplewoodenswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplewoodensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplesteelswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplesteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simpledarksteelswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simpledarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplegoldenswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplegoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'simplegoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplerubyswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'simplerubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'simplerubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedwoodenswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedwoodensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedsteelswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedsteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'advancedsteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advanceddarksteelswordAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advanceddarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'advanceddarksteelsword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedgoldenswordAttack":
@@ -7467,10 +7433,6 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 30,self.direction + 30,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 150,self.direction + 150,'advancedgoldensword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedrubyswordAttack":
@@ -7478,86 +7440,50 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 30,self.direction + 30,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction + 150,self.direction + 150,'advancedrubysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplewoodenstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplesteelstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simpledarksteelstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplegoldenstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "simplerubystaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedwoodenstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedsteelstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advanceddarksteelstaffAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedgoldenstaffAttack":
@@ -7565,10 +7491,6 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction - 120,self.direction - 120,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "advancedrubystaffAttack":
@@ -7576,10 +7498,6 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction - 120,self.direction - 120,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'earthBullet',70,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "lightningsaberAttack":
@@ -7588,19 +7506,11 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'lightningsaber',34,function(t){return 25},0,self.stats,'spinAroundPoint');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'lightningsaber',34,function(t){return 25},0,self.stats,'spinAroundPoint');
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'lightningsaber',34,function(t){return 25},0,self.stats,'spinAroundPoint');
-                                Sound({
-                                    type:'ninjaStar',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "lightningwandAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningSpit',70,function(t){return 0},0,self.stats);
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "bookoflightningAttack":
@@ -7609,10 +7519,6 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'lightningSpit',0,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 180,self.direction + 180,'lightningSpit',0,function(t){return 0},0,self.stats,'monsterHoming');
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'lightningSpit',0,function(t){return 0},0,self.stats,'monsterHoming');
-                                Sound({
-                                    type:'lightningSpit',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "bookofspiritsAttack":
@@ -7621,10 +7527,6 @@ Player = function(param){
                                     self.weaponState = 0;
                                 }
                                 self.shootProjectile(self.id,'Player',self.direction + self.weaponState * 60,self.direction + self.weaponState * 60,'soul',64,function(t){return 30},0,self.stats,'playerSoulWait');
-                                Sound({
-                                    type:'lightningSpit',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "ectocannonAttack":
@@ -7780,7 +7682,7 @@ Player = function(param){
                                     height:projectileHeight,
                                     spin:function(t){return 0},
                                     pierce:0,
-                                    projectilePattern:'monsterHoming',
+                                    projectilePattern:'monsterHomingSpin',
                                     stats:self.stats,
                                     onCollision:function(self,pt){
                                         if(self.pierce === 0){
@@ -7929,225 +7831,9 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'holytrident',32,function(t){return 0},3,self.stats,'holyTrident');
                             }
                             break;
-                        case "earthbook1Attack":
-                            if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthbook2Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                }
-                            break;
-                        case "earthbook3Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthbook4Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthbook5Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                for(var j = 0;j < 6;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'earthBullet',100,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthbook6Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',100,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook1Attack":
-                            if(isFireMap){
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 5,self.direction + j * 5,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook2Attack":
-                            if(isFireMap){
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook3Attack":
-                            if(isFireMap){
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook4Attack":
-                            if(isFireMap){
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -1;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook5Attack":
-                            if(isFireMap){
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 120,self.direction + j * 10 + 120,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 240,self.direction + j * 10 + 240,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook6Attack":
-                            if(isFireMap){
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10,self.direction + j * 10,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 90,self.direction + j * 10 + 90,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 180,self.direction + j * 10 + 180,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 10 + 270,self.direction + j * 10 + 270,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
                         case "bookoffrostAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'frostBullet',0,function(t){return 10},30,self.stats,'bounceOffCollisions');
-                            }
-                            break;
-                        case "waterbook2Attack":
-                            if(isFireMap){
-                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook3Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook4Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook5Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 120,self.direction + j * 120,'waterBullet',-20,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook6Attack":
-                            if(isFireMap){
-                                for(var j = 0;j < 4;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 90,self.direction + j * 90,'waterBullet',-20,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                         case "baseSecond":
@@ -8155,787 +7841,6 @@ Player = function(param){
                                 for(var j = 0;j < 5;j++){
                                     self.shootProjectile(self.id,'Player',j * 72,j * 72,'stoneArrow',30,function(t){return 0},0,self.stats);
                                 }
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "bowSecond1":
-                            if(isFireMap){
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'stoneArrow',30,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'stoneArrow',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "earthbook1Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                var projectileWidth = 0;
-                                var projectileHeight = 0;
-                                for(var i in projectileData){
-                                    if(i === 'earthTower'){
-                                        projectileWidth = projectileData[i].width;
-                                        projectileHeight = projectileData[i].height;
-                                    }
-                                }
-                                var projectile = Projectile({
-                                    id:self.id,
-                                    projectileType:'earthTower',
-                                    angle:0,
-                                    direction:0,
-                                    x:self.mouseX,
-                                    y:self.mouseY - 32,
-                                    map:self.map,
-                                    parentType:self.type,
-                                    mapWidth:self.mapWidth,
-                                    mapHeight:self.mapHeight,
-                                    width:projectileWidth,
-                                    height:projectileHeight,
-                                    spin:function(t){return 0},
-                                    pierce:0,
-                                    projectilePattern:'stationary',
-                                    stats:self.stats,
-                                    onCollision:function(self,pt){
-                                        
-                                    }
-                                });
-                                self.stats.speed = speed;
-                                var x = self.x;
-                                var y = self.y;
-                                self.x = self.mouseX;
-                                self.y = self.mouseY;
-                                var mouseX = self.mouseX;
-                                var mouseY = self.mouseY;
-                                for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 2;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
-                                    }
-                                    self.x = x;
-                                    self.y = y;
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                },250);
-                                self.x = x;
-                                self.y = y;
-                            }
-                            break;
-                        case "earthbook2Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                var projectileWidth = 0;
-                                var projectileHeight = 0;
-                                for(var i in projectileData){
-                                    if(i === 'earthTower'){
-                                        projectileWidth = projectileData[i].width;
-                                        projectileHeight = projectileData[i].height;
-                                    }
-                                }
-                                var projectile = Projectile({
-                                    id:self.id,
-                                    projectileType:'earthTower',
-                                    angle:0,
-                                    direction:0,
-                                    x:self.mouseX,
-                                    y:self.mouseY - 32,
-                                    map:self.map,
-                                    parentType:self.type,
-                                    mapWidth:self.mapWidth,
-                                    mapHeight:self.mapHeight,
-                                    width:projectileWidth,
-                                    height:projectileHeight,
-                                    spin:function(t){return 0},
-                                    pierce:0,
-                                    projectilePattern:'stationary',
-                                    stats:self.stats,
-                                    onCollision:function(self,pt){
-                                        
-                                    }
-                                });
-                                self.stats.speed = speed;
-                                var x = self.x;
-                                var y = self.y;
-                                self.x = self.mouseX;
-                                self.y = self.mouseY;
-                                var mouseX = self.mouseX;
-                                var mouseY = self.mouseY;
-                                for(var j = 0;j < 2;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 2;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
-                                    }
-                                    self.x = x;
-                                    self.y = y;
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                },250);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 2;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 180,self.direction + j * 180,'earthBullet',50,function(t){return 0},self.stats,'spinAroundPoint');
-                                    }
-                                    self.x = x;
-                                    self.y = y;
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                },500);
-                                self.x = x;
-                                self.y = y;
-                            }
-                            break;
-                        case "earthbook3Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                var projectileWidth = 0;
-                                var projectileHeight = 0;
-                                for(var i in projectileData){
-                                    if(i === 'earthTower'){
-                                        projectileWidth = projectileData[i].width;
-                                        projectileHeight = projectileData[i].height;
-                                    }
-                                }
-                                var projectile = Projectile({
-                                    id:self.id,
-                                    projectileType:'earthTower',
-                                    angle:0,
-                                    direction:0,
-                                    x:self.mouseX,
-                                    y:self.mouseY - 32,
-                                    map:self.map,
-                                    parentType:self.type,
-                                    mapWidth:self.mapWidth,
-                                    mapHeight:self.mapHeight,
-                                    width:projectileWidth,
-                                    height:projectileHeight,
-                                    spin:function(t){return 0},
-                                    pierce:0,
-                                    projectilePattern:'stationary',
-                                    stats:self.stats,
-                                    onCollision:function(self,pt){
-                                        
-                                    }
-                                });
-                                self.stats.speed = speed;
-                                var x = self.x;
-                                var y = self.y;
-                                self.x = self.mouseX;
-                                self.y = self.mouseY;
-                                var mouseX = self.mouseX;
-                                var mouseY = self.mouseY;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },250);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },500);
-                                self.x = x;
-                                self.y = y;
-                            }
-                            break;
-                        case "earthbook4Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                var range = self.stats.range;
-                                self.stats.range = 1.5;
-                                var projectileWidth = 0;
-                                var projectileHeight = 0;
-                                for(var i in projectileData){
-                                    if(i === 'earthTower'){
-                                        projectileWidth = projectileData[i].width;
-                                        projectileHeight = projectileData[i].height;
-                                    }
-                                }
-                                var projectile = Projectile({
-                                    id:self.id,
-                                    projectileType:'earthTower',
-                                    angle:0,
-                                    direction:0,
-                                    x:self.mouseX,
-                                    y:self.mouseY - 32,
-                                    map:self.map,
-                                    parentType:self.type,
-                                    mapWidth:self.mapWidth,
-                                    mapHeight:self.mapHeight,
-                                    width:projectileWidth,
-                                    height:projectileHeight,
-                                    spin:function(t){return 0},
-                                    pierce:0,
-                                    projectilePattern:'stationary',
-                                    stats:self.stats,
-                                    onCollision:function(self,pt){
-                                        
-                                    }
-                                });
-                                self.stats.speed = speed;
-                                var x = self.x;
-                                var y = self.y;
-                                self.x = self.mouseX;
-                                self.y = self.mouseY;
-                                var mouseX = self.mouseX;
-                                var mouseY = self.mouseY;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },250);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },500);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },750);
-                                self.x = x;
-                                self.y = y;
-                            }
-                            break;
-                        case "earthbook5Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                var range = self.stats.range;
-                                self.stats.range = 2;
-                                var projectileWidth = 0;
-                                var projectileHeight = 0;
-                                for(var i in projectileData){
-                                    if(i === 'earthTower'){
-                                        projectileWidth = projectileData[i].width;
-                                        projectileHeight = projectileData[i].height;
-                                    }
-                                }
-                                var projectile = Projectile({
-                                    id:self.id,
-                                    projectileType:'earthTower',
-                                    angle:0,
-                                    direction:0,
-                                    x:self.mouseX,
-                                    y:self.mouseY - 32,
-                                    map:self.map,
-                                    parentType:self.type,
-                                    mapWidth:self.mapWidth,
-                                    mapHeight:self.mapHeight,
-                                    width:projectileWidth,
-                                    height:projectileHeight,
-                                    spin:function(t){return 0},
-                                    pierce:0,
-                                    projectilePattern:'stationary',
-                                    stats:self.stats,
-                                    onCollision:function(self,pt){
-                                        
-                                    }
-                                });
-                                self.stats.speed = speed;
-                                var x = self.x;
-                                var y = self.y;
-                                self.x = self.mouseX;
-                                self.y = self.mouseY;
-                                var mouseX = self.mouseX;
-                                var mouseY = self.mouseY;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },250);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },500);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },750);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },1000);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },1250);
-                                self.x = x;
-                                self.y = y;
-                            }
-                            break;
-                        case "earthbook6Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                var range = self.stats.range;
-                                self.stats.range = 2.5;
-                                var projectileWidth = 0;
-                                var projectileHeight = 0;
-                                for(var i in projectileData){
-                                    if(i === 'earthTower'){
-                                        projectileWidth = projectileData[i].width;
-                                        projectileHeight = projectileData[i].height;
-                                    }
-                                }
-                                var projectile = Projectile({
-                                    id:self.id,
-                                    projectileType:'earthTower',
-                                    angle:0,
-                                    direction:0,
-                                    x:self.mouseX,
-                                    y:self.mouseY - 32,
-                                    map:self.map,
-                                    parentType:self.type,
-                                    mapWidth:self.mapWidth,
-                                    mapHeight:self.mapHeight,
-                                    width:projectileWidth,
-                                    height:projectileHeight,
-                                    spin:function(t){return 0},
-                                    pierce:0,
-                                    projectilePattern:'stationary',
-                                    stats:self.stats,
-                                    onCollision:function(self,pt){
-                                        
-                                    }
-                                });
-                                self.stats.speed = speed;
-                                self.stats.range = range;
-                                var x = self.x;
-                                var y = self.y;
-                                self.x = self.mouseX;
-                                self.y = self.mouseY;
-                                var mouseX = self.mouseX;
-                                var mouseY = self.mouseY;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                }
-                                Sound({
-                                    type:'earthBullet',
-                                    map:self.map,
-                                });
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },250);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },500);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },750);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },1000);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },1250);
-                                setTimeout(function(){
-                                    var x = self.x;
-                                    var y = self.y;
-                                    self.x = mouseX;
-                                    self.y = mouseY;
-                                    for(var j = 0;j < 10;j++){
-                                        self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'earthBullet',50,function(t){return 0},0,self.stats,'spinAroundPoint');
-                                    }
-                                    Sound({
-                                        type:'earthBullet',
-                                        map:self.map,
-                                    });
-                                    self.x = x;
-                                    self.y = y;
-                                },1500);
-                                self.x = x;
-                                self.y = y;
-                            }
-                            break;
-                        case "firebook1Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,function(t){return 25},0,self.stats,'stationary');
-                                }
-                                self.stats.speed = speed;
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook2Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},0,self.stats,'stationary');
-                                }
-                                self.stats.speed = speed;
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook3Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',128,function(t){return 25},0,self.stats,'stationary');
-                                }
-                                for(var j = 0;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',j * 72 + 36,j * 72 + 36,'fireBullet',64,function(t){return 25},0,self.stats,'stationary');
-                                }
-                                self.stats.speed = speed;
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook4Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},0,self.stats,'stationary');
-                                }
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},0,self.stats,'stationary');
-                                }
-                                self.stats.speed = speed;
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook5Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},0,self.stats);
-                                }
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},0,self.stats);
-                                }
-                                self.stats.speed = speed;
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "firebook6Second":
-                            if(isFireMap){
-                                var speed = self.stats.speed;
-                                self.stats.speed = 0;
-                                for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',128,function(t){return 25},0,self.stats);
-                                }
-                                for(var j = 0;j < 10;j++){
-                                    self.shootProjectile(self.id,'Player',j * 36,j * 36,'fireBullet',64,function(t){return 25},0,self.stats);
-                                }
-                                self.stats.speed = speed;
-                                for(var j = 0;j < 20;j++){
-                                    self.shootProjectile(self.id,'Player',j * 18,j * 18,'fireBullet',-20,function(t){return 0},0,self.stats);
-                                }
-                                Sound({
-                                    type:'fireBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook1Second":
-                            if(isFireMap){
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook2Second":
-                            if(isFireMap){
-                                for(var j = -2;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 72,self.direction + j * 72,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook3Second":
-                            if(isFireMap){
-                                for(var j = -3;j < 3;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 60,self.direction + j * 60,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook4Second":
-                            if(isFireMap){
-                                for(var j = -4;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-10,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook5Second":
-                            if(isFireMap){
-                                for(var j = -4;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 40,self.direction + j * 40,'waterBullet',-20,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
-                            }
-                            break;
-                        case "waterbook6Second":
-                            if(isFireMap){
-                                for(var j = -5;j < 5;j++){
-                                    self.shootProjectile(self.id,'Player',self.direction + j * 36,self.direction + j * 36,'waterBullet',-20,function(t){return 10},0,self.stats,'bounceOffCollisions');
-                                }
-                                Sound({
-                                    type:'waterBullet',
-                                    map:self.map,
-                                });
                             }
                             break;
                     }
@@ -9139,8 +8044,8 @@ Player = function(param){
             lastSelf.damageDone = self.damageDone;
         }
         for(var i in self.stats){
-            if(lastSelf.stats){
-                if(lastSelf.stats[i]){
+            if(lastSelf.stats !== undefined){
+                if(lastSelf.stats[i] !== undefined){
                     if(self.stats[i] !== lastSelf.stats[i]){
                         pack.stats = self.stats;
                         lastSelf.stats = Object.create(self.stats);
@@ -9154,6 +8059,55 @@ Player = function(param){
             else{
                 pack.stats = self.stats;
                 lastSelf.stats = Object.create(self.stats);
+            }
+        }
+        for(var i in self.debuffs){
+            if(lastSelf.debuffs !== undefined){
+                if(lastSelf.debuffs[i] !== undefined){
+                    if(self.debuffs[i].id !== lastSelf.debuffs[i].id){
+                        pack.debuffs = self.debuffs;
+                        lastSelf.debuffs = JSON.parse(JSON.stringify(self.debuffs));
+                    }
+                    else if(self.debuffs[i].time !== lastSelf.debuffs[i].time){
+                        pack.debuffs = self.debuffs;
+                        lastSelf.debuffs = JSON.parse(JSON.stringify(self.debuffs));
+                    }
+                }
+                else{
+                    pack.debuffs = self.debuffs;
+                    lastSelf.debuffs = JSON.parse(JSON.stringify(self.debuffs));
+                }
+            }
+            else{
+                pack.debuffs = self.debuffs;
+                lastSelf.debuffs = JSON.parse(JSON.stringify(self.debuffs));
+            }
+        }
+        for(var i in lastSelf.debuffs){
+            if(self.debuffs[i] !== undefined){
+
+            }
+            else{
+                pack.debuffs = self.debuffs;
+                lastSelf.debuffs = JSON.parse(JSON.stringify(self.debuffs));
+            }
+        }
+        for(var i in self.questStats){
+            if(lastSelf.questStats !== undefined){
+                if(lastSelf.questStats[i] !== undefined){
+                    if(self.questStats[i] !== lastSelf.questStats[i]){
+                        pack.questStats = self.questStats;
+                        lastSelf.questStats = Object.create(self.questStats);
+                    }
+                }
+                else{
+                    pack.questStats = self.questStats;
+                    lastSelf.questStats = Object.create(self.questStats);
+                }
+            }
+            else{
+                pack.questStats = self.questStats;
+                lastSelf.questStats = Object.create(self.questStats);
             }
         }
         return pack;
@@ -9191,6 +8145,8 @@ Player = function(param){
         pack.devCoins = self.devCoins;
         pack.damageDone = self.damageDone;
         pack.stats = self.stats;
+        pack.debuffs = self.debuffs;
+        pack.questStats = self.questStats;
         pack.type = self.type;
         return pack;
     }
@@ -9445,7 +8401,59 @@ Player.onConnect = function(socket,username){
         });
 
         socket.on('startQuest',function(data){
-            player.questInfo.started = true;
+            if(player.quest === false && player.questInfo.quest === false){
+                for(var i in Player.list){
+                    if(Player.list[i].quest === data){
+                        if(questData[data].multiplePlayers === false){
+                            socket.emit('notification','[!] A player is already doing the quest ' + player.quest + '.');
+                            return;
+                        }
+                    }
+                }
+                if(player.checkQuestRequirements(data) === true){
+                    player.questInfo.quest = data;
+                    player.questStage = questData[data].startStage;
+                    player.questInfo.started = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not meet the requirements to do this quest.');
+                }
+            }
+            else if(player.questInfo.quest === data){
+                for(var i in Player.list){
+                    if(Player.list[i].quest === data){
+                        if(questData[data].multiplePlayers === false){
+                            socket.emit('notification','[!] A player is already doing the quest ' + player.quest + '.');
+                            return;
+                        }
+                    }
+                }
+                player.questInfo.started = true;
+            }
+            else if(player.quest !== false){
+                socket.emit('notification','[!] Finish the quest ' + player.quest + ' before starting a new quest.');
+            }
+            else if(player.questInfo.quest !== false && player.invincible){
+                socket.emit('notification','[!] Finish the quest ' + player.questInfo.quest + ' before starting a new quest.');
+            }
+            else{
+                for(var i in Player.list){
+                    if(Player.list[i].quest === data){
+                        if(questData[data].multiplePlayers === false){
+                            socket.emit('notification','[!] A player is already doing the quest ' + player.quest + '.');
+                            return;
+                        }
+                    }
+                }
+                if(player.checkQuestRequirements(data) === true){
+                    player.questInfo.quest = data;
+                    player.questStage = questData[data].startStage;
+                    player.questInfo.started = true;
+                }
+                else{
+                    socket.emit('notification','[!] You do not meet the requirements to do this quest.');
+                }
+            }
         });
         socket.on('waypoint',function(data){
             if(player.quest === 'Lightning Lizard Boss' || player.quest === 'Weird Tower' || player.quest === 'Clear Tower'){
@@ -10387,21 +9395,24 @@ Monster = function(param){
                 break;
             case "attackPhase1FireSpirit":
                 self.animation += 0.5;
-                if(self.animation >= 2){
+                if(self.animation >= 3){
                     self.animation = 0;
                 }
                 break;
             case "attackPhase2FireSpirit":
-                self.animation += 1;
-                if(self.animation === 2){
+                self.animation += 0.5;
+                if(self.animation >= 3){
                     self.animation = 0;
                 }
                 break;
         }
     }
     self.updateAttack = function(){
-        self.doMonsterAnimation();
         if(self.attackPhase === 'passive'){
+            var attackState = self.attackState;
+            self.attackState = 'attack' + self.attackState;
+            self.doMonsterAnimation();
+            self.attackState = attackState;
             var maxAggro = -10;
             for(var i in Player.list){
                 if(Player.list[i].map === self.map && self.getSquareDistance(Player.list[i]) < 64 * self.aggro * Player.list[i].stats.aggro && Player.list[i].isDead === false && Player.list[i].invincible === false && Player.list[i].mapChange > 10 && Player.list[i].stats.aggro > maxAggro){
@@ -10443,6 +9454,7 @@ Monster = function(param){
             }
         }
         if(self.attackPhase === 'attack'){
+            self.doMonsterAnimation();
             if(self.target){
                 self.direction = Math.atan2(self.target.y - self.y,self.target.x - self.x) / Math.PI * 180;
             }
@@ -10571,17 +9583,9 @@ Monster = function(param){
                 case "attackBird":
                     if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,function(t){return 25},0,self.stats);
-                        Sound({
-                            type:'ninjaStar',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'ninjaStar',0,function(t){return 25},0,self.stats);
-                        Sound({
-                            type:'ninjaStar',
-                            map:self.map,
-                        });
                     }
                     self.reload += 1;
                     if(self.hp < 0.5 * self.hpMax){
@@ -10632,12 +9636,6 @@ Monster = function(param){
                         for(var i = 0;i < 4;i++){
                             self.shootProjectile(self.id,'Monster',self.animation * 45 + i * 90,self.animation * 45 + i * 90,'ballBullet',-20,function(t){return 25},0,self.stats);
                         }
-                        if(self.reload % 60 === 0 && self.reload > 49 && self.target.invincible === false){
-                            Sound({
-                                type:'ballBullet',
-                                map:self.map,
-                            });
-                        }
                     }
                     else{
                         self.maxSpeed = self.oldMoveSpeed;
@@ -10654,10 +9652,6 @@ Monster = function(param){
                                 self.oldStats.defense += 2000000;
                                 self.oldStats.attack += 2000000;
                                 self.attackState = 'explodeCherryBomb';
-                                Sound({
-                                    type:'cherryBomb',
-                                    map:self.map,
-                                });
                                 self.target = undefined;
                                 self.trackingEntity = undefined;
                                 self.randomWalk(false,false,self.x,self.y);
@@ -10697,45 +9691,25 @@ Monster = function(param){
                     if(self.reload % 20 === 0 && self.reload > 10 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction - 5,self.direction - 5,'fireBullet',0,function(t){return 0},0,self.stats);
                         self.shootProjectile(self.id,'Monster',self.direction + 5,self.direction + 5,'fireBullet',0,function(t){return 0},0,self.stats);
-                        Sound({
-                            type:'fireBullet',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 100 < 5 && self.reload > 10 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction - 60,self.direction - 60,'fireBullet',32,function(t){return 25},0,self.stats,'playerHoming');
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'fireBullet',32,function(t){return 25},0,self.stats,'playerHoming');
                         self.shootProjectile(self.id,'Monster',self.direction + 60,self.direction + 60,'fireBullet',32,function(t){return 25},0,self.stats,'playerHoming');
-                        Sound({
-                            type:'homingFireBullet',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 150 < 5 && self.reload > 10 && self.target.invincible === false){
                         for(var i = 0;i < 6;i++){
                             self.shootProjectile(self.id,'Monster',self.direction + i * 60,self.direction + i * 60,'fireBullet',32,function(t){return 25},0,self.stats,'playerHoming');
                         }
-                        Sound({
-                            type:'homingFireBullet',
-                            map:self.map,
-                        });
                     }
                     self.reload += 1;
                     break;
                 case "attackLizard":
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},0,self.stats);
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lizardSpit',0,function(t){return 0},0,self.stats,'playerHoming');
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     self.reload += 1;
                     if(self.hp < 0.3 * self.hpMax && ENV.Difficulty !== 'Expert'){
@@ -10778,17 +9752,9 @@ Monster = function(param){
                     self.trackEntity(self.target,0);
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},0,self.stats);
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},0,self.stats,'playerHoming');
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     if((self.reload % 50) % 5 === 0 && self.reload % 100 < 20 && self.reload > 50 && self.target.invincible === false){
                         for(var i = 0;i < 4;i++){
@@ -10834,10 +9800,6 @@ Monster = function(param){
                                 }
                             });
                         }
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     self.reload += 1;
                     if(self.map === 'The Forest'){
@@ -10856,17 +9818,9 @@ Monster = function(param){
                     self.trackEntity(self.target,0);
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},0,self.stats);
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 10 === 0 && self.reload > 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'lightningSpit',0,function(t){return 0},0,self.stats,'playerHoming');
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 3 === 0 && self.reload > 50 && self.target.invincible === false && ENV.Difficulty !== 'Expert'){
                         for(var i = 0;i < 4;i++){
@@ -10912,10 +9866,6 @@ Monster = function(param){
                                 }
                             });
                         }
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     if(self.reload % 3 === 0 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                         for(var i = 0;i < 4;i++){
@@ -10961,10 +9911,6 @@ Monster = function(param){
                                 }
                             });
                         }
-                        Sound({
-                            type:'lizardSpit',
-                            map:self.map,
-                        });
                     }
                     self.reload += 1;
                     break;
@@ -11066,6 +10012,8 @@ Monster = function(param){
                     self.direction = 0;
                     self.spdX = 0;
                     self.spdY = 0;
+                    self.followingEntity = undefined;
+                    self.trackingEntity = undefined;
                     if(self.stage2){
                         self.attackState = 'attackPhase2Plantera';
                         self.followEntity(self.target);
@@ -11159,11 +10107,7 @@ Monster = function(param){
                                 self.oldStats.defense += 2000000;
                                 self.oldStats.attack += 2000000;
                                 self.attackState = 'explodeDeathBomb';
-                                self.monsterType = 'deathBomb'
-                                Sound({
-                                    type:'cherryBomb',
-                                    map:self.map,
-                                });
+                                self.monsterType = 'deathBomb';
                                 self.target = undefined;
                                 self.trackingEntity = undefined;
                                 self.randomWalk(false,false,self.x,self.y);
@@ -11186,7 +10130,6 @@ Monster = function(param){
                     self.reload += 1;
                     break;
                 case "attackLightningRammer":
-                    self.trackEntity(self.target,0);
                     if(self.reload % 40 < 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                         self.stats.defense += 50;
                         self.maxSpeed = self.oldMoveSpeed + 50;
@@ -11213,10 +10156,6 @@ Monster = function(param){
                                 self.oldStats.defense += 2000000;
                                 self.oldStats.attack += 2000000;
                                 self.attackState = 'explodeDeathBomb';
-                                Sound({
-                                    type:'cherryBomb',
-                                    map:self.map,
-                                });
                                 self.target = undefined;
                                 self.trackingEntity = undefined;
                                 self.randomWalk(false,false,self.x,self.y);
@@ -12753,23 +11692,12 @@ Projectile = function(param){
         self.canCollide = false;
     }
     if(param.projectilePattern === 'boomerang'){
-        self.canCollide = false;
+        //self.canCollide = false;
     }
+    self.doUpdate = true;
     var lastSelf = {};
 	var super_update = self.update;
 	self.update = function(){
-        self.lastX = self.x;
-        self.lastY = self.y;
-        if(self.timer !== 0){
-            self.spdX = self.spdX / 2;
-            self.spdY = self.spdY / 2;
-            for(var i = 0;i < 2;i++){
-                super_update();
-                self.updateCollisions();
-            }
-            self.spdX = self.spdX * 2;
-            self.spdY = self.spdY * 2;
-        }
         self.timer += 1;
         if(param.stats.range !== undefined){
             if(self.timer > 40 * param.stats.range){
@@ -12780,6 +11708,30 @@ Projectile = function(param){
             if(self.timer > 40){
                 self.toRemove = true;
             }
+        }
+        if(!self.doUpdate){
+            return;
+        }
+        self.lastX = self.x;
+        self.lastY = self.y;
+        if(self.timer !== 1){
+            var largestSpeedRatio = 1;
+            if(largestSpeedRatio < Math.abs(self.spdX) / self.width){
+                largestSpeedRatio = Math.ceil(Math.abs(self.spdX) / self.width);
+            }
+            if(largestSpeedRatio < Math.abs(self.spdY) / self.height){
+                largestSpeedRatio = Math.ceil(Math.abs(self.spdY) / self.height);
+            }
+            self.spdX = self.spdX / largestSpeedRatio;
+            self.spdY = self.spdY / largestSpeedRatio;
+            for(var i = 0;i < largestSpeedRatio;i++){
+                self.lastX = self.x;
+                self.lastY = self.y;
+                super_update();
+                self.updateCollisions();
+            }
+            self.spdX = self.spdX * largestSpeedRatio;
+            self.spdY = self.spdY * largestSpeedRatio;
         }
         if(self.x < self.width / 2 && self.canCollide){
             self.x = self.width / 2;
@@ -12948,6 +11900,33 @@ Projectile = function(param){
             }
             else{
                 self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
+        }
+        else if(param.projectilePattern === 'monsterHomingSpin'){
+            var closestMonster = undefined;
+            for(var i in Monster.list){
+                if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
+                    closestMonster = Monster.list[i];
+                }
+                else if(closestMonster !== undefined){
+                    if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                        closestMonster = Monster.list[i];
+                    }
+                }
+            }
+            if(closestMonster){
+                if(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180 - self.direction > 0){
+                    self.direction += Math.min(2,Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180 - self.direction);
+                }
+                else{
+                    self.direction -= Math.min(2,self.direction - Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180);
+                }
+                self.spdX = Math.cos(self.direction / 180 * Math.PI) * 25 * self.stats.speed;
+                self.spdY = Math.sin(self.direction / 180 * Math.PI) * 25 * self.stats.speed;
+            }
+            self.timer -= 0.5;
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
             }
         }
         else if(param.projectilePattern === 'skull'){
@@ -13535,660 +12514,224 @@ Projectile = function(param){
         if(self.canCollide === false){
             return;
         }
-        var firstTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
-        var secondTile = "" + self.map + ":" + Math.round((self.x - 64) / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
-        var thirdTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round((self.y - 64) / 64) * 64 + ":";
-        var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
-        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                var collision = {
-                    map:self.map,
-                    x:Math.round((self.x - 64) / 64) * 64,
-                    y:Math.round((self.y - 64) / 64) * 64,
-                };
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 1){
-                    collision.width = 64;
-                    collision.height = 64;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 2){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 3){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 4){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 16;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 5){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 48;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 6){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 7){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 8){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 9){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)] === 10){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 16;
-                }
-                if(self.isColliding(collision)){
-                    if(param.projectilePattern === 'bounceOffCollisions'){
-                        var x = self.x;
-                        self.x = self.lastX;
-                        if(self.isColliding(collision)){
-                            self.x = x;
-                            self.y = self.lastY;
-                            if(self.isColliding(collision)){
-                                self.x = self.lastX;
-                                self.y = self.lastY;
-                                self.spdX = -self.spdX;
-                                self.x += self.spdX;
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                            else{
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                        }
-                        else{
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                        }
-                    }
-                    else{
-                        self.toRemove = true;
-                        self.updateNextFrame = false;
-                    }
-                }
+        if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                self.doProjectileCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
             }
         }
-        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                var collision = {
-                    map:self.map,
-                    x:Math.round((self.x - 64) / 64) * 64,
-                    y:Math.round((self.y) / 64) * 64,
-                };
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 1){
-                    collision.width = 64;
-                    collision.height = 64;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 2){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 3){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 4){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 16;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 5){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 48;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 6){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 7){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 8){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 9){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)] === 10){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 16;
-                }
-                if(self.isColliding(collision)){
-                    if(param.projectilePattern === 'bounceOffCollisions'){
-                        var x = self.x;
-                        self.x = self.lastX;
-                        if(self.isColliding(collision)){
-                            self.x = x;
-                            self.y = self.lastY;
-                            if(self.isColliding(collision)){
-                                self.x = self.lastX;
-                                self.y = self.lastY;
-                                self.spdX = -self.spdX;
-                                self.x += self.spdX;
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                            else{
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                        }
-                        else{
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                        }
-                    }
-                    else{
-                        self.toRemove = true;
-                        self.updateNextFrame = false;
-                    }
-                }
+        if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                self.doProjectileCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
             }
         }
         if(Collision.list[self.map][Math.round((self.x) / 64)]){
             if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                var collision = {
-                    map:self.map,
-                    x:Math.round((self.x) / 64) * 64,
-                    y:Math.round((self.y - 64) / 64) * 64,
-                };
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 1){
-                    collision.width = 64;
-                    collision.height = 64;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 2){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 3){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 4){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 16;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 5){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 48;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 6){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 7){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 8){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 9){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)] === 10){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 16;
-                }
-                if(self.isColliding(collision)){
-                    if(param.projectilePattern === 'bounceOffCollisions'){
-                        var x = self.x;
-                        self.x = self.lastX;
-                        if(self.isColliding(collision)){
-                            self.x = x;
-                            self.y = self.lastY;
-                            if(self.isColliding(collision)){
-                                self.x = self.lastX;
-                                self.y = self.lastY;
-                                self.spdX = -self.spdX;
-                                self.x += self.spdX;
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                            else{
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                        }
-                        else{
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                        }
-                    }
-                    else{
-                        self.toRemove = true;
-                        self.updateNextFrame = false;
-                    }
-                }
+                self.doProjectileCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
             }
         }
         if(Collision.list[self.map][Math.round((self.x) / 64)]){
             if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                var collision = {
-                    map:self.map,
-                    x:Math.round((self.x) / 64) * 64,
-                    y:Math.round((self.y) / 64) * 64,
-                };
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 1){
-                    collision.width = 64;
-                    collision.height = 64;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 2){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 3){
-                    collision.width = 64;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 4){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 16;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 5){
-                    collision.width = 32;
-                    collision.height = 64;
-                    collision.x += 48;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 6){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 32;
-                    collision.y += 32;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 7){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 8){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 48;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 9){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 48;
-                    collision.y += 16;
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)] === 10){
-                    collision.width = 32;
-                    collision.height = 32;
-                    collision.x += 16;
-                    collision.y += 16;
-                }
-                if(self.isColliding(collision)){
-                    if(param.projectilePattern === 'bounceOffCollisions'){
-                        var x = self.x;
+                self.doProjectileCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+            }
+        }
+    }
+    self.doProjectileCollisionOld = function(map,x,y){
+        var projectileCollision = {
+            map:map,
+            x:x,
+            y:y,
+        };
+        if(ProjectileCollision.list[map][x][y] === 1){
+            projectileCollision.width = 64;
+            projectileCollision.height = 64;
+            projectileCollision.x += 32;
+            projectileCollision.y += 32;
+        }
+        if(ProjectileCollision.list[map][x][y] === 2){
+            projectileCollision.width = 64;
+            projectileCollision.height = 32;
+            projectileCollision.x += 32;
+            projectileCollision.y += 48;
+        }
+        if(ProjectileCollision.list[map][x][y] === 3){
+            projectileCollision.width = 64;
+            projectileCollision.height = 32;
+            projectileCollision.x += 32;
+            projectileCollision.y += 16;
+        }
+        if(ProjectileCollision.list[map][x][y] === 4){
+            projectileCollision.width = 32;
+            projectileCollision.height = 64;
+            projectileCollision.x += 16;
+            projectileCollision.y += 32;
+        }
+        if(ProjectileCollision.list[map][x][y] === 5){
+            projectileCollision.width = 32;
+            projectileCollision.height = 64;
+            projectileCollision.x += 48;
+            projectileCollision.y += 32;
+        }
+        if(ProjectileCollision.list[map][x][y] === 6){
+            projectileCollision.width = 32;
+            projectileCollision.height = 32;
+            projectileCollision.x += 32;
+            projectileCollision.y += 32;
+        }
+        if(ProjectileCollision.list[map][x][y] === 7){
+            projectileCollision.width = 32;
+            projectileCollision.height = 32;
+            projectileCollision.x += 16;
+            projectileCollision.y += 48;
+        }
+        if(ProjectileCollision.list[map][x][y] === 8){
+            projectileCollision.width = 32;
+            projectileCollision.height = 32;
+            projectileCollision.x += 48;
+            projectileCollision.y += 48;
+        }
+        if(ProjectileCollision.list[map][x][y] === 9){
+            projectileCollision.width = 32;
+            projectileCollision.height = 32;
+            projectileCollision.x += 48;
+            projectileCollision.y += 16;
+        }
+        if(ProjectileCollision.list[map][x][y] === 10){
+            projectileCollision.width = 32;
+            projectileCollision.height = 32;
+            projectileCollision.x += 16;
+            projectileCollision.y += 16;
+        }
+        if(self.isColliding(projectileCollision)){
+            if(param.projectilePattern === 'bounceOffCollisions'){
+                var x = self.x;
+                self.x = self.lastX;
+                if(self.isColliding(projectileCollision)){
+                    self.x = x;
+                    self.y = self.lastY;
+                    if(self.isColliding(projectileCollision)){
                         self.x = self.lastX;
-                        if(self.isColliding(collision)){
-                            self.x = x;
-                            self.y = self.lastY;
-                            if(self.isColliding(collision)){
-                                self.x = self.lastX;
-                                self.y = self.lastY;
-                                self.spdX = -self.spdX;
-                                self.x += self.spdX;
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                            else{
-                                self.spdY = -self.spdY;
-                                self.y += self.spdY;
-                            }
-                        }
-                        else{
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                        }
-                    }
-                    else{
-                        self.toRemove = true;
-                        self.updateNextFrame = false;
-                    }
-                }
-            }
-        }
-        if(Collision2.list[firstTile]){
-            if(self.isColliding(Collision2.list[firstTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision2.list[firstTile])){
-                        self.x = x;
                         self.y = self.lastY;
-                        if(self.isColliding(Collision2.list[firstTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
                         self.spdX = -self.spdX;
                         self.x += self.spdX;
+                        self.spdY = -self.spdY;
+                        self.y += self.spdY;
+                    }
+                    else{
+                        self.spdY = -self.spdY;
+                        self.y += self.spdY;
                     }
                 }
                 else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
+                    self.spdX = -self.spdX;
+                    self.x += self.spdX;
                 }
             }
+            else{
+                self.toRemove = true;
+                self.updateNextFrame = false;
+            }
         }
-        if(Collision2.list[secondTile]){
-            if(self.isColliding(Collision2.list[secondTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision2.list[secondTile])){
-                        self.x = x;
+    }
+    self.doProjectileCollision = function(map,x,y){
+        var collision = {
+            map:map,
+            x:x * 64,
+            y:y * 64,
+        };
+        if(Collision.list[map][x][y] === 1){
+            collision.width = 64;
+            collision.height = 64;
+            collision.x += 32;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 2){
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 3){
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 4){
+            collision.width = 32;
+            collision.height = 64;
+            collision.x += 16;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 5){
+            collision.width = 32;
+            collision.height = 64;
+            collision.x += 48;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 6){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 32;
+        }
+        if(Collision.list[map][x][y] === 7){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 16;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 8){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 48;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 9){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 48;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 10){
+            collision.width = 32;
+            collision.height = 32;
+            collision.x += 16;
+            collision.y += 16;
+        }
+        if(self.isColliding(collision)){
+            if(param.projectilePattern === 'bounceOffCollisions'){
+                var x = self.x;
+                self.x = self.lastX;
+                if(self.isColliding(collision)){
+                    self.x = x;
+                    self.y = self.lastY;
+                    if(self.isColliding(collision)){
+                        self.x = self.lastX;
                         self.y = self.lastY;
-                        if(self.isColliding(Collision2.list[secondTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
                         self.spdX = -self.spdX;
                         self.x += self.spdX;
+                        self.spdY = -self.spdY;
+                        self.y += self.spdY;
+                    }
+                    else{
+                        self.spdY = -self.spdY;
+                        self.y += self.spdY;
                     }
                 }
                 else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
+                    self.spdX = -self.spdX;
+                    self.x += self.spdX;
                 }
             }
-        }
-        if(Collision2.list[thirdTile]){
-            if(self.isColliding(Collision2.list[thirdTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision2.list[thirdTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision2.list[thirdTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
-                    }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
-                }
+            else if(self.projectileType === 'bullet'){
+                self.toRemove = true;
             }
-        }
-        if(Collision2.list[fourthTile]){
-            if(self.isColliding(Collision2.list[fourthTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision2.list[fourthTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision2.list[fourthTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
-                    }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
-                }
-            }
-        }
-        if(Collision3.list[firstTile]){
-            if(self.isColliding(Collision3.list[firstTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision3.list[firstTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision3.list[firstTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
-                    }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
-                }
-            }
-        }
-        if(Collision3.list[secondTile]){
-            if(self.isColliding(Collision3.list[secondTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision3.list[secondTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision3.list[secondTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
-                    }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
-                }
-            }
-        }
-        if(Collision3.list[thirdTile]){
-            if(self.isColliding(Collision3.list[thirdTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision3.list[thirdTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision3.list[thirdTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
-                    }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
-                }
-            }
-        }
-        if(Collision3.list[fourthTile]){
-            if(self.isColliding(Collision3.list[fourthTile])){
-                if(param.projectilePattern === 'bounceOffCollisions'){
-                    var x = self.x;
-                    self.x = self.lastX;
-                    if(self.isColliding(Collision3.list[fourthTile])){
-                        self.x = x;
-                        self.y = self.lastY;
-                        if(self.isColliding(Collision3.list[fourthTile])){
-                            self.x = self.lastX;
-                            self.y = self.lastY;
-                            self.spdX = -self.spdX;
-                            self.x += self.spdX;
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                        else{
-                            self.spdY = -self.spdY;
-                            self.y += self.spdY;
-                        }
-                    }
-                    else{
-                        self.spdX = -self.spdX;
-                        self.x += self.spdX;
-                    }
-                }
-                else{
-                    self.toRemove = true;
-                    self.updateNextFrame = false;
-                }
+            else{
+                self.x = self.lastX;
+                self.y = self.lastY;
+                self.spdX = 0;
+                self.spdY = 0;
+                self.doUpdate = false;
             }
         }
     }
@@ -14281,20 +12824,6 @@ Projectile = function(param){
 }
 Projectile.list = {};
 
-Sound = function(param){
-    var self = {};
-    self.id = Math.random();
-    self.map = param.map;
-    self.type = param.type;
-    self.getUpdatePack = function(){
-        return {
-            type:param.type,
-        }
-    }
-    Sound.list[self.id] = self;
-}
-Sound.list = {};
-
 var renderLayer = function(layer,data,loadedMap){
     if(layer.type !== "tilelayer" || layer.visible === true){
         return;
@@ -14326,6 +12855,38 @@ var renderLayer = function(layer,data,loadedMap){
                 Collision.list[loadedMap] = [];
                 Collision.list[loadedMap][x / size] = [];
                 Collision.list[loadedMap][x / size][y / size] = 0;
+            }
+            if(SlowDown.list[loadedMap]){
+                if(SlowDown.list[loadedMap][x / size]){
+                    if(SlowDown.list[loadedMap][x / size][y / size] === undefined){
+                        SlowDown.list[loadedMap][x / size][y / size] = 0;
+                    }
+                }
+                else{
+                    SlowDown.list[loadedMap][x / size] = [];
+                    SlowDown.list[loadedMap][x / size][y / size] = 0;
+                }
+            }
+            else{
+                SlowDown.list[loadedMap] = [];
+                SlowDown.list[loadedMap][x / size] = [];
+                SlowDown.list[loadedMap][x / size][y / size] = 0;
+            }
+            if(ProjectileCollision.list[loadedMap]){
+                if(ProjectileCollision.list[loadedMap][x / size]){
+                    if(ProjectileCollision.list[loadedMap][x / size][y / size] === undefined){
+                        ProjectileCollision.list[loadedMap][x / size][y / size] = 0;
+                    }
+                }
+                else{
+                    ProjectileCollision.list[loadedMap][x / size] = [];
+                    ProjectileCollision.list[loadedMap][x / size][y / size] = 0;
+                }
+            }
+            else{
+                ProjectileCollision.list[loadedMap] = [];
+                ProjectileCollision.list[loadedMap][x / size] = [];
+                ProjectileCollision.list[loadedMap][x / size][y / size] = 0;
             }
             if(tile_idx === 2121){
                 var collision = new Collision({
@@ -14368,48 +12929,43 @@ var renderLayer = function(layer,data,loadedMap){
                 });
             }
             if(tile_idx === 2126){
-                var collision2 = new Collision2({
-                    x:x + size / 2,
-                    y:y + size / 2,
-                    width:size,
-                    height:size,
+                var projectileCollision = new ProjectileCollision({
+                    x:x,
+                    y:y,
                     map:map,
+                    type:1,
                 });
             }
             if(tile_idx === 2127){
-                var collision2 = new Collision2({
-                    x:x + size / 2,
-                    y:y + 3 * size / 4,
-                    width:size,
-                    height:size / 2,
+                var projectileCollision = new ProjectileCollision({
+                    x:x,
+                    y:y,
                     map:map,
+                    type:2,
                 });
             }
             if(tile_idx === 2128){
-                var collision2 = new Collision2({
-                    x:x + size / 2,
-                    y:y + size / 4,
-                    width:size,
-                    height:size / 2,
+                var projectileCollision = new ProjectileCollision({
+                    x:x,
+                    y:y,
                     map:map,
+                    type:3,
                 });
             }
             if(tile_idx === 2129){
-                var collision2 = new Collision2({
-                    x:x + size / 4,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size,
+                var projectileCollision = new ProjectileCollision({
+                    x:x,
+                    y:y,
                     map:map,
+                    type:4,
                 });
             }
             if(tile_idx === 2130){
-                var collision2 = new Collision2({
-                    x:x + 3 * size / 4,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size,
+                var projectileCollision = new ProjectileCollision({
+                    x:x,
+                    y:y,
                     map:map,
+                    type:5,
                 });
             }
             if(tile_idx === 2207){
@@ -14450,51 +13006,6 @@ var renderLayer = function(layer,data,loadedMap){
                     y:y,
                     map:map,
                     type:10,
-                });
-            }
-            if(tile_idx === 2212){
-                var collision2 = new Collision2({
-                    x:x + size / 2,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size / 2,
-                    map:map,
-                });
-            }
-            if(tile_idx === 2213){
-                var collision2 = new Collision2({
-                    x:x + size / 4,
-                    y:y + 3 * size / 4,
-                    width:size / 2,
-                    height:size / 2,
-                    map:map,
-                });
-            }
-            if(tile_idx === 2214){
-                var collision2 = new Collision2({
-                    x:x + 3 * size / 4,
-                    y:y + 3 * size / 4,
-                    width:size / 2,
-                    height:size / 2,
-                    map:map,
-                });
-            }
-            if(tile_idx === 2215){
-                var collision2 = new Collision2({
-                    x:x + 3 * size / 4,
-                    y:y + size / 4,
-                    width:size / 2,
-                    height:size / 2,
-                    map:map,
-                });
-            }
-            if(tile_idx === 2216){
-                var collision2 = new Collision2({
-                    x:x + size / 4,
-                    y:y + size / 4,
-                    width:size / 2,
-                    height:size / 2,
-                    map:map,
                 });
             }
             if(tile_idx === 1949){
@@ -14575,47 +13086,42 @@ var renderLayer = function(layer,data,loadedMap){
             }
             if(tile_idx === 1863){
                 var slowDown = new SlowDown({
-                    x:x + size / 2,
-                    y:y + size / 2,
-                    width:size,
-                    height:size,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:1,
                 });
             }
             if(tile_idx === 1864){
                 var slowDown = new SlowDown({
-                    x:x + size / 2,
-                    y:y + 3 * size / 4,
-                    width:size,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:2,
                 });
             }
             if(tile_idx === 1865){
                 var slowDown = new SlowDown({
-                    x:x + size / 2,
-                    y:y + size / 4,
-                    width:size,
-                    height:size / 2,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:3,
                 });
             }
             if(tile_idx === 1866){
                 var slowDown = new SlowDown({
-                    x:x + size / 4,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:4,
                 });
             }
             if(tile_idx === 1867){
                 var slowDown = new SlowDown({
-                    x:x + 3 * size / 4,
-                    y:y + size / 2,
-                    width:size / 2,
-                    height:size,
+                    x:x,
+                    y:y,
                     map:map,
+                    type:5,
                 });
             }
             if(tile_idx === 1777){
@@ -14908,6 +13414,7 @@ load("Lilypad Temple Room 1");
 load("Lilypad Temple Room 2");
 load("Lilypad Castle");
 load("Lilypad Castle Basement");
+load("Lilypad Castle Upstairs");
 load("The Arena");
 load("The Guarded Citadel");
 load("Town Cave");
@@ -14933,7 +13440,7 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map){
+                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map && Projectile.list[j].doUpdate){
                     if(ENV.PVP){
                         Player.list[i].onCollision(Projectile.list[j],1);
                         Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
@@ -14969,7 +13476,7 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false){
+                if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false && Projectile.list[j].doUpdate){
                     Monster.list[i].onCollision(Projectile.list[j],1);
                     Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                 }

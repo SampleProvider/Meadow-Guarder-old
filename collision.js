@@ -1,92 +1,44 @@
-
-
 Collision = function(param){
     var self = {};
     self.map = param.map;
     self.x = param.x;
     self.y = param.y;
+    self.type = 'Collision';
     if(Collision.list[self.map]){
         if(Collision.list[self.map][Math.round(self.x / 64)]){
             Collision.list[self.map][Math.round(self.x / 64)][Math.round(self.y / 64)] = param.type;
         }
     }
-    //Collision.list[self.id] = self;
     return self;
 }
-
 Collision.list = {};
 
-Collision2 = function(param){
-    var self = Entity(param);
-    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
-    self.toRemove = false;
-    self.type = 'Collision2';
-    var super_update = self.update;
-    self.update = function(){
-        super_update();
-    }
-    Collision2.list[self.id] = self;
-    return self;
-}
-
-Collision2.list = {};
-Collision3 = function(param){
-    var self = Entity(param);
-    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
-    self.toRemove = false;
-    self.type = 'Collision3';
-    var super_update = self.update;
-    self.update = function(){
-        super_update();
-    }
-    Collision3.list[self.id] = self;
-    return self;
-}
-
-Collision3.list = {};
-
-
 ProjectileCollision = function(param){
-    var self = Entity(param);
-    self.id = "" + self.map + ":" + self.x + ":" + self.y + ":";
-    self.x = self.x + 32;
-    self.y = self.y + 32;
-    self.width = param.size;
-    self.height = param.size;
-    self.toRemove = false;
-    self.type = 'ProjectileCollision';
-    var super_update = self.update;
-    self.update = function(){
-        super_update();
-        self.updateCollision();
-    }
-    self.updateCollision = function(){
-        for(var i in Projectile.list){
-            var projectile = Projectile.list[i];
-            if(self.isColliding(projectile)){
-                projectile.toRemove = true;
-            }
+    var self = {};
+    self.map = param.map;
+    self.x = param.x;
+    self.y = param.y;
+    if(ProjectileCollision.list[self.map]){
+        if(ProjectileCollision.list[self.map][Math.round(self.x / 64)]){
+            ProjectileCollision.list[self.map][Math.round(self.x / 64)][Math.round(self.y / 64)] = param.type;
         }
     }
-    ProjectileCollision.list[self.id] = self;
     return self;
 }
-
 ProjectileCollision.list = {};
 
 SlowDown = function(param){
-    var self = Entity(param);
-    self.id = "" + self.map + ":" + (~~(self.x / 64) * 64) + ":" + (~~(self.y / 64) * 64) + ":";
-    self.toRemove = false;
-    self.type = 'SlowDown';
-    var super_update = self.update;
-    self.update = function(){
-        super_update();
+    var self = {};
+    self.map = param.map;
+    self.x = param.x;
+    self.y = param.y;
+    if(SlowDown.list[self.map]){
+        if(SlowDown.list[self.map][Math.round(self.x / 64)]){
+            SlowDown.list[self.map][Math.round(self.x / 64)][Math.round(self.y / 64)] = param.type;
+        }
     }
-    SlowDown.list[self.id] = self;
     return self;
 }
-
 SlowDown.list = {};
 
 Spawner = function(param){
@@ -102,7 +54,6 @@ Spawner = function(param){
     Spawner.list[self.id] = self;
     return self;
 }
-
 Spawner.list = {};
 
 Transporter = function(param){
@@ -134,7 +85,6 @@ Transporter = function(param){
     Transporter.list[self.id] = self;
     return self;
 }
-
 Transporter.list = {};
 
 QuestInfo = function(param){
@@ -153,7 +103,6 @@ QuestInfo = function(param){
     QuestInfo.list[self.id] = self;
     return self;
 }
-
 QuestInfo.list = {};
 
 WayPoint = function(param){
@@ -171,5 +120,4 @@ WayPoint = function(param){
     WayPoint.list[self.id] = self;
     return self;
 }
-
 WayPoint.list = {};

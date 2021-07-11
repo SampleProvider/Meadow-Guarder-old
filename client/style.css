@@ -790,6 +790,14 @@ canvas {
     user-select: none;
 }
 
+#questDropdown {
+    position: absolute;
+    font-family: 'pixel';
+    cursor: default;
+    left: 70px;
+    top: 4px;
+    text-align: center;
+}
 #questName {
     position: absolute;
     font-family: 'pixel';
@@ -812,6 +820,15 @@ canvas {
     top: 45%;
     text-align: center;
     transform: translate(-50%, 0%);
+}
+#questXp {
+    position: absolute;
+    font-family: 'pixel';
+    font-size: 15px;
+    color: #ffffff;
+    right: 8px;
+    top: 8px;
+    text-align: center;
 }
 #questStart {
     position: absolute;
@@ -1270,6 +1287,42 @@ audio {
     width: 286px;
     opacity: 1;
     overflow: auto;
+}
+
+#debuffHolder {
+    position: absolute;
+    left: 236px;
+    top: -2px;
+    height: 34px;
+    width: 1300px;
+    background: none;
+    border: none;
+    cursor: crosshair;
+}
+#debuffs {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 1300px;
+    height: 34px;
+    margin: 0px;
+    background: none;
+    border: none;
+    cursor: crosshair;
+    vertical-align: baseline;
+    float: left;
+}
+.debuff {
+    position: static;
+    display: inline-block;
+    padding: 0px;
+    top: 0px;
+    margin-left: 3px;
+    width: 54px;
+    height: 54px;
+    opacity: 1;
+    vertical-align: text-top;
+    font-size: 12px;
 }
 
 #loadingDiv {
