@@ -2704,6 +2704,12 @@ Player = function(param){
                     quest:false,
                 };
                 for(var i in self.questDependent){
+                    if(self.questDependent[i].type === 'Collision'){
+                        self.questDependent[i].toRemove = true;
+                        Collision.list[self.questDependent[i].map][Math.round(self.questDependent[i].x / 64)][Math.round(self.questDependent[i].y / 64)] = 0;
+                    }
+                }
+                for(var i in self.questDependent){
                     self.questDependent[i].toRemove = true;
                 }
                 socket.emit('dialogueLine',{
@@ -8731,6 +8737,12 @@ Player.onDisconnect = function(socket){
 	socket.emit("disconnected");
     if(Player.list[socket.id]){
         storeDatabase(Player.list);
+        for(var i in Player.list[socket.id].questDependent){
+            if(Player.list[socket.id].questDependent[i].type === 'Collision'){
+                Player.list[socket.id].questDependent[i].toRemove = true;
+                Collision.list[self.questDependent[i].map][Math.round(Player.list[socket.id].questDependent[i].x / 64)][Math.round(Player.list[socket.id].questDependent[i].y / 64)] = 0;
+            }
+        }
         for(var i in Player.list[socket.id].questDependent){
             Player.list[socket.id].questDependent[i].toRemove = true;
         }
