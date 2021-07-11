@@ -12514,13 +12514,13 @@ Projectile = function(param){
         if(self.canCollide === false){
             return;
         }
-        if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
                 self.doProjectileCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
             }
         }
-        if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(ProjectileCollision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
                 self.doProjectileCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
             }
         }
