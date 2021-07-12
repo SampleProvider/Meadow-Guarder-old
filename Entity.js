@@ -2305,11 +2305,63 @@ Actor = function(param){
             collision.x += 16;
             collision.y += 16;
         }
+        if(Collision.list[map][x][y] === 11){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 48,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 12){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 16,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 13){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 48,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 14){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 16,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 48;
+        }
         if(self.isColliding(collision)){
-            var x = self.x;
+            var x1 = self.x;
             self.x = self.lastX;
             if(self.isColliding(collision)){
-                self.x = x;
+                self.x = x1;
                 self.y = self.lastY;
                 if(self.isColliding(collision)){
                     self.x = self.lastX;
@@ -2321,6 +2373,28 @@ Actor = function(param){
             }
             else{
                 
+            }
+        }
+        if(Collision.list[map][x]){
+            if(Collision.list[map][x][y] > 10){
+                if(self.isColliding(collision2)){
+                    var x1 = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(collision2)){
+                        self.x = x1;
+                        self.y = self.lastY;
+                        if(self.isColliding(collision2)){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                        }
+                        else{
+                            
+                        }
+                    }
+                    else{
+                        
+                    }
+                }
             }
         }
     }
@@ -12975,12 +13049,64 @@ Projectile = function(param){
             collision.x += 16;
             collision.y += 16;
         }
+        if(Collision.list[map][x][y] === 11){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 48,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 48;
+        }
+        if(Collision.list[map][x][y] === 12){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 16,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 13){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 48,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 16;
+        }
+        if(Collision.list[map][x][y] === 14){
+            var collision2 = {
+                map:map,
+                x:x * 64 + 16,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision.width = 64;
+            collision.height = 32;
+            collision.x += 32;
+            collision.y += 48;
+        }
         if(self.isColliding(collision)){
             if(param.projectilePattern === 'bounceOffCollisions'){
-                var x = self.x;
+                var x1 = self.x;
                 self.x = self.lastX;
                 if(self.isColliding(collision)){
-                    self.x = x;
+                    self.x = x1;
                     self.y = self.lastY;
                     if(self.isColliding(collision)){
                         self.x = self.lastX;
@@ -13009,6 +13135,46 @@ Projectile = function(param){
                 self.spdX = 0;
                 self.spdY = 0;
                 self.doUpdate = false;
+            }
+        }
+        if(Collision.list[map][x]){
+            if(Collision.list[map][x][y] > 10){
+                if(self.isColliding(collision2)){
+                    if(param.projectilePattern === 'bounceOffCollisions'){
+                        var x1 = self.x;
+                        self.x = self.lastX;
+                        if(self.isColliding(collision2)){
+                            self.x = x1;
+                            self.y = self.lastY;
+                            if(self.isColliding(collision2)){
+                                self.x = self.lastX;
+                                self.y = self.lastY;
+                                self.spdX = -self.spdX;
+                                self.x += self.spdX;
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
+                            else{
+                                self.spdY = -self.spdY;
+                                self.y += self.spdY;
+                            }
+                        }
+                        else{
+                            self.spdX = -self.spdX;
+                            self.x += self.spdX;
+                        }
+                    }
+                    else if(self.projectileType === 'bullet'){
+                        self.toRemove = true;
+                    }
+                    else{
+                        self.x = self.lastX;
+                        self.y = self.lastY;
+                        self.spdX = 0;
+                        self.spdY = 0;
+                        self.doUpdate = false;
+                    }
+                }
             }
         }
     }
@@ -13206,43 +13372,35 @@ var renderLayer = function(layer,data,loadedMap){
                 });
             }
             if(tile_idx === 2126){
-                var projectileCollision = new ProjectileCollision({
+                var collision = new Collision({
                     x:x,
                     y:y,
                     map:map,
-                    type:1,
+                    type:11,
                 });
             }
             if(tile_idx === 2127){
-                var projectileCollision = new ProjectileCollision({
+                var collision = new Collision({
                     x:x,
                     y:y,
                     map:map,
-                    type:2,
+                    type:12,
                 });
             }
             if(tile_idx === 2128){
-                var projectileCollision = new ProjectileCollision({
+                var collision = new Collision({
                     x:x,
                     y:y,
                     map:map,
-                    type:3,
+                    type:13,
                 });
             }
             if(tile_idx === 2129){
-                var projectileCollision = new ProjectileCollision({
+                var collision = new Collision({
                     x:x,
                     y:y,
                     map:map,
-                    type:4,
-                });
-            }
-            if(tile_idx === 2130){
-                var projectileCollision = new ProjectileCollision({
-                    x:x,
-                    y:y,
-                    map:map,
-                    type:5,
+                    type:14,
                 });
             }
             if(tile_idx === 2207){
