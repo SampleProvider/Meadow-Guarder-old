@@ -7118,6 +7118,9 @@ Player = function(param){
                     if(item.damageReduction){
                         self.stats.damageReduction += item.damageReduction;
                     }
+                    if(item.manaCost){
+                        self.attackCost = item.manaCost;
+                    }
                     if(item.damageType){
                         self.stats.damageType += item.damageType;
                         self.ability.ability = self.inventory.currentEquip[i].id;
@@ -7717,6 +7720,12 @@ Player = function(param){
                                 }
                             }
                             break;
+                        case "bowofrockAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'rock',54 + 24 * Math.random(),function(t){return 0},0,self.stats);
+                                self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'rock',54 + 24 * Math.random(),function(t){return 0},0,self.stats);
+                            }
+                            break;
                         case "leafblowerAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'seed',54 + 24 * Math.random(),function(t){return 0},0,self.stats);
@@ -7822,6 +7831,88 @@ Player = function(param){
                                         self.y = mouseY;
                                         for(var j = 0;j < 2;j++){
                                             self.shootProjectile(self.id,'Player',turnAmount + j * 180,turnAmount + j * 180,'waterBullet',50,function(t){return 0},0,self.stats,'noCollision');
+                                        }
+                                        self.x = x;
+                                        self.y = y;
+                                    },250 * k);
+                                }
+                                self.x = x;
+                                self.y = y;
+                            }
+                            break;
+                        case "bookofrockAttack":
+                            if(isFireMap){
+                                var speed = self.stats.speed;
+                                self.stats.speed = 0;
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'rockTower'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'rockTower',
+                                    angle:0,
+                                    direction:0,
+                                    x:self.mouseX,
+                                    y:self.mouseY - 32,
+                                    map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 0},
+                                    pierce:0,
+                                    projectilePattern:'stationary',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        
+                                    }
+                                });
+                                self.stats.speed = speed;
+                                var x = self.x;
+                                var y = self.y;
+                                self.x = self.mouseX;
+                                self.y = self.mouseY;
+                                var mouseX = self.mouseX;
+                                var mouseY = self.mouseY;
+                                var closestMonster = undefined;
+                                for(var i in Monster.list){
+                                    if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
+                                        closestMonster = Monster.list[i];
+                                    }
+                                    else if(closestMonster !== undefined){
+                                        if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                                            closestMonster = Monster.list[i];
+                                        }
+                                    }
+                                }
+                                if(closestMonster){
+                                    self.shootProjectile(self.id,'Player',Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180 + Math.random() * 20 - 10,Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180 + Math.random() * 20 - 10,'rock',50,function(t){return 0},0,self.stats);
+                                }
+                                for(var k = 0;k < 12;k++){
+                                    setTimeout(function(){
+                                        var x = self.x;
+                                        var y = self.y;
+                                        self.x = mouseX;
+                                        self.y = mouseY;
+                                        var closestMonster = undefined;
+                                        for(var i in Monster.list){
+                                            if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
+                                                closestMonster = Monster.list[i];
+                                            }
+                                            else if(closestMonster !== undefined){
+                                                if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                                                    closestMonster = Monster.list[i];
+                                                }
+                                            }
+                                        }
+                                        if(closestMonster){
+                                            self.shootProjectile(self.id,'Player',Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180 + Math.random() * 20 - 10,Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180 + Math.random() * 20 - 10,'rock',50,function(t){return 0},0,self.stats);
                                         }
                                         self.x = x;
                                         self.y = y;
@@ -7951,6 +8042,11 @@ Player = function(param){
                         case "iceboomerangAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'iceboomerang',0,function(t){return 25},1000,self.stats,'boomerang');
+                            }
+                            break;
+                        case "rockboomerangAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'rockboomerang',0,function(t){return 25},1000,self.stats,'boomerang');
                             }
                             break;
                         case "fireboomerangAttack":
@@ -9209,6 +9305,9 @@ Monster = function(param){
         self.canCollide = false;
         self.stage2 = false;
     }
+    if(self.monsterType === 'rocopter'){
+        self.canCollide = false;
+    }
     self.oldMoveSpeed = self.maxSpeed;
     var lastSelf = {};
     var super_update = self.update;
@@ -9568,6 +9667,12 @@ Monster = function(param){
             case "attackPhase2FireSpirit":
                 self.animation += 0.5;
                 if(self.animation >= 3){
+                    self.animation = 0;
+                }
+                break;
+            case "attackRocopter":
+                self.animation += 1;
+                if(self.animation >= 4){
                     self.animation = 0;
                 }
                 break;
@@ -11275,6 +11380,12 @@ Monster = function(param){
                     }
                     if(self.reload % 100 >= 60 && self.reload % 2 === 0 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'fireBullet',32,function(t){return 25},0,self.stats,'accellerateNoCollision');
+                    }
+                    self.reload += 1;
+                    break;
+                case "attackRocopter":
+                    if(self.reload % 40 < 15 && self.target.invincible === false){
+                        self.shootProjectile(self.id,'Monster',self.direction + Math.random() * 20 - 10,self.direction + Math.random() * 20 - 10,'rock',Math.random() * 20 + 10,function(t){return 25},0,self.stats);
                     }
                     self.reload += 1;
                     break;

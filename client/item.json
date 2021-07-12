@@ -4,7 +4,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
-        "damage":5,
+        "damage":6,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -15,7 +15,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
-        "damage":12,
+        "damage":14,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -26,7 +26,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
-        "damage":19,
+        "damage":21,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -37,7 +37,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0,2];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
-        "damage":27,
+        "damage":30,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -48,7 +48,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
-        "damage":39,
+        "damage":46,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -59,7 +59,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range"],
-        "damage":19,
+        "damage":21,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -70,7 +70,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0,2];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range"],
-        "damage":27,
+        "damage":30,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -81,7 +81,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range"],
-        "damage":39,
+        "damage":46,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -92,7 +92,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0,2];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range"],
-        "damage":53,
+        "damage":61,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -103,7 +103,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0,2,4];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range"],
-        "damage":75,
+        "damage":85,
         "damageType":"ranged",
         "critChance":0.04,
         "useTime":5,
@@ -228,6 +228,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":0
     },
     "simplesteelstaff":{
@@ -239,6 +240,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":0
     },
     "simpledarksteelstaff":{
@@ -250,6 +252,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":1
     },
     "simplegoldenstaff":{
@@ -261,6 +264,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":1
     },
     "simplerubystaff":{
@@ -272,6 +276,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":2
     },
     "advancedwoodenstaff":{
@@ -283,6 +288,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":1
     },
     "advancedsteelstaff":{
@@ -294,6 +300,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":1
     },
     "advanceddarksteelstaff":{
@@ -305,6 +312,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":2
     },
     "advancedgoldenstaff":{
@@ -316,6 +324,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":2
     },
     "advancedrubystaff":{
@@ -327,6 +336,7 @@
         "damageType":"magic",
         "critChance":0.2,
         "useTime":10,
+        "manaCost":10,
         "rarity":3
     },
     "woodenhood":{
@@ -468,10 +478,10 @@
     "sphat":{
         "name":"SP Hat",
         "equip":"helmet",
-        "event":"if(self.stats.damageType === 'magic'){damageIncrease += 10;self.stats.critChance += 1;}self.stats.xp *= 500;",
+        "event":"self.stats.heal += 1000000;self.hpMax = 1000000;self.stats.xp *= 500;",
         "enchantments":["smashing"],
         "defense":0,
-        "damageReduction":0.99,
+        "damageReduction":1,
         "rarity":6,
         "description":"<span style='color: #33ee33'>+???% magic damage.</span><br><span style='color: #33ee33'>+???% magic critical strike chance.</span>"
     },
@@ -628,7 +638,8 @@
         "damage":250,
         "damageType":"magic",
         "critChance":0.04,
-        "useTime":15,
+        "useTime":4,
+        "manaCost":5,
         "rarity":4
     },
     "bookoflightning":{
@@ -640,6 +651,7 @@
         "damageType":"magic",
         "critChance":0.25,
         "useTime":7,
+        "manaCost":9,
         "rarity":4
     },
     "shieldoflightning":{
@@ -672,12 +684,13 @@
     "bookofspirits":{
         "name":"Book of Spirits",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 3;",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst"],
         "damage":135,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":3,
+        "manaCost":3,
         "rarity":4,
         "description":"Spawns homing spirits.<br>Has a reduced mana cost."
     },
@@ -780,12 +793,13 @@
     "bookofdeath":{
         "name":"Book of Death",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 10;self.stats.debuffs.push({id:'death',time:100});",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'death',time:100});",
         "enchantments":["speed","burst","cost"],
         "damage":824,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":10,
+        "manaCost":14,
         "rarity":6,
         "description":"Shoots 3 homing skulls that pierce and shoot <span style='color:#ff0000'>lasers</span>."
     },
@@ -830,6 +844,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":10,
+        "manaCost":7,
         "rarity":5,
         "description":"Shoots a bouncing ball of frost."
     },
@@ -850,10 +865,11 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.range -= 0.5;",
         "enchantments":["speed","burst","cost"],
-        "damage":529,
+        "damage":429,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":12,
+        "manaCost":16,
         "rarity":5,
         "description":"This book contains EVERYTHING about nature!"
     },
@@ -902,24 +918,26 @@
     "bookofflames":{
         "name":"Book of Flames",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 15;self.stats.debuffs.push({id:'incinerating',time:60});",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'incinerating',time:60});",
         "enchantments":["burst","cost"],
-        "damage":10000,
+        "damage":5812,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":2,
+        "manaCost":23,
         "rarity":8,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "bookoflasers":{
         "name":"Book of Lasers",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.attackCost = 100;",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["burst","cost"],
-        "damage":100000,
+        "damage":10000,
         "damageType":"magic",
         "critChance":1,
         "useTime":20,
+        "manaCost":100,
         "rarity":8,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
@@ -1009,6 +1027,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":5,
+        "manaCost":9,
         "rarity":6,
         "description":"Conjure a astral force field to trap your enemies."
     },
@@ -1043,6 +1062,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":15,
+        "manaCost":6,
         "rarity":6,
         "description":"Summons a whirlwind at your cursor location."
     },
@@ -1073,6 +1093,7 @@
         "damageType":"magic",
         "critChance":0.04,
         "useTime":15,
+        "manaCost":17,
         "rarity":6,
         "description":"Shoots a homing piercing typhoon."
     },
@@ -1115,12 +1136,13 @@
     "emeralditestaff":{
         "name":"Emeraldite Staff",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 1;self.attackCost = 8;",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 1;",
         "enchantments":["speed","burst","cost"],
         "damage":1923,
         "damageType":"magic",
         "critChance":0.04,
         "useTime":4,
+        "manaCost":4,
         "rarity":7,
         "description":"Shoots a seed that explodes on impact."
     },
@@ -1191,5 +1213,51 @@
         "enchantments":[],
         "description":"5g of sugar only!",
         "rarity":6
+    },
+    "rockboomerang":{
+        "name":"Rock Boomerang",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst"],
+        "damage":231,
+        "damageType":"melee",
+        "critChance":0.04,
+        "useTime":12,
+        "rarity":4,
+        "description":"Shoots a rocky boomerang."
+    },
+    "bookofrock":{
+        "name":"Book of Rock",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","cost"],
+        "damage":146,
+        "damageType":"magic",
+        "critChance":0.04,
+        "useTime":23,
+        "manaCost":13,
+        "rarity":4,
+        "description":"Shoots a rocky tower that shoots homing rocks."
+    },
+    "bowofrock":{
+        "name":"Bow of Rock",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range"],
+        "damage":95,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "useTime":3,
+        "rarity":4,
+        "description":"A bow made of rock. What did you expect?"
+    },
+    "amuletofrock":{
+        "name":"Amulet of Rock",
+        "equip":"offhand",
+        "event":"self.stats.aggro -= 0.5;",
+        "enchantments":["smashing"],
+        "defense":24,
+        "rarity":4,
+        "description":"Decreased aggro."
     }
 }

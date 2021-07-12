@@ -35,7 +35,7 @@
             "critChance":1
         }
     },
-    "earthTower":{
+    "rockTower":{
         "width":48,
         "height":108,
         "stats":{
@@ -731,6 +731,18 @@
             "critChance":1
         }
     },
+    "rockboomerang":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":100,
+            "speed":2,
+            "critChance":1
+        }
+    },
     "fireboomerang":{
         "width":64,
         "height":64,
@@ -768,6 +780,30 @@
         }
     },
     "bookoflasers":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "bowofrock":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "bookofrock":{
         "width":64,
         "height":64,
         "stats":{
@@ -943,6 +979,18 @@
             "defense":1,
             "heal":1,
             "range":5,
+            "speed":1,
+            "critChance":1
+        }
+    },
+    "rock":{
+        "width":20,
+        "height":20,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
             "speed":1,
             "critChance":1
         }

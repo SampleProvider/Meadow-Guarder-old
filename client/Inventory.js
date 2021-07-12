@@ -396,6 +396,9 @@ Inventory = function(socket,server){
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
             }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
+            }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
             }
@@ -574,6 +577,9 @@ Inventory = function(socket,server){
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
             }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
+            }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
             }
@@ -649,6 +655,9 @@ Inventory = function(socket,server){
             }
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
             }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
@@ -738,6 +747,9 @@ Inventory = function(socket,server){
             }
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
             }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
@@ -872,6 +884,9 @@ Inventory = function(socket,server){
             }
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
             }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
@@ -1109,6 +1124,9 @@ Inventory = function(socket,server){
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
             }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
+            }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
             }
@@ -1300,6 +1318,9 @@ Inventory = function(socket,server){
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
             }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
+            }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
             }
@@ -1383,6 +1404,9 @@ Inventory = function(socket,server){
             }
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
             }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
@@ -1485,6 +1509,9 @@ Inventory = function(socket,server){
             }
             if(item.damageReduction){
                 description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+            }
+            if(item.manaCost){
+                description += 'Uses ' + item.manaCost + ' mana.<br>';
             }
             if(item.rarity){
                 button.style.color = self.getRarityColor(item.rarity);
@@ -1705,7 +1732,7 @@ Enchantment = function(id,name,maxLevel,averageLevel,deviation,dropChance,event)
 
 Enchantment.list = {};
 
-Item = function(id,name,equip,event,enchantments,description,damage,damageType,critChance,useTime,defense,damageReduction,rarity){
+Item = function(id,name,equip,event,enchantments,description,damage,damageType,critChance,useTime,defense,damageReduction,manaCost,rarity){
 	var self = {
 		id:id,
         name:name,
@@ -1719,6 +1746,7 @@ Item = function(id,name,equip,event,enchantments,description,damage,damageType,c
         useTime:useTime,
         defense:defense,
         damageReduction,damageReduction,
+        manaCost,manaCost,
         rarity:rarity,
     }
 	Item.list[self.id] = self;
@@ -1729,7 +1757,7 @@ Item.list = {};
 try{
     var items = require('./item.json');
     for(var i in items){
-        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].rarity);
+        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].manaCost,items[i].rarity);
     }
 }
 catch(err){
@@ -1741,7 +1769,7 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].rarity);
+                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].manaCost,items[i].rarity);
             }
         }
         else{

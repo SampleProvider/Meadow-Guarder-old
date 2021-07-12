@@ -444,5 +444,45 @@
    <wangtile tileid="1151" wangid="0x1010102"/>
    <wangtile tileid="1231" wangid="0x2020201"/>
   </wangset>
+  <wangset name="Wood Rocky Wall" tile="583">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="495" wangid="0x1020101"/>
+   <wangtile tileid="496" wangid="0x1010201"/>
+   <wangtile tileid="497" wangid="0x2010201"/>
+   <wangtile tileid="498" wangid="0x2010101"/>
+   <wangtile tileid="499" wangid="0x1020201"/>
+   <wangtile tileid="500" wangid="0x2020101"/>
+   <wangtile tileid="501" wangid="0x1020202"/>
+   <wangtile tileid="502" wangid="0x2010202"/>
+   <wangtile tileid="581" wangid="0x1010102"/>
+   <wangtile tileid="582" wangid="0x1010101"/>
+   <wangtile tileid="583" wangid="0x2020202"/>
+   <wangtile tileid="584" wangid="0x1020102"/>
+   <wangtile tileid="585" wangid="0x1010202"/>
+   <wangtile tileid="586" wangid="0x2010102"/>
+   <wangtile tileid="587" wangid="0x2020102"/>
+   <wangtile tileid="588" wangid="0x2020201"/>
+  </wangset>
+  <wangset name="Stone Rocky Wall" tile="153">
+   <wangedgecolor name="" color="#ff0000" tile="-1" probability="1"/>
+   <wangedgecolor name="" color="#00ff00" tile="-1" probability="1"/>
+   <wangtile tileid="65" wangid="0x1020101"/>
+   <wangtile tileid="66" wangid="0x1010201"/>
+   <wangtile tileid="67" wangid="0x2010201"/>
+   <wangtile tileid="68" wangid="0x2010101"/>
+   <wangtile tileid="69" wangid="0x1020201"/>
+   <wangtile tileid="70" wangid="0x2020101"/>
+   <wangtile tileid="71" wangid="0x1020202"/>
+   <wangtile tileid="72" wangid="0x2010202"/>
+   <wangtile tileid="151" wangid="0x1010102"/>
+   <wangtile tileid="152" wangid="0x1010101"/>
+   <wangtile tileid="153" wangid="0x2020202"/>
+   <wangtile tileid="154" wangid="0x1020102"/>
+   <wangtile tileid="155" wangid="0x1010202"/>
+   <wangtile tileid="156" wangid="0x2010102"/>
+   <wangtile tileid="157" wangid="0x2020102"/>
+   <wangtile tileid="158" wangid="0x2020201"/>
+  </wangset>
  </wangsets>
 </tileset>

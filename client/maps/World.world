@@ -83,6 +83,13 @@
             "width": 800,
             "x": 1600,
             "y": 800
+        },
+        {
+            "fileName": "The Rocky Ascent.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 1600,
+            "y": 0
         }
     ],
     "onlyShowAdjacentMaps": false,

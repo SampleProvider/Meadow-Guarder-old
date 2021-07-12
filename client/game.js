@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f10b';
+var VERSION = '024f11a';
 
 var DEBUG = false;
 
@@ -687,6 +687,8 @@ Img.whirlwind = new Image();
 Img.whirlwind.src = '/client/img/whirlwind.png';
 Img.fireSpirit = new Image();
 Img.fireSpirit.src = '/client/img/fireSpirit.png';
+Img.rocopter = new Image();
+Img.rocopter.src = '/client/img/rocopter.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -1815,6 +1817,10 @@ var Monster = function(initPack){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.fireSpirit,self.animation % 2 * 13,14 * 0,12,13,self.x - 48,self.y - 52,96,104);
         }
+        if(self.monsterType === 'rocopter'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.rocopter,self.animation * 10,8 * 0,9,7,self.x - 36,self.y - 28,72,56);
+        }
     }
     self.drawCtx1 = function(){
         if(self.monsterType === 'ghost'){
@@ -1880,6 +1886,10 @@ var Monster = function(initPack){
         }
         if(self.monsterType === 'spgem'){
             ctx1.drawImage(Img.spgem,self.x - 27,self.y - 24,54,48);
+        }
+        if(self.monsterType === 'rocopter'){
+            self.animation = Math.round(self.animation);
+            ctx1.drawImage(Img.rocopter,self.animation * 10,8 * 0,9,7,self.x - 36,self.y - 28,72,56);
         }
     }
     self.drawHp = function(){

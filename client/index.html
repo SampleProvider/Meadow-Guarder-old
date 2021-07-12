@@ -65,6 +65,24 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							7/12/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Added a new map, The Rocky Ascent.
+							<br>
+							Added the Rocopter, a new monster.
+							<br>
+							Added rock weapons.
+							<br>
+							Added some minor balancing.
+							<br>
+							Released 024f11a.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
 							7/11/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
@@ -1136,7 +1154,7 @@
 				<button id="signOut" class="UI-button-light" onclick="history.go(0)">Log Out</button>
 			</div>
 		</div>
-		<div id="notificationsHolder">
+		<div id="notificationsHolder" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
 			<div id="notifications" class="UI-display-light" onmouseover="mouseUp(event)"></div>
 		</div>
 		<div id="debuffHolder">

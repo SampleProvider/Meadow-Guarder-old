@@ -340,6 +340,10 @@ MGHC = function(){
                 ctx1.strokeStyle = '#ff2000';
                 ctx1.lineWidth = 10;
             }
+            if(Monster.list[i].monsterType === 'rocopter'){
+                ctx1.strokeStyle = '#612408';
+                ctx1.lineWidth = 2;
+            }
             ctx1.beginPath();
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
             ctx1.lineTo(Monster.list[i].x,Monster.list[i].y);
