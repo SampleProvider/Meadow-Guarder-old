@@ -730,6 +730,12 @@
         "canChangeMap":false,
         "shop":false
     },
+    "billy":{
+        "name":"Billy",
+        "randomWalk":"waypoint",
+        "canChangeMap":true,
+        "shop":false
+    },
     "riley":{
         "name":"Riley",
         "randomWalk":"wander",

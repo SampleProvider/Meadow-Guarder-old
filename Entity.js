@@ -916,8 +916,7 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 5;
-                        monsterStats.attack *= 1.5;
+                        monsterHp *= 3;
                         var monster = new Monster({
                             spawnId:false,
                             x:1472,
@@ -956,8 +955,7 @@ Entity.getFrameUpdateData = function(){
                         var monsterStats = Object.create(monsterData[i].stats);
                         monsterHp *= ENV.MonsterStrength;
                         monsterStats.attack *= ENV.MonsterStrength;
-                        monsterHp *= 5;
-                        monsterStats.attack *= 1.5;
+                        monsterHp *= 3;
                         var monster = new Monster({
                             spawnId:false,
                             x:1728,
@@ -993,10 +991,10 @@ Entity.getFrameUpdateData = function(){
                     }
                 }
             }
-            else if(ENV.BossRushStage === 7){
+            else if(ENV.BossRushStage === 8){
                 var doSp = false;
                 for(var i in Player.list){
-                    if(Player.list[i].questStats['sp'] === false){
+                    if(Player.list[i].map === 'The Arena' && Player.list[i].questStats['sp'] === false){
                         doSp = true;
                     }
                 }
@@ -1289,25 +1287,37 @@ Actor = function(param){
                 if(self.randomPos.currentWaypoint){
                     if(self.trackingEntityReached){
                         self.randomPos.currentWaypoint = undefined;
+                        self.trackingEntity = undefined;
                         self.randomPos.waypointAttemptTime = 0;
+                        self.spdX = 0;
+                        self.spdY = 0;
                     }
                     else if(self.randomPos.waypointAttemptTime > 1200){
                         self.randomPos.currentWaypoint = undefined;
+                        self.trackingEntity = undefined;
                         self.randomPos.waypointAttemptTime = 0;
+                        self.spdX = 0;
+                        self.spdY = 0;
                     }
                     else if(self.randomPos.currentWaypoint.map !== self.map){
                         self.randomPos.currentWaypoint = undefined;
+                        self.trackingEntity = undefined;
+                        self.randomPos.waypointAttemptTime = 0;
+                        self.spdX = 0;
+                        self.spdY = 0;
                     }
                 }
                 else{
-                    var waypoints = [];
-                    for(var i in WayPoint.list){
-                        if(WayPoint.list[i].info.id === self.entityId && WayPoint.list[i].map === self.map && WayPoint.list[i].x > self.x - 14 * 64 && WayPoint.list[i].x < self.x + 14 * 64 && WayPoint.list[i].y > self.y - 14 * 64 && WayPoint.list[i].y < self.y + 14 * 64){
-                            waypoints.push(WayPoint.list[i]);
+                    if(self.randomPos.waypointAttemptTime > 60 + Math.random() * 60){
+                        var waypoints = [];
+                        for(var i in WayPoint.list){
+                            if(WayPoint.list[i].info.id === self.entityId && WayPoint.list[i].map === self.map && WayPoint.list[i].x > self.x - 14 * 64 && WayPoint.list[i].x < self.x + 14 * 64 && WayPoint.list[i].y > self.y - 14 * 64 && WayPoint.list[i].y < self.y + 14 * 64){
+                                waypoints.push(WayPoint.list[i]);
+                            }
                         }
+                        self.randomPos.currentWaypoint = waypoints[Math.floor(Math.random() * waypoints.length)];
+                        self.trackEntity(self.randomPos.currentWaypoint,0);
                     }
-                    self.randomPos.currentWaypoint = waypoints[Math.floor(Math.random() * waypoints.length)];
-                    self.trackEntity(self.randomPos.currentWaypoint,1);
                 }
                 self.randomPos.waypointAttemptTime += 1;
             }
@@ -2544,6 +2554,7 @@ Player = function(param){
         "Weird Tower":false,
         "Clear River":false,
         "Clear Tower":false,
+        "Broken Sword":false,
         "Lightning Lizard Boss":false,
         "Wood Delivery":false,
         "Possessed Spirit":false,
@@ -2909,7 +2920,7 @@ Player = function(param){
                     self.invincible = true;
                     socket.emit('dialogueLine',{
                         state:'ask',
-                        message:'Thanks. The map The River is to the west of The Village, which is where you are now.',
+                        message:'The map The River is to the west of The Village, which is where you are now.',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -2979,7 +2990,7 @@ Player = function(param){
                     self.invincible = true;
                     socket.emit('dialogueLine',{
                         state:'ask',
-                        message:'Thanks. Go investigate that weird tower.',
+                        message:'Go investigate that weird tower in the map The River. Who knows what could be there?',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -3098,7 +3109,7 @@ Player = function(param){
                     self.invincible = true;
                     socket.emit('dialogueLine',{
                         state:'ask',
-                        message:'Thanks for helping me confirm this rumor.',
+                        message:'This tower really is weird.',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -3148,7 +3159,7 @@ Player = function(param){
                     self.invincible = true;
                     socket.emit('dialogueLine',{
                         state:'ask',
-                        message:'Thanks for killing this giant Lizard.',
+                        message:'You must kill this giant Lizard.',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -3489,7 +3500,7 @@ Player = function(param){
                     self.invincible = true;
                     socket.emit('dialogueLine',{
                         state:'ask',
-                        message:'Thanks for helping me!',
+                        message:'I really want my candies back.',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -3500,6 +3511,55 @@ Player = function(param){
                     socket.emit('dialogueLine',{
                         state:'ask',
                         message:'Yay! You found my candies!',
+                        response1:'*End conversation*',
+                    });
+                    self.currentResponse = 0;
+                }
+                else{
+                    socket.emit('notification','[!] This NPC doesn\'t want to talk to you right now.');
+                }
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'billy' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Broken Sword") === true){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Broken Sword';
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Hey, I heard there was a broken sword hidden somewhere in this map. I wasn\'t able to find it, can you help me?',
+                        response1:'Why do you want this broken sword?',
+                        response2:'I won\'t help you.',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Broken Sword") === false){
+                    self.questStage = 1;
+                    self.invincible = true;
+                    self.questInfo.quest = 'Broken Sword';
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'I heard there is secret treasure...',
+                        response1:'That\'s vague,',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 6 && self.quest === 'Broken Sword'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'You can have a reward if you give me this sword.',
+                        response1:'*End conversation*',
+                    });
+                    self.currentResponse = 0;
+                }
+                else if(self.questStage === 11 && self.quest === 'Broken Sword'){
+                    self.questStage += 1;
+                    self.invincible = true;
+                    socket.emit('dialogueLine',{
+                        state:'ask',
+                        message:'Thanks for finding this broken sword!',
                         response1:'*End conversation*',
                     });
                     self.currentResponse = 0;
@@ -3643,11 +3703,11 @@ Player = function(param){
             self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
             self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             var woodObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
             self.inventory.refreshMaterial();
-            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -3845,7 +3905,7 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Weird Tower' && QuestInfo.list[i].info === 'collision'){
                     self.questDependent[i] = new Collision({
-                        x:QuestInfo.list[i].x,
+                        x:QuestInfo.list[i].x - 64,
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         type:1,
@@ -4117,11 +4177,11 @@ Player = function(param){
             self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
             self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             var woodObtained = Math.round(10 + Math.random() * 15);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
             self.inventory.refreshMaterial();
-            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -4204,6 +4264,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant1,1);
+            self.inventory.refreshItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4215,6 +4276,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant2,1);
+            self.inventory.refreshItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4238,6 +4300,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant4,2);
+            self.inventory.refreshItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4281,6 +4344,7 @@ Player = function(param){
                         }
                     }
                 }
+                self.inventory.refreshItems();
                 socket.emit('toggleSelect');
                 socket.emit('showInventory');
                 self.quest = false;
@@ -4298,7 +4362,6 @@ Player = function(param){
                 state:'remove',
             });
             socket.emit('showInventory');
-            self.inventory.refreshItems();
             self.currentResponse = 0;
         }
 
@@ -4459,7 +4522,7 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'collision'){
                     self.questDependent[i] = new Collision({
-                        x:QuestInfo.list[i].x,
+                        x:QuestInfo.list[i].x - 64,
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         type:1,
@@ -4701,7 +4764,7 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'collision'){
                     self.questDependent[i] = new Collision({
-                        x:QuestInfo.list[i].x,
+                        x:QuestInfo.list[i].x - 64,
                         y:QuestInfo.list[i].y,
                         map:QuestInfo.list[i].map,
                         type:1,
@@ -4941,11 +5004,11 @@ Player = function(param){
             self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
             self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             var woodObtained = Math.round(35 + Math.random() * 10);
             socket.emit('notification','You obtained ' + woodObtained + ' wood.');
             self.inventory.materials.wood += woodObtained;
             self.inventory.refreshMaterial();
-            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -5095,11 +5158,11 @@ Player = function(param){
             self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
             self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
-            var rubiesObtained = Math.round(5 + Math.random() * 10);
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            var rubiesObtained = Math.round(10 + Math.random() * 10);
             socket.emit('notification','You obtained ' + rubiesObtained + ' rubies.');
             self.inventory.materials.ruby += rubiesObtained;
             self.inventory.refreshMaterial();
-            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -5258,11 +5321,11 @@ Player = function(param){
             self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
             self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
             socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             var goldObtained = Math.round(15 + Math.random() * 10);
             socket.emit('notification','You obtained ' + goldObtained + ' gold.');
             self.inventory.materials.gold += goldObtained;
             self.inventory.refreshMaterial();
-            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
             self.questStats[self.quest] = true;
             self.quest = false;
             self.questInfo = {
@@ -7138,6 +7201,142 @@ Player = function(param){
             });
             self.currentResponse = 0;
         }
+        
+        if(self.currentResponse === 1 && self.questStage === 1 && self.questInfo.quest === 'Broken Sword'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'Villagers normally can\'t damage monsters, but Fisherman keeps bragging about how his fishing rod can kill Birds! I want a sword too!',
+                response1:'But it\'s broken...',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 2 && self.questStage === 1 && self.questInfo.quest === 'Broken Sword'){
+            self.invincible = false;
+            self.questInfo = {
+                quest:false,
+            };
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 2 && self.questInfo.quest === 'Broken Sword'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'Yeah, but I\'m sure Wally can fix it.',
+                response1:'Okay, I can help you get this broken sword.',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 3 && self.questInfo.quest === 'Broken Sword'){
+            self.questInfo.started = false;
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            socket.emit('questInfo',{
+                questName:self.questInfo.quest,
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questInfo.started === true && self.questStage === 4 && self.questInfo.quest === 'Broken Sword'){
+            self.quest = 'Broken Sword';
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'I should talk with Billy.',
+                response1:'...',
+            });
+            socket.emit('notification','You started the quest ' + self.questInfo.quest + '.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Broken Sword'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'Broken Sword'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.questStage === 8 && self.quest === 'Broken Sword' && self.mapChange > 10){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Broken Sword' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                    self.questStage = 9;
+                }
+            }
+        }
+        if(self.questStage === 9 && self.quest === 'Broken Sword'){
+            self.questStage += 1;
+            self.invincible = true;
+            socket.emit('dialogueLine',{
+                state:'ask',
+                message:'Let me see... An apple, a bow, a potion, some coins... Here it is! The broken sword!',
+                response1:'...',
+            });
+        }
+        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Broken Sword'){
+            self.questStage += 1;
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Broken Sword'){
+            self.xp += Math.round(questData[self.quest].xp * self.stats.xp);
+            self.coins += Math.round(questData[self.quest].xp * self.stats.xp);
+            socket.emit('notification','You completed the quest ' + self.quest + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
+            var randomItem = Math.random();
+            if(randomItem < 0.25){
+                var itemIndex = self.inventory.addRandomItemAndRandomizedEnchantments('rockboomerang',self.stats.luck);
+                var item = self.inventory.items[itemIndex];
+            }
+            else if(randomItem < 0.5){
+                var itemIndex = self.inventory.addRandomItemAndRandomizedEnchantments('bowofrock',self.stats.luck);
+                var item = self.inventory.items[itemIndex];
+            }
+            else if(randomItem < 0.75){
+                var itemIndex = self.inventory.addRandomItemAndRandomizedEnchantments('bookofrock',self.stats.luck);
+                var item = self.inventory.items[itemIndex];
+            }
+            else if(randomItem < 0.95){
+                var itemIndex = self.inventory.addRandomItemAndRandomizedEnchantments('amuletofrock',self.stats.luck);
+                var item = self.inventory.items[itemIndex];
+            }
+            else{
+                var itemIndex = self.inventory.addRandomItemAndRandomizedEnchantments('rubypresent',self.stats.luck);
+                var item = self.inventory.items[itemIndex];
+            }
+            socket.emit('notification','You got a ' + Item.list[item.id].name + '.');
+            addToChat('style="color: ' + self.textColor + '">',self.displayName + " got a " + Item.list[item.id].name + ".");
+            self.questStats[self.quest] = true;
+            self.quest = false;
+            self.questInfo = {
+                quest:false,
+            };
+            for(var i in self.questDependent){
+                self.questDependent[i].toRemove = true;
+            }
+            self.invincible = false;
+            socket.emit('dialogueLine',{
+                state:'remove',
+            });
+            self.currentResponse = 0;
+        }
     }
     self.updateStats = function(){
         if(self.inventory.refresh){
@@ -8911,7 +9110,7 @@ Player.onDisconnect = function(socket){
         for(var i in Player.list[socket.id].questDependent){
             if(Player.list[socket.id].questDependent[i].type === 'Collision'){
                 Player.list[socket.id].questDependent[i].toRemove = true;
-                Collision.list[self.questDependent[i].map][Math.round(Player.list[socket.id].questDependent[i].x / 64)][Math.round(Player.list[socket.id].questDependent[i].y / 64)] = 0;
+                Collision.list[Player.list[socket.id].questDependent[i].map][Math.round(Player.list[socket.id].questDependent[i].x / 64)][Math.round(Player.list[socket.id].questDependent[i].y / 64)] = 0;
             }
         }
         for(var i in Player.list[socket.id].questDependent){
@@ -9433,6 +9632,14 @@ Monster = function(param){
                     }
                 }
             }
+            if(self.monsterType === 'fireSpirit'){
+                addToChat('style="color: #ff00ff">','Fire Spirit has been defeated!');
+                for(var i in Player.list){
+                    if(Player.list[i].map === self.map){
+                        Player.list[i].questStats["Fire Spirit"] = true;
+                    }
+                }
+            }
             if(self.monsterType === 'sp'){
                 addToChat('style="color: #ff00ff">','sp has been defeated!');
                 for(var i in Player.list){
@@ -9734,13 +9941,13 @@ Monster = function(param){
                 break;
             case "attackPhase1FireSpirit":
                 self.animation += 0.5;
-                if(self.animation >= 3){
+                if(self.animation >= 4){
                     self.animation = 0;
                 }
                 break;
             case "attackPhase2FireSpirit":
                 self.animation += 0.5;
-                if(self.animation >= 3){
+                if(self.animation >= 4){
                     self.animation = 0;
                 }
                 break;

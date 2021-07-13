@@ -35,6 +35,15 @@
         ],
         "multiplePlayers":false
     },
+    "Broken Sword":{
+        "description":"Find Billy's broken sword.",
+        "xp":15000,
+        "startStage":4,
+        "requirements":[
+            "Clear Tower"
+        ],
+        "multiplePlayers":true
+    },
     "Lightning Lizard Boss":{
         "description":"Defeat the Lightning Lizard.",
         "xp":75000,

@@ -478,12 +478,12 @@
     "sphat":{
         "name":"SP Hat",
         "equip":"helmet",
-        "event":"self.stats.heal += 1000000;self.hpMax = 1000000;self.stats.xp *= 500;",
+        "event":"damageIncrease += 10;self.stats.critChance += 1000;self.stats.xp *= 500;",
         "enchantments":["smashing"],
         "defense":0,
         "damageReduction":1,
         "rarity":6,
-        "description":"<span style='color: #33ee33'>+???% magic damage.</span><br><span style='color: #33ee33'>+???% magic critical strike chance.</span>"
+        "description":"<span style='color: #33ee33'>+???% damage.</span><br><span style='color: #33ee33'>+???% critical strike chance.</span>"
     },
     "woodenarmor":{
         "name":"Wooden Armor",

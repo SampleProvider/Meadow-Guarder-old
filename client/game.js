@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '024f11a';
+var VERSION = '024f12a';
 
 var DEBUG = false;
 
@@ -2821,10 +2821,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 417';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 417 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 434';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 434 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 417){
+        if(loadingProgressDisplay >= 434){
             if(loading){
                 setTimeout(function(){
                     loading = false;
