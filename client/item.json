@@ -478,7 +478,7 @@
     "sphat":{
         "name":"SP Hat",
         "equip":"helmet",
-        "event":"damageIncrease += 10;self.stats.critChance += 1000;self.stats.xp *= 500;",
+        "event":"damageIncrease += 10;self.stats.critChance += 10;self.stats.xp *= 500;",
         "enchantments":["smashing"],
         "defense":0,
         "damageReduction":1,
@@ -697,7 +697,7 @@
     "skullofdeath":{
         "name":"Skull of Death",
         "equip":"consume",
-        "event":"if(self.map === 'The Arena' && ENV.BossRush === false){ENV.BossRush = true;ENV.BossRushStage = 0;}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('skullofdeath',[]);",
+        "event":"if(self.map === 'The Arena' && ENV.BossRush === false){ENV.BossRush = true;ENV.BossRushStage = 0;}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('skullofdeath',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons the Boss Rush.<br>Used in The Arena.",
         "rarity":4
@@ -830,7 +830,7 @@
     "enchantmentbook":{
         "name":"Enchantment Book",
         "equip":"consume",
-        "event":"if(self.quest === false){socket.emit('toggleSelect');self.quest = 'Enchant';self.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];}else{self.inventory.addItem('enchantmentbook');}self.inventory.currentEquip['consume'] = {};self.inventory.refreshRender();",
+        "event":"if(self.quest === false){socket.emit('toggleSelect');self.quest = 'Enchant';self.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];}else{self.inventory.addItem('enchantmentbook');}self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":["speed","burst","cost","range","reach","smashing","unlocking"],
         "description":"Gives enchantents.",
         "rarity":3
@@ -953,7 +953,7 @@
     "rubypresent":{
         "name":"Ruby Present",
         "equip":"consume",
-        "event":"var rubyItem = Math.random();if(rubyItem < 0.1){var rubyItemToGive = 'simplerubybow';}else if(rubyItem < 0.2){var rubyItemToGive = 'advancedrubybow';}else if(rubyItem < 0.3){var rubyItemToGive = 'simplerubysword';}else if(rubyItem < 0.4){var rubyItemToGive = 'advancedrubysword';}else if(rubyItem < 0.5){var rubyItemToGive = 'simplerubystaff';}else if(rubyItem < 0.6){var rubyItemToGive = 'advancedrubystaff';}else if(rubyItem < 0.7){var rubyItemToGive = 'rubyarmor';}else if(rubyItem < 0.733){var rubyItemToGive = 'rubyhelmet';}else if(rubyItem < 0.766){var rubyItemToGive = 'rubyhood';}else if(rubyItem < 0.8){var rubyItemToGive = 'rubyhat';}else if(rubyItem < 0.9){var rubyItemToGive = 'rubyboots';}else{var rubyItemToGive = 'rubyglove';}self.inventory.currentEquip['consume'] = {};self.inventory.addItem(rubyItemToGive,[]);",
+        "event":"var rubyItem = Math.random();if(rubyItem < 0.1){var rubyItemToGive = 'simplerubybow';}else if(rubyItem < 0.2){var rubyItemToGive = 'advancedrubybow';}else if(rubyItem < 0.3){var rubyItemToGive = 'simplerubysword';}else if(rubyItem < 0.4){var rubyItemToGive = 'advancedrubysword';}else if(rubyItem < 0.5){var rubyItemToGive = 'simplerubystaff';}else if(rubyItem < 0.6){var rubyItemToGive = 'advancedrubystaff';}else if(rubyItem < 0.7){var rubyItemToGive = 'rubyarmor';}else if(rubyItem < 0.733){var rubyItemToGive = 'rubyhelmet';}else if(rubyItem < 0.766){var rubyItemToGive = 'rubyhood';}else if(rubyItem < 0.8){var rubyItemToGive = 'rubyhat';}else if(rubyItem < 0.9){var rubyItemToGive = 'rubyboots';}else{var rubyItemToGive = 'rubyglove';}self.inventory.currentEquip['consume'] = {};self.inventory.addItem(rubyItemToGive,[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Gives you a random ruby item.",
         "rarity":5
@@ -997,10 +997,10 @@
     "ringofaspirit":{
         "name":"Ring of a Spirit",
         "equip":"offhand",
-        "event":"self.stats.xp += 1.5;self.offhandPassive = 'spiritProtect';",
+        "event":"self.stats.xp += 15;self.offhandPassive = 'spiritProtect';self.stats.luck += 3;",
         "enchantments":["smashing"],
         "rarity":8,
-        "description":"<span style='color: #33ee33'>+150% increased xp and coin gain.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
+        "description":"<span style='color: #33ee33'>+1500% increased xp and coin gain.</span><br><span style='color: #33ee33'>+300% increased luck.</span><br>Heavenly souls protect you.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "frozentreads":{
         "name":"Frozen Treads",
@@ -1259,5 +1259,53 @@
         "defense":24,
         "rarity":4,
         "description":"Decreased aggro."
+    },
+    "lesserhealthboostpotion":{
+        "name":"Lesser Health Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserhealthboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max life by 10%.",
+        "rarity":3
+    },
+    "lesserdefenseboostpotion":{
+        "name":"Lesser Defense Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserdefenseboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases defense by 15.",
+        "rarity":3
+    },
+    "lesserspeedboostpotion":{
+        "name":"Lesser Speed Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserspeedboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max speed by 10%.",
+        "rarity":3
+    },
+    "lessermanaboostpotion":{
+        "name":"Lesser Mana Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lessermanaboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max mana by 50.<br>Increases mana regen by 50%.",
+        "rarity":3
+    },
+    "lesserregenboostpotion":{
+        "name":"Lesser Regen Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserregenboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases life regen by 50%.",
+        "rarity":3
+    },
+    "lesserrandomboostpotion":{
+        "name":"Lesser Random Boost Potion",
+        "equip":"consume",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'lesserhealthboost';}else if(debuff < 0.3){var debuffToGive = 'lesserdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'lesserspeedboost';}else if(debuff < 0.6){var debuffToGive = 'lessermanaboost';}else if(debuff < 0.75){var debuffToGive = 'lesserregenboost';}else if(debuff < 0.875){var debuffToGive = 'lesserrandomboost1';}else{var debuffToGive = 'lesserrandomboost2';}self.addDebuff(debuffToGive,14400);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Grants a random lesser potion buff.",
+        "rarity":3
     }
 }

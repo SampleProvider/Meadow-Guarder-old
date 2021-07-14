@@ -402,7 +402,7 @@ addToChat = function(style,message,debug){
     var m = '' + d.getMinutes();
     var h = d.getHours() + 24;
     if(SERVER !== 'localhost'){
-        h -= 5;
+        h -= 4;
     }
     h = h % 24;
     h = '' + h;
@@ -1464,6 +1464,10 @@ Actor = function(param){
         self.debuffTimer += 1;
         //self.oldStats = JSON.parse(JSON.stringify(self.stats));
         var stats = JSON.parse(JSON.stringify(self.oldStats));
+        var maxSpeed = self.oldMaxSpeed;
+        var hpMax = self.oldHpMax;
+        var manaRegen = self.oldManaRegen;
+        var manaMax = self.oldManaMax;
         var debuffRemoveList = [];
         for(var i = self.debuffs.length - 1;i >= 0;i--){
             var debuffImmune = false;
@@ -1484,14 +1488,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'fire',
-                            value:'-' + damage,
                         });
                     }
                 }
@@ -1505,14 +1508,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'electricity',
-                            value:'-' + damage,
                         });
                     }
                     if(self.type === 'Player'){
@@ -1529,14 +1531,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'death',
-                            value:'-' + damage,
                         });
                     }
                 }
@@ -1550,14 +1551,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'frost',
-                            value:'-' + damage,
                         });
                     }
                 }
@@ -1571,14 +1571,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'frost',
-                            value:'-' + damage,
                         });
                     }
                     if(self.type === 'Player'){
@@ -1599,14 +1598,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'frost',
-                            value:'-' + damage,
                         });
                     }
                     stats.defense = 0;
@@ -1625,14 +1623,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'electricity',
-                            value:'-' + damage,
                         });
                     }
                     stats.defense -= 150;
@@ -1647,14 +1644,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'electricity',
-                            value:'-' + damage,
                         });
                     }
                     stats.defense -= 1500;
@@ -1669,14 +1665,13 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'-' + damage,
+                            value:'-' + Math.round(damage),
                         });
                         var particle = new Particle({
                             x:self.x + Math.random() * self.width - self.width / 2,
                             y:self.y + Math.random() * self.height - self.height / 2,
                             map:self.map,
                             particleType:'fire',
-                            value:'-' + damage,
                         });
                     }
                 }
@@ -1691,7 +1686,7 @@ Actor = function(param){
                                 y:self.y + Math.random() * 64 - 32,
                                 map:self.map,
                                 particleType:particleType,
-                                value:'+' + damage,
+                                value:'+' + Math.round(damage),
                             });
                         }
                     }
@@ -1708,7 +1703,7 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'+' + damage,
+                            value:'+' + Math.round(damage),
                         });
                     }
                     stats.attack += 15;
@@ -1724,11 +1719,37 @@ Actor = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:particleType,
-                            value:'+' + damage,
+                            value:'+' + Math.round(damage),
                         });
                     }
                     stats.attack += 35;
                     stats.defense += 25;
+                }
+                if(self.debuffs[i].id === 'lesserhealthboost'){
+                    hpMax *= 1.1;
+                }
+                if(self.debuffs[i].id === 'lesserdefenseboost'){
+                    stats.defense += 15;
+                }
+                if(self.debuffs[i].id === 'lesserspeedboost'){
+                    maxSpeed *= 1.1;
+                }
+                if(self.debuffs[i].id === 'lessermanaboost'){
+                    manaMax += 50;
+                    manaRegen += 0.5;
+                }
+                if(self.debuffs[i].id === 'lesserregenboost'){
+                    stats.heal += 0.5;
+                }
+                if(self.debuffs[i].id === 'lesserrandomboost1'){
+                    hpMax *= 1.05;
+                    stats.defense += 10;
+                    stats.heal += 0.3;
+                }
+                if(self.debuffs[i].id === 'lesserrandomboost2'){
+                    maxSpeed *= 1.05;
+                    manaMax += 25;
+                    manaRegen += 0.3;
                 }
             }
             self.debuffs[i].time -= 1;
@@ -1740,6 +1761,10 @@ Actor = function(param){
             self.debuffs.splice(debuffRemoveList[i],1);
         }
         self.stats = JSON.parse(JSON.stringify(stats));
+        self.hpMax = Math.round(hpMax);
+        self.maxSpeed = Math.round(maxSpeed);
+        self.manaRegen = manaRegen;
+        self.manaMax = Math.round(manaMax);
         if(self.hp < 1){
             self.willBeDead = true;
             self.toRemove = true;
@@ -1869,7 +1894,7 @@ Actor = function(param){
                     y:self.y + Math.random() * 64 - 32,
                     map:self.map,
                     particleType:particleType,
-                    value:'-' + damage,
+                    value:'-' + Math.round(damage),
                 });
             }
             for(var i in pt.stats.debuffs){
@@ -2690,7 +2715,11 @@ Player = function(param){
         }
     }
     self.hpMax = 100 + self.level * 20;
+    self.oldHpMax = self.hpMax;
     self.maxSpeed = 20 + Math.floor(self.level / 10);
+    self.oldMaxSpeed = self.maxSpeed;
+    self.oldManaRegen = self.manaRegen;
+    self.oldManaMax = self.manaMax;
     self.inventory.refreshRender();
     self.stats = {
         attack:0,
@@ -2720,6 +2749,7 @@ Player = function(param){
     self.damageArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,];
     var lastSelf = {};
     self.update = function(){
+        self.updateStats();
         self.tick += 1;
         self.startX = self.x;
         self.startY = self.y;
@@ -2835,7 +2865,7 @@ Player = function(param){
                             y:self.y + Math.random() * 64 - 32,
                             map:self.map,
                             particleType:'greenDamage',
-                            value:'+' + heal,
+                            value:'+' + Math.round(heal),
                         });
                     }
                 }
@@ -2850,7 +2880,6 @@ Player = function(param){
             self.updateAttack();
         }
         self.updateMap();
-        self.updateStats();
         self.updateXp();
         if(self.hp > self.hpMax){
             self.hp = self.hpMax;
@@ -3215,6 +3244,16 @@ Player = function(param){
                 self.keyPress.second = false;
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'fibb' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'brian' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
+                self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
+                socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
+                self.keyPress.second = false;
+            }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wanderingtrader' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 self.inventory.shopItems = {items:Npc.list[i].shop,prices:Npc.list[i].shopPrices};
                 socket.emit('openShop',{name:Npc.list[i].name,quote:Npc.list[i].quote,inventory:{items:Npc.list[i].shop,prices:Npc.list[i].shopPrices}});
                 self.keyPress.second = false;
@@ -4264,7 +4303,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant1,1);
-            self.inventory.refreshItems();
+            self.inventory.refreshAllItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4276,7 +4315,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant2,1);
-            self.inventory.refreshItems();
+            self.inventory.refreshAllItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4288,7 +4327,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant3,1);
-            self.inventory.refreshItems();
+            self.inventory.refreshAllItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4300,7 +4339,7 @@ Player = function(param){
                 response1:'Thank you.',
             });
             self.inventory.enchantItem(self.selectedItem,self.questInfo.enchant4,2);
-            self.inventory.refreshItems();
+            self.inventory.refreshAllItems();
             self.selectedItem = false;
             self.currentResponse = 0;
         }
@@ -4344,7 +4383,7 @@ Player = function(param){
                         }
                     }
                 }
-                self.inventory.refreshItems();
+                self.inventory.refreshAllItems();
                 socket.emit('toggleSelect');
                 socket.emit('showInventory');
                 self.quest = false;
@@ -7431,6 +7470,10 @@ Player = function(param){
                 self.textColor = '#000000';
             }
             self.oldStats = JSON.parse(JSON.stringify(self.stats));
+            self.oldMaxSpeed = self.maxSpeed;
+            self.oldHpMax = self.hpMax;
+            self.oldManaRegen = self.manaRegen;
+            self.oldManaMax = self.manaMax;
         }
     }
     self.updateMap = function(){
@@ -7767,7 +7810,7 @@ Player = function(param){
                                     y:self.y + Math.random() * 64 - 32,
                                     map:self.map,
                                     particleType:'greenDamage',
-                                    value:'+' + heal,
+                                    value:'+' + Math.round(heal),
                                 });
                             }
                             break;
@@ -9581,7 +9624,8 @@ Monster = function(param){
     if(self.monsterType === 'rocopter'){
         self.canCollide = false;
     }
-    self.oldMoveSpeed = self.maxSpeed;
+    self.oldMaxSpeed = self.maxSpeed;
+    self.oldHpMax = self.hpMax;
     var lastSelf = {};
     var super_update = self.update;
     self.update = function(){
@@ -9670,7 +9714,7 @@ Monster = function(param){
                         y:self.y + Math.random() * 64 - 32,
                         map:self.map,
                         particleType:'greenDamage',
-                        value:'+' + heal,
+                        value:'+' + Math.round(heal),
                     });
                 }
             }
@@ -10179,7 +10223,7 @@ Monster = function(param){
                 case "attackBall":
                     if(self.reload % 60 < 16 && self.reload > 49 && self.target.invincible === false){
                         if(ENV.Difficulty === 'Expert'){
-                            self.maxSpeed = self.oldMoveSpeed * 5;
+                            self.maxSpeed = self.oldMaxSpeed * 5;
                         }
                         self.animation += 0.5;
                         if(self.animation >= 8){
@@ -10190,7 +10234,7 @@ Monster = function(param){
                         }
                     }
                     else{
-                        self.maxSpeed = self.oldMoveSpeed;
+                        self.maxSpeed = self.oldMaxSpeed;
                     }
                     self.reload += 1;
                     break;
@@ -10509,7 +10553,7 @@ Monster = function(param){
                         });
                         monster.stats.hp *= 2;
                     }
-                    self.maxSpeed = self.oldMoveSpeed * 3;
+                    self.maxSpeed = self.oldMaxSpeed * 3;
                     self.stats.attack = self.oldStats.attack * 1.5;
                     self.attackState = 'attackPhase2PossessedSpirit';
                     break;
@@ -10610,7 +10654,7 @@ Monster = function(param){
                     self.hp *= 50;
                     self.stats.damageReduction = 0.5;
                     self.oldStats.damageReduction = 0.5;
-                    self.maxSpeed = self.oldMoveSpeed * 3;
+                    self.maxSpeed = self.oldMaxSpeed * 3;
                     self.followEntity(self.target);
                     self.reload = 0;
                     self.attackState = 'attackPhase2Plantera';
@@ -10684,11 +10728,11 @@ Monster = function(param){
                 case "attackLightningRammer":
                     if(self.reload % 40 < 10 && self.target.invincible === false && ENV.Difficulty === 'Expert'){
                         self.stats.defense += 50;
-                        self.maxSpeed = self.oldMoveSpeed + 50;
+                        self.maxSpeed = self.oldMaxSpeed + 50;
                     }
                     else if(ENV.Difficulty === 'Expert'){
                         self.stats.defense = self.oldStats.defense;
-                        self.maxSpeed = self.oldMoveSpeed;
+                        self.maxSpeed = self.oldMaxSpeed;
                     }
                     self.reload += 1;
                     break;
@@ -11922,7 +11966,7 @@ Pet = function(param){
                             y:Player.list[self.parent].y + Math.random() * 64 - 32,
                             map:Player.list[self.parent].map,
                             particleType:'greenDamage',
-                            value:'+' + heal,
+                            value:'+' + Math.round(heal),
                         });
                     }
                     self.mana -= 100;
@@ -14082,14 +14126,20 @@ updateCrashes = function(){
     for(var i in Player.list){
         for(var j in Projectile.list){
             if(Player.list[i] && Projectile.list[j]){
-                if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Player.list[i].isDead === false && Projectile.list[j].map === Player.list[i].map && Projectile.list[j].doUpdate){
-                    if(ENV.PVP){
-                        Player.list[i].onCollision(Projectile.list[j],1);
-                        Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
-                    }
-                    else if(Projectile.list[j].parentType !== 'Player'){
-                        Player.list[i].onCollision(Projectile.list[j],1);
-                        Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                if(Projectile.list[j].doUpdate){
+                    if(Projectile.list[j].map === Player.list[i].map){
+                        if(Player.list[i].isDead === false){
+                            if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i){
+                                if(ENV.PVP){
+                                    Player.list[i].onCollision(Projectile.list[j],1);
+                                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                                }
+                                else if(Projectile.list[j].parentType !== 'Player'){
+                                    Player.list[i].onCollision(Projectile.list[j],1);
+                                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -14118,9 +14168,15 @@ updateCrashes = function(){
     for(var i in Monster.list){
         for(var j in Projectile.list){
             if(Monster.list[i] && Projectile.list[j]){
-                if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i && Projectile.list[j].parentType !== 'Monster' && Projectile.list[j].map === Monster.list[i].map && Monster.list[i].invincible === false && Projectile.list[j].doUpdate){
-                    Monster.list[i].onCollision(Projectile.list[j],1);
-                    Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
+                if(Projectile.list[j].parentType !== 'Monster'){
+                    if(Projectile.list[j].doUpdate){
+                        if(Projectile.list[j].map === Monster.list[i].map){
+                            if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i){
+                                Monster.list[i].onCollision(Projectile.list[j],1);
+                                Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
+                            }
+                        }
+                    }
                 }
             }
         }

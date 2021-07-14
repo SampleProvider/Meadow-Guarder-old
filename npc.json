@@ -226,6 +226,66 @@
         ],
         "quote":"My food is the best in town!"
     },
+    "brian":{
+        "name":"Brian",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":[
+            {
+                "id":"lesserhealthboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"lesserdefenseboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"lesserspeedboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"lessermanaboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"lesserregenboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"lesserrandomboostpotion",
+                "enchantments":[]
+            }
+        ],
+        "shopPrices":[
+            10000,
+            10000,
+            10000,
+            15000,
+            15000,
+            25000
+        ],
+        "quote":"I sell all sorts of potions!"
+    },
+    "wanderingtrader":{
+        "name":"Wandering Trader",
+        "randomWalk":"waypoint",
+        "canChangeMap":true,
+        "shop":[
+            {
+                "id":"lesserrandomboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"skullofdeath",
+                "enchantments":[]
+            }
+        ],
+        "shopPrices":[
+            20000,
+            850000
+        ],
+        "quote":"I travel across the land, selling rare items!"
+    },
     "woodenforge":{
         "name":"Wooden Forge",
         "randomWalk":"wander",
