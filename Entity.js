@@ -7629,7 +7629,7 @@ Player = function(param){
                 self.currentItem = '';
             }
             self.stats.attack = Math.round(self.stats.attack * damageIncrease);
-            self.stats.heal *=  * Math.sqrt(Math.sqrt(self.hpMax));
+            self.stats.heal *= Math.sqrt(Math.sqrt(self.hpMax));
             self.hpMax = Math.round(self.hpMax);
             if(self.inventory.spawn === true){
                 self.inventory.spawn = false;
