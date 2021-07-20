@@ -3255,8 +3255,6 @@ Player = function(param){
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'joe' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Clear Tower") === true){
-                    self.questStage = 2;
-                    self.questInfo.quest = 'Clear Tower';
                     socket.emit('questInfo',{
                         questName:self.questInfo.quest,
                     });
@@ -3449,8 +3447,6 @@ Player = function(param){
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Lost Rubies") === true){
-                    self.questStage = 2;
-                    self.questInfo.quest = 'Lost Rubies';
                     socket.emit('questInfo',{
                         questName:self.questInfo.quest,
                     });
@@ -3746,9 +3742,6 @@ Player = function(param){
             }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'cyber' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Secret Tunnels") === true){
-                    self.questStage = 2;
-                    self.invincible = true;
-                    self.questInfo.quest = 'Secret Tunnels';
                     socket.emit('questInfo',{
                         questName:self.questInfo.quest,
                     });
