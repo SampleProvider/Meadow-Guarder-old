@@ -1,7 +1,12 @@
 
 const { Client } = require('pg');
 
-require('./DATABASE_URL.js')
+if(SERVER === 'localhost'){
+	require("./DATABASE_URL.js");
+}
+else{
+	connectionString = connectionString = process.env.DATABASE_URL;
+}
 
 const client = new Client({
 	connectionString:connectionString,
