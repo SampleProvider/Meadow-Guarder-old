@@ -7963,7 +7963,7 @@ Player = function(param){
                 if(self.eventQ[i].time === 0){
                     switch(self.eventQ[i].event){
                         case "heal":
-                            var heal = 40 * self.stats.heal;
+                            var heal = Math.round(40 * self.stats.heal);
                             heal = Math.min(self.hpMax - self.hp,heal);
                             self.hp += heal;
                             if(heal){
