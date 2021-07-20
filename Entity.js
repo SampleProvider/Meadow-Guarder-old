@@ -1028,7 +1028,7 @@ Entity.getFrameUpdateData = function(){
                     addToChat('style="color: #ff0000">','You have no idea what you just did...');
                     for(var i in Player.list){
                         if(Player.list[i].map === 'The Arena'){
-                            Player.list[i].xp += 500000 * Player.list[i].stats.xp;
+                            Player.list[i].xp += 5000 * Player.list[i].stats.xp;
                             Player.list[i].inventory.addItem('leaf',[]);
                             Player.list[i].inventory.addItem('purplefish',[]);
                             if(Math.random() < 0.1){
@@ -1053,7 +1053,7 @@ Entity.getFrameUpdateData = function(){
                     addToChat('style="color: #00aadd">','You expected a reward beyond this mere leaf? Patience, the true reward will come apparent in time...');
                     for(var i in Player.list){
                         if(Player.list[i].map === 'The Arena'){
-                            Player.list[i].xp += 500000 * Player.list[i].stats.xp;
+                            Player.list[i].xp += 5000 * Player.list[i].stats.xp;
                             Player.list[i].inventory.addItem('leaf',[]);
                             Player.list[i].inventory.addItem('purplefish',[]);
                             if(Math.random() < 0.1){
@@ -3256,7 +3256,7 @@ Player = function(param){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'joe' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Clear Tower") === true){
                     socket.emit('questInfo',{
-                        questName:self.questInfo.quest,
+                        questName:'Clear Tower',
                     });
                     self.currentResponse = 0;
                 }
@@ -3448,7 +3448,7 @@ Player = function(param){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Lost Rubies") === true){
                     socket.emit('questInfo',{
-                        questName:self.questInfo.quest,
+                        questName:'Lost Rubies',
                     });
                     self.currentResponse = 0;
                 }
@@ -3743,7 +3743,7 @@ Player = function(param){
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'cyber' && self.mapChange > 20 && Npc.list[i].x - 32 < self.mouseX && Npc.list[i].x + 32 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 32 > self.mouseY && self.keyPress.second === true){
                 if(self.quest === false && self.questInfo.quest === false && self.checkQuestRequirements("Secret Tunnels") === true){
                     socket.emit('questInfo',{
-                        questName:self.questInfo.quest,
+                        questName:'Secret Tunnels',
                     });
                     self.currentResponse = 0;
                 }
@@ -7578,47 +7578,51 @@ Player = function(param){
             self.offhandPassiveUsetime = 10;
             for(var i in self.inventory.currentEquip){
                 if(self.inventory.currentEquip[i].id !== undefined){
-                    var item = Item.list[self.inventory.currentEquip[i].id];
-                    if(item.damageType){
-                        self.stats.damageType = item.damageType;
-                        self.ability.ability = self.inventory.currentEquip[i].id;
+                    if(i !== 'weapon2'){
+                        var item = Item.list[self.inventory.currentEquip[i].id];
+                        if(item.damageType){
+                            self.stats.damageType = item.damageType;
+                            self.ability.ability = self.inventory.currentEquip[i].id;
+                        }
                     }
                 }
             }
             for(var i in self.inventory.currentEquip){
                 if(self.inventory.currentEquip[i].id !== undefined){
-                    var item = Item.list[self.inventory.currentEquip[i].id];
-                    if(item.damage){
-                        self.stats.attack += item.damage;
-                    }
-                    if(item.critChance !== undefined){
-                        self.stats.critChance += item.critChance;
-                    }
-                    if(item.defense !== undefined){
-                        self.stats.defense += item.defense;
-                    }
-                    if(item.damageReduction){
-                        self.stats.damageReduction += item.damageReduction;
-                    }
-                    if(item.manaCost){
-                        self.attackCost = item.manaCost;
-                    }
-                    if(item.knockback !== undefined){
-                        self.stats.knockback = item.knockback;
-                    }
-                    if(item.useTime){
-                        self.useTime += item.useTime;
-                    }
-                    try{
-                        eval(item.event);
-                        for(var j in self.inventory.currentEquip[i].enchantments){
-                            var enchantment = Enchantment.list[self.inventory.currentEquip[i].enchantments[j].id];
-                            var value = self.inventory.currentEquip[i].enchantments[j].level;
-                            eval(enchantment.event);
+                    if(i !== 'weapon2'){
+                        var item = Item.list[self.inventory.currentEquip[i].id];
+                        if(item.damage){
+                            self.stats.attack += item.damage;
                         }
-                    }
-                    catch(err){
-                        console.log(err);
+                        if(item.critChance !== undefined){
+                            self.stats.critChance += item.critChance;
+                        }
+                        if(item.defense !== undefined){
+                            self.stats.defense += item.defense;
+                        }
+                        if(item.damageReduction){
+                            self.stats.damageReduction += item.damageReduction;
+                        }
+                        if(item.manaCost){
+                            self.attackCost = item.manaCost;
+                        }
+                        if(item.knockback !== undefined){
+                            self.stats.knockback = item.knockback;
+                        }
+                        if(item.useTime){
+                            self.useTime += item.useTime;
+                        }
+                        try{
+                            eval(item.event);
+                            for(var j in self.inventory.currentEquip[i].enchantments){
+                                var enchantment = Enchantment.list[self.inventory.currentEquip[i].enchantments[j].id];
+                                var value = self.inventory.currentEquip[i].enchantments[j].level;
+                                eval(enchantment.event);
+                            }
+                        }
+                        catch(err){
+                            console.log(err);
+                        }
                     }
                 }
             }
@@ -8670,6 +8674,19 @@ Player = function(param){
                 self.addToEventQ('heal',self.ability.healPattern[i]);
             }
         }
+        if(self.keyPress.second === true){
+            if(self.inventory.currentEquip.weapon.id && self.inventory.currentEquip.weapon2.id){
+                var weapon = JSON.parse(JSON.stringify(self.inventory.currentEquip.weapon));
+                var weapon2 = JSON.parse(JSON.stringify(self.inventory.currentEquip.weapon2));
+                self.inventory.currentEquip.weapon = weapon2;
+                self.inventory.currentEquip.weapon2 = weapon;
+                self.inventory.refreshEquip();
+            }
+            else{
+                socket.emit('notification','[!] Have both a weapon and a secondary weapon equipped to swap weapons.');
+            }
+            self.keyPress.second = false;
+        }
         if(isFireMap === false){
             return;
         }
@@ -9688,6 +9705,7 @@ Monster = function(param){
     }
     self.animation = 0;
     self.animate = false;
+    self.pushResist = param.pushResist;
     self.itemDrops = param.itemDrops;
     self.healReload = 0;
     self.canChangeMap = false;
@@ -12541,23 +12559,31 @@ Projectile = function(param){
         self.lastX = self.x;
         self.lastY = self.y;
         if(self.timer !== 1){
-            var largestSpeedRatio = 1;
-            if(largestSpeedRatio < Math.abs(self.spdX) / self.width){
-                largestSpeedRatio = Math.ceil(Math.abs(self.spdX) / self.width);
+            if(self.doCollision){
+                var largestSpeedRatio = 1;
+                if(largestSpeedRatio < Math.abs(self.spdX) / self.width){
+                    largestSpeedRatio = Math.ceil(Math.abs(self.spdX) / self.width);
+                }
+                if(largestSpeedRatio < Math.abs(self.spdY) / self.height){
+                    largestSpeedRatio = Math.ceil(Math.abs(self.spdY) / self.height);
+                }
+                self.spdX = self.spdX / largestSpeedRatio;
+                self.spdY = self.spdY / largestSpeedRatio;
+                for(var i = 0;i < largestSpeedRatio;i++){
+                    self.lastX = self.x;
+                    self.lastY = self.y;
+                    super_update();
+                    self.updateCollisions();
+                }
+                self.spdX = self.spdX * largestSpeedRatio;
+                self.spdY = self.spdY * largestSpeedRatio;
             }
-            if(largestSpeedRatio < Math.abs(self.spdY) / self.height){
-                largestSpeedRatio = Math.ceil(Math.abs(self.spdY) / self.height);
-            }
-            self.spdX = self.spdX / largestSpeedRatio;
-            self.spdY = self.spdY / largestSpeedRatio;
-            for(var i = 0;i < largestSpeedRatio;i++){
+            else{
                 self.lastX = self.x;
                 self.lastY = self.y;
                 super_update();
                 self.updateCollisions();
             }
-            self.spdX = self.spdX * largestSpeedRatio;
-            self.spdY = self.spdY * largestSpeedRatio;
         }
         if(self.x < self.width / 2 && self.canCollide){
             self.x = self.width / 2;

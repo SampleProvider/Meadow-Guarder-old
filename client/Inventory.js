@@ -5,7 +5,7 @@ Inventory = function(socket,server){
         socket:socket,
         server:server,
         items:[], //{id:"itemId",enchantments:[]}
-        currentEquip:{weapon:{},helmet:{},armor:{},key:{},offhand:{},crystal:{},consume:{}},
+        currentEquip:{weapon:{},weapon2:{},helmet:{},armor:{},key:{},offhand:{},crystal:{},consume:{}},
         materials:{
             wood:0,
             steel:0,
@@ -755,7 +755,6 @@ Inventory = function(socket,server){
     }
     self.refreshItem = function(index){
         if(self.server){
-            self.refresh = true;
             if(self.socket !== undefined){
                 self.socket.emit('updateItem',{items:self.items,index:index});
             }
@@ -765,7 +764,6 @@ Inventory = function(socket,server){
     }
     self.refreshAllItems = function(){
         if(self.server){
-            self.refresh = true;
             if(self.socket !== undefined){
                 self.socket.emit('updateItems',{items:self.items});
             }
@@ -819,6 +817,7 @@ Inventory = function(socket,server){
     }
     self.refreshEquip = function(){
         if(self.server){
+            self.refresh = true;
             if(self.socket !== undefined){
                 self.socket.emit('updateEquip',{currentEquip:self.currentEquip});
             }
@@ -879,10 +878,22 @@ Inventory = function(socket,server){
                     return;
                 }
                 var item = self.items[index];
-                if(self.currentEquip[Item.list[item.id].equip].id !== undefined){
-                    self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
+                var equip = Item.list[item.id].equip;
+                if(self.currentEquip[equip].id !== undefined){
+                    if(equip === 'weapon'){
+                        if(self.currentEquip['weapon2']){
+                            self.addItem(self.currentEquip['weapon2'].id,self.currentEquip['weapon2'].enchantments);
+                            equip = 'weapon2';
+                        }
+                        else if(self.currentEquip['weapon']){
+                            self.addItem(self.currentEquip['weapon'].id,self.currentEquip['weapon'].enchantments);
+                        }
+                    }
+                    else{
+                        self.addItem(self.currentEquip[equip].id,self.currentEquip[equip].enchantments);
+                    }
                 }
-                self.currentEquip[Item.list[item.id].equip] = self.items[index];
+                self.currentEquip[equip] = self.items[index];
                 self.removeItem(index);
                 self.refreshEquip();
                 self.refreshAllItems();
@@ -894,12 +905,8 @@ Inventory = function(socket,server){
         self.socket.on("unequipItem",function(index){
             try{
                 var item = self.currentEquip[index];
-                if(self.currentEquip[Item.list[item.id].equip].id !== item.id){
-                    addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item unequip.');
-                    return;
-                }
-                self.addItem(self.currentEquip[Item.list[item.id].equip].id,self.currentEquip[Item.list[item.id].equip].enchantments);
-                self.currentEquip[Item.list[item.id].equip] = {};
+                self.addItem(self.currentEquip[index].id,self.currentEquip[index].enchantments);
+                self.currentEquip[index] = {};
                 self.refreshEquip();
             }
             catch(err){
