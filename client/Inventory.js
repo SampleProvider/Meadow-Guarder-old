@@ -45,7 +45,7 @@ Inventory = function(socket,server){
         if(Item.list[id]){
             var newEnchantments = [];
             for(var i in enchantments){
-                if(enchantments[i].level >= 1){
+                if(enchantments[i].level > 1){
                     newEnchantments.push({id:enchantments[i].id,level:enchantments[i].level / 100});
                 }
                 else{
