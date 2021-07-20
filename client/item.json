@@ -1419,16 +1419,16 @@
     "shieldofbloodlust":{
         "name":"Shield of Bloodlust",
         "equip":"offhand",
-        "event":"self.stats.aggro += 4;if(self.damageType === 'healing'){damageIncrease += 0.5;self.useTime *= 0.65;}else{damageIncrease = 0;}",
+        "event":"self.stats.aggro += 4;if(self.stats.damageType === 'healing'){damageIncrease += 0.5;self.useTime *= 0.65;}if(self.stats.damageType !== 'healing'){damageIncrease = 0;self.stats.attack = 0;}",
         "enchantments":["smashing"],
         "defense":35,
         "rarity":5,
-        "description":"<span style='color: #33ee33'>+50% healing.</span><br><span style='color: #33ee33'>-35% healing speed.</span><br>Greatly increased aggro.<br>All weapons cannot damage enemies."
+        "description":"<span style='color: #33ee33'>+50% healing.</span><br><span style='color: #33ee33'>+35% healing speed.</span><br>Greatly increased aggro.<br>All weapons cannot damage enemies."
     },
     "shieldoflife":{
-        "name":"Shield of Bloodlust",
+        "name":"Shield of Life",
         "equip":"offhand",
-        "event":"self.stats.aggro -= 0.75;if(self.damageType === 'healing'){damageIncrease += 0.15;self.attackCost *= 0.65;}self.hpMax *= 1.2;",
+        "event":"self.stats.aggro -= 0.75;if(self.stats.damageType === 'healing'){damageIncrease += 0.15;self.attackCost *= 0.65;}self.hpMax *= 1.2;",
         "enchantments":["smashing"],
         "defense":17,
         "rarity":5,

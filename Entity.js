@@ -7579,6 +7579,15 @@ Player = function(param){
             for(var i in self.inventory.currentEquip){
                 if(self.inventory.currentEquip[i].id !== undefined){
                     var item = Item.list[self.inventory.currentEquip[i].id];
+                    if(item.damageType){
+                        self.stats.damageType = item.damageType;
+                        self.ability.ability = self.inventory.currentEquip[i].id;
+                    }
+                }
+            }
+            for(var i in self.inventory.currentEquip){
+                if(self.inventory.currentEquip[i].id !== undefined){
+                    var item = Item.list[self.inventory.currentEquip[i].id];
                     if(item.damage){
                         self.stats.attack += item.damage;
                     }
@@ -7596,10 +7605,6 @@ Player = function(param){
                     }
                     if(item.knockback !== undefined){
                         self.stats.knockback = item.knockback;
-                    }
-                    if(item.damageType){
-                        self.stats.damageType += item.damageType;
-                        self.ability.ability = self.inventory.currentEquip[i].id;
                     }
                     if(item.useTime){
                         self.useTime += item.useTime;
