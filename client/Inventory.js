@@ -69,7 +69,7 @@ Inventory = function(socket,server){
             if(Item.list[item.id].enchantments[i] === enchantment){
                 for(var j in item.enchantments){
                     if(item.enchantments[j].id === enchantment){
-                        item.enchantments[j].level = Math.round(item.enchantments[j].level * 1000 + (1.01 - item.enchantments[j].level) * level * 1000) / 1000;
+                        item.enchantments[j].level = Math.min(Math.round(item.enchantments[j].level * 1000 + (1.01 - item.enchantments[j].level) * level * 1000) / 1000,1);
                         return true;
                     }
                 }
