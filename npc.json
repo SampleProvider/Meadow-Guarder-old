@@ -254,6 +254,10 @@
             {
                 "id":"lesserrandomboostpotion",
                 "enchantments":[]
+            },
+            {
+                "id":"basichealingscepter",
+                "enchantments":[]
             }
         ],
         "shopPrices":[
@@ -262,7 +266,8 @@
             10000,
             15000,
             15000,
-            25000
+            25000,
+            150000
         ],
         "quote":"I sell all sorts of potions!"
     },
@@ -282,9 +287,14 @@
         ],
         "shopPrices":[
             20000,
-            850000
+            850000,
+            200000,
+            200000,
+            200000,
+            200000,
+            200000
         ],
-        "quote":"I travel across the land, selling rare items!"
+        "quote":"I travel across the land, selling rare items! My stock refreshes every 5 minutes."
     },
     "woodenforge":{
         "name":"Wooden Forge",
@@ -361,6 +371,10 @@
         "crafts":{
             "items":[
                 {
+                    "id":"advancedhealingscepter",
+                    "enchantments":[]
+                },
+                {
                     "id":"advancedsteelsword",
                     "enchantments":[]
                 },
@@ -386,6 +400,16 @@
                 }
             ],
             "materials":[
+                [
+                    {
+                        "id":"steel",
+                        "amount":25
+                    },
+                    {
+                        "id":"gold",
+                        "amount":75
+                    }
+                ],
                 [
                     {
                         "id":"wood",
@@ -793,6 +817,18 @@
     "billy":{
         "name":"Billy",
         "randomWalk":"waypoint",
+        "canChangeMap":true,
+        "shop":false
+    },
+    "cyber":{
+        "name":"Cyber",
+        "randomWalk":"wander",
+        "canChangeMap":true,
+        "shop":false
+    },
+    "tutorialguard":{
+        "name":"Tutorial Guard",
+        "randomWalk":"none",
         "canChangeMap":true,
         "shop":false
     },

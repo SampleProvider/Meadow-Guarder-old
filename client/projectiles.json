@@ -8,7 +8,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "earthBullet":{
@@ -20,7 +21,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "stoneArrow":{
@@ -32,7 +34,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "rockTower":{
@@ -44,7 +47,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "waterTower":{
@@ -56,7 +60,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "typhoon":{
@@ -68,7 +73,8 @@
             "heal":1,
             "range":1,
             "speed":3,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "ballBullet":{
@@ -80,7 +86,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "fireBullet":{
@@ -92,7 +99,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "sword":{
@@ -104,7 +112,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "waterBullet":{
@@ -116,7 +125,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "frostBullet":{
@@ -128,7 +138,8 @@
             "heal":1,
             "range":10,
             "speed":0.3,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "lizardSpit":{
@@ -140,7 +151,8 @@
             "heal":1,
             "range":3,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "lightningSpit":{
@@ -152,7 +164,8 @@
             "heal":1,
             "range":3,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "void":{
@@ -164,7 +177,21 @@
             "heal":1,
             "range":0.1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "healingring":{
+        "width":384,
+        "height":384,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":0.1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplewoodenbow":{
@@ -176,7 +203,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplesteelbow":{
@@ -188,7 +216,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simpledarksteelbow":{
@@ -200,7 +229,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplegoldenbow":{
@@ -212,7 +242,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplerubybow":{
@@ -224,7 +255,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedwoodenbow":{
@@ -236,7 +268,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedsteelbow":{
@@ -248,7 +281,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advanceddarksteelbow":{
@@ -260,7 +294,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedgoldenbow":{
@@ -272,7 +307,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedrubybow":{
@@ -284,7 +320,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplewoodensword":{
@@ -296,7 +333,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplesteelsword":{
@@ -308,7 +346,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simpledarksteelsword":{
@@ -320,7 +359,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplegoldensword":{
@@ -332,7 +372,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplerubysword":{
@@ -344,7 +385,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedwoodensword":{
@@ -356,7 +398,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedsteelsword":{
@@ -368,7 +411,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advanceddarksteelsword":{
@@ -380,7 +424,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedgoldensword":{
@@ -392,7 +437,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedrubysword":{
@@ -404,7 +450,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplewoodenstaff":{
@@ -416,7 +463,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplesteelstaff":{
@@ -428,7 +476,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simpledarksteelstaff":{
@@ -440,7 +489,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplegoldenstaff":{
@@ -452,7 +502,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "simplerubystaff":{
@@ -464,7 +515,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedwoodenstaff":{
@@ -476,7 +528,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedsteelstaff":{
@@ -488,7 +541,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advanceddarksteelstaff":{
@@ -500,7 +554,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedgoldenstaff":{
@@ -512,7 +567,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "advancedrubystaff":{
@@ -524,7 +580,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "lightningsaber":{
@@ -536,7 +593,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "lightningwand":{
@@ -548,7 +606,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookoflightning":{
@@ -560,7 +619,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookofspirits":{
@@ -572,7 +632,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookofdeath":{
@@ -584,7 +645,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookoffrost":{
@@ -596,7 +658,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "ectocannon":{
@@ -608,7 +671,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "halibutcannon":{
@@ -620,7 +684,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "leafblower":{
@@ -632,7 +697,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "flamethrower":{
@@ -644,7 +710,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookofnature":{
@@ -656,7 +723,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "voidbook":{
@@ -668,7 +736,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "tsunami":{
@@ -680,7 +749,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "waterslasher":{
@@ -692,7 +762,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "staffofthewhirlwind":{
@@ -704,7 +775,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "typhoonstorm":{
@@ -716,7 +788,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "iceboomerang":{
@@ -728,7 +801,8 @@
             "heal":1,
             "range":100,
             "speed":2,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "rockboomerang":{
@@ -740,7 +814,8 @@
             "heal":1,
             "range":100,
             "speed":2,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "fireboomerang":{
@@ -752,7 +827,8 @@
             "heal":1,
             "range":100,
             "speed":2,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "emeralditestaff":{
@@ -764,7 +840,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookofflames":{
@@ -776,7 +853,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookoflasers":{
@@ -788,7 +866,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bowofrock":{
@@ -800,7 +879,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bookofrock":{
@@ -812,7 +892,60 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "basichealingscepter":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "healingscepter":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "advancedhealingscepter":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "scepterofregrowth":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
         }
     },
     "whirlwindcannon":{
@@ -824,7 +957,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "unholytrident":{
@@ -836,7 +970,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "holytrident":{
@@ -848,7 +983,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "soul":{
@@ -860,7 +996,8 @@
             "heal":1,
             "range":3,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "possessedSoul":{
@@ -872,7 +1009,8 @@
             "heal":1,
             "range":3,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "bullet":{
@@ -884,7 +1022,8 @@
             "heal":1,
             "range":1,
             "speed":2,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "flame":{
@@ -896,7 +1035,8 @@
             "heal":1,
             "range":0.1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "skull":{
@@ -908,7 +1048,8 @@
             "heal":1,
             "range":10,
             "speed":0.3,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "unholySoul":{
@@ -920,7 +1061,8 @@
             "heal":1,
             "range":3,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "holySoul":{
@@ -932,7 +1074,8 @@
             "heal":1,
             "range":3,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "seed":{
@@ -944,7 +1087,8 @@
             "heal":1,
             "range":5,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "splaser":{
@@ -956,7 +1100,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "giantsplaser":{
@@ -968,7 +1113,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "spgem":{
@@ -980,7 +1126,8 @@
             "heal":1,
             "range":5,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     },
     "rock":{
@@ -992,7 +1139,8 @@
             "heal":1,
             "range":1,
             "speed":1,
-            "critChance":1
+            "critChance":1,
+            "knockback":1
         }
     }
 }

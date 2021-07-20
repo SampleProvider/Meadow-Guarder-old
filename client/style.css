@@ -1370,3 +1370,33 @@ audio {
     text-align: center;
     vertical-align: middle;
 }
+
+#questObjectiveDiv {
+    position: absolute;
+    left: 8px;
+    top: 84px;
+    height: 316px;
+    width: 300px;
+    background: none;
+    border: none;
+    cursor: crosshair;
+}
+#questObjectiveName {
+    position: static;
+    margin: 0px;
+    background: none;
+    color: #ffd000;
+    font-family: 'pixel';
+    font-size: 20px;
+    border: none;
+    cursor: crosshair;
+}
+#questObjective {
+    position: static;
+    margin: 0px;
+    color: #ffffff;
+    font-family: 'pixel';
+    font-size: 15px;
+    opacity: 1;
+    overflow: auto;
+}

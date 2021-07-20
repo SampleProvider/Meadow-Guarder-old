@@ -65,6 +65,36 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							7/20/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Released 0.3.0!
+							<br>
+							Added a new quest, Secret Tunnels!
+							<br>
+							Added Scepters, a healing weapon! Healing is a new class.
+							<br>
+							Added more enchantments.
+							<br>
+							Revamped enchantment system.
+							<br>
+							Added a quest objective.
+							<br>
+							Added Tutorial quest and Monster Raid quest.
+							<br>
+							Revamped Book of Lightning and Book of Flames.
+							<br>
+							Buffed Whirlwind.
+							<br>
+							Added projectile knockback.
+							<br>
+							Wandering Trader now sells random items.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
 							7/13/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
@@ -74,7 +104,7 @@
 							<br>
 							Released 024f12a.
 							<br>
-							Added Potions
+							Added Potions.
 						</div>
 					</div>
 				</div>
@@ -838,7 +868,9 @@
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
 							sp: Main Developer<br>
 							Suvanth: Secondary Developer + Bug Finder<br>
-							the-real-tianmu: Map Creator + Pixel Art Designer
+							the-real-tianmu: Map Creator + Pixel Art Designer<br>
+							Sampleprovider(sp): Ad Designer<br>
+							Radioactive64: Ad Designer
 						</div>
 					</div>
 				</div>
@@ -863,6 +895,12 @@
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
 							Announcements:
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 20px">
+							7/20/2021:
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							0.3.0 is now out! Read the changelog for more information.
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 20px">
 							1/24/2021:
@@ -928,7 +966,7 @@
 	<div id="loadingDiv" style="display:none;">
 		<div id="loadingHolder">
 			<div id="loadingProgress"></div>
-			<div id="loadingBar">0 / 434</div>
+			<div id="loadingBar">0 / 495</div>
 		</div>
 	</div>
 	<noscript><meta http-equiv="refresh" content="0; url=./client/nojs.html"/></noscript>
@@ -949,7 +987,7 @@
 			<div id="respawnTimer"></div>
 			<button id="respawn" onclick="respawn()" style="display:none;">Respawn</button>
 		</div>
-		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">Starter House</div>
+		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
 		<div id="fps" class="UI-text-light"></div>
 		<div id="dps" class="UI-text-light"></div>
 		<div id="maxdps" class="UI-text-light"></div>
@@ -959,8 +997,12 @@
 		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event)">
 			<input id="chat-input" class="UI-input-light" type="text"></input>
 		</form>
-		<div id="bossHealth"></div>
-		<div id="bossbar"></div>
+		<div id="bossHealth" onmouseover="mouseUp(event)"></div>
+		<div id="bossbar" onmouseover="mouseUp(event)"></div>
+		<div id="questObjectiveDiv" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+			<div id="questObjectiveName" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
+			<div id="questObjective" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
+		</div>
 		<div id="window" class="window" onmouseover="mouseUp(event)">
 			<div class="window-bar">
 				<div>Menu</div>
@@ -1171,7 +1213,7 @@
 			</div>
 		</div>
 		<div id="notificationsHolder" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
-			<div id="notifications" class="UI-display-light" onmouseover="mouseUp(event)"></div>
+			<div id="notifications" class="UI-display-light"></div>
 		</div>
 		<div id="debuffHolder">
 			<div id="debuffs" class="UI-display-light" onmouseover="mouseUp(event)"></div>

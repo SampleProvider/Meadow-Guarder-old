@@ -10,14 +10,18 @@
         "trackDistance":"random",
         "hp":35,
         "stats":{
-            "attack":5,
+            "attack":35,
             "defense":0,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "simplewoodenbow":0.1,
@@ -63,14 +67,18 @@
         "trackDistance":"random",
         "hp":35,
         "stats":{
-            "attack":5,
+            "attack":35,
             "defense":0,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "simplewoodenbow":0.1,
@@ -107,7 +115,7 @@
     },
     "redBird":{
         "spawnChance":0.1,
-        "xpGain":50,
+        "xpGain":10,
         "width":88,
         "height":104,
         "attackState":"RedBird",
@@ -116,15 +124,18 @@
         "trackDistance":"random",
         "hp":2500,
         "stats":{
-            "attack":7,
+            "attack":46,
             "defense":10,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
         "immuneDebuffs":["burning"],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "firecrystal":1,
@@ -135,7 +146,7 @@
     },
     "sandBird":{
         "spawnChance":1,
-        "xpGain":20,
+        "xpGain":2,
         "width":44,
         "height":40,
         "attackState":"Bird",
@@ -144,19 +155,21 @@
         "trackDistance":"random",
         "hp":1350,
         "stats":{
-            "attack":6,
+            "attack":67,
             "defense":30,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[{
                 "id":"shocked",
                 "time":100
             }]
         },
         "immuneDebuffs":["shocked"],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "lightningarrow":0.01
@@ -164,7 +177,7 @@
     },
     "blueBall":{
         "spawnChance":0.15,
-        "xpGain":2,
+        "xpGain":1,
         "width":44,
         "height":44,
         "attackState":"Ball",
@@ -173,14 +186,18 @@
         "trackDistance":"random",
         "hp":50,
         "stats":{
-            "attack":5,
+            "attack":35,
             "defense":0,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "woodenhood":0.1,
@@ -207,7 +224,7 @@
     },
     "snowBall":{
         "spawnChance":0.15,
-        "xpGain":3,
+        "xpGain":2,
         "width":44,
         "height":44,
         "attackState":"Ball",
@@ -216,19 +233,21 @@
         "trackDistance":"random",
         "hp":100,
         "stats":{
-            "attack":20,
+            "attack":45,
             "defense":0,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[{
                 "id":"frostburn",
                 "time":40
             }]
         },
         "immuneDebuffs":["frostburn"],
+        "pushResist":0,
         "moveSpeed":10,
         "itemDrops":{
             "woodenhood":0.1,
@@ -264,14 +283,18 @@
         "trackDistance":0,
         "hp":50,
         "stats":{
-            "attack":500,
+            "attack":1,
             "defense":0,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "coinring":0.01
@@ -288,14 +311,18 @@
         "trackDistance":0,
         "hp":50,
         "stats":{
-            "attack":500,
+            "attack":1,
             "defense":0,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "coinring":0.01
@@ -303,7 +330,7 @@
     },
     "greenLizard":{
         "spawnChance":0.5,
-        "xpGain":10,
+        "xpGain":3,
         "width":48,
         "height":32,
         "attackState":"Lizard",
@@ -312,14 +339,18 @@
         "trackDistance":"random",
         "hp":750,
         "stats":{
-            "attack":20,
+            "attack":34,
             "defense":10,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":15,
         "itemDrops":{
             "bronzekey":0.1,
@@ -328,7 +359,7 @@
     },
     "lightningLizard":{
         "spawnChance":0.1,
-        "xpGain":100,
+        "xpGain":15,
         "width":96,
         "height":64,
         "attackState":"LightningLizard",
@@ -343,9 +374,12 @@
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
         "immuneDebuffs":["electrified"],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "lightningcrystal":1,
@@ -357,7 +391,7 @@
     },
     "ghost":{
         "spawnChance":1,
-        "xpGain":5,
+        "xpGain":2,
         "width":40,
         "height":84,
         "attackState":"Ghost",
@@ -366,21 +400,25 @@
         "trackDistance":0,
         "hp":250,
         "stats":{
-            "attack":40,
+            "attack":95,
             "defense":25,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":15,
         "itemDrops":{
         }
     },
     "lostSpirit":{
         "spawnChance":0.1,
-        "xpGain":10,
+        "xpGain":3,
         "width":40,
         "height":84,
         "attackState":"LostSpirit",
@@ -389,14 +427,18 @@
         "trackDistance":0,
         "hp":300,
         "stats":{
-            "attack":35,
+            "attack":105,
             "defense":25,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
-            "damageReduction":0
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":15,
         "itemDrops":{
             "ghastlyamulet":0.01,
@@ -408,7 +450,7 @@
     },
     "possessedSpirit":{
         "spawnChance":0.1,
-        "xpGain":200,
+        "xpGain":25,
         "width":80,
         "height":168,
         "attackState":"Phase1PossessedSpirit",
@@ -417,18 +459,21 @@
         "trackDistance":0,
         "hp":75000,
         "stats":{
-            "attack":55,
+            "attack":85,
             "defense":35,
             "heal":0,
             "speed":0.3,
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[{
                 "id":"frostbite",
-                "time":40
+                "time":80
             }]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "ectocannon":0.5,
@@ -440,7 +485,7 @@
     },
     "plantera":{
         "spawnChance":0.1,
-        "xpGain":250,
+        "xpGain":35,
         "width":104,
         "height":104,
         "attackState":"Phase1Plantera",
@@ -449,20 +494,26 @@
         "trackDistance":0,
         "hp":1000,
         "stats":{
-            "attack":100,
+            "attack":135,
             "defense":150,
             "heal":0,
             "speed":0.3,
             "range":1,
             "critChance":0,
             "damageReduction":1,
+            "knockback":0.8,
             "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
             "leafblower":0.5,
             "bookofnature":0.5,
             "brokenheroshield":0.5,
+            "scepterofregrowth":0.5,
+            "shieldofbloodlust":0.5,
+            "shieldoflife":0.5,
             "skullofdeath":0.5,
             "enchantmentbook":7,
             "heroshield":0.01,
@@ -480,22 +531,25 @@
         "trackDistance":0,
         "hp":5000,
         "stats":{
-            "attack":55,
+            "attack":85,
             "defense":50,
             "heal":0,
             "speed":0.3,
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":1,
             "debuffs":[]
         },
+        "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":15,
         "itemDrops":{
         }
     },
     "lightningTurret":{
         "spawnChance":1,
-        "xpGain":10,
+        "xpGain":4,
         "width":36,
         "height":52,
         "attackState":"LightningTurret",
@@ -504,16 +558,18 @@
         "trackDistance":0,
         "hp":5000,
         "stats":{
-            "attack":105,
+            "attack":125,
             "defense":35,
             "heal":0,
             "speed":1,
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":["electrified"],
+        "pushResist":0,
         "moveSpeed":0,
         "itemDrops":{
             "lightningmask":0.01,
@@ -522,7 +578,7 @@
     },
     "lightningRammer":{
         "spawnChance":1,
-        "xpGain":10,
+        "xpGain":4,
         "width":36,
         "height":36,
         "attackState":"LightningRammer",
@@ -538,12 +594,14 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":1,
             "debuffs":[{
                 "id":"electrified",
                 "time":40
             }]
         },
         "immuneDebuffs":["electrified"],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "lightningarmor":0.01,
@@ -552,7 +610,7 @@
     },
     "waterRammer":{
         "spawnChance":1,
-        "xpGain":50,
+        "xpGain":5,
         "width":36,
         "height":36,
         "attackState":"LightningRammer",
@@ -568,12 +626,14 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":1,
             "debuffs":[{
                 "id":"frozen",
-                "time":20
+                "time":5
             }]
         },
         "immuneDebuffs":["frozen","frostbite","frostburn"],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "tsunami":0.05,
@@ -583,7 +643,7 @@
     },
     "deathBomb":{
         "spawnChance":0.05,
-        "xpGain":150,
+        "xpGain":10,
         "width":36,
         "height":36,
         "attackState":"DeathBomb",
@@ -592,19 +652,21 @@
         "trackDistance":0,
         "hp":150000,
         "stats":{
-            "attack":50,
+            "attack":1,
             "defense":50,
             "heal":0,
             "speed":0,
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[{
                 "id":"death",
                 "time":40
             }]
         },
         "immuneDebuffs":["death"],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "voidbook":0.1
@@ -612,7 +674,7 @@
     },
     "whirlwind":{
         "spawnChance":0,
-        "xpGain":500,
+        "xpGain":45,
         "width":92,
         "height":92,
         "attackState":"Phase1Whirlwind",
@@ -628,10 +690,12 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","frostbite","frostburn"],
-        "moveSpeed":10,
+        "pushResist":1,
+        "moveSpeed":20,
         "itemDrops":{
             "staffofthewhirlwind":0.5,
             "typhoonstorm":0.5,
@@ -644,7 +708,7 @@
     },
     "sp":{
         "spawnChance":0,
-        "xpGain":10000,
+        "xpGain":75,
         "width":32,
         "height":64,
         "attackState":"Phase1Sp",
@@ -660,9 +724,11 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "sphat":1,
@@ -671,7 +737,7 @@
     },
     "tianmuGuarder":{
         "spawnChance":0,
-        "xpGain":2500,
+        "xpGain":35,
         "width":32,
         "height":64,
         "attackState":"Phase1TianmuGuarder",
@@ -687,16 +753,18 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
+        "pushResist":0,
         "moveSpeed":10,
         "itemDrops":{
         }
     },
     "sampleprovidersp":{
         "spawnChance":0,
-        "xpGain":2500,
+        "xpGain":35,
         "width":32,
         "height":64,
         "attackState":"Phase1Sampleprovidersp",
@@ -712,16 +780,18 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
+        "pushResist":0,
         "moveSpeed":15,
         "itemDrops":{
         }
     },
     "suvanth":{
         "spawnChance":0,
-        "xpGain":2500,
+        "xpGain":35,
         "width":32,
         "height":64,
         "attackState":"Phase1Suvanth",
@@ -737,40 +807,18 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
+        "pushResist":0,
         "moveSpeed":25,
-        "itemDrops":{
-        }
-    },
-    "spgem":{
-        "spawnChance":0,
-        "xpGain":0,
-        "width":54,
-        "height":48,
-        "attackState":"Phase1Spgem",
-        "aggro":1000,
-        "boss":true,
-        "trackDistance":0,
-        "hp":2500000,
-        "stats":{
-            "attack":100,
-            "defense":0,
-            "heal":0,
-            "speed":1,
-            "range":1,
-            "critChance":0,
-            "damageReduction":0,
-            "debuffs":[]
-        },
-        "moveSpeed":15,
         "itemDrops":{
         }
     },
     "charredBird":{
         "spawnChance":1,
-        "xpGain":50,
+        "xpGain":7,
         "width":44,
         "height":40,
         "attackState":"CharredBird",
@@ -786,12 +834,14 @@
             "range":1,
             "critChance":0,
             "damageReduction":0.99,
+            "knockback":0.3,
             "debuffs":[{
                 "id":"incinerating",
-                "time":40
+                "time":20
             }]
         },
         "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
+        "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
             "burntfish":0.01
@@ -799,7 +849,7 @@
     },
     "fireSpirit":{
         "spawnChance":0,
-        "xpGain":250,
+        "xpGain":45,
         "width":96,
         "height":104,
         "attackState":"Phase1FireSpirit",
@@ -815,22 +865,24 @@
             "range":1,
             "critChance":0,
             "damageReduction":0.95,
+            "knockback":0.3,
             "debuffs":[{
                 "id":"incinerating",
-                "time":60
+                "time":30
             }]
         },
         "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
+        "pushResist":1,
         "moveSpeed":20,
         "itemDrops":{
             "essenceoffire":10,
-            "fireflower":0.5,
+            "enchantmentbook":9,
             "bookofflames":0.01
         }
     },
     "rocopter":{
         "spawnChance":1,
-        "xpGain":5,
+        "xpGain":3,
         "width":72,
         "height":56,
         "attackState":"Rocopter",
@@ -846,9 +898,11 @@
             "range":1,
             "critChance":0,
             "damageReduction":0.85,
+            "knockback":0.3,
             "debuffs":[]
         },
         "immuneDebuffs":[],
+        "pushResist":0,
         "moveSpeed":8,
         "itemDrops":{
             "rockboomerang":0.01,

@@ -327,6 +327,10 @@ signDivSignIn.onclick = function(){
         loadMap("Lilypad Castle Basement");
         loadMap("Lilypad Castle Upstairs");
         loadMap("Mysterious Room");
+        loadMap("The Tutorial");
+        loadMap("The Battlefield");
+        loadMap("Garage");
+        loadMap("Secret Tunnel Part 1");
         
         var request = new XMLHttpRequest();
         request.open('GET',"/client/projectiles.json",true);
@@ -1455,11 +1459,7 @@ var Projectile = function(initPack){
         if(self.projectileType === 'stoneArrow'){
             ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
         }
-        //if(self.projectileType === 'frostBullet'){
-            //ctx0.drawImage(Img[self.projectileType],-22,-22,44,44);
-        //}
-        //else 
-        if(self.projectileType === 'unholytrident'){
+        else if(self.projectileType === 'unholytrident'){
             ctx0.rotate(45 * Math.PI / 180);
             ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
             ctx0.rotate(-45 * Math.PI / 180);
@@ -2064,8 +2064,8 @@ var Particle = function(initPack){
         }
         if(self.particleType === 'bigOrangeDamage'){
             self.x += 6 * self.direction / 4;
-            self.y += -self.timer / 2 + 15 / 4;
-            self.timer -= 1 / 7;
+            self.y += -self.timer / 2 + 10 / 4;
+            self.timer -= 1 / 5;
         }
         else{
             self.timer -= 1 / 2;
@@ -2787,7 +2787,7 @@ socket.on('closeCraft',function(data){
     }
 });
 socket.on('notification',function(data){
-    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5">' + data + '</div>';
+    document.getElementById('notifications').innerHTML += '<div class="notification UI-display-light" style="opacity:5" onmouseover="mouseUp(event)">' + data + '</div>';
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
         if(notifications[i].offsetTop + notifications[i].offsetHeight > window.innerHeight - 16){
@@ -2799,6 +2799,10 @@ socket.on('notification',function(data){
 socket.on('changeDifficulty',function(data){
     document.getElementById('difficulty').innerHTML = 'Difficulty: ' + data;
     difficulty = data;
+});
+socket.on('questObjective',function(data){
+    document.getElementById('questObjectiveName').innerHTML = data.questName;
+    document.getElementById('questObjective').innerHTML = data.questObjective;
 });
 
 startQuest = function(){
@@ -2821,10 +2825,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 434';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 434 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 495';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 495 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 434){
+        if(loadingProgressDisplay >= 495){
             if(loading){
                 setTimeout(function(){
                     loading = false;
@@ -2957,8 +2961,10 @@ setInterval(function(){
     }
     for(var i in Projectile.list){
         if(Projectile.list[i].relativeToPlayer){
-            if(Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
-                entities.push(Projectile.list[i]);
+            if(Player.list[Projectile.list[i].relativeToPlayer]){
+                if(Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
+                    entities.push(Projectile.list[i]);
+                }
             }
         }
         else{

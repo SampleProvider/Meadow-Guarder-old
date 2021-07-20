@@ -2,13 +2,8 @@
 
 const { Client } = require('pg');
 
-var connectionString;
-if(SERVER === 'localhost'){
-	connectionString = 'postgres://gncoefpoytmecg:931c0ad1934b70f5228e7ddfba4b5f6da7898c812186eb1a5538ee08bf7295ca@ec2-34-231-56-78.compute-1.amazonaws.com:5432/dfo5un9rh1egi9';
-}
-else{
-	connectionString = process.env.DATABASE_URL;
-}
+require("./DATABASE_URL.js");
+
 const client = new Client({
 	connectionString:connectionString,
 	ssl:{

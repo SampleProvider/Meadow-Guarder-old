@@ -1,56 +1,4 @@
 
-var enchantName = {
-    1:'I',
-    2:'II',
-    3:'III',
-    4:'IV',
-    5:'V',
-    6:'VI',
-    7:'VII',
-    8:'VIII',
-    9:'IX',
-    10:'X',
-    11:'XI',
-    12:'XII',
-    13:'XIII',
-    14:'XIV',
-    15:'XV',
-    16:'XVI',
-    17:'XVII',
-    18:'XVIII',
-    19:'XIX',
-    20:'XX',
-    21:'XXI',
-    22:'XXII',
-    23:'XXIII',
-    24:'XXIV',
-    25:'XXV',
-    26:'XXVI',
-    27:'XXVII',
-    28:'XXVIII',
-    29:'XXIX',
-    30:'XXX',
-    31:'XXXI',
-    32:'XXXII',
-    33:'XXXIII',
-    34:'XXXIV',
-    35:'XXXV',
-    36:'XXXVI',
-    37:'XXXVII',
-    38:'XXXVIII',
-    39:'XXXIX',
-    40:'XL',
-    41:'XLI',
-    42:'XLII',
-    43:'XLIII',
-    44:'XLIV',
-    45:'XLV',
-    46:'XLVI',
-    47:'XLVII',
-    48:'XLVIII',
-    49:'XLIX',
-    50:'L',
-};
 
 Inventory = function(socket,server){
     var self = {
@@ -95,7 +43,16 @@ Inventory = function(socket,server){
             }
         }
         if(Item.list[id]){
-            self.items.push({id:id,enchantments:enchantments || [],displayButtons:false});
+            var newEnchantments = [];
+            for(var i in enchantments){
+                if(enchantments[i].level >= 1){
+                    newEnchantments.push({id:enchantments[i].id,level:enchantments[i].level / 100});
+                }
+                else{
+                    newEnchantments.push(enchantments[i]);
+                }
+            }
+            self.items.push({id:id,enchantments:newEnchantments || [],displayButtons:false});
             self.refreshItem(self.items.length - 1);
             return self.items.length - 1;
         }
@@ -112,25 +69,13 @@ Inventory = function(socket,server){
             if(Item.list[item.id].enchantments[i] === enchantment){
                 for(var j in item.enchantments){
                     if(item.enchantments[j].id === enchantment){
-                        if(level <= Enchantment.list[enchantment].maxLevel){
-                            if(item.enchantments[j].level === level && level + 1 <= Enchantment.list[enchantment].maxLevel){
-                                item.enchantments[j].level = level + 1;
-                            }
-                            else if(item.enchantments[j].level < level){
-                                item.enchantments[j].level = level;
-                            }
-                            //self.refreshItem(index);
-                            return true;
-                        }
-                        return false;
+                        item.enchantments[j].level = Math.round(item.enchantments[j].level * 1000 + (1.01 - item.enchantments[j].level) * level * 1000) / 1000;
+                        return true;
                     }
                 }
-                if(level <= Enchantment.list[enchantment].maxLevel){
-                    item.enchantments.push({id:enchantment,level:level});
-                    //self.refreshItem(index);
-                    return true;
-                }
-                return false;
+                item.enchantments.push({id:enchantment,level:level});
+                //self.refreshItem(index);
+                return true;
             }
         }
     }
@@ -175,7 +120,7 @@ Inventory = function(socket,server){
                     if(k === Item.list[id].enchantments[j]){
                         var enchantment = Enchantment.list[k];
                         if(Math.random() < enchantment.dropChance * luck){
-                            enchantments.push({id:k,level:Math.min(Math.max(1,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation)),enchantment.maxLevel)});
+                            enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
                         }
                     }
                 }
@@ -230,6 +175,27 @@ Inventory = function(socket,server){
         if(rarity === 8){
             return '#00ff90';
         }
+    }
+    self.getKnockback = function(knockback){
+        if(knockback === 0){
+            return 'No knockback.';
+        }
+        if(knockback <= 0.1){
+            return 'Low knockback.';
+        }
+        if(knockback <= 0.3){
+            return 'Medium knockback.';
+        }
+        if(knockback <= 0.5){
+            return 'High knockback.';
+        }
+        if(knockback <= 1){
+            return 'Crazy knockback.';
+        }
+        if(knockback <= 5){
+            return 'Insane knockback.';
+        }
+        return 'SP knockback.';
     }
     self.getMaterialName = function(id){
         if(id === 'wood'){
@@ -286,6 +252,432 @@ Inventory = function(socket,server){
         if(id === 'essenceoffire'){
             return 'Essence of Fire';
         }
+    }
+    self.addItemClient = function(data,index){
+        var inventory = document.getElementById("inventoryItem");
+        let item = Item.list[data.id];
+        let button = document.createElement('button');
+        let equip = document.createElement('button');
+        let dismantle = document.createElement('button');
+        let select = document.createElement('button');
+        let div = document.createElement('div');
+        let image = document.createElement('img');
+        let enchantments = document.createElement('div');
+        image.src = "/client/img/" + data.id + ".png";
+        button.className = "UI-button-light itemButton";
+        div.className = "UI-display-light";
+        equip.className = "itemEquip";
+        dismantle.className = "itemDismantle";
+        select.className = "itemSelect";
+        image.className = "item";
+        equip.innerHTML = "Equip";
+        if(item.equip === 'consume'){
+            equip.innerHTML = 'Use';
+        }
+        dismantle.innerHTML = "Dismantle";
+        select.innerHTML = "Select";
+        enchantments.className = "UI-text-light";
+        var enchantDisplayName = '';
+        for(var i in self.items[index].enchantments){
+            if(enchantDisplayName === ''){
+                enchantDisplayName = 'Enchantments:<br>';
+            }
+            enchantDisplayName += '+';
+            enchantDisplayName += (Math.round(self.items[index].enchantments[i].level * 1000) / 10) + '% ' + Enchantment.list[self.items[index].enchantments[i].id].name + '<br>';
+        }
+        var description = '';
+        if(item.damage || item.defense){
+            description += 'When Equipped:<br>';
+        }
+        if(item.damage){
+            if(item.damageType){
+                description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
+            }
+            if(item.critChance){
+                description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
+            }
+        }
+        if(item.defense){
+            description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
+        }
+        if(item.damageReduction){
+            description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+        }
+        if(item.manaCost){
+            description += 'Uses ' + item.manaCost + ' mana.<br>';
+        }
+        if(item.knockback !== undefined){
+            description += self.getKnockback(item.knockback) + '<br>';
+        }
+        if(item.rarity){
+            button.style.color = self.getRarityColor(item.rarity);
+        }
+        if(item.description){
+            enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
+        }
+        else{
+            enchantments.innerHTML = description + enchantDisplayName;
+        }
+        enchantments.style.padding = '0px';
+        dismantle.onclick = function(){
+            self.socket.emit("dismantleItem",index);
+            dismantle.style.display = 'inline-block';
+            div.remove();
+        }
+        equip.onclick = function(){
+            self.socket.emit("equipItem",index);
+            equip.style.display = 'inline-block';
+            div.remove();
+        }
+        var buttonClick = function(){
+            for(var i = 0;i < self.items.length;i++){
+                //self.items[i].index = i;
+            }
+            if(equip.style.display === 'inline-block'){
+                equip.style.display = 'none';
+                dismantle.style.display = 'none';
+            }
+            else if(equip.style.display === 'none'){
+                equip.style.display = 'inline-block';
+                dismantle.style.display = 'inline-block';
+            }
+            else{
+                equip.style.display = 'inline-block';
+                dismantle.style.display = 'inline-block';
+            }
+        }
+        button.onclick = buttonClick;
+        select.onclick = function(){
+            self.socket.emit("selectItem",index);
+            select.style.display = 'inline-block';
+        }
+        button.innerHTML = item.name + " ";
+        button.style.display = 'inline-block';
+        button.style.position = 'relative';
+        enchantments.style.position = 'relative';
+        enchantments.style.color = '#ffffff';
+        if(!self.select){
+            select.style.display = 'none';
+        }
+        div.style.display = 'inline-block';
+        div.style.position = 'relative';
+        div.style.margin = '0px';
+        button.style.textAlign = "center";
+        inventory.appendChild(div);
+        div.appendChild(button);
+        div.appendChild(equip);
+        div.appendChild(dismantle);
+        div.appendChild(select);
+        div.appendChild(enchantments);
+        if(data.displayButtons === undefined){
+            equip.style.display = 'none';
+            dismantle.style.display = 'none';
+            self.items[index].displayButtons = false;
+        }
+        else if(data.displayButtons === false){
+            equip.style.display = 'none';
+            dismantle.style.display = 'none';
+        }
+        else if(data.displayButtons === true){
+            equip.style.display = 'inline-block';
+            dismantle.style.display = 'inline-block';
+        }
+        else{
+            equip.style.display = 'none';
+            dismantle.style.display = 'none';
+        }
+        button.appendChild(image);
+        var spacing = document.createElement('div');
+        inventory.appendChild(spacing);
+    }
+    self.addEquipClient = function(data,index){
+        if(data.id === undefined){
+            return;
+        }
+        let item = Item.list[data.id];
+        let button = document.createElement('button');
+        let unequip = document.createElement('button');
+        let div = document.createElement('div');
+        let image = document.createElement('img');
+        let enchantments = document.createElement('div');
+        image.src = "/client/img/" + data.id + ".png";
+        button.className = "UI-button-light";
+        div.className = "UI-display-light";
+        unequip.className = "itemUnequip";
+        image.className = "item";
+        unequip.innerHTML = "Unequip";
+        enchantments.className = "UI-text-light";
+        var enchantDisplayName = '';
+        for(var i in self.currentEquip[index].enchantments){
+            if(enchantDisplayName === ''){
+                enchantDisplayName = 'Enchantments:<br>';
+            }
+            enchantDisplayName += '+';
+            enchantDisplayName += (Math.round(self.currentEquip[index].enchantments[i].level * 1000) / 10) + '% ' + Enchantment.list[self.currentEquip[index].enchantments[i].id].name + '<br>';
+        }
+        var description = '';
+        if(item.damage || item.defense){
+            description += 'When Equipped:<br>';
+        }
+        if(item.damage){
+            if(item.damageType){
+                description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
+            }
+            if(item.critChance){
+                description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
+            }
+        }
+        if(item.defense){
+            description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
+        }
+        if(item.damageReduction){
+            description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+        }
+        if(item.manaCost){
+            description += 'Uses ' + item.manaCost + ' mana.<br>';
+        }
+        if(item.knockback !== undefined){
+            description += self.getKnockback(item.knockback) + '<br>';
+        }
+        if(item.rarity){
+            button.style.color = self.getRarityColor(item.rarity);
+        }
+        if(item.description){
+            enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
+        }
+        else{
+            enchantments.innerHTML = description + enchantDisplayName;
+        }
+        enchantments.style.padding = '0px';
+        unequip.onclick = function(){
+            self.socket.emit("unequipItem",index);
+            unequip.style.display = 'inline-block';
+        }
+        button.innerHTML = item.name + " ";
+        button.style.display = 'inline-block';
+        button.style.position = 'relative';
+        enchantments.style.position = 'relative';
+        enchantments.style.color = '#ffffff';
+        div.style.display = 'inline-block';
+        div.style.position = 'relative';
+        div.style.margin = '0px';
+        button.style.textAlign = "center";
+        currentEquip.appendChild(div);
+        div.appendChild(button);
+        div.appendChild(unequip);
+        div.appendChild(enchantments);
+        button.appendChild(image);
+        var spacing = document.createElement('div');
+        currentEquip.appendChild(spacing);
+    }
+    self.addShopClient = function(data,index){
+        var shopInventory = document.getElementById("shopItem");
+        let item = Item.list[data.id];
+        let button = document.createElement('button');
+        let equip = document.createElement('button');
+        let div = document.createElement('div');
+        let image = document.createElement('img');
+        let enchantments = document.createElement('div');
+        image.src = "/client/img/" + data.id + ".png";
+        button.className = "UI-button-light";
+        div.className = "UI-display-light";
+        equip.className = "itemEquip";
+        image.className = "item";
+        equip.innerHTML = "Buy for " + Math.floor(self.shopItems.prices[index] / 10000) + '<image class="coinShopImage" src="/client/img/goldcoin.png"></image>' + Math.floor(self.shopItems.prices[index] / 100) % 100 + '<image class="coinShopImage" src="/client/img/silvercoin.png"></image>' + self.shopItems.prices[index] % 100 + '<image class="coinShopImage" src="/client/img/bronzecoin.png"></image>';
+        enchantments.className = "UI-text-light";
+        var enchantDisplayName = '';
+        for(var i in data.enchantments){
+            if(enchantDisplayName === ''){
+                enchantDisplayName = 'Enchantments:<br>';
+            }
+            enchantDisplayName += '+';
+            enchantDisplayName += (Math.round(data.enchantments[i].level * 1000) / 10) + '% ' + Enchantment.list[data.enchantments[i].id].name + '<br>';
+        }
+        var description = '';
+        if(item === undefined){
+            item = {};
+        }
+        if(item.damage || item.defense){
+            description += 'When Equipped:<br>';
+        }
+        if(item.damage){
+            if(item.damageType){
+                description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
+            }
+            if(item.critChance){
+                description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
+            }
+        }
+        if(item.defense){
+            description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
+        }
+        if(item.damageReduction){
+            description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+        }
+        if(item.manaCost){
+            description += 'Uses ' + item.manaCost + ' mana.<br>';
+        }
+        if(item.knockback !== undefined){
+            description += self.getKnockback(item.knockback) + '<br>';
+        }
+        if(item.rarity){
+            button.style.color = self.getRarityColor(item.rarity);
+        }
+        if(item.description){
+            enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
+        }
+        else{
+            enchantments.innerHTML = description + enchantDisplayName;
+        }
+        enchantments.style.padding = '0px';
+        equip.onclick = function(){
+            self.socket.emit("buyItem",index);
+            equip.style.display = 'inline-block';
+        }
+        for(var i in self.materials){
+            if(i === data.id){
+                button.innerHTML = self.getMaterialName(data.id) + ' ';
+            }
+            else if(i + 'x10' === data.id){
+                button.innerHTML = self.getMaterialName(data.id) + ' ';
+            }
+            else if(i + 'x100' === data.id){
+                button.innerHTML = self.getMaterialName(data.id) + ' ';
+            }
+        }
+        if(item.name){
+            button.innerHTML = item.name + " ";
+        }
+        button.style.display = 'inline-block';
+        button.style.position = 'relative';
+        enchantments.style.position = 'relative';
+        enchantments.style.color = '#ffffff';
+        div.style.display = 'inline-block';
+        div.style.position = 'relative';
+        div.style.margin = '0px';
+        button.style.textAlign = "center";
+        shopInventory.appendChild(div);
+        div.appendChild(button);
+        div.appendChild(equip);
+        div.appendChild(enchantments);
+        equip.style.display = 'inline-block';
+        button.appendChild(image);
+        var spacing = document.createElement('div');
+        shopInventory.appendChild(spacing);
+    }
+    self.addCraftClient = function(data,index){
+        var craftInventory = document.getElementById("craftItem");
+        let item = Item.list[data.id];
+        let button = document.createElement('button');
+        let equip = document.createElement('button');
+        let div = document.createElement('div');
+        let image = document.createElement('img');
+        let enchantments = document.createElement('div');
+        image.src = "/client/img/" + data.id + ".png";
+        button.className = "UI-button-light";
+        div.className = "UI-display-light";
+        equip.className = "itemEquip";
+        image.className = "item";
+        equip.innerHTML = "Craft for";
+        var craftAmount = "";
+        for(var i in self.craftItems.materials[index]){
+            craftAmount += " " + self.craftItems.materials[index][i].amount + '<image class="coinShopImage" src="/client/img/' + self.craftItems.materials[index][i].id + '.png"></image>';
+        }
+        equip.innerHTML += craftAmount;
+        enchantments.className = "UI-text-light";
+        var enchantDisplayName = '';
+        for(var i in data.enchantments){
+            if(enchantDisplayName === ''){
+                enchantDisplayName = 'Enchantments:<br>';
+            }
+            enchantDisplayName += '+';
+            enchantDisplayName += (Math.round(data.enchantments[i].level * 1000) / 10) + '% ' + Enchantment.list[data.enchantments[i].id].name + '<br>';
+        }
+        var description = '';
+        if(item === undefined){
+            item = {};
+        }
+        if(item.damage || item.defense){
+            description += 'When Equipped:<br>';
+        }
+        if(item.damage){
+            if(item.damageType){
+                description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
+            }
+            if(item.critChance){
+                description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
+            }
+        }
+        if(item.defense){
+            description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
+        }
+        if(item.damageReduction){
+            description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
+        }
+        if(item.manaCost){
+            description += 'Uses ' + item.manaCost + ' mana.<br>';
+        }
+        if(item.knockback !== undefined){
+            description += self.getKnockback(item.knockback) + '<br>';
+        }
+        if(item.rarity){
+            button.style.color = self.getRarityColor(item.rarity);
+        }
+        if(item.description){
+            enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
+        }
+        else{
+            enchantments.innerHTML = description + enchantDisplayName;
+        }
+        for(var i in self.materials){
+            if(i === data.id){
+                button.innerHTML = self.getMaterialName(data.id) + ' ';
+            }
+        }
+        if(item.name){
+            button.innerHTML = item.name + " ";
+        }
+        enchantments.style.padding = '0px';
+        equip.onclick = function(){
+            self.socket.emit("craftItem",index);
+            equip.style.display = 'inline-block';
+        }
+        button.style.display = 'inline-block';
+        button.style.position = 'relative';
+        enchantments.style.position = 'relative';
+        enchantments.style.color = '#ffffff';
+        div.style.display = 'inline-block';
+        div.style.position = 'relative';
+        div.style.margin = '0px';
+        button.style.textAlign = "center";
+        craftInventory.appendChild(div);
+        div.appendChild(button);
+        div.appendChild(equip);
+        div.appendChild(enchantments);
+        equip.style.display = 'inline-block';
+        button.appendChild(image);
+        var spacing = document.createElement('div');
+        craftInventory.appendChild(spacing);
+    }
+    self.addMaterialClient = function(data,index){
+        var materials = document.getElementById("materials");
+        let button = document.createElement('button');
+        let div = document.createElement('div');
+        let image = document.createElement('img');
+        image.src = "/client/img/" + index + ".png";
+        button.className = "UI-button-light";
+        div.className = "UI-display-light";
+        image.className = "item";
+        button.innerHTML = data + "x ";
+        button.style.display = 'inline-block';
+        button.style.position = 'relative';
+        div.style.display = 'inline-block';
+        div.style.position = 'relative';
+        div.style.margin = '0px';
+        button.style.textAlign = "center";
+        materials.appendChild(div);
+        div.appendChild(button);
+        button.appendChild(image);
     }
 	self.refreshRender = function(){
         if(self.server){
@@ -345,484 +737,20 @@ Inventory = function(socket,server){
         dismantleEnchantButton.style.position = 'relative';
         var spacing = document.createElement('div');
         inventory.appendChild(spacing);
-        var addItem = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let dismantle = document.createElement('button');
-            let select = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light itemButton";
-            div.className = "UI-display-light";
-            equip.className = "itemEquip";
-            dismantle.className = "itemDismantle";
-            select.className = "itemSelect";
-            image.className = "item";
-            equip.innerHTML = "Equip";
-            if(item.equip === 'consume'){
-                equip.innerHTML = 'Use';
-            }
-            dismantle.innerHTML = "Dismantle";
-            select.innerHTML = "Select";
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in self.items[index].enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[self.items[index].enchantments[i].level] === undefined){
-                    enchantName[self.items[index].enchantments[i].level] = 'enchantment.level.' + self.items[index].enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            var dismantleClick = function(data){
-                self.socket.emit("dismantleItem",data);
-                //dismantle.style.display = 'inline-block';
-                div.remove();
-                //self.items.splice(data,1);
-                /*
-                var equips = document.getElementsByClassName('itemEquip');
-                for(var i in equips){
-                    equips[i].onclick = function(){
-                        equipClick(i);
-                    }
-                }
-                var dismantles = document.getElementsByClassName('itemDismantle');
-                for(var i in dismantles){
-                    dismantles[i].onclick = function(){
-                        dismantleClick(i);
-                    }
-                }
-                var buttons = document.getElementsByClassName('itemButton');
-                for(var i in buttons){
-                    //buttons[i].onclick = buttonClick;
-                }
-                for(var i = 0;i < self.items.length;i++){
-                    self.items[i].index = parseInt(i,10);
-                }*/
-            }
-            dismantle.onclick = function(){
-                self.socket.emit("dismantleItem",index);
-                dismantle.style.display = 'inline-block';
-                div.remove();
-            }
-            var equipClick = function(data){
-                self.socket.emit("equipItem",data);
-                //equip.style.display = 'inline-block';
-                div.remove();
-                //self.items.splice(data,1);
-                /*
-                var equips = document.getElementsByClassName('itemEquip');
-                for(var i in equips){
-                    equips[i].onclick = function(){
-                        equipClick(i);
-                    }
-                }
-                var dismantles = document.getElementsByClassName('itemDismantle');
-                for(var i in dismantles){
-                    dismantles[i].onclick = function(){
-                        dismantleClick(i);
-                    }
-                }
-                var buttons = document.getElementsByClassName('itemButton');
-                for(var i in buttons){
-                    //buttons[i].onclick = buttonClick;
-                }
-                for(var i = 0;i < self.items.length;i++){
-                    self.items[i].index = parseInt(i,10);
-                }*/
-            }
-            equip.onclick = function(){
-                self.socket.emit("equipItem",index);
-                equip.style.display = 'inline-block';
-                div.remove();
-            }
-            var buttonClick = function(){
-                for(var i = 0;i < self.items.length;i++){
-                    //self.items[i].index = i;
-                }
-                if(equip.style.display === 'inline-block'){
-                    equip.style.display = 'none';
-                    dismantle.style.display = 'none';
-                }
-                else if(equip.style.display === 'none'){
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
-                }
-                else{
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
-                }
-            }
-            button.onclick = buttonClick;
-            select.onclick = function(){
-                self.socket.emit("selectItem",index);
-                select.style.display = 'inline-block';
-            }
-            button.innerHTML = item.name + " ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            if(!self.select){
-                select.style.display = 'none';
-            }
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            inventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(dismantle);
-            div.appendChild(select);
-            div.appendChild(enchantments);
-            if(data.displayButtons === undefined){
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-                self.items[index].displayButtons = false;
-            }
-            else if(data.displayButtons === false){
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-            }
-            else if(data.displayButtons === true){
-                equip.style.display = 'inline-block';
-                dismantle.style.display = 'inline-block';
-            }
-            else{
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-            }
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            inventory.appendChild(spacing);
-        }
-        var addEquip = function(data,index){
-            if(data.id === undefined){
-                return;
-            }
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let unequip = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            unequip.className = "itemUnequip";
-            image.className = "item";
-            unequip.innerHTML = "Unequip";
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in self.currentEquip[index].enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[self.currentEquip[index].enchantments[i].level] === undefined){
-                    enchantName[self.currentEquip[index].enchantments[i].level] = 'enchantment.level.' + self.currentEquip[index].enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[self.currentEquip[index].enchantments[i].id].name + ' ' + enchantName[self.currentEquip[index].enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            unequip.onclick = function(){
-                self.socket.emit("unequipItem",index);
-                unequip.style.display = 'inline-block';
-            }
-            button.innerHTML = item.name + " ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            currentEquip.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(unequip);
-            div.appendChild(enchantments);
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            currentEquip.appendChild(spacing);
-        }
-        var addShop = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            equip.className = "itemEquip";
-            image.className = "item";
-            equip.innerHTML = "Buy for " + Math.floor(self.shopItems.prices[index] / 10000) + '<image class="coinShopImage" src="/client/img/goldcoin.png"></image>' + Math.floor(self.shopItems.prices[index] / 100) % 100 + '<image class="coinShopImage" src="/client/img/silvercoin.png"></image>' + self.shopItems.prices[index] % 100 + '<image class="coinShopImage" src="/client/img/bronzecoin.png"></image>';
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in data.enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[data.enchantments[i].level] === undefined){
-                    enchantName[data.enchantments[i].level] = 'enchantment.level.' + data.enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[data.enchantments[i].id].name + ' ' + enchantName[data.enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item === undefined){
-                item = {};
-            }
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            equip.onclick = function(){
-                self.socket.emit("buyItem",index);
-                equip.style.display = 'inline-block';
-            }
-            for(var i in self.materials){
-                if(i === data.id){
-                    button.innerHTML = self.getMaterialName(data.id) + ' ';
-                }
-            }
-            if(item.name){
-                button.innerHTML = item.name + " ";
-            }
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            shopInventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(enchantments);
-            equip.style.display = 'inline-block';
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            shopInventory.appendChild(spacing);
-        }
-        var addCraft = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            equip.className = "itemEquip";
-            image.className = "item";
-            equip.innerHTML = "Craft for";
-            var craftAmount = "";
-            for(var i in self.craftItems.materials[index]){
-                craftAmount += " " + self.craftItems.materials[index][i].amount + '<image class="coinShopImage" src="/client/img/' + self.craftItems.materials[index][i].id + '.png"></image>';
-            }
-            equip.innerHTML += craftAmount;
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in data.enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[data.enchantments[i].level] === undefined){
-                    enchantName[data.enchantments[i].level] = 'enchantment.level.' + data.enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[data.enchantments[i].id].name + ' ' + enchantName[data.enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item === undefined){
-                item = {};
-            }
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            for(var i in self.materials){
-                if(i === data.id){
-                    button.innerHTML = self.getMaterialName(data.id) + ' ';
-                }
-            }
-            if(item.name){
-                button.innerHTML = item.name + " ";
-            }
-            enchantments.style.padding = '0px';
-            equip.onclick = function(){
-                self.socket.emit("craftItem",index);
-                equip.style.display = 'inline-block';
-            }
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            craftInventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(enchantments);
-            equip.style.display = 'inline-block';
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            craftInventory.appendChild(spacing);
-        }
-        var addMaterial = function(data,index){
-            let button = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            image.src = "/client/img/" + index + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            image.className = "item";
-            button.innerHTML = data + "x ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            materials.appendChild(div);
-            div.appendChild(button);
-            button.appendChild(image);
-        }
 		for(var i = 0;i < self.items.length;i++){
-			addItem(self.items[i],i);
+			self.addItemClient(self.items[i],i);
 		}
 		for(var i in self.currentEquip){
-			addEquip(self.currentEquip[i],i);
+			self.addEquipClient(self.currentEquip[i],i);
 		}
 		for(var i = 0;i < self.shopItems.items.length;i++){
-			addShop(self.shopItems.items[i],i);
+			self.addShopClient(self.shopItems.items[i],i);
 		}
 		for(var i = 0;i < self.craftItems.items.length;i++){
-			addCraft(self.craftItems.items[i],i);
+			self.addCraftClient(self.craftItems.items[i],i);
 		}
         for(var i in self.materials){
-            addMaterial(self.materials[i],i);
+            self.addMaterialClient(self.materials[i],i);
         }
     }
     self.refreshItem = function(index){
@@ -833,195 +761,7 @@ Inventory = function(socket,server){
             }
             return;
         }
-        var inventory = document.getElementById("inventoryItem");
-        var addItem = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let dismantle = document.createElement('button');
-            let select = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light itemButton";
-            div.className = "UI-display-light";
-            equip.className = "itemEquip";
-            dismantle.className = "itemDismantle";
-            select.className = "itemSelect";
-            image.className = "item";
-            equip.innerHTML = "Equip";
-            if(item.equip === 'consume'){
-                equip.innerHTML = 'Use';
-            }
-            dismantle.innerHTML = "Dismantle";
-            select.innerHTML = "Select";
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in self.items[index].enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[self.items[index].enchantments[i].level] === undefined){
-                    enchantName[self.items[index].enchantments[i].level] = 'enchantment.level.' + self.items[index].enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            var dismantleClick = function(data){
-                self.socket.emit("dismantleItem",data);
-                //dismantle.style.display = 'inline-block';
-                div.remove();
-                //self.items.splice(data,1);
-                /*
-                var equips = document.getElementsByClassName('itemEquip');
-                for(var i in equips){
-                    equips[i].onclick = function(){
-                        equipClick(i);
-                    }
-                }
-                var dismantles = document.getElementsByClassName('itemDismantle');
-                for(var i in dismantles){
-                    dismantles[i].onclick = function(){
-                        dismantleClick(i);
-                    }
-                }
-                var buttons = document.getElementsByClassName('itemButton');
-                for(var i in buttons){
-                    //buttons[i].onclick = buttonClick;
-                }
-                for(var i = 0;i < self.items.length;i++){
-                    self.items[i].index = parseInt(i,10);
-                }*/
-            }
-            dismantle.onclick = function(){
-                self.socket.emit("dismantleItem",index);
-                dismantle.style.display = 'inline-block';
-                div.remove();
-            }
-            var equipClick = function(data){
-                self.socket.emit("equipItem",data);
-                //equip.style.display = 'inline-block';
-                div.remove();
-                //self.items.splice(data,1);
-                /*
-                var equips = document.getElementsByClassName('itemEquip');
-                for(var i in equips){
-                    equips[i].onclick = function(){
-                        equipClick(i);
-                    }
-                }
-                var dismantles = document.getElementsByClassName('itemDismantle');
-                for(var i in dismantles){
-                    dismantles[i].onclick = function(){
-                        dismantleClick(i);
-                    }
-                }
-                var buttons = document.getElementsByClassName('itemButton');
-                for(var i in buttons){
-                    //buttons[i].onclick = buttonClick;
-                }
-                for(var i = 0;i < self.items.length;i++){
-                    self.items[i].index = parseInt(i,10);
-                }*/
-            }
-            equip.onclick = function(){
-                self.socket.emit("equipItem",index);
-                equip.style.display = 'inline-block';
-                div.remove();
-            }
-            var buttonClick = function(){
-                for(var i = 0;i < self.items.length;i++){
-                    //self.items[i].index = i;
-                }
-                if(equip.style.display === 'inline-block'){
-                    equip.style.display = 'none';
-                    dismantle.style.display = 'none';
-                }
-                else if(equip.style.display === 'none'){
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
-                }
-                else{
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
-                }
-            }
-            button.onclick = buttonClick;
-            select.onclick = function(){
-                self.socket.emit("selectItem",index);
-                select.style.display = 'inline-block';
-            }
-            button.innerHTML = item.name + " ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            if(!self.select){
-                select.style.display = 'none';
-            }
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            inventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(dismantle);
-            div.appendChild(select);
-            div.appendChild(enchantments);
-            if(data.displayButtons === undefined){
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-                self.items[index].displayButtons = false;
-            }
-            else if(data.displayButtons === false){
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-            }
-            else if(data.displayButtons === true){
-                equip.style.display = 'inline-block';
-                dismantle.style.display = 'inline-block';
-            }
-            else{
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-            }
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            inventory.appendChild(spacing);
-        }
-		addItem(self.items[index],index);
+		self.addItemClient(self.items[index],index);
     }
     self.refreshAllItems = function(){
         if(self.server){
@@ -1073,195 +813,8 @@ Inventory = function(socket,server){
         dismantleEnchantButton.style.position = 'relative';
         var spacing = document.createElement('div');
         inventory.appendChild(spacing);
-        var addItem = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let dismantle = document.createElement('button');
-            let select = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light itemButton";
-            div.className = "UI-display-light";
-            equip.className = "itemEquip";
-            dismantle.className = "itemDismantle";
-            select.className = "itemSelect";
-            image.className = "item";
-            equip.innerHTML = "Equip";
-            if(item.equip === 'consume'){
-                equip.innerHTML = 'Use';
-            }
-            dismantle.innerHTML = "Dismantle";
-            select.innerHTML = "Select";
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in self.items[index].enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[self.items[index].enchantments[i].level] === undefined){
-                    enchantName[self.items[index].enchantments[i].level] = 'enchantment.level.' + self.items[index].enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[self.items[index].enchantments[i].id].name + ' ' + enchantName[self.items[index].enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            var dismantleClick = function(data){
-                self.socket.emit("dismantleItem",data);
-                //dismantle.style.display = 'inline-block';
-                div.remove();
-                //self.items.splice(data,1);
-                /*
-                var equips = document.getElementsByClassName('itemEquip');
-                for(var i in equips){
-                    equips[i].onclick = function(){
-                        equipClick(i);
-                    }
-                }
-                var dismantles = document.getElementsByClassName('itemDismantle');
-                for(var i in dismantles){
-                    dismantles[i].onclick = function(){
-                        dismantleClick(i);
-                    }
-                }
-                var buttons = document.getElementsByClassName('itemButton');
-                for(var i in buttons){
-                    //buttons[i].onclick = buttonClick;
-                }
-                for(var i = 0;i < self.items.length;i++){
-                    self.items[i].index = parseInt(i,10);
-                }*/
-            }
-            dismantle.onclick = function(){
-                self.socket.emit("dismantleItem",index);
-                dismantle.style.display = 'inline-block';
-                div.remove();
-            }
-            var equipClick = function(data){
-                self.socket.emit("equipItem",data);
-                //equip.style.display = 'inline-block';
-                div.remove();
-                //self.items.splice(data,1);
-                /*
-                var equips = document.getElementsByClassName('itemEquip');
-                for(var i in equips){
-                    equips[i].onclick = function(){
-                        equipClick(i);
-                    }
-                }
-                var dismantles = document.getElementsByClassName('itemDismantle');
-                for(var i in dismantles){
-                    dismantles[i].onclick = function(){
-                        dismantleClick(i);
-                    }
-                }
-                var buttons = document.getElementsByClassName('itemButton');
-                for(var i in buttons){
-                    //buttons[i].onclick = buttonClick;
-                }
-                for(var i = 0;i < self.items.length;i++){
-                    self.items[i].index = parseInt(i,10);
-                }*/
-            }
-            equip.onclick = function(){
-                self.socket.emit("equipItem",index);
-                equip.style.display = 'inline-block';
-                div.remove();
-            }
-            var buttonClick = function(){
-                for(var i = 0;i < self.items.length;i++){
-                    //self.items[i].index = i;
-                }
-                if(equip.style.display === 'inline-block'){
-                    equip.style.display = 'none';
-                    dismantle.style.display = 'none';
-                }
-                else if(equip.style.display === 'none'){
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
-                }
-                else{
-                    equip.style.display = 'inline-block';
-                    dismantle.style.display = 'inline-block';
-                }
-            }
-            button.onclick = buttonClick;
-            select.onclick = function(){
-                self.socket.emit("selectItem",index);
-                select.style.display = 'inline-block';
-            }
-            button.innerHTML = item.name + " ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            if(!self.select){
-                select.style.display = 'none';
-            }
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            inventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(dismantle);
-            div.appendChild(select);
-            div.appendChild(enchantments);
-            if(data.displayButtons === undefined){
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-                self.items[index].displayButtons = false;
-            }
-            else if(data.displayButtons === false){
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-            }
-            else if(data.displayButtons === true){
-                equip.style.display = 'inline-block';
-                dismantle.style.display = 'inline-block';
-            }
-            else{
-                equip.style.display = 'none';
-                dismantle.style.display = 'none';
-            }
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            inventory.appendChild(spacing);
-        }
         for(var i = 0;i < self.items.length;i++){
-            addItem(self.items[i],i);
+            self.addItemClient(self.items[i],i);
         }
     }
     self.refreshEquip = function(){
@@ -1273,287 +826,22 @@ Inventory = function(socket,server){
         }
         var currentEquip = document.getElementById("currentEquip");
         currentEquip.innerHTML = "";
-        var addEquip = function(data,index){
-            if(data.id === undefined){
-                return;
-            }
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let unequip = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            unequip.className = "itemUnequip";
-            image.className = "item";
-            unequip.innerHTML = "Unequip";
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in self.currentEquip[index].enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[self.currentEquip[index].enchantments[i].level] === undefined){
-                    enchantName[self.currentEquip[index].enchantments[i].level] = 'enchantment.level.' + self.currentEquip[index].enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[self.currentEquip[index].enchantments[i].id].name + ' ' + enchantName[self.currentEquip[index].enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            unequip.onclick = function(){
-                self.socket.emit("unequipItem",index);
-                unequip.style.display = 'inline-block';
-                div.remove();
-            }
-            button.innerHTML = item.name + " ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            currentEquip.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(unequip);
-            div.appendChild(enchantments);
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            currentEquip.appendChild(spacing);
-        }
 		for(var i in self.currentEquip){
-			addEquip(self.currentEquip[i],i);
+			self.addEquipClient(self.currentEquip[i],i);
 		}
     }
     self.refreshShop = function(){
         var shopInventory = document.getElementById("shopItem");
         shopInventory.innerHTML = "";
-        var addShop = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            equip.className = "itemBuy";
-            image.className = "item";
-            equip.innerHTML = "Buy for " + Math.floor(self.shopItems.prices[index] / 10000) + '<image class="coinShopImage" src="/client/img/goldcoin.png"></image>' + Math.floor(self.shopItems.prices[index] / 100) % 100 + '<image class="coinShopImage" src="/client/img/silvercoin.png"></image>' + self.shopItems.prices[index] % 100 + '<image class="coinShopImage" src="/client/img/bronzecoin.png"></image>';
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in data.enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[data.enchantments[i].level] === undefined){
-                    enchantName[data.enchantments[i].level] = 'enchantment.level.' + data.enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[data.enchantments[i].id].name + ' ' + enchantName[data.enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item === undefined){
-                item = {};
-            }
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            enchantments.style.padding = '0px';
-            equip.onclick = function(){
-                self.socket.emit("buyItem",index);
-                equip.style.display = 'inline-block';
-            }
-            for(var i in self.materials){
-                if(i === data.id){
-                    button.innerHTML = self.getMaterialName(data.id) + ' ';
-                }
-                else if(i + 'x10' === data.id){
-                    button.innerHTML = self.getMaterialName(data.id) + ' ';
-                }
-                else if(i + 'x100' === data.id){
-                    button.innerHTML = self.getMaterialName(data.id) + ' ';
-                }
-            }
-            if(item.name){
-                button.innerHTML = item.name + " ";
-            }
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            shopInventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(enchantments);
-            equip.style.display = 'inline-block';
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            shopInventory.appendChild(spacing);
-        }
 		for(var i = 0;i < self.shopItems.items.length;i++){
-			addShop(self.shopItems.items[i],i);
+			self.addShopClient(self.shopItems.items[i],i);
 		}
     }
     self.refreshCraft = function(){
         var craftInventory = document.getElementById("craftItem");
         craftInventory.innerHTML = "";
-        var addCraft = function(data,index){
-            let item = Item.list[data.id];
-            let button = document.createElement('button');
-            let equip = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            let enchantments = document.createElement('div');
-            image.src = "/client/img/" + data.id + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            equip.className = "itemCraft";
-            image.className = "item";
-            equip.innerHTML = "Craft for";
-            var craftAmount = "";
-            for(var i in self.craftItems.materials[index]){
-                craftAmount += " " + self.craftItems.materials[index][i].amount + '<image class="coinShopImage" src="/client/img/' + self.craftItems.materials[index][i].id + '.png"></image>';
-            }
-            equip.innerHTML += craftAmount;
-            enchantments.className = "UI-text-light";
-            var enchantDisplayName = '';
-            for(var i in data.enchantments){
-                if(enchantDisplayName === ''){
-                    enchantDisplayName = 'Enchantments:<br>';
-                }
-                if(enchantName[data.enchantments[i].level] === undefined){
-                    enchantName[data.enchantments[i].level] = 'enchantment.level.' + data.enchantments[i].level;
-                }
-                enchantDisplayName += '' + Enchantment.list[data.enchantments[i].id].name + ' ' + enchantName[data.enchantments[i].level] + '<br>';
-            }
-            var description = '';
-            if(item === undefined){
-                item = {};
-            }
-            if(item.damage || item.defense){
-                description += 'When Equipped:<br>';
-            }
-            if(item.damage){
-                if(item.damageType){
-                    description += '<span style="color: #33ee33">+' + item.damage + ' ' + item.damageType + ' damage.</span><br>';
-                }
-                if(item.critChance){
-                    description += '<span style="color: #33ee33">+' + item.critChance * 100 + '% critical strike chance.</span><br>';
-                }
-            }
-            if(item.defense){
-                description += '<span style="color: #33ee33">+' + item.defense + ' defense.</span><br>';
-            }
-            if(item.damageReduction){
-                description += '<span style="color: #33ee33">+' + item.damageReduction * 100 + '% damage reduction.</span><br>';
-            }
-            if(item.manaCost){
-                description += 'Uses ' + item.manaCost + ' mana.<br>';
-            }
-            if(item.rarity){
-                button.style.color = self.getRarityColor(item.rarity);
-            }
-            if(item.description){
-                enchantments.innerHTML = description + item.description + '<br>' + enchantDisplayName;
-            }
-            else{
-                enchantments.innerHTML = description + enchantDisplayName;
-            }
-            for(var i in self.materials){
-                if(i === data.id){
-                    button.innerHTML = self.getMaterialName(data.id) + ' ';
-                }
-            }
-            if(item.name){
-                button.innerHTML = item.name + " ";
-            }
-            enchantments.style.padding = '0px';
-            equip.onclick = function(){
-                self.socket.emit("craftItem",index);
-                equip.style.display = 'inline-block';
-            }
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            enchantments.style.position = 'relative';
-            enchantments.style.color = '#ffffff';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            craftInventory.appendChild(div);
-            div.appendChild(button);
-            div.appendChild(equip);
-            div.appendChild(enchantments);
-            equip.style.display = 'inline-block';
-            button.appendChild(image);
-            var spacing = document.createElement('div');
-            craftInventory.appendChild(spacing);
-        }
 		for(var i = 0;i < self.craftItems.items.length;i++){
-			addCraft(self.craftItems.items[i],i);
+			self.addCraftClient(self.craftItems.items[i],i);
 		}
     }
     self.refreshMaterial = function(){
@@ -1565,27 +853,8 @@ Inventory = function(socket,server){
         }
         var materials = document.getElementById("materials");
         materials.innerHTML = "";
-        var addMaterial = function(data,index){
-            let button = document.createElement('button');
-            let div = document.createElement('div');
-            let image = document.createElement('img');
-            image.src = "/client/img/" + index + ".png";
-            button.className = "UI-button-light";
-            div.className = "UI-display-light";
-            image.className = "item";
-            button.innerHTML = data + "x ";
-            button.style.display = 'inline-block';
-            button.style.position = 'relative';
-            div.style.display = 'inline-block';
-            div.style.position = 'relative';
-            div.style.margin = '0px';
-            button.style.textAlign = "center";
-            materials.appendChild(div);
-            div.appendChild(button);
-            button.appendChild(image);
-        }
         for(var i in self.materials){
-            addMaterial(self.materials[i],i);
+            self.addMaterialClient(self.materials[i],i);
         }
     }
     if(self.server && self.socket){
@@ -1595,7 +864,7 @@ Inventory = function(socket,server){
                     addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
                     return;
                 }
-                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 200 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) + 200 * self.items[index].enchantments.length);
+                Player.list[self.socket.id].coins += Math.round(Player.list[self.socket.id].stats.xp * 500 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[index].enchantments.length * (Math.random() + 0.5));
                 self.removeItem(index);
                 self.refreshAllItems();
             }
@@ -1732,7 +1001,7 @@ Enchantment = function(id,name,maxLevel,averageLevel,deviation,dropChance,event)
 
 Enchantment.list = {};
 
-Item = function(id,name,equip,event,enchantments,description,damage,damageType,critChance,useTime,defense,damageReduction,manaCost,rarity){
+Item = function(id,name,equip,event,enchantments,description,damage,damageType,critChance,useTime,defense,damageReduction,manaCost,knockback,rarity){
 	var self = {
 		id:id,
         name:name,
@@ -1747,6 +1016,7 @@ Item = function(id,name,equip,event,enchantments,description,damage,damageType,c
         defense:defense,
         damageReduction,damageReduction,
         manaCost,manaCost,
+        knockback,knockback,
         rarity:rarity,
     }
 	Item.list[self.id] = self;
@@ -1757,7 +1027,7 @@ Item.list = {};
 try{
     var items = require('./item.json');
     for(var i in items){
-        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].manaCost,items[i].rarity);
+        Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].manaCost,items[i].knockback,items[i].rarity);
     }
 }
 catch(err){
@@ -1769,7 +1039,7 @@ catch(err){
             // Success!
             var items = JSON.parse(this.response);
             for(var i in items){
-                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].manaCost,items[i].rarity);
+                Item(i,items[i].name,items[i].equip,items[i].event,items[i].enchantments,items[i].description,items[i].damage,items[i].damageType,items[i].critChance,items[i].useTime,items[i].defense,items[i].damageReduction,items[i].manaCost,items[i].knockback,items[i].rarity);
             }
         }
         else{

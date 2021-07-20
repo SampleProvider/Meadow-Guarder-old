@@ -1,34 +1,34 @@
 javascript:
 var hackedDiv = document.createElement('div');
 document.getElementById('gameDiv').appendChild(hackedDiv);
-hackedDiv.style.top = '90px';
+hackedDiv.style.top = '140px';
 hackedDiv.style.backgroundColor = 'rgba(0,0,0,0);';
 
 var hackedCollumn1 = document.createElement('div');
 hackedCollumn1.className = 'UI-display-light';
 hackedDiv.appendChild(hackedCollumn1);
-hackedCollumn1.style.top = '90px';
+hackedCollumn1.style.top = '140px';
 hackedCollumn1.style.backgroundColor = 'rgb(0,0,0,125);';
 hackedCollumn1.style.opacity = 0.6;
 
 var hackedCollumn2 = document.createElement('div');
 hackedCollumn2.className = 'UI-display-light';
 hackedDiv.appendChild(hackedCollumn2);
-hackedCollumn2.style.top = '130px';
+hackedCollumn2.style.top = '180px';
 hackedCollumn2.style.backgroundColor = 'rgb(0,0,0,125);';
 hackedCollumn2.style.opacity = 0.6;
 
 var hackedCollumn3 = document.createElement('div');
 hackedCollumn3.className = 'UI-display-light';
 hackedDiv.appendChild(hackedCollumn3);
-hackedCollumn3.style.top = '170px';
+hackedCollumn3.style.top = '220px';
 hackedCollumn3.style.backgroundColor = 'rgb(0,0,0,125);';
 hackedCollumn3.style.opacity = 0.6;
 
 var hackedCollumn4 = document.createElement('div');
 hackedCollumn4.className = 'UI-display-light';
 hackedDiv.appendChild(hackedCollumn4);
-hackedCollumn4.style.top = '210px';
+hackedCollumn4.style.top = '260px';
 hackedCollumn4.style.backgroundColor = 'rgb(0,0,0,125);';
 hackedCollumn4.style.opacity = 0.6;
 
@@ -219,11 +219,34 @@ autoHeal.onclick = function(){
     if(autoHealState){
         autoHeal.style.color = '#000000';
         autoHeal.style.backgroundColor = '#ffffff';
-        socket.emit('keyPress',{inputId:' ',state:false});
+        socket.emit('keyPress',{inputId:'Shift',state:false});
     }
     else{
         autoHeal.style.color = '#ffffff';
         autoHeal.style.backgroundColor = '#000000';
+    }
+};
+
+var autoEnchant = document.createElement('button');
+autoEnchant.className = 'UI-button-light';
+autoEnchant.style.position = 'static';
+autoEnchant.style.top = '8px';
+autoEnchant.innerHTML = 'Auto Enchant';
+hackedCollumn4.appendChild(autoEnchant);
+
+autoEnchant.style.color = '#ffffff';
+autoEnchant.style.backgroundColor = '#000000';
+
+var autoEnchantState = false;
+autoEnchant.onclick = function(){
+    autoEnchantState = !autoEnchantState;
+    if(autoEnchantState){
+        autoEnchant.style.color = '#000000';
+        autoEnchant.style.backgroundColor = '#ffffff';
+    }
+    else{
+        autoEnchant.style.color = '#ffffff';
+        autoEnchant.style.backgroundColor = '#000000';
     }
 };
 
@@ -474,22 +497,25 @@ MGHC = function(){
             socket.emit('keyPress',{inputId:' ',state:false});
         }
     }
+    if(autoEnchantState){
+        response(1);
+    }
 };
 MGHC1 = function(){
     if(freeCamState){
         talking = true;
         socket.emit('keyPress',{inputId:'releaseAll'});
         if(keys['w']){
-            freeCamY += 25;
+            freeCamY += 35;
         }
         if(keys['s']){
-            freeCamY -= 25;
+            freeCamY -= 35;
         }
         if(keys['a']){
-            freeCamX += 25;
+            freeCamX += 35;
         }
         if(keys['d']){
-            freeCamX -= 25;
+            freeCamX -= 35;
         }
         cameraX = freeCamX;
         cameraY = freeCamY;

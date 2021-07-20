@@ -236,6 +236,7 @@ var update = function(){
 	setTimeout(update,50);
 }
 update();
+
 setInterval(function(){
 	storeDatabase(Player.list);
 	setTimeout(() => {
