@@ -2919,6 +2919,10 @@ Player = function(param){
                 socket.emit('dialogueLine',{
                     state:'remove',
                 });
+                socket.emit('questObjective',{
+                    questName:'',
+                    questObjective:'',
+                })
             }
         }
         else{
