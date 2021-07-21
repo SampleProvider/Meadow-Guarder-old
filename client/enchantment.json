@@ -2,104 +2,104 @@
     "unlocking":{
         "name":"Unlocking",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.05,
+        "averageLevel":0.03,
+        "deviation":0.02,
         "dropChance":0.2,
         "event":"self.maxSpeed += 10 * value;"
     },
     "speed":{
         "name":"Speed",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.useTime = Math.round((1.25 - value) * self.useTime);"
     },
     "range":{
         "name":"Range",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.stats.range += 1 * value;"
     },
     "burst":{
         "name":"Burst",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.1,
         "event":"self.maxSpeed += 10 * value;"
     },
     "smashing":{
         "name":"Smashing",
         "maxLevel":50,
-        "averageLevel":0.2,
-        "deviation":0.1,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.3,
         "event":"self.pushPower += 20 * value;"
     },
     "cost":{
         "name":"Cost",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.attackCost = Math.round((1.25 - value) * self.attackCost);"
     },
     "aim":{
         "name":"Aim",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.critChance += value / 4;"
     },
     "accuracy":{
         "name":"Accuracy",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.critChance += value / 4;"
     },
     "focus":{
         "name":"Focus",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.critChance += value / 4;"
     },
     "sharpness":{
         "name":"Sharpness",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.stats.damage *= (1 + value / 4);"
     },
     "power":{
         "name":"Power",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.stats.damage *= (1 + value / 4);"
     },
     "sorcery":{
         "name":"Sorcery",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.stats.damage *= (1 + value / 4);"
     },
     "reach":{
         "name":"Reach",
         "maxLevel":50,
-        "averageLevel":0.1,
-        "deviation":0.07,
+        "averageLevel":0.05,
+        "deviation":0.03,
         "dropChance":0.2,
         "event":"self.stats.range += 1 * value;"
     }

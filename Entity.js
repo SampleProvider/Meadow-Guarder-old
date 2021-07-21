@@ -14385,12 +14385,10 @@ updateCrashes = function(){
                         if(Player.list[i].isDead === false){
                             if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i){
                                 if(ENV.PVP){
-                                    Player.list[i].onCollision(Projectile.list[j],1);
                                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                                     Player.list[i].onPush(Projectile.list[j],1);
                                 }
                                 else if(Projectile.list[j].parentType !== 'Player'){
-                                    Player.list[i].onCollision(Projectile.list[j],1);
                                     Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                                     Player.list[i].onPush(Projectile.list[j],1);
                                 }
@@ -14428,7 +14426,6 @@ updateCrashes = function(){
                     if(Projectile.list[j].doUpdate){
                         if(Projectile.list[j].map === Monster.list[i].map){
                             if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i){
-                                Monster.list[i].onCollision(Projectile.list[j],1);
                                 Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                                 Monster.list[i].onPush(Projectile.list[j],1);
                             }
@@ -14440,8 +14437,8 @@ updateCrashes = function(){
         for(var j in Player.list){
             if(Monster.list[i] && Player.list[j]){
                 if(Monster.list[i].isColliding(Player.list[j]) && Player.list[j].invincible === false && Monster.list[i].invincible === false){
-                    Player.list[j].onPush(Monster.list[i],2);
-                    Monster.list[i].onPush(Player.list[j],2);
+                    Player.list[j].onPush(Monster.list[i],1);
+                    Monster.list[i].onPush(Player.list[j],1);
                 }
             }
         }
