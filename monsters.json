@@ -858,7 +858,7 @@
         "trackDistance":0,
         "hp":75000,
         "stats":{
-            "attack":75,
+            "attack":55,
             "defense":24,
             "heal":0,
             "speed":1,

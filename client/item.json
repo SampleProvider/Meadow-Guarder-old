@@ -512,7 +512,7 @@
         "enchantments":["smashing"],
         "defense":0,
         "damageReduction":1,
-        "rarity":6,
+        "rarity":8,
         "description":"<span style='color: #33ee33'>+???% damage.</span><br><span style='color: #33ee33'>+???% critical strike chance.</span>"
     },
     "woodenarmor":{
@@ -592,7 +592,7 @@
         "equip":"key",
         "event":"self.textColor = '#ff0090';self.stats.luck = -3;",
         "enchantments":["unlocking"],
-        "rarity":6
+        "rarity":8
     },
     "lightningkey":{
         "name":"Lightning Key",
@@ -789,7 +789,7 @@
         "event":"s.testDPS();self.inventory.currentEquip['consume'] = {};self.inventory.addItem('purplefish',[]);self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Summons sp.",
-        "rarity":6
+        "rarity":8
     },
     "burntfish":{
         "name":"Burnt Fish",
@@ -954,7 +954,7 @@
         "critChance":0.04,
         "knockback":0,
         "useTime":4,
-        "rarity":8,
+        "rarity":9,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "bookofflames":{
@@ -968,7 +968,7 @@
         "knockback":0.3,
         "useTime":13,
         "manaCost":39,
-        "rarity":8,
+        "rarity":9,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "bookoflasers":{
@@ -982,7 +982,7 @@
         "knockback":0,
         "useTime":20,
         "manaCost":100,
-        "rarity":8,
+        "rarity":9,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "lightningboots":{
@@ -1025,7 +1025,7 @@
         "event":"damageIncrease += 0.15;self.stats.critChance += 0.50;",
         "enchantments":["smashing"],
         "defense":3,
-        "rarity":8,
+        "rarity":9,
         "description":"<span style='color: #33ee33'>+50% critical strike chance.</span><br><span style='color: #33ee33'>+15% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "heroshield":{
@@ -1035,7 +1035,7 @@
         "enchantments":["smashing"],
         "defense":72,
         "damageReduction":0.2,
-        "rarity":8,
+        "rarity":9,
         "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+35% melee critical strike chance.</span><br>Increased aggro.<br>A hero's shield.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "ringofaspirit":{
@@ -1043,7 +1043,7 @@
         "equip":"offhand",
         "event":"self.stats.xp += 15;self.stats.luck += 3;",
         "enchantments":["smashing"],
-        "rarity":8,
+        "rarity":9,
         "description":"<span style='color: #33ee33'>+1500% increased xp and coin gain.</span><br><span style='color: #33ee33'>+300% increased luck.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "frozentreads":{
@@ -1051,7 +1051,7 @@
         "equip":"offhand",
         "event":"self.immuneDebuffs.push('frozen');self.stats.debuffs.push({id:'frozen',time:60});",
         "enchantments":["smashing"],
-        "rarity":8,
+        "rarity":9,
         "description":"Gives immunity to frozen.<br>All of your attacks inflict frozen.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "lightningarrow":{
@@ -1120,7 +1120,7 @@
         "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.35;self.stats.critChance += 0.2;}self.stats.debuffs.push({id:'frozen',time:60});",
         "enchantments":["smashing"],
         "defense":19,
-        "rarity":6,
+        "rarity":7,
         "description":"<span style='color: #33ee33'>+35% ranged damage.</span><br><span style='color: #33ee33'>+20% ranged critical strike chance.</span><br>You inflict the frozen debuff for 3 seconds."
     },
     "whirlwindarmor":{
@@ -1129,7 +1129,7 @@
         "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.3;self.stats.critChance += 0.35;}self.immuneDebuffs.push('frozen');",
         "enchantments":["smashing"],
         "defense":26,
-        "rarity":6,
+        "rarity":7,
         "description":"<span style='color: #33ee33'>+30% ranged damage.</span><br><span style='color: #33ee33'>+35% ranged critical strike chance.</span><br>You gain immunity to the frozen debuff."
     },
     "typhoonstorm":{

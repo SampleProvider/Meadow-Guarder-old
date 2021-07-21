@@ -14478,7 +14478,7 @@ spawnEnemies = function(){
 getRandomNpcItem = function(){
 	var items = 0;
 	for(var i in Item.list){
-		if(Item.list[i].rarity > 1){
+		if(Item.list[i].rarity > 2){
 			items += (10 - Item.list[i].rarity);
 		}
 	}
@@ -14489,7 +14489,7 @@ getRandomNpcItem = function(){
 		if(Item.list[i].rarity > 1){
 			items += (10 - Item.list[i].rarity);
 		}
-		if(currentItem <= items && item === undefined && Item.list[i].rarity > 1){
+		if(currentItem <= items && item === undefined && Item.list[i].rarity > 2){
 			var item = Item.list[i].id;
 		}
 	}

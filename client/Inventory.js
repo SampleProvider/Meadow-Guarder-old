@@ -173,6 +173,9 @@ Inventory = function(socket,server){
             return '#00ff00';
         }
         if(rarity === 8){
+            return '#ff0090';
+        }
+        if(rarity === 9){
             return '#00ff90';
         }
     }
