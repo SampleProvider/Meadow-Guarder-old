@@ -7584,6 +7584,9 @@ Player = function(param){
                             self.stats.damageType = item.damageType;
                             self.ability.ability = self.inventory.currentEquip[i].id;
                         }
+                        if(item.manaCost){
+                            self.attackCost = item.manaCost;
+                        }
                     }
                 }
             }
@@ -7602,9 +7605,6 @@ Player = function(param){
                         }
                         if(item.damageReduction){
                             self.stats.damageReduction += item.damageReduction;
-                        }
-                        if(item.manaCost){
-                            self.attackCost = item.manaCost;
                         }
                         if(item.knockback !== undefined){
                             self.stats.knockback = item.knockback;
