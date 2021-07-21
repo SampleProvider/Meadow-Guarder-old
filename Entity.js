@@ -4642,10 +4642,10 @@ Player = function(param){
                 self.questInfo.enchant2.id = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
                 self.questInfo.enchant3.id = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
                 self.questInfo.enchant4.id = item.enchantments[Math.floor(Math.random() * item.enchantments.length)];
-                self.questInfo.enchant1.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant1.id].averageLevel + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant1.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant1.id].maxLevel);
-                self.questInfo.enchant2.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant2.id].averageLevel + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant2.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant2.id].maxLevel);
-                self.questInfo.enchant3.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant3.id].averageLevel + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant3.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant3.id].maxLevel);
-                self.questInfo.enchant4.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant4.id].averageLevel + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant4.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant4.id].maxLevel);
+                self.questInfo.enchant1.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant1.id].averageLevel * 1000 + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant1.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant1.id].maxLevel);
+                self.questInfo.enchant2.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant2.id].averageLevel * 1000 + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant2.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant2.id].maxLevel);
+                self.questInfo.enchant3.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant3.id].averageLevel * 1000 + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant3.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant3.id].maxLevel);
+                self.questInfo.enchant4.level = Math.min(Math.max(0.001,Math.round(Enchantment.list[self.questInfo.enchant4.id].averageLevel * 1000 + (Math.random() * 2 - 1) * Enchantment.list[self.questInfo.enchant4.id].deviation * 1000) / 1000),Enchantment.list[self.questInfo.enchant4.id].maxLevel);
                 socket.emit('dialogueLine',{
                     state:'ask',
                     message:'Good, now choose an enchantment.',

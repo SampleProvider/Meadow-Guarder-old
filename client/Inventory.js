@@ -120,7 +120,7 @@ Inventory = function(socket,server){
                     if(k === Item.list[id].enchantments[j]){
                         var enchantment = Enchantment.list[k];
                         if(Math.random() < enchantment.dropChance * luck){
-                            enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
+                            enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel * 1000 + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
                         }
                     }
                 }

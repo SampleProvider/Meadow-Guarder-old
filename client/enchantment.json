@@ -3,7 +3,7 @@
         "name":"Unlocking",
         "maxLevel":50,
         "averageLevel":0.1,
-        "deviation":0,
+        "deviation":0.05,
         "dropChance":0.2,
         "event":"self.maxSpeed += 10 * value;"
     },
