@@ -715,7 +715,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":25000000,
+        "hp":10000000,
         "stats":{
             "attack":100,
             "defense":0,
@@ -744,7 +744,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":10000000,
+        "hp":1000000,
         "stats":{
             "attack":55,
             "defense":0,
@@ -771,7 +771,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":10000000,
+        "hp":1000000,
         "stats":{
             "attack":40,
             "defense":0,
@@ -798,7 +798,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":10000000,
+        "hp":1000000,
         "stats":{
             "attack":50,
             "defense":0,
