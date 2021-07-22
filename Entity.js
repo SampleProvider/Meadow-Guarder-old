@@ -1198,7 +1198,7 @@ Actor = function(param){
         }
         if(self.pushPt){
             if(self.dazed < 1){
-                self.dazed = self.maxSpeed;
+                //self.dazed = self.maxSpeed;
             }
         }
         self.pushPt = undefined;
@@ -1384,26 +1384,29 @@ Actor = function(param){
         if(self.pushPt !== undefined && self.invincible === false){
             var pushPower = self.pushPt.pushPower * (Math.random() + 1);
             if(pushPower !== 0){
-                self.moveSpeed = pushPower * 5 * self.pushResist;
-                self.spdX = self.pushPt.spdX / 4;
-                self.spdY = self.pushPt.spdY / 4;
+                self.moveSpeed = pushPower * 5 * (1 - self.pushResist);
+                self.spdX += self.pushPt.spdX / 4 * (1 - self.pushResist);
+                self.spdY += self.pushPt.spdY / 4 * (1 - self.pushResist);
                 if(self.x > self.pushPt.x){
-                    self.spdX += 1;
+                    self.spdX += 1 * (1 - self.pushResist);
                 }
                 else if(self.x < self.pushPt.x){
-                    self.spdX += -1;
+                    self.spdX += -1 * (1 - self.pushResist);
                 }
                 else{
                     self.spdX += 0;
                 }
                 if(self.y > self.pushPt.y){
-                    self.spdY += 1;
+                    self.spdY += 1 * (1 - self.pushResist);
                 }
                 else if(self.y < self.pushPt.y){
-                    self.spdY += -1;
+                    self.spdY += -1 * (1 - self.pushResist);
                 }
                 else{
                     self.spdY += 0;
+                }
+                if(self.pushResist === 1){
+                    self.moveSpeed = self.maxSpeed;
                 }
             }
             if(pushPower === 0){
@@ -1454,9 +1457,9 @@ Actor = function(param){
         self.moveArray.push({x:x,y:y});
     }
     self.onPush = function(pt,pushPower){
+        self.onCollision(pt,pushPower);
         if(self.dazed < 1){
             self.pushPt = pt;
-            self.onCollision(pt,pushPower);
         }
     }
     self.randomWalk = function(walking,waypoint,x,y){
@@ -1929,6 +1932,9 @@ Actor = function(param){
             if(Math.random() < pt.stats.critChance){
                 damage *= 2;
                 particleType = 'bigOrangeDamage';
+            }
+            if(pt.stats.attack < 0){
+                particleType = 'greenDamage';
             }
             //damage = Math.min(self.hp,damage);
             self.hp -= damage;
@@ -14385,12 +14391,12 @@ updateCrashes = function(){
                         if(Player.list[i].isDead === false){
                             if(Player.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i){
                                 if(ENV.PVP){
-                                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                                     Player.list[i].onPush(Projectile.list[j],1);
+                                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                                 }
                                 else if(Projectile.list[j].parentType !== 'Player'){
-                                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                                     Player.list[i].onPush(Projectile.list[j],1);
+                                    Projectile.list[j].onCollision(Projectile.list[j],Player.list[i]);
                                 }
                             }
                         }
@@ -14426,8 +14432,8 @@ updateCrashes = function(){
                     if(Projectile.list[j].doUpdate){
                         if(Projectile.list[j].map === Monster.list[i].map){
                             if(Monster.list[i].isColliding(Projectile.list[j]) && "" + Projectile.list[j].parent !== i){
-                                Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                                 Monster.list[i].onPush(Projectile.list[j],1);
+                                Projectile.list[j].onCollision(Projectile.list[j],Monster.list[i]);
                             }
                         }
                     }

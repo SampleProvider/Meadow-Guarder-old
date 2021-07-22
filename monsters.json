@@ -666,7 +666,7 @@
             }]
         },
         "immuneDebuffs":["death"],
-        "pushResist":0,
+        "pushResist":0.7,
         "moveSpeed":20,
         "itemDrops":{
             "voidbook":0.1
@@ -715,7 +715,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":10000000,
+        "hp":25000000,
         "stats":{
             "attack":100,
             "defense":0,
@@ -724,11 +724,11 @@
             "range":1,
             "critChance":0,
             "damageReduction":0,
-            "knockback":0.3,
+            "knockback":5,
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
-        "pushResist":0,
+        "pushResist":1,
         "moveSpeed":20,
         "itemDrops":{
             "sphat":1,
@@ -744,7 +744,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":1000000,
+        "hp":5000000,
         "stats":{
             "attack":55,
             "defense":0,
@@ -757,7 +757,7 @@
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
-        "pushResist":0,
+        "pushResist":1,
         "moveSpeed":10,
         "itemDrops":{
         }
@@ -771,7 +771,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":1000000,
+        "hp":5000000,
         "stats":{
             "attack":40,
             "defense":0,
@@ -784,7 +784,7 @@
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
-        "pushResist":0,
+        "pushResist":1,
         "moveSpeed":15,
         "itemDrops":{
         }
@@ -798,7 +798,7 @@
         "aggro":1000,
         "boss":true,
         "trackDistance":0,
-        "hp":1000000,
+        "hp":5000000,
         "stats":{
             "attack":50,
             "defense":0,
@@ -811,7 +811,7 @@
             "debuffs":[]
         },
         "immuneDebuffs":["frozen","shocked"],
-        "pushResist":0,
+        "pushResist":1,
         "moveSpeed":25,
         "itemDrops":{
         }
