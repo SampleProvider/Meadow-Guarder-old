@@ -976,7 +976,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["burst","cost","focus","sorcery"],
-        "damage":15462,
+        "damage":85462,
         "damageType":"magic",
         "critChance":1,
         "knockback":0,
