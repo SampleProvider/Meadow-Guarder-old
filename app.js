@@ -9,11 +9,11 @@ else{
 var colors = require('colors');
 
 colors.setTheme({
-    info: 'white',
-    help: 'cyan',
-    warn: 'yellow',
-    success: 'magenta',
-    error: 'red'
+    info:'white',
+    help:'cyan',
+    warn:'yellow',
+    success:'magenta',
+    error:'red'
 });
 var express = require('express');
 const {setInterval} = require('timers');

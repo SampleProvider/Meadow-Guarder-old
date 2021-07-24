@@ -82,6 +82,8 @@ var signDivCreateAccount = document.getElementById('createAccount');
 var signDivDeleteAccount = document.getElementById('deleteAccount');
 var signDivChangePassword = document.getElementById('changePassword');
 
+var commandList = [];
+var commandIndex = 0;
 
 gameDiv.style.display = 'none';
 disconnectedDiv.style.display = 'none';
@@ -331,6 +333,7 @@ signDivSignIn.onclick = function(){
         loadMap("The Battlefield");
         loadMap("Garage");
         loadMap("Secret Tunnel Part 1");
+        loadMap("The Hideout");
         
         var request = new XMLHttpRequest();
         request.open('GET',"/client/projectiles.json",true);
@@ -524,6 +527,11 @@ socket.on('addToDebug',function(data){
 debugForm.onsubmit = function(e){
     e.preventDefault();
     socket.emit('sendDebugToServer',debugInput.value);
+    if(debugInput.value !== ''){
+        commandList.push(debugInput.value);
+        commandIndex = commandList.length - 1;
+        console.log(commandIndex)
+    }
     debugInput.value = '';
 }
 chatInput.onkeydown = function(e){
@@ -619,7 +627,7 @@ var renderPlayer = function(img,shadeValues){
     finalGl.drawImage(temp,0,0,72 * 4,152 * 4);
     return finalTemp;
 }
-document.getElementById('bossbar').style.display === 'none'
+document.getElementById('bossbar').style.display = 'none';
 
 const times = [];
 let fps;
@@ -1238,23 +1246,7 @@ var Player = function(initPack){
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
-            else if(self.currentItem === 'ectocannon'){
-                turnAmount = 225;
-                var drawX = -49;
-                var drawY = -15;
-                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
-                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
-                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
-            }
-            else if(self.currentItem === 'halibutcannon'){
-                turnAmount = 225;
-                var drawX = -49;
-                var drawY = -15;
-                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
-                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
-                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
-            }
-            else if(self.currentItem === 'whirlwindcannon'){
+            else if(self.currentItem.includes('cannon')){
                 turnAmount = 225;
                 var drawX = -49;
                 var drawY = -15;
@@ -1271,9 +1263,17 @@ var Player = function(initPack){
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
             }
             else if(self.currentItem.includes('book')){
-                turnAmount = 270;
+                turnAmount = 90;
                 var drawX = -35;
-                var drawY = 15;
+                var drawY = -79;
+                ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'thegemofsp'){
+                turnAmount = 90;
+                var drawX = -35;
+                var drawY = -79;
                 ctx0.rotate((self.direction + turnAmount) * Math.PI / 180);
                 ctx0.drawImage(Img[self.currentItem],drawX,drawY,64,64);
                 ctx0.rotate((-self.direction - turnAmount) * Math.PI / 180);
@@ -1456,24 +1456,26 @@ var Projectile = function(initPack){
             ctx0.translate(self.x,self.y);
         }
         ctx0.rotate(self.direction * Math.PI / 180);
-        if(self.projectileType === 'stoneArrow'){
-            ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
-        }
-        else if(self.projectileType === 'unholytrident'){
-            ctx0.rotate(45 * Math.PI / 180);
-            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
-            ctx0.rotate(-45 * Math.PI / 180);
-        }
-        else if(self.projectileType === 'holytrident'){
-            ctx0.rotate(45 * Math.PI / 180);
-            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
-            ctx0.rotate(-45 * Math.PI / 180);
-        }
-        else if(self.projectileType === 'flame'){
-            ctx0.drawImage(Img[self.projectileType],-self.width / 2 + 6 - Math.random() * 12,-self.height / 2 + 6 - Math.random() * 12,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
-        }
-        else{
-            ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+        if(projectileData[self.projectileType]){
+            if(self.projectileType === 'stoneArrow'){
+                ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
+            }
+            else if(self.projectileType === 'unholytrident'){
+                ctx0.rotate(45 * Math.PI / 180);
+                ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+                ctx0.rotate(-45 * Math.PI / 180);
+            }
+            else if(self.projectileType === 'holytrident'){
+                ctx0.rotate(45 * Math.PI / 180);
+                ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+                ctx0.rotate(-45 * Math.PI / 180);
+            }
+            else if(self.projectileType === 'flame'){
+                ctx0.drawImage(Img[self.projectileType],-self.width / 2 + 6 - Math.random() * 12,-self.height / 2 + 6 - Math.random() * 12,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            }
+            else{
+                ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            }
         }
         ctx0.rotate(-self.direction * Math.PI / 180);
         if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
@@ -1491,24 +1493,26 @@ var Projectile = function(initPack){
             ctx1.translate(self.x,self.y);
         }
         ctx1.rotate(self.direction * Math.PI / 180);
-        if(self.projectileType === 'stoneArrow'){
-            ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
-        }
-        else if(self.projectileType === 'unholytrident'){
-            ctx1.rotate(45 * Math.PI / 180);
-            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
-            ctx1.rotate(-45 * Math.PI / 180);
-        }
-        else if(self.projectileType === 'holytrident'){
-            ctx1.rotate(45 * Math.PI / 180);
-            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
-            ctx1.rotate(-45 * Math.PI / 180);
-        }
-        else if(self.projectileType === 'flame'){
-            ctx1.drawImage(Img[self.projectileType],-self.width / 2 + 6 - Math.random() * 12,-self.height / 2 + 6 - Math.random() * 12,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
-        }
-        else{
-            ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+        if(projectileData[self.projectileType]){
+            if(self.projectileType === 'stoneArrow'){
+                ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
+            }
+            else if(self.projectileType === 'unholytrident'){
+                ctx1.rotate(45 * Math.PI / 180);
+                ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+                ctx1.rotate(-45 * Math.PI / 180);
+            }
+            else if(self.projectileType === 'holytrident'){
+                ctx1.rotate(45 * Math.PI / 180);
+                ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+                ctx1.rotate(-45 * Math.PI / 180);
+            }
+            else if(self.projectileType === 'flame'){
+                ctx1.drawImage(Img[self.projectileType],-self.width / 2 + 6 - Math.random() * 12,-self.height / 2 + 6 - Math.random() * 12,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            }
+            else{
+                ctx1.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
+            }
         }
         ctx1.rotate(-self.direction * Math.PI / 180);
         if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
@@ -3252,6 +3256,22 @@ window.onclick = function(event){
 }
 var keys = {};
 document.onkeydown = function(event){
+    if(event.key === 'ArrowUp' && selfId){
+        if(commandList.length > 0 && commandIndex > -1){
+            document.getElementById('debug-input').value = commandList[commandIndex];
+            commandIndex -= 1;
+        }
+    }
+    else if(event.key === 'ArrowDown' && selfId){
+        if(commandList.length > 0 && commandIndex < commandList.length - 1){
+            commandIndex += 1;
+            document.getElementById('debug-input').value = commandList[commandIndex];
+        }
+        else{
+            commandIndex = commandList.length - 1;
+            document.getElementById('debug-input').value = '';
+        }
+    }
     if(chatPress){
         
     }

@@ -826,6 +826,12 @@
         "canChangeMap":true,
         "shop":false
     },
+    "mike":{
+        "name":"Mike",
+        "randomWalk":"wander",
+        "canChangeMap":true,
+        "shop":false
+    },
     "tutorialguard":{
         "name":"Tutorial Guard",
         "randomWalk":"none",

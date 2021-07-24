@@ -732,7 +732,8 @@
         "moveSpeed":20,
         "itemDrops":{
             "sphat":1,
-            "bookoflasers":0.01
+            "bookoflasers":0.01,
+            "thedeathrayspiral":0.01
         }
     },
     "tianmuGuarder":{

@@ -1937,7 +1937,9 @@ Actor = function(param){
                 particleType = 'greenDamage';
             }
             //damage = Math.min(self.hp,damage);
-            self.hp -= damage;
+            if(self.hp > 0){
+                self.hp -= damage;
+            }
             self.onHit(pt);
             if(damage){
                 if(damage > 0){
@@ -7480,12 +7482,7 @@ Player = function(param){
                 questObjective:'Survive and find the exit!',
             });
         }
-        if(self.questStage === 12 && self.quest === 'Secret Tunnels' && self.mapChange > 10 && self.map === 'The Graveyard'){
-            self.questStage = 11;
-            self.teleport(5792,864,'Secret Tunnel Part 1');
-            socket.emit('notification','[!] You got lost.');
-        }
-        if(self.questStage === 12 && self.quest === 'Secret Tunnels' && self.mapChange > 10 && self.map === 'The Forest'){
+        if(self.questStage === 12 && self.quest === 'Secret Tunnels' && self.mapChange > 10 && self.map === 'The Hideout'){
             self.questStage += 1;
             self.teleport(1248,672,'The Village');
             self.invincible = true;
@@ -8576,10 +8573,61 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'typhoon',32,function(t){return 25},1000,self.stats,'monsterHoming');
                             }
                             break;
+                        case "thedeathrayspiralAttack":
+                            if(isFireMap){
+                                var projectileWidth = 0;
+                                var projectileHeight = 0;
+                                for(var i in projectileData){
+                                    if(i === 'thedeathrayspiral'){
+                                        projectileWidth = projectileData[i].width;
+                                        projectileHeight = projectileData[i].height;
+                                    }
+                                }
+                                var projectile = Projectile({
+                                    id:self.id,
+                                    projectileType:'thedeathrayspiral',
+                                    angle:self.direction,
+                                    direction:self.direction,
+                                    x:self.x,
+                                    y:self.y,
+                                    map:self.map,
+                                    parentType:self.type,
+                                    mapWidth:self.mapWidth,
+                                    mapHeight:self.mapHeight,
+                                    width:projectileWidth,
+                                    height:projectileHeight,
+                                    spin:function(t){return 25},
+                                    pierce:1000,
+                                    projectilePattern:'boomerang',
+                                    stats:self.stats,
+                                    onCollision:function(self,pt){
+                                        if(Player.list[self.parent]){
+                                            var x = Player.list[self.parent].x
+                                            var y = Player.list[self.parent].y;
+                                            Player.list[self.parent].x = self.x;
+                                            Player.list[self.parent].y = self.y;
+                                            Player.list[self.parent].shootProjectile(self.parent,'Player',Math.atan2(self.spdY,self.spdX) / Math.PI * 180 + 20,Math.atan2(self.spdY,self.spdX) / Math.PI * 180 + 20,'thedeathrayspiral',24,function(t){return 25},1000,self.stats,'boomerang');
+                                            Player.list[self.parent].shootProjectile(self.parent,'Player',Math.atan2(self.spdY,self.spdX) / Math.PI * 180 + 10,Math.atan2(self.spdY,self.spdX) / Math.PI * 180 + 10,'thedeathrayspiral',24,function(t){return 25},1000,self.stats,'boomerang');
+                                            Player.list[self.parent].shootProjectile(self.parent,'Player',Math.atan2(self.spdY,self.spdX) / Math.PI * 180 - 10,Math.atan2(self.spdY,self.spdX) / Math.PI * 180 - 10,'thedeathrayspiral',24,function(t){return 25},1000,self.stats,'boomerang');
+                                            Player.list[self.parent].shootProjectile(self.parent,'Player',Math.atan2(self.spdY,self.spdX) / Math.PI * 180 - 20,Math.atan2(self.spdY,self.spdX) / Math.PI * 180 - 20,'thedeathrayspiral',24,function(t){return 25},1000,self.stats,'boomerang');
+                                            Player.list[self.parent].x = x;
+                                            Player.list[self.parent].y = y;
+                                        }
+                                    }
+                                });
+                            }
+                            break;
                         case "bookofflamesAttack":
                             if(isFireMap){
                                 for(var j = 0;j < 20;j++){
                                     self.shootProjectile(self.id,'Player',self.direction + j * 18,self.direction + j * 18,'fireBullet',32,function(t){return 25},1000,self.stats,'accellerateNoCollision');
+                                }
+                            }
+                            break;
+                        case "thegemofspAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 8;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction + j * 45,self.direction + j * 45,'thegemofsp',64,function(t){return 0},1000,self.stats,'thegemofsp');
                                 }
                             }
                             break;
@@ -12426,6 +12474,7 @@ Projectile = function(param){
     self.projectileType = param.projectileType;
     self.onCollision = param.onCollision;
     self.canCollide = true;
+    self.outOfBounds = false;
     self.pierce = 0;
     if(param.pierce){
         self.pierce = param.pierce;
@@ -12444,6 +12493,8 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
         self.relativeToPlayer = self.parent;
+        self.canCollide = false;
+        self.outOfBounds = true;
     }
     if(param.projectilePattern === 'spinAroundPlayer'){
         self.angle = param.angle / 180 * Math.PI;
@@ -12451,18 +12502,21 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
         self.relativeToPlayer = self.parent;
+        self.outOfBounds = true;
     }
     if(param.projectilePattern === 'spinAroundMonster'){
         self.angle = param.angle / 180 * Math.PI;
         self.canCollide = false;
         self.spdX = 0;
         self.spdY = 0;
+        self.outOfBounds = true;
     }
     if(param.projectilePattern === 'splaser'){
         self.angle = param.angle / 180 * Math.PI;
         self.canCollide = false;
         self.spdX = 0;
         self.spdY = 0;
+        self.outOfBounds = true;
     }
     if(param.projectilePattern === 'playerSplaser'){
         self.angle = param.angle / 180 * Math.PI;
@@ -12470,6 +12524,7 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
         self.relativeToPlayer = self.parent;
+        self.outOfBounds = true;
     }
     if(param.projectilePattern === 'auraPlayer'){
         self.angle = param.angle;
@@ -12541,7 +12596,14 @@ Projectile = function(param){
         self.canCollide = false;
     }
     if(param.projectilePattern === 'boomerang'){
-        //self.canCollide = false;
+        self.canCollide = false;
+    }
+    if(param.projectilePattern === 'thegemofsp'){
+        self.angle = param.angle / 180 * Math.PI;
+        self.canCollide = false;
+        self.spdX = 0;
+        self.spdY = 0;
+        self.relativeToPlayer = self.parent;
     }
     self.pushPower = self.stats.knockback;
     self.doUpdate = true;
@@ -12591,7 +12653,7 @@ Projectile = function(param){
                 self.updateCollisions();
             }
         }
-        if(self.x < self.width / 2 && self.canCollide){
+        if(self.x < self.width / 2 && self.outOfBounds === false){
             self.x = self.width / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdX = -self.spdX;
@@ -12600,7 +12662,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.x > self.mapWidth - self.width / 2 && self.canCollide){
+        if(self.x > self.mapWidth - self.width / 2 && self.outOfBounds === false){
             self.x = self.mapWidth - self.width / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdX = -self.spdX;
@@ -12609,7 +12671,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.y < self.height / 2 && self.canCollide){
+        if(self.y < self.height / 2 && self.outOfBounds === false){
             self.y = self.height / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdY = -self.spdY;
@@ -12618,7 +12680,7 @@ Projectile = function(param){
                 self.toRemove = true;
             }
         }
-        if(self.y > self.mapHeight - self.height / 2 && self.canCollide){
+        if(self.y > self.mapHeight - self.height / 2 && self.outOfBounds === false){
             self.y = self.mapHeight - self.height / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdY = -self.spdY;
@@ -12649,6 +12711,77 @@ Projectile = function(param){
                 self.y += Math.cos(self.angle) * param.distance;
                 self.angle += param.stats.speed / 2;
                 self.direction = self.angle * 180 / Math.PI + 180;
+            }
+            else{
+                self.toRemove = true;
+            }
+        }
+        else if(param.projectilePattern === 'thegemofsp'){
+            if(Player.list[self.parent]){
+                self.x = Player.list[self.parent].x;
+                self.y = Player.list[self.parent].y;
+                self.x += -Math.sin(self.angle) * param.distance;
+                self.y += Math.cos(self.angle) * param.distance;
+                self.angle += param.stats.speed / 2;
+                self.direction = self.angle * 180 / Math.PI + 135;
+                var closestMonster = undefined;
+                for(var i in Monster.list){
+                    if(closestMonster === undefined && Monster.list[i].map === self.map && Monster.list[i].invincible === false){
+                        closestMonster = Monster.list[i];
+                    }
+                    else if(closestMonster !== undefined){
+                        if(self.getDistance(Monster.list[i]) < self.getDistance(closestMonster) && Monster.list[i].map === self.map){
+                            closestMonster = Monster.list[i];
+                        }
+                    }
+                }
+                if(self.timer % 3 === 0 && closestMonster){
+                    var projectileWidth = 0;
+                    var projectileHeight = 0;
+                    var projectileStats = {};
+                    for(var i in projectileData){
+                        if(i === 'bullet'){
+                            projectileWidth = projectileData[i].width;
+                            projectileHeight = projectileData[i].height;
+                            projectileStats = Object.create(projectileData[i].stats);
+                        }
+                    }
+                    for(var i in projectileStats){
+                        projectileStats[i] *= self.stats[i];
+                    }
+                    projectileStats.attack = Math.round(projectileStats.attack * 0.7);
+                    projectileStats.range *= 10;
+                    projectileStats.speed *= 0.3;
+                    projectileStats.damageReduction = 0;
+                    projectileStats.debuffs = self.stats.debuffs;
+                    var projectile = Projectile({
+                        id:self.parent,
+                        projectileType:'bullet',
+                        angle:Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180,
+                        direction:Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180,
+                        x:self.x + Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / 180 * Math.PI) * 32,
+                        y:self.y + Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / 180 * Math.PI) * 32,
+                        distance:32,
+                        map:self.map,
+                        parentType:'Player',
+                        mapWidth:Player.list[self.parent].mapWidth,
+                        mapHeight:Player.list[self.parent].mapHeight,
+                        width:projectileWidth,
+                        height:projectileHeight,
+                        spin:function(t){return 0},
+                        pierce:0,
+                        projectilePattern:'accellerateNoCollision',
+                        stats:projectileStats,
+                        onCollision:function(self,pt){
+                            if(self.pierce === 0){
+                                self.toRemove = true;
+                            }
+                            else{
+                                self.pierce -= 1;
+                            }
+                        }
+                    });
+                }
             }
             else{
                 self.toRemove = true;
@@ -13338,8 +13471,8 @@ Projectile = function(param){
             self.y -= self.spdY;
         }
         else if(param.projectilePattern === 'accellerateNoCollision'){
-            self.spdX *= 1.1;
-            self.spdY *= 1.1;
+            self.spdX = Math.min(self.spdX * 1.1,128);
+            self.spdY = Math.min(self.spdY * 1.1,128);
         }
         else if(param.projectilePattern === 'boomerang'){
             if(Player.list[self.parent] === undefined){
@@ -13349,10 +13482,10 @@ Projectile = function(param){
                 self.toRemove = true;
             }
             else{
-                self.spdX += Math.cos(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 5;
-                self.spdY += Math.sin(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 5;
-                self.spdX *= 0.95;
-                self.spdY *= 0.95;
+                self.spdX += Math.cos(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 5 * self.stats.speed;
+                self.spdY += Math.sin(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 5 * self.stats.speed;
+                self.spdX *= 0.98;
+                self.spdY *= 0.98;
             }
             if(param.spin(self.timer) !== 0){
                 self.direction += param.spin(self.timer);
@@ -14366,6 +14499,7 @@ load("The Tutorial");
 load("The Battlefield");
 load("Garage");
 load("Secret Tunnel Part 1");
+load("The Hideout");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

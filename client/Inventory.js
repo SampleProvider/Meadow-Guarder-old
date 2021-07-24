@@ -256,6 +256,29 @@ Inventory = function(socket,server){
             return 'Essence of Fire';
         }
     }
+    self.getEquip = function(index){
+        if(index === 'weapon'){
+            return 'Weapon';
+        }
+        if(index === 'weapon2'){
+            return 'Weapon 2';
+        }
+        if(index === 'helmet'){
+            return 'Helmet';
+        }
+        if(index === 'armor'){
+            return 'Armor';
+        }
+        if(index === 'offhand'){
+            return 'Offhand';
+        }
+        if(index === 'key'){
+            return 'Key';
+        }
+        if(index === 'crystal'){
+            return 'Crystal';
+        }
+    }
     self.addItemClient = function(data,index){
         var inventory = document.getElementById("inventoryItem");
         let item = Item.list[data.id];
@@ -268,6 +291,8 @@ Inventory = function(socket,server){
         let enchantments = document.createElement('div');
         image.src = "/client/img/" + data.id + ".png";
         button.className = "UI-button-light itemButton";
+        button.style.fontSize = '14px';
+        div.style.fontSize = '12px';
         div.className = "UI-display-light";
         equip.className = "itemEquip";
         dismantle.className = "itemDismantle";
@@ -405,6 +430,8 @@ Inventory = function(socket,server){
         let enchantments = document.createElement('div');
         image.src = "/client/img/" + data.id + ".png";
         button.className = "UI-button-light";
+        button.style.fontSize = '14px';
+        div.style.fontSize = '12px';
         div.className = "UI-display-light";
         unequip.className = "itemUnequip";
         image.className = "item";
@@ -483,6 +510,8 @@ Inventory = function(socket,server){
         let enchantments = document.createElement('div');
         image.src = "/client/img/" + data.id + ".png";
         button.className = "UI-button-light";
+        button.style.fontSize = '14px';
+        div.style.fontSize = '12px';
         div.className = "UI-display-light";
         equip.className = "itemEquip";
         image.className = "item";
@@ -578,6 +607,8 @@ Inventory = function(socket,server){
         let enchantments = document.createElement('div');
         image.src = "/client/img/" + data.id + ".png";
         button.className = "UI-button-light";
+        button.style.fontSize = '14px';
+        div.style.fontSize = '12px';
         div.className = "UI-display-light";
         equip.className = "itemEquip";
         image.className = "item";
@@ -867,6 +898,7 @@ Inventory = function(socket,server){
                     return;
                 }
                 Player.list[self.socket.id].coins += Math.round(Player.list[self.socket.id].stats.xp * 500 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[index].enchantments.length * (Math.random() + 0.5));
+                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 50 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[index].enchantments.length * (Math.random() + 0.5));
                 self.removeItem(index);
                 self.refreshAllItems();
             }
