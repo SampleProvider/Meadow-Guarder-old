@@ -13,7 +13,7 @@
         "averageLevel":0.05,
         "deviation":0.03,
         "dropChance":0.2,
-        "event":"self.useTime = Math.round((1.25 - value) * self.useTime);"
+        "event":"self.useTime = Math.round((1 - value * 0.75) * self.useTime);"
     },
     "range":{
         "name":"Range",
@@ -45,7 +45,7 @@
         "averageLevel":0.05,
         "deviation":0.03,
         "dropChance":0.2,
-        "event":"self.attackCost = Math.round((1.25 - value) * self.attackCost);"
+        "event":"self.attackCost = Math.round((1 - value * 0.75) * self.attackCost);"
     },
     "aim":{
         "name":"Aim",
