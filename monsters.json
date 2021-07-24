@@ -733,7 +733,8 @@
         "itemDrops":{
             "sphat":1,
             "bookoflasers":0.01,
-            "thedeathrayspiral":0.01
+            "thedeathrayspiral":0.01,
+            "thegemofsp":0.01
         }
     },
     "tianmuGuarder":{
