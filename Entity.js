@@ -3626,6 +3626,7 @@ Player = function(param){
             }
         }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Tutorial'){
+            self.questStage += 1;
             self.endDialogue();
         }
         if(self.questStage === 15 && self.quest === 'Tutorial' && self.map === 'The Village'){
