@@ -868,7 +868,7 @@
     "enchantmentbook":{
         "name":"Enchantment Book",
         "equip":"consume",
-        "event":"if(self.quest === false){socket.emit('toggleSelect');self.quest = 'Enchant';self.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];}else{self.inventory.addItem('enchantmentbook');}self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"socket.emit('toggleSelect');self.questInfo.quest = 'Enchant';self.questInfo.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":["speed","burst","cost","range","reach","smashing","unlocking","focus","sorcery","aim","sharpness","accuracy","power"],
         "description":"Gives enchantents.",
         "rarity":3

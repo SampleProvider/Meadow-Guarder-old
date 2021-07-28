@@ -27,25 +27,44 @@
             9250,
             1000
         ],
-        "quote":"My friend Mark gave me all this wood, you want some?"
+        "mainItem":"wood",
+        "quote":"My friend Mark gave me all this wood, you want some?",
+        "dialogues":[
+            "My friend Mark gave me all this wood, you want some?",
+            "Have you talked to my friend Cyber yet?",
+            "I LOVE helping my friend Mark collect wood."
+        ]
     },
     "john":{
         "name":"John",
         "randomWalk":"waypoint",
         "canChangeMap":true,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Do you want to check out my garage?",
+            "My friend Billy went on a mission to the east. Maybe you should check up on him?",
+            "Have you checked out the Wandering Trader yet? He can sell some really rare items."
+        ]
     },
     "wizard":{
         "name":"Wizard",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "I. Hate. Monsters."
+        ]
     },
     "sally":{
         "name":"Sally",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Mia's piano playing is great!",
+            "I LOVE cooking!",
+            "The Pet Master gave me a brand new Cherrier! I love this new car!"
+        ]
     },
     "fisherman":{
         "name":"Fisherman",
@@ -90,31 +109,57 @@
             650000,
             1000000
         ],
-        "quote":"You want some fish?"
+        "mainItem":"fish",
+        "quote":"You want some fish?",
+        "dialogues":[
+            "Hey, if you ever want to buy some fish, just talk to me.",
+            "I just caught a rare GLOWING fish! I think it summons sp or something.",
+            "Do you know about some secret tunnels? Oh never mind."
+        ]
     },
     "joe":{
         "name":"Joe",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "I hate being stuck on this island.",
+            "There were some lilypads west of here.",
+            "I heard somewhere there is a desert. I want to go there one day!"
+        ]
     },
     "hunter":{
         "name":"Hunter",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "I just killed a Cherry Bomb!",
+            "Don't you think these lilypads are pretty?",
+            "I hate Snow Balls because they keep freezing me."
+        ]
     },
     "mia":{
         "name":"Mia",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Do you think my piano playing is great?",
+            "Sally makes the best pizza ever!",
+            "Wally just fixed my piano last week. I hope it doesn't break again..."
+        ]
     },
     "petmaster":{
         "name":"Pet Master",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Hey, do you want to change your pet?",
+            "Our Town Cave really is weird. I think an explorer found a secret tunnel in it.",
+            "My friend Wally just gave me this new ruby collar to tame pets!"
+        ]
     },
     "wally":{
         "name":"Wally",
@@ -204,7 +249,13 @@
             100000,
             100000
         ],
-        "quote":"I can make anything out of metal!"
+        "mainItem":"metals",
+        "quote":"I can make anything out of metal!",
+        "dialogues":[
+            "Do you want to buy some metals?",
+            "I heard of a big spirit up north.",
+            "Andrew travelled all across the world to track Monsters."
+        ]
     },
     "fibb":{
         "name":"Fibb",
@@ -224,7 +275,13 @@
             50000,
             50000
         ],
-        "quote":"My food is the best in town!"
+        "mainItem":"food",
+        "quote":"My food is the best in town!",
+        "dialogues":[
+            "Hey, do you want some cookies?",
+            "I am the best chef in Lilypad Kingdom!",
+            "I heard there is secret treasure..."
+        ]
     },
     "brian":{
         "name":"Brian",
@@ -269,7 +326,13 @@
             25000,
             150000
         ],
-        "quote":"I sell all sorts of potions!"
+        "mainItem":"potions",
+        "quote":"I sell all sorts of potions!",
+        "dialogues":[
+            "Do you want to buy some potions?",
+            "There is a house up north that always gives me the creeps.",
+            "Do you have any glowing fish that I can use to make a special potion?"
+        ]
     },
     "wanderingtrader":{
         "name":"Wandering Trader",
@@ -294,7 +357,13 @@
             200000,
             200000
         ],
-        "quote":"I travel across the land, selling rare items! My stock refreshes every 5 minutes."
+        "mainItem":"rare items",
+        "quote":"I travel across the land, selling rare items! My stock refreshes every 5 minutes.",
+        "dialogues":[
+            "New stock every 5 minutes!",
+            "I found a rare glowing fish! All yours for just the cheap cheap price of 10,000 gold!",
+            "The sun is high, but my prices are not."
+        ]
     },
     "woodenforge":{
         "name":"Wooden Forge",
@@ -812,25 +881,45 @@
         "name":"Andrew",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "I hate those stupid Sand Birds.",
+            "Have you talked to Mia yet?",
+            "I heard of a giant Whirlwind hidden in the depths of the Lilypad Temple.",
+            "I heard of a fiery Spirit in the Flaming Seas."
+        ]
     },
     "billy":{
         "name":"Billy",
         "randomWalk":"waypoint",
         "canChangeMap":true,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Did you know there is a desert town west of here?",
+            "These rocopters keep throwing rocks everywhere.",
+            "Bob just gave me an apple!"
+        ]
     },
     "cyber":{
         "name":"Cyber",
         "randomWalk":"wander",
         "canChangeMap":true,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Monsters are raiding! Run!",
+            "<a class='UI-link-light' href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>Click me!</a>",
+            "These Monsters are so scary..."
+        ]
     },
     "mike":{
         "name":"Mike",
         "randomWalk":"wander",
         "canChangeMap":true,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "Ahhhhh! There are ghosts outside!",
+            "Hey, can you go to my basement?"
+        ]
     },
     "tutorialguard":{
         "name":"Tutorial Guard",
@@ -842,6 +931,10 @@
         "name":"Riley",
         "randomWalk":"wander",
         "canChangeMap":false,
-        "shop":false
+        "shop":false,
+        "dialogues":[
+            "I lost my candies!",
+            "I love Fibb's new candies!"
+        ]
     }
 }

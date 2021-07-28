@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '0.3.0';
+var VERSION = '030f1a';
 
 var DEBUG = false;
 
@@ -57,9 +57,6 @@ socket.on('disconnect',function(){
 var gameDiv = document.getElementById('gameDiv');
 var loadingDiv = document.getElementById('loadingDiv');
 var pageDiv = document.getElementById('pageDiv');
-var mainAttackDiv = document.getElementById('mainAttack');
-var secondaryAttackDiv = document.getElementById('secondaryAttack');
-var healDiv = document.getElementById('heal');
 var disconnectedDiv = document.getElementById('disconnected');
 var spectatorDiv = document.getElementById('spectator');
 var ctx0Raw = document.getElementById('ctx0');
@@ -308,6 +305,8 @@ signDivSignIn.onclick = function(){
         },2000);
         loadingDiv.style.display = 'inline-block';
         loading = true;
+        loadingProgress = 0;
+        loadingProgressDisplay = 0;
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
@@ -1187,11 +1186,7 @@ var Player = function(initPack){
     self.stats = initPack.stats;
     self.level = initPack.level;
     self.map = initPack.map;
-    self.attackTick = initPack.attackTick;
-    self.secondTick = initPack.secondTick;
-    self.healTick = initPack.healTick;
     self.attackCost = initPack.attackCost;
-    self.secondCost = initPack.secondCost;
     self.healCost = initPack.healCost;
     self.useTime = initPack.useTime;
     self.mapHeight = initPack.mapHeight;
@@ -1213,6 +1208,11 @@ var Player = function(initPack){
         for(var j in questData[i].requirements){
             if(self.questStats[questData[i].requirements[j]] === false){
                 requirementsMet = false;
+            }
+            else if(questData[i].requirements[j].slice(0,4) === 'Lvl '){
+                if(parseInt(questData[i].requirements[j].slice(4,questData[i].requirements[j].length),10) > self.level){
+                    requirementsMet = false;
+                }
             }
         }
         if(requirementsMet){
@@ -1377,7 +1377,7 @@ var Player = function(initPack){
         }
         xpBarText.innerHTML = xpText + xpMaxText;
         xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
-        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You have ' + Math.round(self.stats.damageReduction * 100) + '% damage reduction.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your secondary attack spends ' + Math.round(self.secondCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
+        document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You have ' + Math.round(self.stats.damageReduction * 100) + '% damage reduction.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
         document.getElementById('devcoinDiv').innerHTML = self.devCoins;
         document.getElementById('goldcoinDiv').innerHTML = Math.floor(self.coins / 10000);
         document.getElementById('silvercoinDiv').innerHTML = Math.floor(self.coins / 100) % 100;
@@ -1405,7 +1405,7 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave"){
+        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave" && self.map !== "Secret Tunnel Part 1"){
             return;
         }
         var grd = ctx1.createRadialGradient(self.x,self.y,50,self.x,self.y,500);
@@ -2002,20 +2002,20 @@ var Pet = function(initPack){
         }
     }
     self.draw = function(){
-        if(self.petType === 'kiol'){
+        if(self.petType === 'Kiol'){
             ctx0.drawImage(Img.kiol,self.x - 20,self.y - 14,40,28);
         }
-        if(self.petType === 'cherrier'){
+        if(self.petType === 'Cherrier'){
             ctx0.drawImage(Img.cherrier,Math.floor(self.animation) * 10,0,9,8,self.x - 18,self.y - 16,36,32);
         }
-        if(self.petType === 'sphere'){
+        if(self.petType === 'Sphere'){
             ctx0.translate(self.x,self.y);
             ctx0.rotate(self.animation * Math.PI / 180);
             ctx0.drawImage(Img.sphere,-22,-22,44,44);
             ctx0.rotate(-self.animation * Math.PI / 180);
             ctx0.translate(-self.x,-self.y);
         }
-        if(self.petType === 'thunderbird'){
+        if(self.petType === 'Thunderbird'){
             ctx0.drawImage(Img.thunderbird,Math.floor(self.animation) % 4 * 17,Math.floor(self.animation / 4) * 16,16,15,self.x - 32,self.y - 30,64,60);
         }
     }
@@ -2246,20 +2246,8 @@ socket.on('update',function(data){
                     if(data.player[i].map !== undefined){
                         Player.list[data.player[i].id].map = data.player[i].map;
                     }
-                    if(data.player[i].attackTick !== undefined){
-                        Player.list[data.player[i].id].attackTick = data.player[i].attackTick;
-                    }
-                    if(data.player[i].secondTick !== undefined){
-                        Player.list[data.player[i].id].secondTick = data.player[i].secondTick;
-                    }
-                    if(data.player[i].healTick !== undefined){
-                        Player.list[data.player[i].id].healTick = data.player[i].healTick;
-                    }
                     if(data.player[i].attackCost !== undefined){
                         Player.list[data.player[i].id].attackCost = data.player[i].attackCost;
-                    }
-                    if(data.player[i].secondCost !== undefined){
-                        Player.list[data.player[i].id].secondCost = data.player[i].secondCost;
                     }
                     if(data.player[i].healCost !== undefined){
                         Player.list[data.player[i].id].healCost = data.player[i].healCost;
@@ -2288,6 +2276,11 @@ socket.on('update',function(data){
                                 for(var k in questData[j].requirements){
                                     if(data.player[i].questStats[questData[j].requirements[k]] === false){
                                         requirementsMet = false;
+                                    }
+                                    else if(questData[j].requirements[k].slice(0,4) === 'Lvl '){
+                                        if(parseInt(questData[j].requirements[k].slice(4,questData[j].requirements[k].length),10) > data.player[i].level){
+                                            requirementsMet = false;
+                                        }
                                     }
                                 }
                                 if(requirementsMet){
@@ -2829,10 +2822,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 495';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 495 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 507';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 507 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 495){
+        if(loadingProgressDisplay >= 507){
             if(loading){
                 setTimeout(function(){
                     loading = false;

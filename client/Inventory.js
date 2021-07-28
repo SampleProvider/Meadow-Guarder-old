@@ -18,6 +18,7 @@ Inventory = function(socket,server){
             firebar:0,
             essenceoffire:0,
         },
+        dismantle:'Common Items',
         shopItems:{items:[],prices:[]},
         craftItems:{items:[],materials:[]},
         refresh:true,
@@ -731,46 +732,64 @@ Inventory = function(socket,server){
         materials.innerHTML = "";
         var currentEquip = document.getElementById("currentEquip");
         currentEquip.innerHTML = "";
-        var dismantleButton = document.createElement('button');
-        dismantleButton.innerHTML = 'Dismantle All Common Items';
-        dismantleButton.className = "UI-button-light";
-        inventory.appendChild(dismantleButton);
-        dismantleButton.style.color = '#ff0000';
+        var dropdown = document.getElementById("inventoryDismantleDropdown");
+        var dismantleButton = document.getElementById("inventoryDismantleButton");
+        dropdown.oninput = function(){
+            self.dismantle = dropdown.options[dropdown.selectedIndex].text;
+            releaseAll();
+        }
+        dropdown.onclick = function(){
+            releaseAll();
+        }
         dismantleButton.onclick = function(){
             var dismantleList = [];
-            for(var i in self.items){
-                if(Item.list[self.items[i].id].rarity <= 1){
-                    dismantleList.push(i);
+            if(self.dismantle === 'Common Items'){
+                for(var i in self.items){
+                    if(Item.list[self.items[i].id].rarity <= 1){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'Rare Items'){
+                for(var i in self.items){
+                    if(Item.list[self.items[i].id].rarity <= 2){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'Enchantment Books'){
+                for(var i in self.items){
+                    if(self.items[i].id === 'enchantmentbook'){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'Whirlwind Items'){
+                for(var i in self.items){
+                    if(self.items[i].id === 'iceflower'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'iceboomerang'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'staffofthewhirlwind'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'typhoonstorm'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'waterslasher'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'tsunami'){
+                        dismantleList.push(i);
+                    }
                 }
             }
             for(var i = dismantleList.length - 1;i >= 0;i--){
                 self.socket.emit("dismantleItem",dismantleList[i]);
             }
         }
-        dismantleButton.style.display = 'inline-block';
-        dismantleButton.style.position = 'relative';
-        var spacing = document.createElement('div');
-        inventory.appendChild(spacing);
-        var dismantleEnchantButton = document.createElement('button');
-        dismantleEnchantButton.innerHTML = 'Dismantle All Enchantment Books';
-        dismantleEnchantButton.className = "UI-button-light";
-        inventory.appendChild(dismantleEnchantButton);
-        dismantleEnchantButton.style.color = '#ff0000';
-        dismantleEnchantButton.onclick = function(){
-            var dismantleList = [];
-            for(var i in self.items){
-                if(self.items[i].id === 'enchantmentbook'){
-                    dismantleList.push(i);
-                }
-            }
-            for(var i = dismantleList.length - 1;i >= 0;i--){
-                self.socket.emit("dismantleItem",dismantleList[i]);
-            }
-        }
-        dismantleEnchantButton.style.display = 'inline-block';
-        dismantleEnchantButton.style.position = 'relative';
-        var spacing = document.createElement('div');
-        inventory.appendChild(spacing);
 		for(var i = 0;i < self.items.length;i++){
 			self.addItemClient(self.items[i],i);
 		}
@@ -805,46 +824,64 @@ Inventory = function(socket,server){
         }
         var inventory = document.getElementById("inventoryItem");
         inventory.innerHTML = '';
-        var dismantleButton = document.createElement('button');
-        dismantleButton.innerHTML = 'Dismantle All Common Items';
-        dismantleButton.className = "UI-button-light";
-        inventory.appendChild(dismantleButton);
-        dismantleButton.style.color = '#ff0000';
+        var dropdown = document.getElementById("inventoryDismantleDropdown");
+        var dismantleButton = document.getElementById("inventoryDismantleButton");
+        dropdown.oninput = function(){
+            self.dismantle = dropdown.options[dropdown.selectedIndex].text;
+            releaseAll();
+        }
+        dropdown.onclick = function(){
+            releaseAll();
+        }
         dismantleButton.onclick = function(){
             var dismantleList = [];
-            for(var i in self.items){
-                if(Item.list[self.items[i].id].rarity <= 1){
-                    dismantleList.push(i);
+            if(self.dismantle === 'Common Items'){
+                for(var i in self.items){
+                    if(Item.list[self.items[i].id].rarity <= 1){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'Rare Items'){
+                for(var i in self.items){
+                    if(Item.list[self.items[i].id].rarity <= 2){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'Enchantment Books'){
+                for(var i in self.items){
+                    if(self.items[i].id === 'enchantmentbook'){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'Whirlwind Items'){
+                for(var i in self.items){
+                    if(self.items[i].id === 'iceflower'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'iceboomerang'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'staffofthewhirlwind'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'typhoonstorm'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'waterslasher'){
+                        dismantleList.push(i);
+                    }
+                    if(self.items[i].id === 'tsunami'){
+                        dismantleList.push(i);
+                    }
                 }
             }
             for(var i = dismantleList.length - 1;i >= 0;i--){
                 self.socket.emit("dismantleItem",dismantleList[i]);
             }
         }
-        dismantleButton.style.display = 'inline-block';
-        dismantleButton.style.position = 'relative';
-        var spacing = document.createElement('div');
-        inventory.appendChild(spacing);
-        var dismantleEnchantButton = document.createElement('button');
-        dismantleEnchantButton.innerHTML = 'Dismantle All Enchantment Books';
-        dismantleEnchantButton.className = "UI-button-light";
-        inventory.appendChild(dismantleEnchantButton);
-        dismantleEnchantButton.style.color = '#ff0000';
-        dismantleEnchantButton.onclick = function(){
-            var dismantleList = [];
-            for(var i in self.items){
-                if(self.items[i].id === 'enchantmentbook'){
-                    dismantleList.push(i);
-                }
-            }
-            for(var i = dismantleList.length - 1;i >= 0;i--){
-                self.socket.emit("dismantleItem",dismantleList[i]);
-            }
-        }
-        dismantleEnchantButton.style.display = 'inline-block';
-        dismantleEnchantButton.style.position = 'relative';
-        var spacing = document.createElement('div');
-        inventory.appendChild(spacing);
         for(var i = 0;i < self.items.length;i++){
             self.addItemClient(self.items[i],i);
         }
@@ -955,7 +992,6 @@ Inventory = function(socket,server){
                     return;
                 }
                 var item = self.items[index];
-                self.socket.emit('hideInventory');
                 Player.list[self.socket.id].selectedItem = index;
             }
             catch(err){

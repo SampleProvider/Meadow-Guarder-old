@@ -2,118 +2,141 @@
     "Monster Raid":{
         "description":"Save The Village from monsters!",
         "xp":1000,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-
+            "Lvl 1"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"john"
     },
     "Missing Person":{
         "description":"Find Mark who has been missing in the map The River. Test out some new quest mechanics.",
         "xp":800,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-
+            "Lvl 1"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"bob"
     },
     "Secret Tunnels":{
         "description":"Locate and travel through secret tunnels scattered around the map.",
         "xp":1900,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-
+            "Lvl 2"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"cyber"
     },
     "Clear River":{
         "description":"Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class='UI-link-light' href='https://github.com/maitian352/Meadow-Guarder/issues'>here</a>.",
         "xp":1500,
-        "startStage":3,
+        "startStage":1,
         "requirements":[
-            "Monster Raid"
+            "Monster Raid",
+            "Lvl 2"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"fisherman"
     },
     "Clear Tower":{
         "description":"Defeat all the monsters in the weird tower in the map The River.",
         "xp":1200,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-            "Monster Raid"
+            "Monster Raid",
+            "Lvl 2"
         ],
-        "multiplePlayers":false
+        "multiplePlayers":false,
+        "startNpc":"joe"
     },
     "Broken Sword":{
         "description":"Find Billy's broken sword.",
         "xp":900,
-        "startStage":4,
+        "startStage":1,
         "requirements":[
-            "Clear Tower"
+            "Clear Tower",
+            "Lvl 2"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"billy"
     },
     "Lightning Lizard Boss":{
         "description":"Defeat the Lightning Lizard.",
         "xp":1800,
-        "startStage":3,
+        "startStage":1,
         "requirements":[
-            "Clear Tower"
+            "Clear Tower",
+            "Lvl 3"
         ],
-        "multiplePlayers":false
+        "multiplePlayers":false,
+        "startNpc":"hunter"
     },
     "Wood Delivery":{
         "description":"Deliver some wood to Wally in Deserted Town.",
         "xp":1300,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-            "Lightning Lizard Boss","Missing Person"
+            "Lightning Lizard Boss",
+            "Missing Person",
+            "Lvl 2"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"bob"
     },
     "Lost Rubies":{
         "description":"Find some lost rubies in the Town Cave.",
         "xp":2100,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-            "Plantera"
+            "Plantera",
+            "Lvl 10"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"sally"
     },
     "Broken Piano":{
         "description":"Find Piano Parts to fix Mia's piano.",
         "xp":2400,
-        "startStage":6,
+        "startStage":1,
         "requirements":[
-            "Lost Rubies"
+            "Lost Rubies",
+            "Lvl 11"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"mia"
     },
     "Pet Training":{
         "description":"Train your pet to become stronger.",
         "xp":2300,
-        "startStage":7,
+        "startStage":1,
         "requirements":[
-            "Lost Rubies"
+            "Lost Rubies",
+            "Lvl 11"
         ],
-        "multiplePlayers":false
+        "multiplePlayers":false,
+        "startNpc":"petmaster"
     },
     "Monster Search":{
         "description":"Search for a way to kill all the monsters.",
         "xp":2500,
-        "startStage":4,
+        "startStage":1,
         "requirements":[
-            "Lost Rubies"
+            "Pet Training",
+            "Lvl 12"
         ],
-        "multiplePlayers":false
+        "multiplePlayers":false,
+        "startNpc":"andrew"
     },
     "Missing Candies":{
         "description":"Find Riley's candies.",
         "xp":1100,
-        "startStage":2,
+        "startStage":1,
         "requirements":[
-            
+            "Lvl 15"
         ],
-        "multiplePlayers":true
+        "multiplePlayers":true,
+        "startNpc":"riley"
     }
 }

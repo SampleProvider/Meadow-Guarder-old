@@ -212,7 +212,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="11" name="Secret Tunnel Part 1:32:96:right:" width="15" height="22" visible="0">
+ <layer id="11" name="Secret Tunnel Part 1:32:192:right:" width="15" height="22" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

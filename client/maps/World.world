@@ -90,6 +90,13 @@
             "width": 800,
             "x": 1600,
             "y": 0
+        },
+        {
+            "fileName": "The Foothills.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 1600,
+            "y": -800
         }
     ],
     "onlyShowAdjacentMaps": false,

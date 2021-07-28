@@ -421,6 +421,20 @@ canvas {
     height: 20px;
     border: none;
 }
+#inventoryDismantleButton {
+    position: absolute;
+    left: 54px;
+    top: 37px;
+    height: 20px;
+    color: #ff0000;
+}
+#inventoryDismantleDropdown {
+    position: absolute;
+    left: 158px;
+    top: 37px;
+    height: 26px;
+    color: #ff0000;
+}
 #currentEquipHeader {
     position: absolute;
     left: 391px;
