@@ -3546,6 +3546,7 @@ Player = function(param){
             });
         }
         if(self.currentResponse === 1 && self.questStage === 11 && self.quest === 'Tutorial' && self.mapChange > 10){
+            self.questStage += 1;
             self.endDialogue();
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
