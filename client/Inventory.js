@@ -786,6 +786,13 @@ Inventory = function(socket,server){
                     }
                 }
             }
+            if(self.dismantle === 'SP Items'){
+                for(var i in self.items){
+                    if(self.items[i].id === 'sphat'){
+                        dismantleList.push(i);
+                    }
+                }
+            }
             for(var i = dismantleList.length - 1;i >= 0;i--){
                 self.socket.emit("dismantleItem",dismantleList[i]);
             }
@@ -874,6 +881,13 @@ Inventory = function(socket,server){
                         dismantleList.push(i);
                     }
                     if(self.items[i].id === 'tsunami'){
+                        dismantleList.push(i);
+                    }
+                }
+            }
+            if(self.dismantle === 'SP Items'){
+                for(var i in self.items){
+                    if(self.items[i].id === 'sphat'){
                         dismantleList.push(i);
                     }
                 }
