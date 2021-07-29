@@ -253,7 +253,7 @@
         "quote":"I can make anything out of metal!",
         "dialogues":[
             "Do you want to buy some metals?",
-            "I heard of a big spirit up north.",
+            "I hear of a Possessed Spirit up north.",
             "Andrew travelled all across the world to track Monsters."
         ]
     },
@@ -273,6 +273,12 @@
         ],
         "shopPrices":[
             50000,
+            50000,
+            50000,
+            50000,
+            50000,
+            50000,
+            50000,
             50000
         ],
         "mainItem":"food",
@@ -281,6 +287,51 @@
             "Hey, do you want some cookies?",
             "I am the best chef in Lilypad Kingdom!",
             "I heard there is secret treasure..."
+        ]
+    },
+    "lily":{
+        "name":"Lily",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":[
+            {
+                "id":"healthboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"defenseboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"speedboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"manaboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"regenboostpotion",
+                "enchantments":[]
+            },
+            {
+                "id":"randomboostpotion",
+                "enchantments":[]
+            }
+        ],
+        "shopPrices":[
+            50000,
+            50000,
+            50000,
+            50000,
+            50000,
+            125000
+        ],
+        "mainItem":"potions",
+        "quote":"I make the strongest potions!",
+        "dialogues":[
+            "Buy now and get 5% off!",
+            "Andrew buys my potions everyday!"
         ]
     },
     "brian":{
@@ -720,6 +771,30 @@
                 {
                     "id":"firearmor",
                     "enchantments":[]
+                },
+                {
+                    "id":"greaterhealthboostpotion",
+                    "enchantments":[]
+                },
+                {
+                    "id":"greaterdefenseboostpotion",
+                    "enchantments":[]
+                },
+                {
+                    "id":"greaterspeedboostpotion",
+                    "enchantments":[]
+                },
+                {
+                    "id":"greatermanaboostpotion",
+                    "enchantments":[]
+                },
+                {
+                    "id":"greaterregenboostpotion",
+                    "enchantments":[]
+                },
+                {
+                    "id":"greaterrandomboostpotion",
+                    "enchantments":[]
                 }
             ],
             "materials":[
@@ -871,6 +946,174 @@
                     {
                         "id":"essenceoffire",
                         "amount":18
+                    }
+                ],
+                [
+                    {
+                        "id":"emeralditebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofnature",
+                        "amount":2
+                    },
+                    {
+                        "id":"whirlwindbar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":1
+                    },
+                    {
+                        "id":"firebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":1
+                    },
+                    {
+                        "id":"steel",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"emeralditebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofnature",
+                        "amount":2
+                    },
+                    {
+                        "id":"whirlwindbar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":1
+                    },
+                    {
+                        "id":"firebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":1
+                    },
+                    {
+                        "id":"steel",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"emeralditebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofnature",
+                        "amount":2
+                    },
+                    {
+                        "id":"whirlwindbar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":1
+                    },
+                    {
+                        "id":"firebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":1
+                    },
+                    {
+                        "id":"steel",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"emeralditebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofnature",
+                        "amount":2
+                    },
+                    {
+                        "id":"whirlwindbar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":1
+                    },
+                    {
+                        "id":"firebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":1
+                    },
+                    {
+                        "id":"steel",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"emeralditebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofnature",
+                        "amount":2
+                    },
+                    {
+                        "id":"whirlwindbar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":1
+                    },
+                    {
+                        "id":"firebar",
+                        "amount":1
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":1
+                    },
+                    {
+                        "id":"steel",
+                        "amount":25
+                    }
+                ],
+                [
+                    {
+                        "id":"essenceofnature",
+                        "amount":5
+                    },
+                    {
+                        "id":"essenceofwater",
+                        "amount":5
+                    },
+                    {
+                        "id":"essenceoffire",
+                        "amount":5
+                    },
+                    {
+                        "id":"steel",
+                        "amount":25
                     }
                 ]
             ]

@@ -6,6 +6,12 @@ Particle = function(param){
     self.map = param.map;
     self.timer = 10;
     self.direction = Math.random() * 2 - 1;
+    if(self.particleType === 'teleport'){
+        self.direction = 360 * Math.random();
+    }
+    if(self.particleType === 'kill'){
+        self.direction = 360 * Math.random();
+    }
     self.getInitPack = function(){
         var pack = {};
         pack.id = self.id;

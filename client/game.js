@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '030f1a';
+var VERSION = '030f1b';
 
 var DEBUG = false;
 
@@ -296,9 +296,15 @@ request.onerror = function(){
 };
 request.send();
 
+var username = '';
+var password = '';
+var signingIn = false;
+
 signDivSignIn.onclick = function(){
     if(canSignIn){
-        socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+        username = signDivUsername.value;
+        password = signDivPassword.value;
+        signingIn = true;
         canSignIn = false;
         setTimeout(() => {
             canSignIn = true;
@@ -700,6 +706,8 @@ Img.fireSpirit = new Image();
 Img.fireSpirit.src = '/client/img/fireSpirit.png';
 Img.rocopter = new Image();
 Img.rocopter.src = '/client/img/rocopter.png';
+Img.crab = new Image();
+Img.crab.src = '/client/img/crab.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -1460,6 +1468,9 @@ var Projectile = function(initPack){
             if(self.projectileType === 'stoneArrow'){
                 ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
             }
+            else if(self.projectileType === 'goldArrow'){
+                ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
+            }
             else if(self.projectileType === 'unholytrident'){
                 ctx0.rotate(45 * Math.PI / 180);
                 ctx0.drawImage(Img[self.projectileType],-self.width / 2,-self.height / 2,projectileData[self.projectileType].width,projectileData[self.projectileType].height);
@@ -1495,6 +1506,9 @@ var Projectile = function(initPack){
         ctx1.rotate(self.direction * Math.PI / 180);
         if(projectileData[self.projectileType]){
             if(self.projectileType === 'stoneArrow'){
+                ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
+            }
+            else if(self.projectileType === 'goldArrow'){
                 ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
             }
             else if(self.projectileType === 'unholytrident'){
@@ -1825,6 +1839,10 @@ var Monster = function(initPack){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.rocopter,self.animation * 10,8 * 0,9,7,self.x - 36,self.y - 28,72,56);
         }
+        if(self.monsterType === 'crab'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.crab,self.animation * 14,9 * 0,13,8,self.x - 26,self.y - 16,52,32);
+        }
     }
     self.drawCtx1 = function(){
         if(self.monsterType === 'ghost'){
@@ -2066,9 +2084,19 @@ var Particle = function(initPack){
             self.y += -self.timer / 2 + 10 / 4;
             self.timer -= 1 / 4;
         }
-        if(self.particleType === 'bigOrangeDamage'){
+        else if(self.particleType === 'bigOrangeDamage'){
             self.x += 6 * self.direction / 4;
             self.y += -self.timer / 2 + 10 / 4;
+            self.timer -= 1 / 5;
+        }
+        else if(self.particleType === 'teleport'){
+            self.x += Math.cos(self.direction / 180 * Math.PI);
+            self.y += Math.sin(self.direction / 180 * Math.PI);
+            self.timer -= 1 / 15;
+        }
+        else if(self.particleType === 'kill'){
+            self.x += Math.cos(self.direction / 180 * Math.PI);
+            self.y += Math.sin(self.direction / 180 * Math.PI);
             self.timer -= 1 / 5;
         }
         else{
@@ -2144,11 +2172,31 @@ var Particle = function(initPack){
             ctx1.fillStyle = "rgba(0,255,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
             ctx1.fillRect(self.x,self.y,4,4);
         }
+        else if(self.particleType === 'water'){
+            var a = (self.timer / 5);
+            ctx1.fillStyle = "rgba(0,0,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(0,0,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x - 4,self.y,4,4);
+            ctx1.fillStyle = "rgba(0,0,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y - 4,4,4);
+            ctx1.fillStyle = "rgba(0,0,255," + (a / 3 + 2 * a / 3 * Math.random()) + ")";
+            ctx1.fillRect(self.x,self.y,4,4);
+        }
+        else if(self.particleType === 'teleport'){
+            ctx1.fillStyle = "rgba(125,0,255," + (self.timer / 15) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
+        else if(self.particleType === 'kill'){
+            ctx1.fillStyle = "rgba(255,125,0," + (self.timer / 15) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
     }
     Particle.list[self.id] = self;
     return self;
 }
 Particle.list = {};
+var particles = {};
 window.onoffline = function(event){
     socket.emit('timeout');
 };
@@ -2157,6 +2205,7 @@ socket.on('selfId',function(data){
     selfId = data.id;
     chat = '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
     chatText.innerHTML = '<div>Welcome to Meadow Guarders Open ' + VERSION + '!</div>';
+    gameDiv.style.display = 'inline-block';
 });
 socket.on('update',function(data){
     for(var i in Player.list){
@@ -2637,6 +2686,7 @@ socket.on('changeMap',function(data){
     }
     currentMap = data.teleport;
     shadeSpeed = 3 / 40;
+    particles = JSON.parse(JSON.stringify(Particle.list));
 });
 socket.on('dialogueLine',function(data){
     if(data.state === 'remove'){
@@ -2822,14 +2872,17 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 518';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 518 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 538';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 538 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 518){
+        if(loadingProgressDisplay >= 538){
             if(loading){
                 setTimeout(function(){
+                    if(signingIn){
+                        socket.emit('signIn',{username:username,password:password});
+                        signingIn = false;
+                    }
                     loading = false;
-                    gameDiv.style.display = 'inline-block';
                     worldMap.save();
                     worldMap.fillStyle = '#000000';
                     worldMap.fillRect(0,0,1510,1130);
@@ -2884,6 +2937,9 @@ setInterval(function(){
         map1.canvas.width = window.innerWidth;
         map1.canvas.height = window.innerHeight;
         resetCanvas(map1);
+        
+        state.x = clampX(0);
+        state.y = clampY(0);
     }
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
@@ -3150,9 +3206,13 @@ setInterval(function(){
         mapShadeSpeed = -0.12;
     }
     if(Player.list[selfId].map === currentMap && shadeAmount > 1.5){
+        for(var i in Particle.list){
+            if(Particle.list[i].map !== Player.list[selfId].map){
+                Particle.list[i].toRemove = true;
+            }
+        }
         shadeSpeed = -3 / 40;
         map0.fillStyle = maps[Player.list[selfId].map];
-        Particle.list = [];
     }
     if(shadeAmount < 0.25 && document.getElementById('mapName').innerHTML !== Player.list[selfId].map){
         document.getElementById('mapName').innerHTML = Player.list[selfId].map;

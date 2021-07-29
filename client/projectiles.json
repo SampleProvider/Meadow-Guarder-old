@@ -25,7 +25,33 @@
             "knockback":1
         }
     },
+    "crabBullet":{
+        "width":28,
+        "height":28,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
     "stoneArrow":{
+        "width":14,
+        "height":14,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "goldArrow":{
         "width":14,
         "height":14,
         "stats":{
@@ -858,6 +884,58 @@
         }
     },
     "bookoflasers":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "goldensaber":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "goldenbow":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "bookofgold":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "goldenscepter":{
         "width":64,
         "height":64,
         "stats":{

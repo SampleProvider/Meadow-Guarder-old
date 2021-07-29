@@ -97,6 +97,13 @@
             "width": 800,
             "x": 1600,
             "y": -800
+        },
+        {
+            "fileName": "The Sandy Beach.tmx",
+            "height": 800,
+            "width": 800,
+            "x": -800,
+            "y": 800
         }
     ],
     "onlyShowAdjacentMaps": false,

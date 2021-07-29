@@ -641,6 +641,14 @@
         "description":"Harness the power of fire.",
         "rarity":7
     },
+    "crabcrystal":{
+        "name":"Crab Crystal",
+        "equip":"crystal",
+        "event":"self.passive = 'crab';self.passiveUsetime = 5;",
+        "enchantments":[],
+        "description":"Harness the power of <span style='color:#ff3333'>crabs</span>.",
+        "rarity":5
+    },
     "yellowfish":{
         "name":"Yellow Fish",
         "equip":"consume",
@@ -892,7 +900,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range","accuracy","power"],
-        "damage":361,
+        "damage":461,
         "damageType":"ranged",
         "critChance":0.04,
         "knockback":0.3,
@@ -927,22 +935,22 @@
     "lightningmask":{
         "name":"Lightning Mask",
         "equip":"helmet",
-        "event":"damageIncrease += 0.25;self.stats.critChance += 0.25;self.stats.debuffs.push({id:'electrified',time:60});",
+        "event":"damageIncrease += 0.75;self.stats.critChance += 0.55;self.stats.debuffs.push({id:'electrified',time:100});",
         "enchantments":["smashing","burst"],
         "defense":31,
         "damageReduction":0.1,
         "rarity":4,
-        "description":"<span style='color: #33ee33'>+25% damage.</span><br><span style='color: #33ee33'>+25% critical strike chance.</span><br>You inflict the electrified debuff for 3 seconds."
+        "description":"<span style='color: #33ee33'>+75% damage.</span><br><span style='color: #33ee33'>+55% critical strike chance.</span><br>You inflict the electrified debuff for 5 seconds."
     },
     "lightningarmor":{
         "name":"Lightning Armor",
         "equip":"armor",
-        "event":"damageIncrease += 0.3;self.stats.critChance += 0.15;self.immuneDebuffs.push('electrified');",
+        "event":"damageIncrease += 0.65;self.stats.critChance += 0.45;self.immuneDebuffs.push('electrified');",
         "enchantments":["smashing","burst"],
         "defense":37,
         "damageReduction":0.2,
         "rarity":4,
-        "description":"<span style='color: #33ee33'>+30% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span><br>You gain immunity to the electrified debuff."
+        "description":"<span style='color: #33ee33'>+65% damage.</span><br><span style='color: #33ee33'>+45% critical strike chance.</span><br>You gain immunity to the electrified debuff."
     },
     "flamethrower":{
         "name":"Flamethrower",
@@ -1040,19 +1048,27 @@
     "rubyglove":{
         "name":"Ruby Glove",
         "equip":"offhand",
-        "event":"self.useTime *= 0.85;self.attackCooldown *= 0.85;",
+        "event":"self.useTime *= 0.25;self.attackCooldown *= 0.25;",
         "enchantments":["smashing"],
         "rarity":5,
-        "description":"<span style='color: #33ee33'>-15% attack speed.</span>"
+        "description":"<span style='color: #33ee33'>-75% attack speed.</span>"
+    },
+    "anniversarypresent":{
+        "name":"Anniversary Present",
+        "equip":"consume",
+        "event":"var anniversaryItem = Math.random();if(anniversaryItem < 0.25){var anniversaryItemToGive = 'goldensaber';}else if(anniversaryItem < 0.5){var anniversaryItemToGive = 'goldenbow';}else if(anniversaryItem < 0.75){var anniversaryItemToGive = 'bookofgold';}else{var anniversaryItemToGive = 'goldenscepter';}self.inventory.currentEquip['consume'] = {};self.inventory.addItem(anniversaryItemToGive,[]);self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Happy Anniversary!",
+        "rarity":9
     },
     "thetoothoflightning":{
         "name":"The Tooth of Lightning",
         "equip":"offhand",
-        "event":"damageIncrease += 0.15;self.stats.critChance += 0.50;",
+        "event":"damageIncrease += 4.5;self.stats.critChance += 0.50;",
         "enchantments":["smashing"],
         "defense":3,
         "rarity":9,
-        "description":"<span style='color: #33ee33'>+50% critical strike chance.</span><br><span style='color: #33ee33'>+15% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
+        "description":"<span style='color: #33ee33'>+50% critical strike chance.</span><br><span style='color: #33ee33'>+450% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "heroshield":{
         "name":"Hero Shield",
@@ -1093,7 +1109,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'death',time:60});",
         "enchantments":["burst","cost","focus","sorcery"],
-        "damage":723,
+        "damage":923,
         "damageType":"magic",
         "critChance":0.04,
         "knockback":0.15,
@@ -1177,7 +1193,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.debuffs.push({id:'frostbite',time:60});",
         "enchantments":["speed","burst","aim","sharpness"],
-        "damage":2089,
+        "damage":2289,
         "damageType":"melee",
         "critChance":0.04,
         "knockback":0.6,
@@ -1228,7 +1244,7 @@
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","range","accuracy","power"],
-        "damage":3719,
+        "damage":2719,
         "damageType":"ranged",
         "critChance":0.04,
         "knockback":0.3,
@@ -1390,6 +1406,102 @@
         "description":"Grants a random lesser potion buff.",
         "rarity":3
     },
+    "healthboostpotion":{
+        "name":"Health Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('healthboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max life by 35%.",
+        "rarity":7
+    },
+    "defenseboostpotion":{
+        "name":"Defense Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('defenseboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases defense by 40.",
+        "rarity":7
+    },
+    "speedboostpotion":{
+        "name":"Speed Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('speedboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max speed by 35%.",
+        "rarity":7
+    },
+    "manaboostpotion":{
+        "name":"Mana Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('manaboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max mana by 120.<br>Increases mana regen by 100%.",
+        "rarity":7
+    },
+    "regenboostpotion":{
+        "name":"Regen Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('regenboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases life regen by 100%.",
+        "rarity":7
+    },
+    "randomboostpotion":{
+        "name":"Random Boost Potion",
+        "equip":"consume",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'healthboost';}else if(debuff < 0.3){var debuffToGive = 'defenseboost';}else if(debuff < 0.45){var debuffToGive = 'speedboost';}else if(debuff < 0.6){var debuffToGive = 'manaboost';}else if(debuff < 0.75){var debuffToGive = 'regenboost';}else if(debuff < 0.875){var debuffToGive = 'randomboost1';}else{var debuffToGive = 'randomboost2';}self.addDebuff(debuffToGive,28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Grants a random potion buff.",
+        "rarity":7
+    },
+    "greaterhealthboostpotion":{
+        "name":"Greater Health Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserhealthboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max life by 50%.",
+        "rarity":9
+    },
+    "greaterdefenseboostpotion":{
+        "name":"Greater Defense Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserdefenseboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases defense by 65.",
+        "rarity":9
+    },
+    "greaterspeedboostpotion":{
+        "name":"Greater Speed Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserspeedboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max speed by 50%.",
+        "rarity":9
+    },
+    "greatermanaboostpotion":{
+        "name":"Greater Mana Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lessermanaboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases max mana by 180.<br>Increases mana regen by 150%.",
+        "rarity":9
+    },
+    "greaterregenboostpotion":{
+        "name":"Greater Regen Boost Potion",
+        "equip":"consume",
+        "event":"self.addDebuff('lesserregenboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Increases life regen by 150%.",
+        "rarity":9
+    },
+    "greaterrandomboostpotion":{
+        "name":"Greater Random Boost Potion",
+        "equip":"consume",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'greaterhealthboost';}else if(debuff < 0.3){var debuffToGive = 'greaterdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'greaterspeedboost';}else if(debuff < 0.6){var debuffToGive = 'greatermanaboost';}else if(debuff < 0.75){var debuffToGive = 'greaterregenboost';}else if(debuff < 0.87){var debuffToGive = 'greaterrandomboost1';}else if(debuff < 0.99){var debuffToGive = 'greaterrandomboost2';}else{var debuffToGive = 'superrandomboost';}sself.addDebuff(debuffToGive,43200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "enchantments":[],
+        "description":"Grants a greater random potion buff.",
+        "rarity":9
+    },
     "basichealingscepter":{
         "name":"Basic Healing Scepter",
         "equip":"weapon",
@@ -1459,5 +1571,53 @@
         "defense":17,
         "rarity":5,
         "description":"<span style='color: #33ee33'>+15% healing.</span><br><span style='color: #33ee33'>-35% mana cost.</span><br><span style='color: #33ee33'>+20% increased max hp.</span><br>Greatly reduced aggro."
+    },
+    "goldensaber":{
+        "name":"Golden Saber",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach","aim","sharpness"],
+        "damage":913,
+        "damageType":"melee",
+        "critChance":0.04,
+        "knockback":0.7,
+        "useTime":6,
+        "rarity":3
+    },
+    "goldenbow":{
+        "name":"Golden Bow",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range","accuracy","power"],
+        "damage":1000000,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "knockback":0.5,
+        "useTime":45,
+        "rarity":3
+    },
+    "bookofgold":{
+        "name":"Book of Gold",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["burst"],
+        "damageType":"magic",
+        "useTime":1,
+        "manaCost":6,
+        "rarity":3,
+        "description":"Somebody's going to make an AFK farm out of this."
+    },
+    "goldenscepter":{
+        "name":"Golden Scepter",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","cost"],
+        "damage":644,
+        "damageType":"healing",
+        "critChance":0.04,
+        "knockback":0,
+        "useTime":3,
+        "manaCost":3,
+        "rarity":3
     }
 }
