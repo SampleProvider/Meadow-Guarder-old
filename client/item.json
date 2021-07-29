@@ -1497,7 +1497,7 @@
     "greaterrandomboostpotion":{
         "name":"Greater Random Boost Potion",
         "equip":"consume",
-        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'greaterhealthboost';}else if(debuff < 0.3){var debuffToGive = 'greaterdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'greaterspeedboost';}else if(debuff < 0.6){var debuffToGive = 'greatermanaboost';}else if(debuff < 0.75){var debuffToGive = 'greaterregenboost';}else if(debuff < 0.87){var debuffToGive = 'greaterrandomboost1';}else if(debuff < 0.99){var debuffToGive = 'greaterrandomboost2';}else{var debuffToGive = 'superrandomboost';}sself.addDebuff(debuffToGive,43200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'greaterhealthboost';}else if(debuff < 0.3){var debuffToGive = 'greaterdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'greaterspeedboost';}else if(debuff < 0.6){var debuffToGive = 'greatermanaboost';}else if(debuff < 0.75){var debuffToGive = 'greaterregenboost';}else if(debuff < 0.87){var debuffToGive = 'greaterrandomboost1';}else if(debuff < 0.99){var debuffToGive = 'greaterrandomboost2';}else{var debuffToGive = 'superrandomboost';}self.addDebuff(debuffToGive,43200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":[],
         "description":"Grants a greater random potion buff.",
         "rarity":9
