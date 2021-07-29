@@ -327,7 +327,7 @@
             50000,
             125000
         ],
-        "mainItem":"potions",
+        "mainItem":"stronger potions",
         "quote":"I make the strongest potions!",
         "dialogues":[
             "Buy now and get 5% off!",
@@ -950,28 +950,16 @@
                 ],
                 [
                     {
-                        "id":"emeralditebar",
-                        "amount":1
-                    },
-                    {
                         "id":"essenceofnature",
-                        "amount":2
-                    },
-                    {
-                        "id":"whirlwindbar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceofwater",
-                        "amount":1
-                    },
-                    {
-                        "id":"firebar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceoffire",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"steel",
@@ -980,28 +968,16 @@
                 ],
                 [
                     {
-                        "id":"emeralditebar",
-                        "amount":1
-                    },
-                    {
                         "id":"essenceofnature",
-                        "amount":2
-                    },
-                    {
-                        "id":"whirlwindbar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceofwater",
-                        "amount":1
-                    },
-                    {
-                        "id":"firebar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceoffire",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"steel",
@@ -1010,28 +986,16 @@
                 ],
                 [
                     {
-                        "id":"emeralditebar",
-                        "amount":1
-                    },
-                    {
                         "id":"essenceofnature",
-                        "amount":2
-                    },
-                    {
-                        "id":"whirlwindbar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceofwater",
-                        "amount":1
-                    },
-                    {
-                        "id":"firebar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceoffire",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"steel",
@@ -1040,28 +1004,16 @@
                 ],
                 [
                     {
-                        "id":"emeralditebar",
-                        "amount":1
-                    },
-                    {
                         "id":"essenceofnature",
-                        "amount":2
-                    },
-                    {
-                        "id":"whirlwindbar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceofwater",
-                        "amount":1
-                    },
-                    {
-                        "id":"firebar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceoffire",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"steel",
@@ -1070,28 +1022,16 @@
                 ],
                 [
                     {
-                        "id":"emeralditebar",
-                        "amount":1
-                    },
-                    {
                         "id":"essenceofnature",
-                        "amount":2
-                    },
-                    {
-                        "id":"whirlwindbar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceofwater",
-                        "amount":1
-                    },
-                    {
-                        "id":"firebar",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"essenceoffire",
-                        "amount":1
+                        "amount":5
                     },
                     {
                         "id":"steel",
