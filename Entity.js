@@ -3196,6 +3196,16 @@ Player = function(param){
                 }
                 self.keyPress.second = false;
             }
+            if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'wally' && self.mapChange > 20 && Npc.list[i].x - 64 < self.mouseX && Npc.list[i].x + 64 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 64 > self.mouseY && self.keyPress.second === true){
+                self.keyPress.second = false;
+                if(self.questStage === 4 && self.quest === 'Wood Delivery'){
+                    self.questStage += 1;
+                    self.startDialogue('My wood delivery is here? Bob is the best! Go tell him that I say thanks.','Sure!');
+                }
+                else{
+                    self.keyPress.second = true;
+                }
+            }
             if(Npc.list[i].map === self.map && Npc.list[i].entityId === 'sally' && self.mapChange > 20 && Npc.list[i].x - 64 < self.mouseX && Npc.list[i].x + 64 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 64 > self.mouseY && self.keyPress.second === true){
                 self.keyPress.second = false;
                 if(self.questStage === 2 && self.quest === 'Lost Rubies'){
@@ -3747,9 +3757,11 @@ Player = function(param){
             socket.emit('notification','You started the quest ' + self.quest + '.');
         }
         if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Monster Raid'){
+            self.questStage += 1;
             self.endDialogue();
         }
         if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Monster Raid'){
+            self.questStage += 1;
             self.endDialogue();
             socket.emit('questObjective',{
                 questName:self.quest,
@@ -3968,6 +3980,7 @@ Player = function(param){
             });
         }
         if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Clear River'){
+            self.questStage += 1;
             self.endDialogue();
         }
         if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'Clear River'){
@@ -4923,15 +4936,15 @@ Player = function(param){
             });
             self.teleport(640,1056,'The Pet Arena');
         }
-        if(self.questStage === 11 && self.quest === 'Pet Training' && self.mapChange > 10){
+        if(self.questStage === 5 && self.quest === 'Pet Training' && self.mapChange > 10){
             self.questStage += 1;
             self.startDialogue('You can\'t fight, but your pet can! Make your pet kill all 5 waves of monsters!','*End conversation*');
         }
-        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Pet Training'){
+        if(self.currentResponse === 1 && self.questStage === 6 && self.quest === 'Pet Training'){
             self.questStage += 1;
             self.endDialogue();
         }
-        if(self.questStage === 13 && self.quest === 'Pet Training'){
+        if(self.questStage === 7 && self.quest === 'Pet Training'){
             self.questStage += 1;
             socket.emit('notification',"Wave 1: Green Lizard x4");
             self.questInfo.maxMonsters = 0;
@@ -4939,6 +4952,42 @@ Player = function(param){
             for(var i in QuestInfo.list){
                 if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenLizard');
+                }
+            }
+        }
+        if(self.questStage === 8 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 10 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 2: Green Lizard x6");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner2'){
+                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenLizard');
+                }
+            }
+        }
+        if(self.questStage === 11 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
+            socket.emit('notification',"Wave Complete!");
+            self.questStage += 1;
+            setTimeout(function(){
+                self.questStage += 1;
+            },2000);
+        }
+        if(self.questStage === 13 && self.quest === 'Pet Training'){
+            self.questStage += 1;
+            socket.emit('notification',"Wave 3: Lost Spirit x6");
+            self.questInfo.maxMonsters = 0;
+            self.questInfo.monstersKilled = 0;
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner3'){
+                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lostSpirit');
                 }
             }
         }
@@ -4951,12 +5000,12 @@ Player = function(param){
         }
         if(self.questStage === 16 && self.quest === 'Pet Training'){
             self.questStage += 1;
-            socket.emit('notification',"Wave 2: Green Lizard x6");
+            socket.emit('notification',"Wave 4: Cherry Bomb x12");
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner2'){
-                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenLizard');
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner4'){
+                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'cherryBomb');
                 }
             }
         }
@@ -4969,12 +5018,12 @@ Player = function(param){
         }
         if(self.questStage === 19 && self.quest === 'Pet Training'){
             self.questStage += 1;
-            socket.emit('notification',"Wave 3: Lost Spirit x6");
+            socket.emit('notification',"Wave 5: Lightning Lizard");
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner3'){
-                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lostSpirit');
+                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner5'){
+                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lightningLizard');
                 }
             }
         }
@@ -4987,42 +5036,6 @@ Player = function(param){
         }
         if(self.questStage === 22 && self.quest === 'Pet Training'){
             self.questStage += 1;
-            socket.emit('notification',"Wave 4: Cherry Bomb x12");
-            self.questInfo.maxMonsters = 0;
-            self.questInfo.monstersKilled = 0;
-            for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner4'){
-                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'cherryBomb');
-                }
-            }
-        }
-        if(self.questStage === 23 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
-            socket.emit('notification',"Wave Complete!");
-            self.questStage += 1;
-            setTimeout(function(){
-                self.questStage += 1;
-            },2000);
-        }
-        if(self.questStage === 25 && self.quest === 'Pet Training'){
-            self.questStage += 1;
-            socket.emit('notification',"Wave 5: Lightning Lizard");
-            self.questInfo.maxMonsters = 0;
-            self.questInfo.monstersKilled = 0;
-            for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner5'){
-                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lightningLizard');
-                }
-            }
-        }
-        if(self.questStage === 26 && self.quest === 'Pet Training' && self.questInfo.monstersKilled === self.questInfo.maxMonsters && self.questInfo.monstersKilled){
-            socket.emit('notification',"Wave Complete!");
-            self.questStage += 1;
-            setTimeout(function(){
-                self.questStage += 1;
-            },2000);
-        }
-        if(self.questStage === 28 && self.quest === 'Pet Training'){
-            self.questStage += 1;
             self.startDialogue('Wow! I can\'t believe your pet killed all the monsters! Your pet really is strong!','*End conversation*');
             socket.emit('questObjective',{
                 questName:self.quest,
@@ -5033,7 +5046,7 @@ Player = function(param){
                 socket.emit('notification','Your pets are now 3 times stronger.');
             }
         }
-        if(self.currentResponse === 1 && self.questStage === 29 && self.quest === 'Pet Training'){
+        if(self.currentResponse === 1 && self.questStage === 23 && self.quest === 'Pet Training'){
             if(self.questStats[self.quest]){
                 self.xp += Math.round(questData[self.quest].xp * self.stats.xp / 10 * (Math.random() + 0.5));
                 self.coins += Math.round(questData[self.quest].xp * self.stats.xp * (Math.random() + 0.5));
@@ -5203,7 +5216,7 @@ Player = function(param){
                 questObjective:'Defeat the Monster King\'s Monsters.',
             });
             setTimeout(function(){
-                self.questStage += 1
+                self.questStage += 1;
             },2000);
         }
         if(self.questStage === 23 && self.quest === 'Monster Search'){
