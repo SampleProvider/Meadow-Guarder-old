@@ -2880,10 +2880,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 538';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 538 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 549';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 549 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 538){
+        if(loadingProgressDisplay >= 549){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){
