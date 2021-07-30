@@ -2100,7 +2100,7 @@ var Particle = function(initPack){
             self.y += Math.sin(self.direction / 180 * Math.PI);
             self.timer -= 1 / 5;
         }
-        else if(self.particleType === 'ready'){
+        else if(self.particleType === 'heal'){
             self.x += Math.cos(self.direction / 180 * Math.PI);
             self.y += Math.sin(self.direction / 180 * Math.PI);
             self.timer -= 1 / 10;
