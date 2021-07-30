@@ -26,6 +26,9 @@ Inventory = function(socket,server){
         select:false,
     };
     self.addItem = function(id,enchantments){
+        if(self.items.length > 500){
+            self.socket.emit('notification','[!] You have over 500 items. Please dismantle some items.')
+        }
         for(var i in self.materials){
             if(i === id){
                 self.materials[i] += 1;
@@ -1022,7 +1025,11 @@ Inventory = function(socket,server){
                 else{
                     Player.list[self.socket.id].coins -= self.shopItems.prices[index];
                 }
-                self.addItem(item.id,item.enchantments);
+                var enchantments = [];
+                for(var i in item.enchantments){
+                    enchantments.push(Object.create(item.enchantments));
+                }
+                self.addItem(item.id,enchantments);
                 for(var i in self.materials){
                     if(i === item.id){
                         socket.emit('notification','You successfully bought ' + self.getMaterialName(item.id) + '.');

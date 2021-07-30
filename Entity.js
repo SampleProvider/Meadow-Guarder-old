@@ -3866,17 +3866,13 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Monster Raid'){
             self.questStage += 1;
             self.endDialogue();
-        }
-        if(self.currentResponse === 1 && self.questStage === 5 && self.quest === 'Monster Raid'){
-            self.questStage += 1;
-            self.endDialogue();
             socket.emit('questObjective',{
                 questName:self.quest,
                 questObjective:'Kill the Monsters!',
             });
             self.teleport(992,864,'The Battlefield');
         }
-        if(self.questStage === 6 && self.quest === 'Monster Raid' && self.mapChange > 10){
+        if(self.questStage === 4 && self.quest === 'Monster Raid' && self.mapChange > 10){
             socket.emit('notification',"Wave 1: Blue Bird x2");
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
@@ -3890,14 +3886,14 @@ Player = function(param){
             }
             self.questStage += 1;
         }
-        if(self.questStage === 7 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+        if(self.questStage === 5 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             socket.emit('notification',"Wave Complete!");
             self.questStage += 1;
             setTimeout(function(){
                 self.questStage += 1;
             },2000);
         }
-        if(self.questStage === 9 && self.quest === 'Monster Raid' && self.mapChange > 10){
+        if(self.questStage === 7 && self.quest === 'Monster Raid' && self.mapChange > 10){
             socket.emit('notification',"Wave 2: Blue Bird x2 + Green Bird");
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
@@ -3914,14 +3910,14 @@ Player = function(param){
             }
             self.questStage += 1;
         }
-        if(self.questStage === 10 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+        if(self.questStage === 8 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             socket.emit('notification',"Wave Complete!");
             self.questStage += 1;
             setTimeout(function(){
                 self.questStage += 1;
             },2000);
         }
-        if(self.questStage === 12 && self.quest === 'Monster Raid' && self.mapChange > 10){
+        if(self.questStage === 10 && self.quest === 'Monster Raid' && self.mapChange > 10){
             socket.emit('notification',"Wave 3: Blue Bird x3 + Green Bird");
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
@@ -3941,14 +3937,14 @@ Player = function(param){
             }
             self.questStage += 1;
         }
-        if(self.questStage === 13 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+        if(self.questStage === 11 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             socket.emit('notification',"Wave Complete!");
             self.questStage += 1;
             setTimeout(function(){
                 self.questStage += 1;
             },2000);
         }
-        if(self.questStage === 15 && self.quest === 'Monster Raid' && self.mapChange > 10){
+        if(self.questStage === 13 && self.quest === 'Monster Raid' && self.mapChange > 10){
             socket.emit('notification',"Wave 4: Blue Bird x3 + Green Bird x2");
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
@@ -3971,14 +3967,14 @@ Player = function(param){
             }
             self.questStage += 1;
         }
-        if(self.questStage === 16 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+        if(self.questStage === 14 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             socket.emit('notification',"Wave Complete!");
             self.questStage += 1;
             setTimeout(function(){
                 self.questStage += 1;
             },2000);
         }
-        if(self.questStage === 18 && self.quest === 'Monster Raid' && self.mapChange > 10){
+        if(self.questStage === 16 && self.quest === 'Monster Raid' && self.mapChange > 10){
             socket.emit('notification',"Wave 5: Blue Bird x4 + Green Bird x2 + Ball Monster");
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
@@ -4007,14 +4003,14 @@ Player = function(param){
             }
             self.questStage += 1;
         }
-        if(self.questStage === 19 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
+        if(self.questStage === 17 && self.quest === 'Monster Raid' && self.questInfo.monstersKilled === self.questInfo.maxMonsters){
             socket.emit('notification',"Wave Complete!");
             self.questStage += 1;
             setTimeout(function(){
                 self.questStage += 1;
             },2000);
         }
-        if(self.questStage === 21 && self.quest === 'Monster Raid'){
+        if(self.questStage === 19 && self.quest === 'Monster Raid'){
             self.questStage += 1;
             self.teleport(2592,736,'The Village');
             self.startDialogue('You saved The Village! Here, have a reward.','Thanks.');
@@ -4023,11 +4019,11 @@ Player = function(param){
                 questObjective:'No quest objective.',
             });
         }
-        if(self.currentResponse === 1 && self.questStage === 22 && self.quest === 'Monster Raid'){
+        if(self.currentResponse === 1 && self.questStage === 20 && self.quest === 'Monster Raid'){
             self.questStage += 1;
             self.startDialogue('If you are looking for something to do, try talking to other NPCs! There are many NPCs in The Village!','*End conversation*');
         }
-        if(self.currentResponse === 1 && self.questStage === 23 && self.quest === 'Monster Raid'){
+        if(self.currentResponse === 1 && self.questStage === 21 && self.quest === 'Monster Raid'){
             if(self.questStats[self.quest]){
                 self.xp += Math.round(questData[self.quest].xp * self.stats.xp / 10 * (Math.random() + 0.5));
                 self.coins += Math.round(questData[self.quest].xp * self.stats.xp * (Math.random() + 0.5));
