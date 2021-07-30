@@ -1,6 +1,8 @@
 
 const { Client } = require('pg');
 
+SERVER = 'localhost';
+
 if(SERVER === 'localhost'){
 	require("./DATABASE_URL.js");
 }
@@ -69,3 +71,22 @@ updateLeaderboard = function(){
         }
     });
 }
+var account = undefined;
+client.query('SELECT * FROM account;', (err, res) => {
+    account = res.rows;
+    client.query('SELECT * FROM progress;', (err1, res1) => {
+        for(var i in res1.rows){
+            var illegalAccount = true;
+            for(var j in res.rows){
+                if(res1.rows[i].qusername === res.rows[j].qusername){
+                    illegalAccount = false;
+                }
+            }
+            if(illegalAccount){
+                //client.query('DELETE FROM progress WHERE qusername=\'' + res1.rows[i].qusername + '\';', (err, res) => {
+
+                //});
+            }
+        }
+    });
+});

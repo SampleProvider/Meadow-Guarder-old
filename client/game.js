@@ -401,7 +401,7 @@ socket.on('signInResponse',function(data){
         pageDiv.style.display = 'none';
     }
     else if(data.success === 2){
-        alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. The other account will be disconnected shortly. Please try to sign again.");
+        alert("The account with username \'" + signDivUsername.value + "\' is already currently in game. The other account will be disconnected shortly. Please try to sign again.");
         pageDiv.style.display = 'inline-block';
         loadingDiv.style.display = 'none';
         disconnectedDiv.style.display = 'none';
@@ -419,7 +419,7 @@ socket.on('signInResponse',function(data){
         loading = false;
     }
     else{
-        alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+        alert("No account found with username \'" + signDivUsername.value + "\'.");
         pageDiv.style.display = 'inline-block';
         loadingDiv.style.display = 'none';
         loading = false;
@@ -430,7 +430,7 @@ socket.on('signInResponse',function(data){
 });
 socket.on('createAccountResponse',function(data){
     if(data.success === 1){
-        alert("Account created with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+        alert("Account created with username \'" + signDivUsername.value + "\'.");
     }
     else if(data.success === 0){
         alert("Sorry, there is already an account with username \'" + signDivUsername.value + "\'.");
@@ -450,13 +450,13 @@ socket.on('deleteAccountResponse',function(data){
         alert("Deleted account created with username \'" + signDivUsername.value + "\'.");
     }
     else if(data.success === 2){
-        alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. Disconnect this account to change the password.");
+        alert("The account with username \'" + signDivUsername.value + "\' is currently in game. Disconnect this account to delete the account.");
     }
     else if(data.success === 1){
         alert("Incorrect Password.");
     }
     else{
-        alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+        alert("No account found with username \'" + signDivUsername.value + "\'.");
     }
 });
 socket.on('changePasswordResponse',function(data){
@@ -464,7 +464,7 @@ socket.on('changePasswordResponse',function(data){
         alert("Changed password to \'" + document.getElementById('newPassword').value + "\'.");
     }
     else if(data.success === 2){
-        alert("The account with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\' is already used. Disconnect this account to change the password.");
+        alert("The account with username \'" + signDivUsername.value + "\' is currently in game. Disconnect this account to change the password.");
     }
     else if(data.success === 1){
         alert("Incorrect Password.");
@@ -473,7 +473,7 @@ socket.on('changePasswordResponse',function(data){
         alert("Invalid characters.");
     }
     else{
-        alert("No account found with username \'" + signDivUsername.value + "\' and password \'" + signDivPassword.value + "\'.");
+        alert("No account found with username \'" + signDivUsername.value + "\'.");
     }
     document.getElementById('newPassword').value = '';
 });
