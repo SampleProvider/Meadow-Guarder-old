@@ -7827,7 +7827,7 @@ Npc = function(param){
             self.mapHeight = self.transporter.mapy;
             self.canMove = false;
             for(var i in Player.list){
-                if(Player.list[i]){
+                if(Player.list[i].map === self.map){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
                 }
             }
