@@ -9079,14 +9079,14 @@ Monster = function(param){
                     break;
                 case "attackPhase1PossessedSpirit":
                     if(self.reload % 50 < 8 && self.reload > 50 && self.target.invincible === false){
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50),self.direction + 10 * (self.reload % 50),'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 90,self.direction + 10 * (self.reload % 50) + 90,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 180,self.direction + 10 * (self.reload % 50) + 180,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 270,self.direction + 10 * (self.reload % 50) + 270,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 10,self.direction + 10 * (self.reload % 50) + 10,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 100,self.direction + 10 * (self.reload % 50) + 100,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 190,self.direction + 10 * (self.reload % 50) + 190,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 50) + 280,self.direction + 10 * (self.reload % 50) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50),10 * (self.reload % 50),'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 90,10 * (self.reload % 50) + 90,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 180,10 * (self.reload % 50) + 180,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 270,10 * (self.reload % 50) + 270,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 10,10 * (self.reload % 50) + 10,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 100,10 * (self.reload % 50) + 100,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 190,10 * (self.reload % 50) + 190,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 50) + 280,10 * (self.reload % 50) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
                     }
                     if(self.hp < self.hpMax / 2){
                         if(self.stage2){
@@ -9101,7 +9101,7 @@ Monster = function(param){
                 case "phase2TransitionPossessedSpirit":
                     self.stage2 = true;
                     for(var i = 0;i < 30;i++){
-                        self.shootProjectile(self.id,'Monster',self.direction + i * 12,self.direction + i * 12,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',i * 12,i * 12,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
                     }
                     for(var i = 0;i < 8;i++){
                         var monster = s.createMonster('lostSpirit',{
@@ -9117,14 +9117,14 @@ Monster = function(param){
                     break;
                 case "attackPhase2PossessedSpirit":
                     if(self.reload % 30 < 8 && self.reload > 30 && self.target.invincible === false){
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30),self.direction + 10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 90,self.direction + 10 * (self.reload % 30) + 90,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 180,self.direction + 10 * (self.reload % 30) + 180,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 270,self.direction + 10 * (self.reload % 30) + 270,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 10,self.direction + 10 * (self.reload % 30) + 10,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 100,self.direction + 10 * (self.reload % 30) + 100,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 190,self.direction + 10 * (self.reload % 30) + 190,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 280,self.direction + 10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30),10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 90,10 * (self.reload % 30) + 90,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 180,10 * (self.reload % 30) + 180,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 270,10 * (self.reload % 30) + 270,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 10,10 * (self.reload % 30) + 10,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 100,10 * (self.reload % 30) + 100,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 190,10 * (self.reload % 30) + 190,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 280,10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
                     }
                     if(self.reload % 5 === 0 && self.reload > 30 && self.target.invincible === false){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'possessedSoul',0,function(t){return 50},0,self.stats,'playerHoming');
@@ -9151,14 +9151,14 @@ Monster = function(param){
                     break;
                 case "attackPhase3PossessedSpirit":
                     if(self.reload % 3 === 0 && self.target.invincible === false){
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30),self.direction + 10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 90,self.direction + 10 * (self.reload % 30) + 90,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 180,self.direction + 10 * (self.reload % 30) + 180,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 270,self.direction + 10 * (self.reload % 30) + 270,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 10,self.direction + 10 * (self.reload % 30) + 10,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 100,self.direction + 10 * (self.reload % 30) + 100,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 190,self.direction + 10 * (self.reload % 30) + 190,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
-                        self.shootProjectile(self.id,'Monster',self.direction + 10 * (self.reload % 30) + 280,self.direction + 10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30),10 * (self.reload % 30),'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 90,10 * (self.reload % 30) + 90,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 180,10 * (self.reload % 30) + 180,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 270,10 * (self.reload % 30) + 270,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 10,10 * (self.reload % 30) + 10,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 100,10 * (self.reload % 30) + 100,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 190,10 * (self.reload % 30) + 190,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
+                        self.shootProjectile(self.id,'Monster',10 * (self.reload % 30) + 280,10 * (self.reload % 30) + 280,'possessedSoul',128,function(t){return 50},0,self.stats,'noCollision');
                     }
                     self.reload += 1;
                     break;

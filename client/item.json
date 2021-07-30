@@ -1099,7 +1099,7 @@
     "lightningarrow":{
         "name":"Lightning Arrow",
         "equip":"offhand",
-        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.speed += 1;self.stats.debuffs.push({id:'shocked',time:60});}",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.speed += 0.5;self.stats.debuffs.push({id:'shocked',time:60});}",
         "enchantments":[],
         "rarity":4,
         "description":"<span style='color: #33ee33'>+50% ranged damage.</span><br><span style='color: #33ee33'>Greatly increased ranged projectile speed.</span><br>Ranged weapons inflict shocked for 3 seconds."
