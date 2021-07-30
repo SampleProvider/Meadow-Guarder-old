@@ -855,7 +855,7 @@
         "damage":550,
         "damageType":"melee",
         "critChance":0.04,
-        "knockback":0.4,
+        "knockback":0.2,
         "useTime":15,
         "rarity":4,
         "description":"Shoots a unholy trident that shoots unholy souls."
@@ -868,7 +868,7 @@
         "damage":1550,
         "damageType":"melee",
         "critChance":0.04,
-        "knockback":0.4,
+        "knockback":0.2,
         "useTime":11,
         "rarity":6,
         "description":"Shoots a holy trident that shoots holy souls."
@@ -876,7 +876,7 @@
     "enchantmentbook":{
         "name":"Enchantment Book",
         "equip":"consume",
-        "event":"socket.emit('toggleSelect');self.questInfo.quest = 'Enchant';self.questInfo.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"if(self.questInfo.quest !== 'Enchant'){socket.emit('toggleSelect');self.questInfo.quest = 'Enchant';self.questInfo.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];}else{self.inventory.addItem('enchantmentbook',self.inventory.currentEquip['consume'].enchantments);self.inventory.refreshAllItems();}self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
         "enchantments":["speed","burst","cost","range","reach","smashing","unlocking","focus","sorcery","aim","sharpness","accuracy","power"],
         "description":"Gives enchantents.",
         "rarity":3
@@ -1580,7 +1580,7 @@
         "damage":913,
         "damageType":"melee",
         "critChance":0.04,
-        "knockback":0.7,
+        "knockback":0.3,
         "useTime":6,
         "rarity":3
     },

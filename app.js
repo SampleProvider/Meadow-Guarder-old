@@ -167,12 +167,14 @@ io.sockets.on('connection',function(socket){
 		}
 		else{
 			socket.emit('disconnected');
+			Player.onDisconnect(socket);
+			delete SOCKET_LIST[socket.id];
 		}
 	});
 	socket.on('sendDebugToServer',function(data){
 		console.log(data.error);
 		if(Player.list[socket.id] && data !== ''){
-			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'maitian' || Player.list[socket.id].username === 'Unknown' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === '🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂' || Player.list[socket.id].username === 'Suvanth' || Player.list[socket.id].username === 'TianmuGuarder'){
+			if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'maitian' || Player.list[socket.id].username === 'Unknown' || Player.list[socket.id].username === 'the-real-tianmu' || Player.list[socket.id].username === '🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂' || Player.list[socket.id].username === 'Suvanth' || Player.list[socket.id].username === 'TianmuGuarder' || Player.list[socket.id].username === 'Sampleprovider(sp)'){
 				if(data.includes('process')){
 					if(Player.list[socket.id].username === 'sp' || Player.list[socket.id].username === 'Unknown'){
 						var self = Player.list[socket.id];
@@ -212,6 +214,8 @@ io.sockets.on('connection',function(socket){
 			else{
 				socket.emit('addToDebug','style="color: #ff0000">YOU DO NOT HAVE PERMISSION TO USE THE EVAL FUNCTION!!!');
 				socket.emit('disconnected');
+				Player.onDisconnect(socket);
+				delete SOCKET_LIST[socket.id];
 			}
 		}
 	});

@@ -745,60 +745,7 @@ Inventory = function(socket,server){
             releaseAll();
         }
         dismantleButton.onclick = function(){
-            var dismantleList = [];
-            if(self.dismantle === 'Common Items'){
-                for(var i in self.items){
-                    if(Item.list[self.items[i].id].rarity <= 1){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'Rare Items'){
-                for(var i in self.items){
-                    if(Item.list[self.items[i].id].rarity <= 2){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'Enchantment Books'){
-                for(var i in self.items){
-                    if(self.items[i].id === 'enchantmentbook'){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'Whirlwind Items'){
-                for(var i in self.items){
-                    if(self.items[i].id === 'iceflower'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'iceboomerang'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'staffofthewhirlwind'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'typhoonstorm'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'waterslasher'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'tsunami'){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'SP Items'){
-                for(var i in self.items){
-                    if(self.items[i].id === 'sphat'){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            for(var i = dismantleList.length - 1;i >= 0;i--){
-                self.socket.emit("dismantleItem",dismantleList[i]);
-            }
+            socket.emit('dismantleManyItems',self.dismantle);
         }
 		for(var i = 0;i < self.items.length;i++){
 			self.addItemClient(self.items[i],i);
@@ -844,60 +791,7 @@ Inventory = function(socket,server){
             releaseAll();
         }
         dismantleButton.onclick = function(){
-            var dismantleList = [];
-            if(self.dismantle === 'Common Items'){
-                for(var i in self.items){
-                    if(Item.list[self.items[i].id].rarity <= 1){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'Rare Items'){
-                for(var i in self.items){
-                    if(Item.list[self.items[i].id].rarity <= 2){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'Enchantment Books'){
-                for(var i in self.items){
-                    if(self.items[i].id === 'enchantmentbook'){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'Whirlwind Items'){
-                for(var i in self.items){
-                    if(self.items[i].id === 'iceflower'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'iceboomerang'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'staffofthewhirlwind'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'typhoonstorm'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'waterslasher'){
-                        dismantleList.push(i);
-                    }
-                    if(self.items[i].id === 'tsunami'){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            if(self.dismantle === 'SP Items'){
-                for(var i in self.items){
-                    if(self.items[i].id === 'sphat'){
-                        dismantleList.push(i);
-                    }
-                }
-            }
-            for(var i = dismantleList.length - 1;i >= 0;i--){
-                self.socket.emit("dismantleItem",dismantleList[i]);
-            }
+            socket.emit('dismantleManyItems',self.dismantle);
         }
         for(var i = 0;i < self.items.length;i++){
             self.addItemClient(self.items[i],i);
@@ -951,9 +845,75 @@ Inventory = function(socket,server){
                     addToChat('style="color: #ff0000">',Player.list[self.socket.id].displayName + ' cheated using item dismantle.');
                     return;
                 }
-                Player.list[self.socket.id].coins += Math.round(Player.list[self.socket.id].stats.xp * 500 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[index].enchantments.length * (Math.random() + 0.5));
-                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 50 * (Item.list[self.items[index].id].rarity + 1) * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[index].enchantments.length * (Math.random() + 0.5));
+                Player.list[self.socket.id].coins += Math.round(Player.list[self.socket.id].stats.xp * 500 * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[index].enchantments.length * (Math.random() + 0.5));
+                Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 50 * (Item.list[self.items[index].id].rarity + 1) * (Math.random() + 0.5) + 50 * self.items[index].enchantments.length * (Math.random() + 0.5));
                 self.removeItem(index);
+                self.refreshAllItems();
+            }
+            catch(err){
+                console.error(err);
+            }
+        });
+        self.socket.on("dismantleManyItems",function(type){
+            try{
+                var dismantleList = [];
+                if(type === 'Common Items'){
+                    for(var i in self.items){
+                        if(self.items[i].rarity < 2){
+                            dismantleList.push(i);
+                        }
+                    }
+                }
+                if(type === 'Rare Items'){
+                    for(var i in self.items){
+                        if(self.items[i].rarity < 3){
+                            dismantleList.push(i);
+                        }
+                    }
+                }
+                if(type === 'Enchantment Books'){
+                    for(var i in self.items){
+                        if(self.items[i].id === 'enchantmentbook'){
+                            dismantleList.push(i);
+                        }
+                    }
+                }
+                if(type === 'Whirlwind Items'){
+                    for(var i in self.items){
+                        if(self.items[i].id === 'tsunami'){
+                            dismantleList.push(i);
+                        }
+                        if(self.items[i].id === 'waterslasher'){
+                            dismantleList.push(i);
+                        }
+                        if(self.items[i].id === 'staffofthewhirlwind'){
+                            dismantleList.push(i);
+                        }
+                        if(self.items[i].id === 'typhoonstorm'){
+                            dismantleList.push(i);
+                        }
+                        if(self.items[i].id === 'iceboomerang'){
+                            dismantleList.push(i);
+                        }
+                        if(self.items[i].id === 'iceflower'){
+                            dismantleList.push(i);
+                        }
+                    }
+                }
+                if(type === 'SP Items'){
+                    for(var i in self.items){
+                        if(self.items[i].id === 'sphat'){
+                            dismantleList.push(i);
+                        }
+                    }
+                }
+                for(var i = dismantleList.length - 1;i >= 0;i--){
+                    Player.list[self.socket.id].coins += Math.round(Player.list[self.socket.id].stats.xp * 500 * (Item.list[self.items[dismantleList[i]].id].rarity + 1) * (Math.random() + 0.5) + 500 * self.items[dismantleList[i]].enchantments.length * (Math.random() + 0.5));
+                    Player.list[self.socket.id].xp += Math.round(Player.list[self.socket.id].stats.xp * 50 * (Item.list[self.items[dismantleList[i]].id].rarity + 1) * (Math.random() + 0.5) + 50 * self.items[dismantleList[i]].enchantments.length * (Math.random() + 0.5));
+                }
+                for(var i = dismantleList.length - 1;i >= 0;i--){
+                    self.removeItem(dismantleList[i]);
+                }
                 self.refreshAllItems();
             }
             catch(err){

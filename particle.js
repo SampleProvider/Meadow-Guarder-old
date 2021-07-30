@@ -12,6 +12,9 @@ Particle = function(param){
     if(self.particleType === 'kill'){
         self.direction = 360 * Math.random();
     }
+    if(self.particleType === 'ready'){
+        self.direction = 360 * Math.random();
+    }
     self.getInitPack = function(){
         var pack = {};
         pack.id = self.id;

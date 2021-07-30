@@ -573,9 +573,9 @@ Entity.getFrameUpdateData = function(){
                 }
                 var updatePack = Particle.list[i].getInitPack();
                 pack[Particle.list[i].map].particle.push(updatePack);
-                delete Particle.list[i];
             }
         }
+        delete Particle.list[i];
     }
     for(var i in Pet.list){
         Pet.list[i].update();
@@ -3208,7 +3208,7 @@ Player = function(param){
                 self.keyPress.second = false;
                 if(self.questStage === 2 && self.quest === 'Monster Raid'){
                     self.questStage += 1;
-                    self.startDialogue('Monsters have been raiding The Village for days, and our defenses are crumbling fast. Kill these monsters before they get out of control.','*End conversation*');
+                    self.startDialogue('The Monster King is back! He sent Monsters to raid The Village, and our defenses are crumbling fast. Kill these monsters before they get out of control.','*End conversation*');
                 }
                 else if(self.questStage === 7 && self.quest === 'Secret Tunnels'){
                     self.questStage += 1;
@@ -3370,6 +3370,11 @@ Player = function(param){
                 if(self.questStage === 12 && self.quest === 'Monster Search'){
                     self.questStage += 1;
                     self.startDialogue('Who are you? Ah, hello ' + self.username + '! How did you even get in here? I\'m sure I marked off every teleporter.','I have to kill you!');
+                    setTimeout(function(){
+                        if(self.questStage === 13 && self.currentResponse === 0 && self.inventory.materials.ruby >= 1000){
+                            self.startDialogue('Who are you? Ah, hello ' + self.username + '! How did you even get in here? I\'m sure I marked off every teleporter.','I have to kill you!','I am here to give you 1000 rubies.');
+                        }
+                    },10000);
                 }
                 else{
                     self.keyPress.second = true;
@@ -3417,13 +3422,13 @@ Player = function(param){
                 self.keyPress.second = false;
                 if(self.questStage === 7 && self.quest === 'Tutorial'){
                     self.questStage += 1;
-                    self.startDialogue('You came just in time! The Village is getting invaded by Monsters! Use Left Click to attack and kill these Monsters!','*End conversation*');
+                    self.startDialogue('You came just in time! The Monster King is sending Monsters to invade The Village! Use Left Click to attack and kill these Monsters!','*End conversation*');
                 }
                 else{
                     self.keyPress.second = true;
                 }
             }
-            if(Npc.list[i].map === self.map && self.mapChange > 20 && Npc.list[i].x - 64 < self.mouseX && Npc.list[i].x + 64 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 64 > self.mouseY && self.keyPress.second === true){
+            if(Npc.list[i].map === self.map && self.mapChange > 20 && Npc.list[i].x - 64 < self.mouseX && Npc.list[i].x + 64 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 64 > self.mouseY && self.keyPress.second === true && self.invincible === false){
                 var response1 = undefined;
                 var response2 = undefined;
                 var response3 = undefined;
@@ -3435,21 +3440,41 @@ Player = function(param){
                 for(var j in questData){
                     if(questData[j].startNpc === Npc.list[i].entityId){
                         if(self.checkQuestRequirements(j)){
-                            if(response1 === undefined){
-                                response1 = '*Start the quest ' + j + '*';
-                                self.questInfo.response1 = j;
+                            if(self.quest === false){
+                                if(response1 === undefined){
+                                    response1 = '*Start the quest ' + j + '*';
+                                    self.questInfo.response1 = j;
+                                }
+                                else if(response2 === undefined){
+                                    response2 = '*Start the quest ' + j + '*';
+                                    self.questInfo.response2 = j;
+                                }
+                                else if(response3 === undefined){
+                                    response3 = '*Start the quest ' + j + '*';
+                                    self.questInfo.response3 = j;
+                                }
+                                else if(response4 === undefined){
+                                    response4 = '*Start the quest ' + j + '*';
+                                    self.questInfo.response4 = j;
+                                }
                             }
-                            else if(response2 === undefined){
-                                response2 = '*Start the quest ' + j + '*';
-                                self.questInfo.response2 = j;
-                            }
-                            else if(response3 === undefined){
-                                response3 = '*Start the quest ' + j + '*';
-                                self.questInfo.response3 = j;
-                            }
-                            else if(response4 === undefined){
-                                response4 = '*Start the quest ' + j + '*';
-                                self.questInfo.response4 = j;
+                            else{
+                                if(response1 === undefined){
+                                    response1 = '<span style="color:#aaaaaa">*Start the quest ' + j + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                    self.questInfo.response1 = 'None';
+                                }
+                                else if(response2 === undefined){
+                                    response2 = '<span style="color:#aaaaaa">*Start the quest ' + j + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                    self.questInfo.response2 = 'None';
+                                }
+                                else if(response3 === undefined){
+                                    response3 = '<span style="color:#aaaaaa">*Start the quest ' + j + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                    self.questInfo.response3 = 'None';
+                                }
+                                else if(response4 === undefined){
+                                    response4 = '<span style="color:#aaaaaa">*Start the quest ' + j + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                    self.questInfo.response4 = 'None';
+                                }
                             }
                         }
                         else{
@@ -3605,14 +3630,14 @@ Player = function(param){
         }
         if(self.questStage === 3 && self.quest === 'Tutorial' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'activator1' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator1' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 10;
                 }
             }
         }
         if(self.questStage === 4 && self.quest === 'Tutorial' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'activator1' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator1' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 5;
                 }
             }
@@ -3636,7 +3661,7 @@ Player = function(param){
         }
         if(self.questStage === 7 && self.quest === 'Tutorial'){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'collision' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'collision' && self.isColliding(QuestInfo.list[i])){
                     self.move(1502,1502);
                     self.invincible = true;
                     socket.emit('dialogueLine',{
@@ -3668,19 +3693,19 @@ Player = function(param){
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'spawner'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
-                if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
             }
         }
         if(self.questStage === 12 && self.quest === 'Tutorial' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'activator2' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator2' && self.isColliding(QuestInfo.list[i])){
                     for(var i in QuestInfo.list){
-                        if(QuestInfo.list[i].quest === 'Tutorial' && QuestInfo.list[i].info === 'collision'){
+                        if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'collision'){
                             self.questDependent[i] = new Collision({
                                 x:QuestInfo.list[i].x - 64,
                                 y:QuestInfo.list[i].y - 64,
@@ -3797,7 +3822,7 @@ Player = function(param){
                         entityId:'mark',
                         moveSpeed:5,
                         info:{
-                            randomWalk:'wander',
+                            randomWalk:'none',
                             canChangeMap:false,
                             shop:false,
                         },
@@ -3813,21 +3838,75 @@ Player = function(param){
         }
         if(self.questStage === 6 && self.quest === 'Missing Person'){
             self.questStage += 1;
-            self.startDialogue('Oh! Hey, who are you?','Um, your friend Bob sent me to rescue you.');
+            self.startDialogue('Oh! Hey, who are you?','Um, your friend Bob sent me to rescue you. You have been missing for two hours.');
         }
         if(self.currentResponse === 1 && self.questStage === 7 && self.quest === 'Missing Person'){
             self.questStage += 1;
-            self.startDialogue('Oh, because I was gone for a long time? I\'m completely fine! Just collecting wood. Go tell Bob.','Ok, I can tell Bob you are fine.');
+            self.startDialogue('Two hours! I was here only for 5 minutes!','It has been two hours, what do you mean?');
         }
         if(self.currentResponse === 1 && self.questStage === 8 && self.quest === 'Missing Person'){
+            for(var i in QuestInfo.list){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'npcSpawner'){
+                    self.questDependent.monsterking = new Npc({
+                        x:QuestInfo.list[i].x,
+                        y:QuestInfo.list[i].y,
+                        map:QuestInfo.list[i].map,
+                        name:'Monster King',
+                        entityId:'monsterking',
+                        moveSpeed:5,
+                        info:{
+                            randomWalk:'none',
+                            canChangeMap:false,
+                            shop:false,
+                        },
+                    });
+                    for(var j in Player.list){
+                        if(Player.list[j].map === self.map){
+                            SOCKET_LIST[j].emit('initEntity',self.questDependent.monsterking.getInitPack());
+                        }
+                    }
+                }
+            }
             self.questStage += 1;
             self.endDialogue();
+            setTimeout(function(){
+                self.questStage += 1;
+            },1000);
+        }
+        if(self.questStage === 10 && self.quest === 'Missing Person'){
+            self.questStage += 1;
+            self.startDialogue('Ah! I see my time freeze spell has worked!','Time freeze spell?');
+        }
+        if(self.currentResponse === 1 && self.questStage === 11 && self.quest === 'Missing Person'){
+            self.questStage += 1;
+            self.startDialogue('Yes, it is my latest spell.','You can\'t do this to Mark!');
+        }
+        if(self.currentResponse === 1 && self.questStage === 12 && self.quest === 'Missing Person'){
+            self.questStage += 1;
+            self.startDialogue('Fine, I\'ll remove the spell. As an added bonus, I\'ll even teleport you back!','*End conversation*');
+        }
+        if(self.currentResponse === 1 && self.questStage === 13 && self.quest === 'Missing Person'){
+            self.questStage += 1;
+            self.endDialogue();
+            self.teleport(2848,2400,'The Village');
+            self.questDependent.mark.teleport(2848,2464,'The Village');
             socket.emit('questObjective',{
                 questName:self.quest,
-                questObjective:'Return to Bob.',
+                questObjective:'No quest objective.',
             });
+            setTimeout(function(){
+                self.questStage += 1;
+            },1000);
         }
-        if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Missing Person'){
+        if(self.questStage === 15 && self.quest === 'Missing Person'){
+            self.questStage += 1;
+            self.startDialogue('Did you find Mark?','Yeah, he was under a time freeze spell.');
+        }
+        if(self.currentResponse === 1 && self.questStage === 16 && self.quest === 'Missing Person'){
+            self.questStage += 1;
+            self.startDialogue('A what? Never mind. Here, have your reward.','*End conversation*');
+        }
+        if(self.currentResponse === 1 && self.questStage === 17 && self.quest === 'Missing Person'){
             if(self.questStats[self.quest]){
                 self.xp += Math.round(questData[self.quest].xp * self.stats.xp / 10 * (Math.random() + 0.5));
                 self.coins += Math.round(questData[self.quest].xp * self.stats.xp * (Math.random() + 0.5));
@@ -3877,10 +3956,10 @@ Player = function(param){
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner1'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner1'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
             }
@@ -3898,13 +3977,13 @@ Player = function(param){
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner1'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner1'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
             }
@@ -3922,16 +4001,16 @@ Player = function(param){
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner1'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner1'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner5'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner5'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
             }
@@ -3949,19 +4028,19 @@ Player = function(param){
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner1'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner1'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner5'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner5'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner6'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner6'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
             }
@@ -3979,25 +4058,25 @@ Player = function(param){
             self.questInfo.monstersKilled = 0;
             self.questInfo.maxMonsters = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner1'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner1'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner4'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner4'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner5'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner5'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner6'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner6'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBird');
                 }
-                if(QuestInfo.list[i].quest === 'Monster Raid' && QuestInfo.list[i].info === 'spawner7'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner7'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'blueBall');
                 }
             }
@@ -4169,7 +4248,7 @@ Player = function(param){
         }
         if(self.questStage === 4 && self.quest === 'Clear Tower' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 5;
                     self.questInfo.monstersKilled = 0;
                     self.questInfo.maxMonsters = 0;
@@ -4178,15 +4257,15 @@ Player = function(param){
         }
         if(self.questStage === 5 && self.quest === 'Clear Tower' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'spawner'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'snowBall');
                 }
-                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'redBird');
                 }
             }
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Clear Tower' && QuestInfo.list[i].info === 'collision'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'collision'){
                     self.questDependent[i] = new Collision({
                         x:QuestInfo.list[i].x - 64,
                         y:QuestInfo.list[i].y - 64,
@@ -4314,10 +4393,14 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 3 && self.quest === 'Lightning Lizard Boss'){
             self.questStage += 1;
             self.endDialogue();
+            socket.emit('questObjective',{
+                questName:self.quest,
+                questObjective:'Find the Lightning Lizard.',
+            });
         }
         if(self.questStage === 4 && self.quest === 'Lightning Lizard Boss' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 5;
                     self.questInfo.monstersKilled = 0;
                     self.questInfo.maxMonsters = 0;
@@ -4326,12 +4409,12 @@ Player = function(param){
         }
         if(self.questStage === 5 && self.quest === 'Lightning Lizard Boss' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'spawner'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lightningLizard');
                 }
             }
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'collision'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'collision'){
                     self.questDependent[i] = new Collision({
                         x:QuestInfo.list[i].x - 64,
                         y:QuestInfo.list[i].y - 64,
@@ -4376,7 +4459,7 @@ Player = function(param){
             self.questStage += 1;
             self.endDialogue();
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Lightning Lizard Boss' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenLizard');
                 }
             }
@@ -4510,7 +4593,7 @@ Player = function(param){
         }
         if(self.questStage === 4 && self.quest === 'Lost Rubies' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Lost Rubies' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 5;
                 }
             }
@@ -4644,7 +4727,7 @@ Player = function(param){
         if(self.questStage === 12 && self.quest === 'Broken Piano' && self.mapChange > 10){
             var pianoPartGained = false;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Broken Piano' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && self.isColliding(QuestInfo.list[i])){
                     for(var j in self.questInfo.activators){
                         if(j === QuestInfo.list[i].info && self.questInfo.activators[j] === false){
                             pianoPartGained = true;
@@ -5053,7 +5136,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenLizard');
                 }
             }
@@ -5071,7 +5154,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'greenLizard');
                 }
             }
@@ -5089,7 +5172,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lostSpirit');
                 }
             }
@@ -5103,12 +5186,12 @@ Player = function(param){
         }
         if(self.questStage === 16 && self.quest === 'Pet Training'){
             self.questStage += 1;
-            socket.emit('notification',"Wave 4: Cherry Bomb x12");
+            socket.emit('notification',"Wave 4: Red Cherry Bomb x12");
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner4'){
-                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'cherryBomb');
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner4'){
+                    self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'redCherryBomb');
                 }
             }
         }
@@ -5125,7 +5208,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Pet Training' && QuestInfo.list[i].info === 'spawner5'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner5'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'lightningLizard');
                 }
             }
@@ -5207,7 +5290,7 @@ Player = function(param){
         }
         if(self.questStage === 8 && self.quest === 'Monster Search' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 9;
                 }
             }
@@ -5219,7 +5302,7 @@ Player = function(param){
         if(self.currentResponse === 1 && self.questStage === 10 && self.quest === 'Monster Search'){
             self.questStage += 1;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'npcSpawner'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'npcSpawner'){
                     self.questDependent.monsterking = new Npc({
                         x:QuestInfo.list[i].x,
                         y:QuestInfo.list[i].y,
@@ -5255,6 +5338,12 @@ Player = function(param){
             self.questStage += 1;
             self.startDialogue('You\'re already trying to fight me? Players are always aggressive.','Yeah, so I am agressive and will kill you.','What? I\'m just trying to complete a quest!','What about you sending Monsters to raid The Village?');
         }
+        if(self.currentResponse === 2 && self.questStage === 13 && self.quest === 'Monster Search'){
+            self.questStage += 29;
+            self.startDialogue('1000 rubies? Finally! I will take over the world!','Oh no...');
+            self.inventory.materials.ruby -= 1000;
+            self.inventory.refreshMaterial();
+        }
         if(self.currentResponse === 1 && self.questStage === 14 && self.quest === 'Monster Search'){
             self.questStage += 8;
             self.startDialogue('Not if I kill you first!','*End conversation*');
@@ -5288,9 +5377,11 @@ Player = function(param){
             self.questStage += 1;
             self.startDialogue('Completing a quest isn\'t just spamming the first option. Now, choose carefully. One answer is correct, but the other two will doom you.','That doesn\'t sound good.','Your Monsters are dumb and stupid.','I will kill you!');
             setTimeout(function(){
-                self.questStage += 1;
-                self.startDialogue('Completing a quest isn\'t just spamming the first option. Now, choose carefully. One answer is correct, but the other two will doom you.','That doesn\'t sound good.','Your Monsters are dumb and stupid.','This answer is correct.');
-            },10000);
+                if(self.questStage === 19 && self.currentResponse === 0){
+                    self.questStage += 1;
+                    self.startDialogue('Completing a quest isn\'t just spamming the first option. Now, choose carefully. One answer is correct, but the other two will doom you.','That doesn\'t sound good.','Your Monsters are dumb and stupid.','This answer is correct.');
+                }
+            },20000);
         }
         if(self.currentResponse === 2 && self.questStage === 18 && self.quest === 'Monster Search'){
             self.questStage += 3;
@@ -5327,7 +5418,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner1'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner1'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'waterRammer');
                 }
             }
@@ -5340,7 +5431,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner2'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner2'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'charredBird');
                 }
             }
@@ -5353,7 +5444,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner3'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner3'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'waterRammer');
                 }
             }
@@ -5366,7 +5457,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner4'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner4'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'charredBird');
                 }
             }
@@ -5379,7 +5470,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner5'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner5'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'waterRammer');
                 }
             }
@@ -5392,7 +5483,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner6'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner6'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'charredBird');
                 }
             }
@@ -5405,7 +5496,7 @@ Player = function(param){
             self.questInfo.maxMonsters = 0;
             self.questInfo.monstersKilled = 0;
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Monster Search' && QuestInfo.list[i].info === 'spawner7'){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'spawner7'){
                     self.spawnQuestMonster(i,QuestInfo.list[i].x,QuestInfo.list[i].y,QuestInfo.list[i].map,'waterRammer');
                 }
             }
@@ -5433,14 +5524,21 @@ Player = function(param){
             self.questStage += 1;
             self.endDialogue();
             setTimeout(function(){
-                self.questStage += 1;
+                self.questStage += 3;
             },2000);
         }
         if(self.questStage === 42 && self.quest === 'Monster Search'){
             self.questStage += 1;
+            self.startDialogue('Ahhhhhh! What\'s happening? HELP!','...');
+        }
+        if(self.currentResponse === 1 && self.questStage === 43 && self.quest === 'Monster Search'){
+            self.questStage += 1;
+        }
+        if(self.questStage === 44 && self.quest === 'Monster Search'){
+            self.questStage += 1;
             self.startDialogue('Argh! I\'m dying!','...');
         }
-        if(self.questStage === 43 && self.quest === 'Monster Search'){
+        if(self.questStage === 45 && self.quest === 'Monster Search'){
             var particle = new Particle({
                 x:self.questDependent.monsterking.x + Math.random() * self.questDependent.monsterking.width - self.questDependent.monsterking.width / 2,
                 y:self.questDependent.monsterking.y + Math.random() * self.questDependent.monsterking.height - self.questDependent.monsterking.height / 2,
@@ -5448,13 +5546,13 @@ Player = function(param){
                 particleType:'fire',
             });
         }
-        if(self.currentResponse === 1 && self.questStage === 43 && self.quest === 'Monster Search'){
+        if(self.currentResponse === 1 && self.questStage === 45 && self.quest === 'Monster Search'){
             self.questStage += 1;
             self.questDependent.monsterking.toRemove = true;
             socket.emit('notification',"Monster King was slain...");
             self.startDialogue('Well, I guess that will be the end of the Monster King.','...');
         }
-        if(self.currentResponse === 1 && self.questStage === 44 && self.quest === 'Monster Search'){
+        if(self.currentResponse === 1 && self.questStage === 46 && self.quest === 'Monster Search'){
             if(self.questStats[self.quest]){
                 self.xp += Math.round(questData[self.quest].xp * self.stats.xp / 10 * (Math.random() + 0.5));
                 self.coins += Math.round(questData[self.quest].xp * self.stats.xp * (Math.random() + 0.5));
@@ -5497,7 +5595,7 @@ Player = function(param){
         }
         if(self.questStage === 4 && self.quest === 'Missing Candies' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Missing Candies' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 5;
                 }
             }
@@ -5564,7 +5662,7 @@ Player = function(param){
         }
         if(self.questStage === 6 && self.quest === 'Broken Sword' && self.mapChange > 10){
             for(var i in QuestInfo.list){
-                if(QuestInfo.list[i].quest === 'Broken Sword' && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
+                if(QuestInfo.list[i].quest === self.quest && QuestInfo.list[i].info === 'activator' && self.isColliding(QuestInfo.list[i])){
                     self.questStage = 7;
                 }
             }
@@ -6889,6 +6987,26 @@ Player = function(param){
         if(isFireMap === false){
             return;
         }
+        if(self.stats.damageType !== 'magic' && self.cooldown === 0){
+            for(var i = 0;i < 25;i++){
+                var particle = new Particle({
+                    x:self.x + Math.random() * self.width - self.width / 2,
+                    y:self.y + Math.random() * self.height - self.height / 2,
+                    map:self.map,
+                    particleType:'ready',
+                });
+            }
+        }
+        else if(self.mana >= self.attackCost && self.manaRefresh === 0){
+            for(var i = 0;i < 25;i++){
+                var particle = new Particle({
+                    x:self.x + Math.random() * self.width - self.width / 2,
+                    y:self.y + Math.random() * self.height - self.height / 2,
+                    map:self.map,
+                    particleType:'ready',
+                });
+            }
+        }
         if(self.keyPress.attack === true){
             self.doPassive();
             if(self.stats.damageType === 'magic' && self.mana >= self.attackCost && self.manaRefresh <= 0){
@@ -7636,6 +7754,7 @@ Npc = function(param){
     }
     self.name = param.name;
     self.entityId = param.entityId;
+    self.animationDirection = 4;
     var lastSelf = {};
 	var super_update = self.update;
     self.mapHeight = Maps[self.map].height;
@@ -7648,6 +7767,14 @@ Npc = function(param){
     }
     else if(param.info.randomWalk === 'waypoint'){
         self.randomWalk(true,true,self.x,self.y);
+    }
+    for(var i = 0;i < 25;i++){
+        var particle = new Particle({
+            x:self.x + Math.random() * self.width - self.width / 2,
+            y:self.y + Math.random() * self.height - self.height / 2,
+            map:self.map,
+            particleType:'teleport',
+        });
     }
     self.canChangeMap = param.info.canChangeMap;
 	self.update = function(){
@@ -8560,7 +8687,7 @@ Monster = function(param){
                 }
                 return;
             }
-            if(self.getSquareDistance(self.target) > self.target.stats.aggro * self.aggro * 64 * 2 && self.boss === false){
+            if(self.getSquareDistance(self.target) > self.target.stats.aggro * self.aggro * 64 * 2 && self.boss === false && self.attackState.includes('explode') === false){
                 self.target = undefined;
                 var maxAggro = -10;
                 for(var i in Player.list){
@@ -12260,6 +12387,14 @@ var renderLayer = function(layer,data,loadedMap){
                     type:10,
                 });
             }
+            if(tile_idx === 2293){
+                var projectileCollision = new ProjectileCollision({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:1,
+                });
+            }
             if(tile_idx === 1949){
                 var type = "";
                 var typej = 0;
@@ -12667,6 +12802,7 @@ load("Town Hall");
 load("Fishing Hut");
 load("House");
 load("Tiny House");
+load("Tiny House Upstairs");
 load("Lilypad Temple Room 0");
 load("Lilypad Temple Room 1");
 load("Lilypad Temple Room 2");

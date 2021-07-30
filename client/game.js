@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '030f1b';
+var VERSION = '030f1c';
 
 var DEBUG = false;
 
@@ -322,6 +322,7 @@ signDivSignIn.onclick = function(){
         loadMap('Town Hall');
         loadMap('Fishing Hut');
         loadMap('Tiny House');
+        loadMap('Tiny House Upstairs');
         loadMap('House');
         loadMap('Town Cave');
         loadMap('The Arena');
@@ -2099,6 +2100,11 @@ var Particle = function(initPack){
             self.y += Math.sin(self.direction / 180 * Math.PI);
             self.timer -= 1 / 5;
         }
+        else if(self.particleType === 'ready'){
+            self.x += Math.cos(self.direction / 180 * Math.PI);
+            self.y += Math.sin(self.direction / 180 * Math.PI);
+            self.timer -= 1 / 10;
+        }
         else{
             self.timer -= 1 / 2;
         }
@@ -2191,12 +2197,15 @@ var Particle = function(initPack){
             ctx1.fillStyle = "rgba(255,125,0," + (self.timer / 15) + ")";
             ctx1.fillRect(self.x - 4,self.y - 4,8,8);
         }
+        else if(self.particleType === 'ready'){
+            ctx1.fillStyle = "rgba(0,255,0," + (self.timer / 15) + ")";
+            ctx1.fillRect(self.x - 4,self.y - 4,8,8);
+        }
     }
     Particle.list[self.id] = self;
     return self;
 }
 Particle.list = {};
-var particles = {};
 window.onoffline = function(event){
     socket.emit('timeout');
 };
@@ -2686,7 +2695,6 @@ socket.on('changeMap',function(data){
     }
     currentMap = data.teleport;
     shadeSpeed = 3 / 40;
-    particles = JSON.parse(JSON.stringify(Particle.list));
 });
 socket.on('dialogueLine',function(data){
     if(data.state === 'remove'){

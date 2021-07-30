@@ -39,7 +39,7 @@
         }
     },
     "stoneArrow":{
-        "width":14,
+        "width":28,
         "height":14,
         "stats":{
             "attack":1,
@@ -52,7 +52,7 @@
         }
     },
     "goldArrow":{
-        "width":14,
+        "width":28,
         "height":14,
         "stats":{
             "attack":1,
