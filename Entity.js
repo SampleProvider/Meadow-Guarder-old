@@ -7682,6 +7682,16 @@ Npc = function(param){
             }
             self.updateCollisions();
         }
+        if(self.mapChange === 0){
+            for(var i = 0;i < 25;i++){
+                var particle = new Particle({
+                    x:self.x + Math.random() * self.width - self.width / 2,
+                    y:self.y + Math.random() * self.height - self.height / 2,
+                    map:self.map,
+                    particleType:'teleport',
+                });
+            }
+        }
         if(self.mapChange === 5){
             self.map = self.transporter.teleport;
             if(self.transporter.teleportx !== -1){
@@ -7697,6 +7707,14 @@ Npc = function(param){
                 if(Player.list[i]){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
                 }
+            }
+            for(var i = 0;i < 25;i++){
+                var particle = new Particle({
+                    x:self.x + Math.random() * self.width - self.width / 2,
+                    y:self.y + Math.random() * self.height - self.height / 2,
+                    map:self.map,
+                    particleType:'teleport',
+                });
             }
         }
         if(self.mapChange === 10){

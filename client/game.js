@@ -1398,7 +1398,7 @@ var Player = function(initPack){
         document.getElementById('debuffs').innerHTML = '';
         if(self.hp > 0){
             for(var i in self.debuffs){
-                var time = self.debuffs[i].time / 20;
+                var time = Math.ceil(self.debuffs[i].time / 20);
                 if(time < 60){
                     time += 'sec';
                 }
