@@ -12,7 +12,7 @@ Particle = function(param){
     if(self.particleType === 'kill'){
         self.direction = 360 * Math.random();
     }
-    if(self.particleType === 'ready'){
+    if(self.particleType === 'heal'){
         self.direction = 360 * Math.random();
     }
     self.getInitPack = function(){

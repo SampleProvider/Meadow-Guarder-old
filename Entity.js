@@ -2046,6 +2046,14 @@ Actor = function(param){
                         particleType:particleType,
                         value:'+' + Math.round(-1 * damage),
                     });
+                    for(var i = 0;i < 25;i++){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * self.width - self.width / 2,
+                            y:self.y + Math.random() * self.height - self.height / 2,
+                            map:self.map,
+                            particleType:'heal',
+                        });
+                    }
                 }
             }
             for(var i in pt.stats.debuffs){
@@ -6205,6 +6213,14 @@ Player = function(param){
                                     particleType:'greenDamage',
                                     value:'+' + Math.round(heal),
                                 });
+                                for(var i = 0;i < 25;i++){
+                                    var particle = new Particle({
+                                        x:self.x + Math.random() * self.width - self.width / 2,
+                                        y:self.y + Math.random() * self.height - self.height / 2,
+                                        map:self.map,
+                                        particleType:'heal',
+                                    });
+                                }
                             }
                             break;
                         case "simplewoodenbowAttack":
@@ -6986,26 +7002,6 @@ Player = function(param){
         }
         if(isFireMap === false){
             return;
-        }
-        if(self.stats.damageType !== 'magic' && self.cooldown === 0){
-            for(var i = 0;i < 25;i++){
-                var particle = new Particle({
-                    x:self.x + Math.random() * self.width - self.width / 2,
-                    y:self.y + Math.random() * self.height - self.height / 2,
-                    map:self.map,
-                    particleType:'ready',
-                });
-            }
-        }
-        else if(self.mana >= self.attackCost && self.manaRefresh === 0){
-            for(var i = 0;i < 25;i++){
-                var particle = new Particle({
-                    x:self.x + Math.random() * self.width - self.width / 2,
-                    y:self.y + Math.random() * self.height - self.height / 2,
-                    map:self.map,
-                    particleType:'ready',
-                });
-            }
         }
         if(self.keyPress.attack === true){
             self.doPassive();

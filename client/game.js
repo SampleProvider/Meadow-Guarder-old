@@ -2197,7 +2197,7 @@ var Particle = function(initPack){
             ctx1.fillStyle = "rgba(255,125,0," + (self.timer / 15) + ")";
             ctx1.fillRect(self.x - 4,self.y - 4,8,8);
         }
-        else if(self.particleType === 'ready'){
+        else if(self.particleType === 'heal'){
             ctx1.fillStyle = "rgba(0,255,0," + (self.timer / 15) + ")";
             ctx1.fillRect(self.x - 4,self.y - 4,8,8);
         }
