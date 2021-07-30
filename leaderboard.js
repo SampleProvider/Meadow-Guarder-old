@@ -1,8 +1,6 @@
 
 const { Client } = require('pg');
 
-SERVER = 'localhost';
-
 if(SERVER === 'localhost'){
 	require("./DATABASE_URL.js");
 }
