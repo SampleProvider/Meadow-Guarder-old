@@ -859,14 +859,14 @@ Inventory = function(socket,server){
                 var dismantleList = [];
                 if(type === 'Common Items'){
                     for(var i in self.items){
-                        if(self.items[i].rarity < 2){
+                        if(Item.list[self.items[i].id].rarity < 2){
                             dismantleList.push(i);
                         }
                     }
                 }
                 if(type === 'Rare Items'){
                     for(var i in self.items){
-                        if(self.items[i].rarity < 3){
+                        if(Item.list[self.items[i].id].rarity < 3){
                             dismantleList.push(i);
                         }
                     }
