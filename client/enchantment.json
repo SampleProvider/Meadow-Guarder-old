@@ -5,7 +5,7 @@
         "averageLevel":0.03,
         "deviation":0.02,
         "dropChance":0.2,
-        "event":"self.maxSpeed += 10 * value;"
+        "event":"self.hpMax += 1000 * value;"
     },
     "speed":{
         "name":"Speed",

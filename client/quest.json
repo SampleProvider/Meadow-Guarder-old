@@ -7,94 +7,897 @@
             "Lvl 1"
         ],
         "multiplePlayers":true,
-        "startNpc":"john"
+        "startNpc":"john",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"john",
+                    "next":2
+                },
+                "objective":"Talk to John."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"The Monster King is back! He sent Monsters to raid The Village, and our defenses are crumbling fast. Kill these monsters before they get out of control.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to John."
+            },
+            "3":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":992,
+                    "y":864,
+                    "map":"The Battlefield",
+                    "next":4
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "4":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":5
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "5":{
+                "trigger":{
+                    "type":"resetKilledMonsters",
+                    "next":6
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "6":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner1","spawner3"],
+                    "monsterType":["blueBird","blueBird"],
+                    "next":7
+                },
+                "notification":"Wave 1: Blue Bird x2",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "7":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":8
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "8":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":9
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "9":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner1","spawner2","spawner3"],
+                    "monsterType":["blueBird","blueBird","greenBird"],
+                    "next":10
+                },
+                "notification":"Wave 2: Blue Bird x2 + Green Bird",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "10":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":11
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "11":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":12
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "12":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner1","spawner2","spawner3","spawner5"],
+                    "monsterType":["greenBird","blueBird","blueBird","blueBird"],
+                    "next":13
+                },
+                "notification":"Wave 3: Blue Bird x3 + Green Bird",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "13":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":14
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "14":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":15
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "15":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner1","spawner2","spawner3","spawner5","spawner6"],
+                    "monsterType":["blueBird","greenBird","blueBird","greenBird","blueBird"],
+                    "next":16
+                },
+                "notification":"Wave 4: Blue Bird x3 + Green Bird x2",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "16":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":17
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "17":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":18
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "18":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner1","spawner2","spawner3","spawner4","spawner5","spawner6","spawner7"],
+                    "monsterType":["blueBird","greenBird","blueBird","blueBird","greenBird","blueBird","blueBall"],
+                    "next":19
+                },
+                "notification":"Wave 5: Blue Bird x3 + Green Bird x2",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "19":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":20
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "20":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":21
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "21":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":2592,
+                    "y":736,
+                    "map":"The Village",
+                    "next":22
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "22":{
+                "dialogue":{
+                    "message":"You saved The Village! Here, have a reward.",
+                    "response1":{
+                        "text":"Thanks.",
+                        "next":23
+                    }
+                },
+                "objective":"No quest objective."
+            },
+            "23":{
+                "dialogue":{
+                    "message":"If you are looking for something to do, try talking to other NPCs! There are many NPCs in The Village!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":24
+                    }
+                },
+                "objective":"No quest objective."
+            }
+        }
     },
     "Missing Person":{
         "description":"Find Mark who has been missing in the map The River. Test out some new quest mechanics.",
         "xp":800,
+        "materials":[{"id":"wood","amount":20}],
         "startStage":1,
         "requirements":[
             "Lvl 1"
         ],
-        "multiplePlayers":true,
-        "startNpc":"bob"
+        "multiplePlayers":false,
+        "startNpc":"bob",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"bob",
+                    "next":2
+                },
+                "objective":"Talk to Bob."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, my friend Mark went to The River to collect some wood, but he hasn't been back in 2 hours! Can you go check on him? The map The River is to the west of The Village.",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Bob."
+            },
+            "3":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":4
+                },
+                "objective":"Find Mark in The River."
+            },
+            "4":{
+                "trigger":{
+                    "type":"spawnNpc",
+                    "questInfo":"markSpawner",
+                    "npcId":"mark",
+                    "npcName":"Mark",
+                    "next":5
+                },
+                "objective":"Talk to Mark."
+            },
+            "5":{
+                "dialogue":{
+                    "message":"Oh! Hey, who are you?",
+                    "response1":{
+                        "text":"Um, your friend Bob sent me to rescue you. You have been missing for two hours.",
+                        "next":6
+                    }
+                },
+                "objective":"Talk to Mark."
+            },
+            "6":{
+                "dialogue":{
+                    "message":"Two hours! I was here only for 5 minutes!",
+                    "response1":{
+                        "text":"It has been two hours, what do you mean?",
+                        "next":7
+                    }
+                },
+                "objective":"Talk to Mark."
+            },
+            "7":{
+                "trigger":{
+                    "type":"spawnNpc",
+                    "questInfo":"monsterkingSpawner",
+                    "npcId":"monsterking",
+                    "npcName":"Monster King",
+                    "next":8
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "8":{
+                "dialogue":{
+                    "message":"Ah! I see my time freeze spell has worked!",
+                    "response1":{
+                        "text":"Time freeze spell?",
+                        "next":9
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "9":{
+                "dialogue":{
+                    "message":"Yes, it is my latest spell.",
+                    "response1":{
+                        "text":"You can't do this to Mark!",
+                        "next":10
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "10":{
+                "dialogue":{
+                    "message":"Fine, I'll remove the spell. As an added bonus, I'll even teleport you back!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":11
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "11":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":2848,
+                    "y":2400,
+                    "map":"The Village",
+                    "next":12
+                },
+                "objective":"Talk to Bob."
+            },
+            "12":{
+                "dialogue":{
+                    "message":"Did you find Mark?",
+                    "response1":{
+                        "text":"Yeah, he was under a time freeze spell.",
+                        "next":13
+                    }
+                },
+                "objective":"Talk to Bob."
+            },
+            "13":{
+                "dialogue":{
+                    "message":"A what? Never mind. Here, have your reward.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":14
+                    }
+                },
+                "objective":"Talk to Bob."
+            }
+        }
     },
     "Secret Tunnels":{
         "description":"Locate and travel through secret tunnels scattered around the map.",
         "xp":1900,
+        "items":["advancedrubysword","advancedrubybow","advancedrubystaff","healingscepter"],
         "startStage":1,
         "requirements":[
             "Lvl 2"
         ],
         "multiplePlayers":true,
-        "startNpc":"cyber"
+        "startNpc":"cyber",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"cyber",
+                    "next":2
+                },
+                "objective":"Talk to Cyber."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, do you know what to do if the Monster King raids us again?",
+                    "response1":{
+                        "text":"No. What do we do?",
+                        "next":3
+                    }
+                },
+                "trigger":{
+                    "type":"changeQuestStage",
+                    "quest":"Secret Tunnels",
+                    "next":4
+                },
+                "objective":"Talk to Cyber."
+            },
+            "3":{
+                "dialogue":{
+                    "message":"I don't know either. I think Fisherman knows though.",
+                    "response1":{
+                        "text":"I can talk to Fisherman.",
+                        "next":5
+                    }
+                },
+                "objective":"Talk to Cyber."
+            },
+            "4":{
+                "dialogue":{
+                    "message":"Hey, do you know what to do if the Monster King raids us again?",
+                    "response1":{
+                        "text":"No. What do we do?",
+                        "next":3
+                    },
+                    "response2":{
+                        "text":"Yeah, there are secret tunnels we have to go through in John's garage.",
+                        "next":7 
+                    }
+                },
+                "objective":"Talk to Cyber."
+            },
+            "5":{
+                "dialogue":{
+                    "message":"Great! Go talk to Fisherman!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":6
+                    }
+                }
+            },
+            "6":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"fisherman",
+                    "next":10
+                },
+                "objective":"Talk to Fisherman."
+            },
+            "7":{
+                "dialogue":{
+                    "message":"You know where to go? Great! Can you go through the secret tunnels just so I can know that they are safe?",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":8
+                    }
+                },
+                "objective":"Talk to Cyber."
+            },
+            "8":{
+                "trigger":{
+                    "type":"playerMap",
+                    "map":"Secret Tunnel Part 1",
+                    "next":9
+                },
+                "objective":"Go to the Secret Tunnels."
+            },
+            "9":{
+                "trigger":{
+                    "type":"playerMap",
+                    "map":"The Hideout",
+                    "next":15
+                },
+                "objective":"Survive and go to the exit!"
+            },
+            "10":{
+                "dialogue":{
+                    "message":"Oh, I know where to go in case of a Monster Raid. There were some secret tunnels I think? John knows more about these secret tunnels.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":11
+                    }
+                },
+                "objective":"Talk to Fisherman."
+            },
+            "11":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"john",
+                    "next":12
+                },
+                "objective":"Talk to John."
+            },
+            "12":{
+                "dialogue":{
+                    "message":"Yeah, there are secret tunnels in my garage. Be careful though, because the last time I went to my garage there were a lot of monsters.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":13
+                    }
+                },
+                "objective":"Talk to John."
+            },
+            "13":{
+                "trigger":{
+                    "type":"playerMap",
+                    "map":"Secret Tunnel Part 1",
+                    "next":14
+                },
+                "objective":"Find the Secret Tunnels."
+            },
+            "14":{
+                "trigger":{
+                    "type":"playerMap",
+                    "map":"The Hideout",
+                    "next":15
+                },
+                "objective":"Survive and find the exit!"
+            },
+            "15":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":16
+                },
+                "objective":"No quest objective."
+            },
+            "16":{
+                "dialogue":{
+                    "message":"You made it! Now I know what to do in case of another Monster Raid! Here, you can have this weapon.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":17
+                    }
+                },
+                "objective":"No quest objective."
+            }
+        }
     },
-    "Clear River":{
-        "description":"Defeat all the Monsters in the map The River. This quest was suggested by Suvanth. You can suggest quests <a class='UI-link-light' href='https://github.com/maitian352/Meadow-Guarder/issues'>here</a>.",
-        "xp":1500,
-        "startStage":1,
-        "requirements":[
-            "Monster Raid",
-            "Lvl 2"
-        ],
-        "multiplePlayers":true,
-        "startNpc":"fisherman"
-    },
-    "Clear Tower":{
+    "Weird Tower":{
         "description":"Defeat all the monsters in the weird tower in the map The River.",
         "xp":1200,
         "startStage":1,
         "requirements":[
             "Monster Raid",
+            "Missing Person",
             "Lvl 2"
         ],
         "multiplePlayers":false,
-        "startNpc":"joe"
+        "startNpc":"joe",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"joe",
+                    "next":2
+                },
+                "objective":"Talk to Joe."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, Mark told me that he saw a giant Red Bird in The River. He said it was standing on a weird tower. Can you kill this Red Bird?",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Joe."
+            },
+            "3":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":4
+                },
+                "objective":"Find the Weird Tower."
+            },
+            "4":{
+                "trigger":{
+                    "type":"spawnCollision",
+                    "questInfo":"collision",
+                    "collisionType":1,
+                    "tile_idx":3547,
+                    "canvas":"lower",
+                    "next":5
+                },
+                "objective":"Find the Weird Tower."
+            },
+            "5":{
+                "trigger":{
+                    "type":"resetKilledMonsters",
+                    "questInfo":"collision",
+                    "next":6
+                },
+                "objective":"Find the Weird Tower."
+            },
+            "6":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner","spawner2"],
+                    "monsterType":["snowBall","redBird"],
+                    "next":7
+                },
+                "objective":"Defeat Red Bird!"
+            },
+            "7":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":8
+                },
+                "objective":"Defeat Red Bird!"
+            },
+            "8":{
+                "dialogue":{
+                    "message":"I defeated Red Bird! Let me go tell Joe!",
+                    "response1":{
+                        "text":"...",
+                        "next":9
+                    }
+                },
+                "objective":"Return to Joe."
+            },
+            "9":{
+                "trigger":{
+                    "type":"removeCollision",
+                    "questInfo":"collision",
+                    "tile_idx":3547,
+                    "canvas":"lower",
+                    "next":10
+                },
+                "objective":"Return to Joe."
+            },
+            "10":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"joe",
+                    "next":11
+                },
+                "objective":"Return to Joe."
+            },
+            "11":{
+                "dialogue":{
+                    "message":"You killed this Red Bird? Great! Here, have a reward.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":12
+                    }
+                },
+                "objective":"No quest objective."
+            }
+        }
     },
     "Broken Sword":{
-        "description":"Find Billy's broken sword.",
+        "description":"Find and fix Billy's broken sword.",
         "xp":900,
         "startStage":1,
         "requirements":[
-            "Clear Tower",
-            "Lvl 2"
+            "Weird Tower",
+            "Lvl 5"
         ],
         "multiplePlayers":true,
-        "startNpc":"billy"
-    },
-    "Lightning Lizard Boss":{
-        "description":"Defeat the Lightning Lizard.",
-        "xp":1800,
-        "startStage":1,
-        "requirements":[
-            "Clear Tower",
-            "Lvl 3"
-        ],
-        "multiplePlayers":false,
-        "startNpc":"hunter"
+        "startNpc":"billy",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"billy",
+                    "next":2
+                },
+                "objective":"Talk to Billy."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, I heard there was a broken sword hidden somewhere in this map. Can you find it for me?",
+                    "response1":{
+                        "text":"Why do you want this broken sword?",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Billy."
+            },
+            "3":{
+                "dialogue":{
+                    "message":"Villagers normally can't damage Monsters, but Fisherman keeps bragging about how his fishing pole can kill Birds! I want a weapon too!",
+                    "response1":{
+                        "text":"But this sword is broken...",
+                        "next":4
+                    }
+                },
+                "objective":"Talk to Billy."
+            },
+            "4":{
+                "dialogue":{
+                    "message":"Yeah, but I'm sure Wally can fix it.",
+                    "response1":{
+                        "text":"Ok, I can help you find this broken sword.",
+                        "next":5
+                    }
+                },
+                "objective":"Talk to Billy."
+            },
+            "5":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":6
+                },
+                "objective":"Find the broken sword."
+            },
+            "6":{
+                "dialogue":{
+                    "message":"Let me see... An apple, a bow, a potion, some coins... Here it is! The broken sword!",
+                    "response1":{
+                        "text":"...",
+                        "next":7
+                    }
+                },
+                "objective":"Find the broken sword."
+            },
+            "7":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"billy",
+                    "next":8
+                },
+                "objective":"Return to Billy."
+            },
+            "8":{
+                "dialogue":{
+                    "message":"Great! You found the broken sword. But can you also deliver this sword to Wally for him to fix it?",
+                    "response1":{
+                        "text":"Yeah, I can deliver this broken sword to Wally.",
+                        "next":9
+                    }
+                },
+                "objective":"Return to Billy."
+            },
+            "9":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"wally",
+                    "next":10
+                },
+                "objective":"Talk to Wally."
+            },
+            "10":{
+                "dialogue":{
+                    "message":"Billy wants me to fix this sword? I can do that!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":11
+                    }
+                },
+                "objective":"Talk to Wally."
+            },
+            "11":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":12
+                },
+                "objective":"No quest objective."
+            },
+            "12":{
+                "dialogue":{
+                    "message":"Here you go, as good as new!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":13
+                    }
+                },
+                "objective":"Talk to Wally."
+            },
+            "13":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"billy",
+                    "next":14
+                },
+                "objective":"Return to Billy."
+            },
+            "14":{
+                "dialogue":{
+                    "message":"Yay! Wally fixed the sword!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":15
+                    }
+                },
+                "objective":"Return to Billy."
+            }
+        }
     },
     "Wood Delivery":{
         "description":"Deliver some wood to Wally in Deserted Town.",
         "xp":1300,
         "startStage":1,
         "requirements":[
-            "Lightning Lizard Boss",
             "Missing Person",
-            "Lvl 2"
+            "Lvl 5"
         ],
         "multiplePlayers":true,
-        "startNpc":"bob"
+        "startNpc":"bob",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"bob",
+                    "next":2
+                },
+                "objective":"Talk to Bob."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, can you deliver this wood to Wally in Deserted Town? To get to Deserted Town just keep heading left. Wally should be in his blacksmith.",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Bob."
+            },
+            "3":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"wally",
+                    "next":4
+                },
+                "objective":"Talk to Wally."
+            },
+            "5":{
+                "dialogue":{
+                    "message":"My wood delivery is here? Great! Go say thanks to Bob for me.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":6
+                    }
+                },
+                "objective":"Talk to Wally."
+            },
+            "6":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"bob",
+                    "next":7
+                },
+                "objective":"Return to Bob."
+            },
+            "7":{
+                "dialogue":{
+                    "message":"Wally said thanks? Well that's nice!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":8
+                    }
+                },
+                "objective":"Return to Bob."
+            }
+        }
     },
     "Lost Rubies":{
         "description":"Find some lost rubies in the Town Cave.",
         "xp":2100,
+        "materials":[{"id":"ruby","amount":20}],
         "startStage":1,
         "requirements":[
             "Plantera",
             "Lvl 10"
         ],
         "multiplePlayers":true,
-        "startNpc":"sally"
+        "startNpc":"sally",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"sally",
+                    "next":2
+                },
+                "objective":"Talk to Sally."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"My friend Wally lost some rubies in the Town Cave the other day. Could you please find them and return it to me? If you don't know, the Town Cave is northwest of The Guarded Citadel.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Sally."
+            },
+            "3":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":4
+                },
+                "objective":"Find Wally's rubies."
+            },
+            "4":{
+                "dialogue":{
+                    "message":"I found the rubies! Let me return them to Sally.",
+                    "response1":{
+                        "text":"...",
+                        "next":5
+                    }
+                },
+                "objective":"Find Wally's rubies."
+            },
+            "5":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"sally",
+                    "next":6
+                },
+                "objective":"Return to Sally."
+            },
+            "6":{
+                "dialogue":{
+                    "message":"You found the rubies? Great! Here, you can have some of the rubies.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":7
+                    }
+                },
+                "objective":"Return to Sally."
+            }
+        }
     },
     "Broken Piano":{
         "description":"Find Piano Parts to fix Mia's piano.",
@@ -105,18 +908,417 @@
             "Lvl 11"
         ],
         "multiplePlayers":true,
-        "startNpc":"mia"
+        "startNpc":"mia",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"mia",
+                    "next":2
+                },
+                "objective":"Talk to Mia."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, do you want to listen to me playing the piano?",
+                    "response1":{
+                        "text":"Yes!",
+                        "next":3
+                    },
+                    "response2":{
+                        "text":"Nah.",
+                        "next":-1
+                    }
+                },
+                "objective":"Talk to Mia."
+            },
+            "3":{
+                "dialogue":{
+                    "message":"*Insert TianmuGuarder piano playing noises*",
+                    "response1":{
+                        "text":"Umm.. That sounds kind of bad.",
+                        "next":5
+                    },
+                    "response2":{
+                        "text":"That sounds great!",
+                        "next":4
+                    }
+                },
+                "objective":"Talk to Mia."
+            },
+            "4":{
+                "dialogue":{
+                    "message":"Thank you for that compliment!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":-1
+                    }
+                },
+                "objective":"Talk to Mia."
+            },
+            "5":{
+                "dialogue":{
+                    "message":"Yeah, because my piano broke.",
+                    "response1":{
+                        "text":"I can help you fix your piano.",
+                        "next":6
+                    }
+                },
+                "objective":"Talk to Mia."
+            },
+            "6":{
+                "dialogue":{
+                    "message":"Great! I will need Piano Parts to fix my piano. 5 Piano Parts should be enough. I think Wally might be able to make some Piano Parts. You can also try searching in different maps.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":7
+                    }
+                },
+                "objective":"Talk to Mia."
+            },
+            "7":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"wally",
+                    "next":8
+                },
+                "objective":"Talk to Wally."
+            },
+            "8":{
+                "dialogue":{
+                    "message":"Mia needs Piano Parts to fix her piano? I think I can make one!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":9
+                    }
+                },
+                "objective":"Talk to Wally."
+            },
+            "9":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":10
+                },
+                "objective":"Talk to Wally."
+            },
+            "10":{
+                "trigger":{
+                    "type":"resetPianoParts",
+                    "next":11
+                },
+                "objective":"Talk to Wally."
+            },
+            "11":{
+                "trigger":{
+                    "type":"searchForPianoParts",
+                    "next":12
+                },
+                "notification":"1 / 5 Piano Parts",
+                "objective":"Find the other 4 Piano Parts."
+            },
+            "12":{
+                "dialogue":{
+                    "message":"I got 5 Piano Parts! I should give them to Mia right away.",
+                    "response1":{
+                        "text":"...",
+                        "next":13
+                    }
+                },
+                "objective":"Return to Mia."
+            },
+            "13":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"mia",
+                    "next":14
+                },
+                "objective":"Return to Mia."
+            },
+            "14":{
+                "dialogue":{
+                    "message":"You found 5 Piano Parts! Great! Now I can fix my Piano!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":15
+                    }
+                },
+                "objective":"Return to Mia."
+            }
+        }
     },
     "Pet Training":{
         "description":"Train your pet to become stronger.",
         "xp":2300,
+        "rewards":"strongerPet",
         "startStage":1,
         "requirements":[
             "Lost Rubies",
             "Lvl 11"
         ],
         "multiplePlayers":false,
-        "startNpc":"petmaster"
+        "startNpc":"petmaster",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"petmaster",
+                    "next":2
+                },
+                "objective":"Talk to the Pet Master."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Do you want to train your pet?",
+                    "response1":{
+                        "text":"Yeah, my pet needs to be stronger.",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to the Pet Master."
+            },
+            "3":{
+                "dialogue":{
+                    "message":"Great! I will teleport you to the training arena.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":4
+                    }
+                },
+                "objective":"Talk to the Pet Master."
+            },
+            "4":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":5
+                },
+                "objective":"No quest objective."
+            },
+            "5":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":640,
+                    "y":1056,
+                    "map":"The Pet Arena",
+                    "next":6
+                },
+                "objective":"No quest objective."
+            },
+            "6":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":7
+                },
+                "objective":"No quest objective."
+            },
+            "7":{
+                "dialogue":{
+                    "message":"Remember: You can't fight, but your pet can! Kill all 5 waves of Monsters to win.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":8
+                    }
+                },
+                "objective":"No quest objective."
+            },
+            "8":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":9
+                },
+                "objective":"No quest objective."
+            },
+            "9":{
+                "trigger":{
+                    "type":"resetKilledMonsters",
+                    "next":10
+                },
+                "objective":"Make your pet kill all 5 waves of Monsters!"
+            },
+            "10":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner1",
+                    "monsterType":"lostSpirit",
+                    "next":11
+                },
+                "notification":"Wave 1: Lost Spirit x4",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "11":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":12
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "12":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":13
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "13":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner2",
+                    "monsterType":"lostSpirit",
+                    "next":14
+                },
+                "notification":"Wave 2: Lost Spirit x6",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "14":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":15
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "15":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":16
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "16":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner2",
+                    "monsterType":"lostSpirit",
+                    "next":17
+                },
+                "notification":"Wave 2: Lost Spirit x6",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "17":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":18
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "18":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":19
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "19":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner3",
+                    "monsterType":"greenLizard",
+                    "next":20
+                },
+                "notification":"Wave 3: Green Lizard x6",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "20":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":21
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "21":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":22
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "22":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner3",
+                    "monsterType":"redCherryBomb",
+                    "next":23
+                },
+                "notification":"Wave 4: Red Cherry Bomb x12",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "23":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":24
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "24":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":25
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "25":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner3",
+                    "monsterType":"lightningLizard",
+                    "next":26
+                },
+                "notification":"Wave 5: Lightning Lizard",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "26":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":27
+                },
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "27":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":28
+                },
+                "notification":"Wave Complete!",
+                "objective":"Survive the 5 waves of Monsters!"
+            },
+            "28":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":29
+                },
+                "objective":"No quest objective."
+            },
+            "29":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":288,
+                    "y":544,
+                    "map":"The Guarded Citadel",
+                    "next":30
+                },
+                "objective":"No quest objective."
+            },
+            "30":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":31
+                },
+                "objective":"No quest objective."
+            },
+            "31":{
+                "dialogue":{
+                    "message":"Wow! I can't believe your pet killed all the monsters! Your pet really is strong!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":32
+                    }
+                },
+                "objective":"No quest objective."
+            }
+        }
     },
     "Monster Search":{
         "description":"Search for a way to kill all the monsters.",
@@ -127,7 +1329,464 @@
             "Lvl 12"
         ],
         "multiplePlayers":false,
-        "startNpc":"andrew"
+        "startNpc":"andrew",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"andrew",
+                    "next":2
+                },
+                "objective":"Talk to Andrew."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Do you want to help me find a way to stop Sand Birds from spawning?",
+                    "response1":{
+                        "text":"Why?",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Andrew."
+            },
+            "3":{
+                "dialogue":{
+                    "message":"Well, most of Deserted Town's trade to The Village is through the Wandering Trader. He is the only person that is experienced enough to go through The Outskirts. As you might predict, this harms trade a lot. It would really help if there were no Sand Birds in The Outskirts, because once you touch a Sand Bird you are basically dead.",
+                    "response1":{
+                        "text":"Sure, I can help you!",
+                        "next":4
+                    }
+                },
+                "objective":"Talk to Andrew."
+            },
+            "4":{
+                "dialogue":{
+                    "message":"Great! The Pet Master knows something about Monsters spawning.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":5
+                    }
+                },
+                "objective":"Talk to Andrew."
+            },
+            "5":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"petmaster",
+                    "next":6
+                },
+                "objective":"Talk to the Pet Master."
+            },
+            "6":{
+                "dialogue":{
+                    "message":"You want to learn about Monsters spawning? Basically there are tunnels underground that Monsters travel through. Then the Monsters pop out of secret 1-way trapdoors. When I made The Pet Arena, I also installed trapdoors that I bought from the Wandering Trader. The Wandering Trader might know more about these trapdoors.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":7
+                    }
+                },
+                "objective":"Talk to the Pet Master."
+            },
+            "7":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"wanderingtrader",
+                    "next":8
+                },
+                "objective":"Talk to the Wandering Trader."
+            },
+            "8":{
+                "dialogue":{
+                    "message":"These trapdoors? Oh, I found them in front of a house somewhere in The Forest.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":9
+                    }
+                },
+                "objective":"Talk to the Wandering Trader."
+            },
+            "9":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":10
+                },
+                "objective":"Find the Mysterious House."
+            },
+            "10":{
+                "dialogue":{
+                    "message":"I think this is the Mysterious House.",
+                    "response1":{
+                        "text":"...",
+                        "next":11
+                    }
+                },
+                "objective":"Find the Mysterious House."
+            },
+            "11":{
+                "trigger":{
+                    "type":"spawnNpc",
+                    "questInfo":"npcSpawner",
+                    "npcId":"monsterking",
+                    "npcName":"Monster King",
+                    "next":12
+                },
+                "objective":"Find the Mysterious House."
+            },
+            "12":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":640,
+                    "y":1120,
+                    "map":"Mysterious Room",
+                    "next":13
+                },
+                "objective":"Find the Mysterious House."
+            },
+            "13":{
+                "dialogue":{
+                    "message":"Ahh! What's happening to me!",
+                    "response1":{
+                        "text":"...",
+                        "next":14
+                    }
+                },
+                "objective":"Find the Mysterious House."
+            },
+            "14":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"monsterking",
+                    "next":15
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "15":{
+                "dialogue":{
+                    "message":"Who are you? Ah, hello *username*! How did you even get in here? I'm sure I marked off every teleporter.",
+                    "response1":{
+                        "text":"I will kill you!",
+                        "next":16
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "16":{
+                "dialogue":{
+                    "message":"You're already trying to fight me? Players are always aggressive.",
+                    "response1":{
+                        "text":"Yeah, so I am agressive and will kill you.",
+                        "next":17
+                    },
+                    "response2":{
+                        "text":"What? I'm just trying to complete a quest!",
+                        "next":18
+                    },
+                    "response3":{
+                        "text":"What about you sending Monsters to raid The Village?",
+                        "next":28
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "17":{
+                "dialogue":{
+                    "message":"Not if I kill you first!",
+                    "response1":{
+                        "text":"We'll see about that.",
+                        "next":39
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "18":{
+                "dialogue":{
+                    "message":"Then why did you say you wanted to kill me?",
+                    "response1":{
+                        "text":"It was the only option!",
+                        "next":19
+                    },
+                    "response2":{
+                        "text":"I misclicked. I wanted to click [I just want to complete this quest!]",
+                        "next":27
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "19":{
+                "dialogue":{
+                    "message":"You weren't patient enough. Why didn't you wait until a better option came up?",
+                    "response1":{
+                        "text":"I didn't know there were other options.",
+                        "next":23
+                    }
+                },
+                "trigger":{
+                    "type":"changeQuestStage",
+                    "quest":"Monster Search",
+                    "next":20
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "20":{
+                "dialogue":{
+                    "message":"You weren't patient enough. Why didn't you wait until a better option came up?",
+                    "response1":{
+                        "text":"I didn't know there were other options.",
+                        "next":23
+                    },
+                    "response2":{
+                        "text":"What do you mean? I did wait a LONG time! And no other option came up!",
+                        "next":21
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "21":{
+                "dialogue":{
+                    "message":"Oh. Oops. I made a mistake, there is no other option. Wait, that means you want to kill me!",
+                    "response1":{
+                        "text":"What! Your logic is flawed.",
+                        "next":22
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "22":{
+                "dialogue":{
+                    "message":"That doesn't matter. Monsters! Kill *username*!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":39
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "23":{
+                "dialogue":{
+                    "message":"Completing a quest isn't just spamming the first option. Now, choose carefully. One answer is correct, but the other two will doom you.",
+                    "response1":{
+                        "text":"That doesn't sound good.",
+                        "next":26
+                    },
+                    "response2":{
+                        "text":"Your Monsters are dumb and stupid.",
+                        "next":26
+                    },
+                    "response3":{
+                        "text":"I will kill you!",
+                        "next":26
+                    }
+                },
+                "trigger":{
+                    "type":"wait20Seconds",
+                    "next":24
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "24":{
+                "dialogue":{
+                    "message":"Completing a quest isn't just spamming the first option. Now, choose carefully. One answer is correct, but the other two will doom you.",
+                    "response1":{
+                        "text":"That doesn't sound good.",
+                        "next":26
+                    },
+                    "response2":{
+                        "text":"Your Monsters are dumb and stupid.",
+                        "next":26
+                    },
+                    "response3":{
+                        "text":"This answer is correct.",
+                        "next":25
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "25":{
+                "dialogue":{
+                    "message":"I see you have learned your lesson. Let me finish your quest for you.",
+                    "response1":{
+                        "text":"Thanks!",
+                        "next":44
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "26":{
+                "dialogue":{
+                    "message":"You chose the wrong answer. Monsters! Kill *username*!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":39
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "27":{
+                "dialogue":{
+                    "message":"You don't care about anything that happens in this universe. You Monster! You just want to complete all the quests and get all the best items! Monsters! Kill *username*!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":39
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "28":{
+                "dialogue":{
+                    "message":"Oh, that was because of some Birds that escaped. Not my fault.",
+                    "response1":{
+                        "text":"You could have kept those Birds in cages or something.",
+                        "next":29
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "29":{
+                "dialogue":{
+                    "message":"Cages! You Monster! Let me keep you in a cage to see how you like it.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":30
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "30":{
+                "trigger":{
+                    "type":"spawnCollision",
+                    "questInfo":"collision",
+                    "collisionType":1,
+                    "tile_idx":745,
+                    "canvas":"upper",
+                    "next":31
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "31":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":640,
+                    "y":160,
+                    "map":"Mysterious Room",
+                    "next":32
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "32":{
+                "trigger":{
+                    "type":"moveNpc",
+                    "x":640,
+                    "y":320,
+                    "npcId":"monsterking",
+                    "next":33
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "33":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":34
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "34":{
+                "dialogue":{
+                    "message":"How do you like being in a cage?",
+                    "response1":{
+                        "text":"Ahhhhhhh!",
+                        "next":35
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "35":{
+                "dialogue":{
+                    "message":"Just like I expected. Now, Monsters! Kill *username*!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":36
+                    }
+                },
+                "objective":"Talk to the Monster King."
+            },
+            "36":{
+                "trigger":{
+                    "type":"spawnMonster",
+                    "questInfo":"spawner8",
+                    "monsterType":"sp",
+                    "next":37
+                },
+                "objective":"Die."
+            },
+            "37":{
+                "trigger":{
+                    "type":"wait20Seconds",
+                    "next":38
+                },
+                "objective":"Die."
+            },
+            "38":{
+                "dialogue":{
+                    "message":"HOW ARE YOU STILL ALIVE!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":36
+                    }
+                },
+                "objective":"Die."
+            },
+            "39":{
+                "trigger":{
+                    "type":"wait2Seconds",
+                    "next":40
+                },
+                "objective":"Kill the Monster King's Monsters."
+            },
+            "40":{
+                "trigger":{
+                    "type":"resetKilledMonsters",
+                    "next":41
+                },
+                "objective":"Kill the Monster King's Monsters."
+            },
+            "41":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner1","spawner2","spawner3","spawner4","spawner5","spawner6","spawner7"],
+                    "monsterType":["charredBird","waterRammer","charredBird","waterRammer","charredBird","waterRammer","charredBird"],
+                    "next":42
+                },
+                "objective":"Kill the Monster King's Monsters."
+            },
+            "42":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":43
+                },
+                "objective":"Kill the Monster King's Monsters."
+            },
+            "43":{
+                "dialogue":{
+                    "message":"You defeated my Monsters. You have grown stronger since the Monster Raid. It will be some time until we meet again.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":44
+                    }
+                },
+                "objective":"No quest objective."
+            },
+            "44":{
+                "trigger":{
+                    "type":"teleportPlayer",
+                    "x":608,
+                    "y":2848,
+                    "map":"Deserted Town",
+                    "next":45
+                },
+                "objective":"No quest objective."
+            }
+        }
     },
     "Missing Candies":{
         "description":"Find Riley's candies.",
@@ -137,6 +1796,62 @@
             "Lvl 15"
         ],
         "multiplePlayers":true,
-        "startNpc":"riley"
+        "startNpc":"riley",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"riley",
+                    "next":2
+                },
+                "objective":"Talk to Riley."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, I lost some candies! Can you find them for me? I really want them back.",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Riley."
+            },
+            "3":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":4
+                },
+                "objective":"Find Riley's Candies."
+            },
+            "5":{
+                "dialogue":{
+                    "message":"I found Riley's Candies! I should return them to Riley.",
+                    "response1":{
+                        "text":"...",
+                        "next":6
+                    }
+                },
+                "objective":"Find Riley's Candies."
+            },
+            "6":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"riley",
+                    "next":7
+                },
+                "objective":"Return to Riley."
+            },
+            "7":{
+                "dialogue":{
+                    "message":"Yay! You found my candies!",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":8
+                    }
+                },
+                "objective":"Return to Riley."
+            }
+        }
     }
 }

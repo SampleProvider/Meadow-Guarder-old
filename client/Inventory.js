@@ -985,11 +985,7 @@ Inventory = function(socket,server){
                 else{
                     Player.list[self.socket.id].coins -= self.shopItems.prices[index];
                 }
-                var enchantments = [];
-                for(var i in item.enchantments){
-                    enchantments.push(Object.create(item.enchantments));
-                }
-                self.addItem(item.id,enchantments);
+                self.addItem(item.id,JSON.parse(JSON.stringify(item.enchantments)));
                 for(var i in self.materials){
                     if(i === item.id){
                         socket.emit('notification','You successfully bought ' + self.getMaterialName(item.id) + '.');

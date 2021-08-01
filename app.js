@@ -161,8 +161,23 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('sendMsgToServer',function(data){
 		if(Player.list[socket.id]){
-			if(data !== ''){
-				addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ': ' + data);
+			if(Player.list[socket.id].lastChat > 0){
+				Player.list[socket.id].chatWarnings += 1;
+				if(Player.list[socket.id].chatWarnings > 5){
+					Player.list[socket.id].sendNotification('[!] Spamming the chat has been detected on this account. Please lower your chat message rate.');
+				}
+				if(Player.list[socket.id].chatWarnings > 10){
+					socket.emit('disconnected');
+					Player.onDisconnect(socket);
+					delete SOCKET_LIST[socket.id];
+				}
+			}
+			else{
+				if(data !== ''){
+					addToChat('style="color: ' + Player.list[socket.id].textColor + '">',Player.list[socket.id].displayName + ': ' + data);
+					Player.list[socket.id].lastChat = 20;
+					Player.list[socket.id].chatWarnings -= 0.5;
+				}
 			}
 		}
 		else{

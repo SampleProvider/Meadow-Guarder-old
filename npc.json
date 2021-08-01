@@ -29,6 +29,10 @@
         ],
         "mainItem":"wood",
         "quote":"My friend Mark gave me all this wood, you want some?",
+        "requirements":[
+            "Missing Person",
+            "Lvl 2"
+        ],
         "dialogues":[
             "My friend Mark gave me all this wood, you want some?",
             "Have you talked to my friend Cyber yet?",
@@ -111,6 +115,10 @@
         ],
         "mainItem":"fish",
         "quote":"You want some fish?",
+        "requirements":[
+            "Monster Raid",
+            "Lvl 3"
+        ],
         "dialogues":[
             "Hey, if you ever want to buy some fish, just talk to me.",
             "I just caught a rare GLOWING fish! I think it summons sp or something.",
@@ -251,6 +259,9 @@
         ],
         "mainItem":"metals",
         "quote":"I can make anything out of metal!",
+        "requirements":[
+            "Lvl 7"
+        ],
         "dialogues":[
             "Do you want to buy some metals?",
             "I hear of a Possessed Spirit up north.",
@@ -283,6 +294,10 @@
         ],
         "mainItem":"food",
         "quote":"My food is the best in town!",
+        "requirements":[
+            "Missing Candies",
+            "Lvl 18"
+        ],
         "dialogues":[
             "Hey, do you want some cookies?",
             "I am the best chef in Lilypad Kingdom!",
@@ -329,6 +344,10 @@
         ],
         "mainItem":"stronger potions",
         "quote":"I make the strongest potions!",
+        "requirements":[
+            "Lost Rubies",
+            "Lvl 12"
+        ],
         "dialogues":[
             "Buy now and get 5% off!",
             "Andrew buys my potions everyday!"
@@ -379,6 +398,8 @@
         ],
         "mainItem":"potions",
         "quote":"I sell all sorts of potions!",
+        "requirements":[
+        ],
         "dialogues":[
             "Do you want to buy some potions?",
             "There is a house up north that always gives me the creeps.",
@@ -410,6 +431,10 @@
         ],
         "mainItem":"rare items",
         "quote":"I travel across the land, selling rare items! My stock refreshes every 5 minutes.",
+        "requirements":[
+            "Monster Raid",
+            "Lvl 2"
+        ],
         "dialogues":[
             "New stock every 5 minutes!",
             "I found a rare glowing fish! All yours for just the cheap cheap price of 10,000 gold!",
@@ -481,7 +506,12 @@
                 ]
             ]
         },
-        "quote":"Use me to craft items out of wood."
+        "mainCraft":"wooden items",
+        "quote":"Use me to craft items out of wood.",
+        "requirements":[
+            "Missing Person",
+            "Lvl 2"
+        ]
     },
     "anvil":{
         "name":"Anvil",
@@ -596,7 +626,11 @@
                 ]
             ]
         },
-        "quote":"Use me to craft items out of wood and metal."
+        "mainCraft":"metal items",
+        "quote":"Use me to craft items out of wood and metal.",
+        "requirements":[
+            "Lvl 7"
+        ]
     },
     "rubyforge":{
         "name":"Ruby Forge",
@@ -703,7 +737,12 @@
                 ]
             ]
         },
-        "quote":"Use me to craft items out of rubies."
+        "mainCraft":"ruby items",
+        "quote":"Use me to craft items out of rubies.",
+        "requirements":[
+            "Lost Rubies",
+            "Lvl 11"
+        ]
     },
     "natureblessing":{
         "name":"Nature's Blessing",
@@ -1058,7 +1097,12 @@
                 ]
             ]
         },
-        "quote":"A blessing from nature itself."
+        "mainCraft":"nature items",
+        "quote":"A blessing from nature itself.",
+        "requirements":[
+            "Plantera",
+            "Lvl 13"
+        ]
     },
     "andrew":{
         "name":"Andrew",

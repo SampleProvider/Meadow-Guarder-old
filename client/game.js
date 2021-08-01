@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '030f1c';
+var VERSION = '030f2a';
 
 var DEBUG = false;
 
@@ -120,7 +120,6 @@ var renderLayers = function(json,name){
         tempLower.canvas.heiht = json.layers[0].height * 64;
         tempUpper.canvas.width = json.layers[0].width * 64;
         tempUpper.canvas.heiht = json.layers[0].height * 64;
-        console.log('Firefox!!!')
     }
     else{
         var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
@@ -536,7 +535,6 @@ debugForm.onsubmit = function(e){
     if(debugInput.value !== ''){
         commandList.push(debugInput.value);
         commandIndex = commandList.length - 1;
-        console.log(commandIndex)
     }
     debugInput.value = '';
 }
@@ -1230,7 +1228,7 @@ var Player = function(initPack){
     }
     questChange();
     self.type = initPack.type;
-    self.moveNumber = 3;
+    self.moveNumber = 4;
     self.update = function(){
         if(talking && self.id === selfId){
             socket.emit('keyPress',{inputId:'releaseAll'});
@@ -1445,7 +1443,7 @@ var Projectile = function(initPack){
     self.canCollide = initPack.canCollide;
     self.relativeToPlayer = initPack.relativeToPlayer;
     self.type = initPack.type;
-    self.moveNumber = 3;
+    self.moveNumber = 4;
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
@@ -1467,10 +1465,10 @@ var Projectile = function(initPack){
         ctx0.rotate(self.direction * Math.PI / 180);
         if(projectileData[self.projectileType]){
             if(self.projectileType === 'stoneArrow'){
-                ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
+                ctx0.drawImage(Img[self.projectileType],-49,-self.height / 4);
             }
             else if(self.projectileType === 'goldArrow'){
-                ctx0.drawImage(Img[self.projectileType],-49,-self.height / 2);
+                ctx0.drawImage(Img[self.projectileType],-49,-self.height / 4);
             }
             else if(self.projectileType === 'unholytrident'){
                 ctx0.rotate(45 * Math.PI / 180);
@@ -1507,10 +1505,10 @@ var Projectile = function(initPack){
         ctx1.rotate(self.direction * Math.PI / 180);
         if(projectileData[self.projectileType]){
             if(self.projectileType === 'stoneArrow'){
-                ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
+                ctx1.drawImage(Img[self.projectileType],-49,-self.height / 4);
             }
             else if(self.projectileType === 'goldArrow'){
-                ctx1.drawImage(Img[self.projectileType],-49,-self.height / 2);
+                ctx1.drawImage(Img[self.projectileType],-49,-self.height / 4);
             }
             else if(self.projectileType === 'unholytrident'){
                 ctx1.rotate(45 * Math.PI / 180);
@@ -1568,7 +1566,7 @@ var Monster = function(initPack){
     self.direction = initPack.direction;
     self.width = initPack.width;
     self.height = initPack.height;
-    self.moveNumber = 3;
+    self.moveNumber = 4;
     self.updated = true;
     if(self.monsterType === 'lightningLizard'){
         document.getElementById('bossHealth').style.width = window.innerWidth / 2 * self.hp / self.hpMax + 'px';
@@ -2244,7 +2242,7 @@ socket.on('update',function(data){
                         Player.list[data.player[i].id].nextY = data.player[i].y;
                     }
                     Player.list[data.player[i].id].moveY = (Player.list[data.player[i].id].nextY - Player.list[data.player[i].id].y) / 4;
-                    Player.list[data.player[i].id].moveNumber = 3;
+                    Player.list[data.player[i].id].moveNumber = 4;
                     if(data.player[i].spdX !== undefined){
                         Player.list[data.player[i].id].spdX = data.player[i].spdX;
                     }
@@ -2389,7 +2387,7 @@ socket.on('update',function(data){
                         Projectile.list[data.projectile[i].id].nextY = data.projectile[i].y;
                     }
                     Projectile.list[data.projectile[i].id].moveY = (Projectile.list[data.projectile[i].id].nextY - Projectile.list[data.projectile[i].id].y) / 4;
-                    Projectile.list[data.projectile[i].id].moveNumber = 3;
+                    Projectile.list[data.projectile[i].id].moveNumber = 4;
                     if(data.projectile[i].map !== undefined){
                         Projectile.list[data.projectile[i].id].map = data.projectile[i].map;
                     }
@@ -2428,7 +2426,7 @@ socket.on('update',function(data){
                         Monster.list[data.monster[i].id].nextY = data.monster[i].y;
                     }
                     Monster.list[data.monster[i].id].moveY = (Monster.list[data.monster[i].id].nextY - Monster.list[data.monster[i].id].y) / 4;
-                    Monster.list[data.monster[i].id].moveNumber = 3;
+                    Monster.list[data.monster[i].id].moveNumber = 4;
                     if(data.monster[i].hp !== undefined){
                         Monster.list[data.monster[i].id].hp = Math.max(data.monster[i].hp,0);
                         if(Monster.list[data.monster[i].id].monsterType === 'lightningLizard'){
@@ -2880,10 +2878,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 549';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 549 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 547';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 547 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 549){
+        if(loadingProgressDisplay >= 547){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){
@@ -3263,7 +3261,7 @@ setInterval(function(){
         document.getElementById('respawn').style.display = 'none';
     }
     MGHC();
-},1000/60);
+},1000/80);
 setInterval(function(){
     var notifications = document.getElementsByClassName('notification');
     for(var i = 0;i < notifications.length;i++){
