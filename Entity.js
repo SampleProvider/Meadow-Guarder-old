@@ -3174,8 +3174,8 @@ Player = function(param){
         if(questData[self.quest].materials){
             for(var i in questData[self.quest].materials){
                 var amount = Math.round(questData[self.quest].materials[i].amount * (1 + Math.random()));
-                self.inventory[questData[self.quest].materials[i].id] += amount;
-                self.sendNotification('This quest gave you ' + self.inventory.getMaterialName(questData[self.quest].materials[i].id) + 'x' + amount + '.');
+                self.inventory.materials[questData[self.quest].materials[i].id] += amount;
+                self.sendNotification('This quest gave you ' + self.inventory.getMaterialName(questData[self.quest].materials[i].id) + ' x' + amount + '.');
             }
             self.inventory.refreshMaterial();
         }
