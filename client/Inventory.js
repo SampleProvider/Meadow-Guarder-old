@@ -982,6 +982,10 @@ Inventory = function(socket,server){
                 var item = self.currentEquip[index];
                 self.addItem(self.currentEquip[index].id,self.currentEquip[index].enchantments);
                 self.currentEquip[index] = {};
+                if(index === 'weapon'){
+                    self.currentEquip['weapon'] = self.currentEquip['weapon2'];
+                    self.currentEquip['weapon2'] = {};
+                }
                 self.refreshEquip();
             }
             catch(err){
