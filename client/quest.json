@@ -624,6 +624,118 @@
             }
         }
     },
+    "Lightning Lizard Boss":{
+        "description":"Defeat the Lightning Lizard.",
+        "xp":1800,
+        "startStage":1,
+        "requirements":[
+            "Monster Raid",
+            "Lvl 5"
+        ],
+        "multiplePlayers":false,
+        "startNpc":"kyle",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"kyle",
+                    "next":2
+                },
+                "objective":"Talk to Kyle."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, I love hunting, so I decided to travel to Lilypad Pathway Part 1. I found this old temple, but I went inside and there was a giant Lightning Lizard! Can you kill this Lightning Lizard for me?",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to Kyle."
+            },
+            "3":{
+                "trigger":{
+                    "type":"playerCollision",
+                    "questInfo":"activator",
+                    "next":4
+                },
+                "objective":"Go in the Temple."
+            },
+            "4":{
+                "trigger":{
+                    "type":"spawnCollision",
+                    "questInfo":"collision",
+                    "collisionType":2,
+                    "tile_idx":2030,
+                    "canvas":"upper",
+                    "next":5
+                },
+                "objective":"Go in the Temple."
+            },
+            "5":{
+                "trigger":{
+                    "type":"resetKilledMonsters",
+                    "questInfo":"collision",
+                    "next":6
+                },
+                "objective":"Go in the Temple."
+            },
+            "6":{
+                "trigger":{
+                    "type":"spawnMonsters",
+                    "questInfo":["spawner","spawner2"],
+                    "monsterType":["lightningLizard","greenLizard"],
+                    "next":7
+                },
+                "objective":"Defeat Lightning Lizard!"
+            },
+            "7":{
+                "trigger":{
+                    "type":"killAllMonsters",
+                    "next":8
+                },
+                "objective":"Defeat Lightning Lizard!"
+            },
+            "8":{
+                "dialogue":{
+                    "message":"I defeated Lightning Lizard! Let me go tell Kyle!",
+                    "response1":{
+                        "text":"...",
+                        "next":9
+                    }
+                },
+                "objective":"Return to Kyle."
+            },
+            "9":{
+                "trigger":{
+                    "type":"removeCollision",
+                    "questInfo":"collision",
+                    "tile_idx":2030,
+                    "canvas":"upper",
+                    "next":10
+                },
+                "objective":"Return to Kyle."
+            },
+            "10":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"kyle",
+                    "next":11
+                },
+                "objective":"Return to Kyle."
+            },
+            "11":{
+                "dialogue":{
+                    "message":"You defeated Lightning Lizard? Great! Now I can continue exploring this Temple.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":12
+                    }
+                },
+                "objective":"No quest objective."
+            }
+        }
+    },
     "Broken Sword":{
         "description":"Find and fix Billy's broken sword.",
         "xp":900,

@@ -2753,8 +2753,6 @@ Player = function(param){
         "Missing Person":false,
         "Monster Raid":false,
         "Secret Tunnels":false,
-        "Clear River":false,
-        "Clear Tower":false,
         "Broken Sword":false,
         "Lightning Lizard Boss":false,
         "Wood Delivery":false,

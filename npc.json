@@ -136,12 +136,13 @@
             "I heard somewhere there is a desert. I want to go there one day!"
         ]
     },
-    "hunter":{
-        "name":"Hunter",
+    "kyle":{
+        "name":"Kyle",
         "randomWalk":"wander",
         "canChangeMap":false,
         "shop":false,
         "dialogues":[
+            "I love hunting, and that is why I went to Lilypad Pathway Part 1.",
             "I just killed a Cherry Bomb!",
             "Don't you think these lilypads are pretty?",
             "I hate Snow Balls because they keep freezing me."
