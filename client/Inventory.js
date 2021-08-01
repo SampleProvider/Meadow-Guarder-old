@@ -786,7 +786,9 @@ Inventory = function(socket,server){
 			self.addCraftClient(self.craftItems.items[i],i);
 		}
         for(var i in self.materials){
-            self.addMaterialClient(self.materials[i],i);
+            if(self.materials[i] > 0){
+                self.addMaterialClient(self.materials[i],i);
+            }
         }
     }
     self.refreshItem = function(index){
@@ -861,7 +863,9 @@ Inventory = function(socket,server){
         var materials = document.getElementById("materials");
         materials.innerHTML = "";
         for(var i in self.materials){
-            self.addMaterialClient(self.materials[i],i);
+            if(self.materials[i] > 0){
+                self.addMaterialClient(self.materials[i],i);
+            }
         }
     }
     if(self.server && self.socket){

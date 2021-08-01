@@ -5,8 +5,8 @@
 
 | Version  | Supported          |
 | -------  | ------------------ |
-| 023fxx   | :white_check_mark: |
-| 0.2.3    | :white_check_mark: |
+| 0.3.0    | :white_check_mark: |
+| 0.2.3    | :x: |
 | 0.2.0    | :x: |
 | 011fxx   | :x: |
 | 0.1.1    | :x: |
