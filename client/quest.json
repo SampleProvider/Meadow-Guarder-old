@@ -1187,11 +1187,11 @@
             "16":{
                 "trigger":{
                     "type":"spawnMonster",
-                    "questInfo":"spawner2",
-                    "monsterType":"lostSpirit",
+                    "questInfo":"spawner3",
+                    "monsterType":"greenLizard",
                     "next":17
                 },
-                "notification":"Wave 2: Lost Spirit x6",
+                "notification":"Wave 3: Green Lizard x6",
                 "objective":"Survive the 5 waves of Monsters!"
             },
             "17":{
@@ -1212,11 +1212,11 @@
             "19":{
                 "trigger":{
                     "type":"spawnMonster",
-                    "questInfo":"spawner3",
-                    "monsterType":"greenLizard",
+                    "questInfo":"spawner4",
+                    "monsterType":"redCherryBomb",
                     "next":20
                 },
-                "notification":"Wave 3: Green Lizard x6",
+                "notification":"Wave 4: Red Cherry Bomb x12",
                 "objective":"Survive the 5 waves of Monsters!"
             },
             "20":{
@@ -1237,11 +1237,11 @@
             "22":{
                 "trigger":{
                     "type":"spawnMonster",
-                    "questInfo":"spawner3",
+                    "questInfo":"spawner4",
                     "monsterType":"redCherryBomb",
                     "next":23
                 },
-                "notification":"Wave 4: Red Cherry Bomb x12",
+                "notification":"Wave 5: Lightning Lizard",
                 "objective":"Survive the 5 waves of Monsters!"
             },
             "23":{
@@ -1261,59 +1261,34 @@
             },
             "25":{
                 "trigger":{
-                    "type":"spawnMonster",
-                    "questInfo":"spawner3",
-                    "monsterType":"lightningLizard",
+                    "type":"wait2Seconds",
                     "next":26
                 },
-                "notification":"Wave 5: Lightning Lizard",
-                "objective":"Survive the 5 waves of Monsters!"
+                "objective":"No quest objective."
             },
             "26":{
                 "trigger":{
-                    "type":"killAllMonsters",
+                    "type":"teleportPlayer",
+                    "x":288,
+                    "y":544,
+                    "map":"The Guarded Citadel",
                     "next":27
                 },
-                "objective":"Survive the 5 waves of Monsters!"
+                "objective":"No quest objective."
             },
             "27":{
                 "trigger":{
                     "type":"wait2Seconds",
                     "next":28
                 },
-                "notification":"Wave Complete!",
-                "objective":"Survive the 5 waves of Monsters!"
+                "objective":"No quest objective."
             },
             "28":{
-                "trigger":{
-                    "type":"wait2Seconds",
-                    "next":29
-                },
-                "objective":"No quest objective."
-            },
-            "29":{
-                "trigger":{
-                    "type":"teleportPlayer",
-                    "x":288,
-                    "y":544,
-                    "map":"The Guarded Citadel",
-                    "next":30
-                },
-                "objective":"No quest objective."
-            },
-            "30":{
-                "trigger":{
-                    "type":"wait2Seconds",
-                    "next":31
-                },
-                "objective":"No quest objective."
-            },
-            "31":{
                 "dialogue":{
                     "message":"Wow! I can't believe your pet killed all the monsters! Your pet really is strong!",
                     "response1":{
                         "text":"*End conversation*",
-                        "next":32
+                        "next":29
                     }
                 },
                 "objective":"No quest objective."
