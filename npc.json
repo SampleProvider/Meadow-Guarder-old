@@ -310,6 +310,18 @@
         "canChangeMap":false,
         "shop":[
             {
+                "id":"bottle",
+                "enchantments":[]
+            },
+            {
+                "id":"bottlex10",
+                "enchantments":[]
+            },
+            {
+                "id":"bottlex100",
+                "enchantments":[]
+            },
+            {
                 "id":"healthboostpotion",
                 "enchantments":[]
             },
@@ -335,6 +347,9 @@
             }
         ],
         "shopPrices":[
+            100000,
+            950000,
+            9250000,
             50000,
             50000,
             50000,
@@ -1001,8 +1016,8 @@
                         "amount":5
                     },
                     {
-                        "id":"steel",
-                        "amount":25
+                        "id":"bottle",
+                        "amount":1
                     }
                 ],
                 [
@@ -1019,8 +1034,8 @@
                         "amount":5
                     },
                     {
-                        "id":"steel",
-                        "amount":25
+                        "id":"bottle",
+                        "amount":1
                     }
                 ],
                 [
@@ -1037,8 +1052,8 @@
                         "amount":5
                     },
                     {
-                        "id":"steel",
-                        "amount":25
+                        "id":"bottle",
+                        "amount":1
                     }
                 ],
                 [
@@ -1055,8 +1070,8 @@
                         "amount":5
                     },
                     {
-                        "id":"steel",
-                        "amount":25
+                        "id":"bottle",
+                        "amount":1
                     }
                 ],
                 [
@@ -1073,8 +1088,8 @@
                         "amount":5
                     },
                     {
-                        "id":"steel",
-                        "amount":25
+                        "id":"bottle",
+                        "amount":1
                     }
                 ],
                 [
@@ -1091,8 +1106,8 @@
                         "amount":5
                     },
                     {
-                        "id":"steel",
-                        "amount":25
+                        "id":"bottle",
+                        "amount":1
                     }
                 ]
             ]

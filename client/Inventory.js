@@ -17,6 +17,11 @@ Inventory = function(socket,server){
             essenceofwater:0,
             firebar:0,
             essenceoffire:0,
+            bottle:0,
+            woodplank:0,
+            aquamarine:0,
+            sunstone:0,
+            euphoralite:0,
         },
         dismantle:'Common Items',
         shopItems:{items:[],prices:[]},
@@ -258,6 +263,27 @@ Inventory = function(socket,server){
         }
         if(id === 'essenceoffire'){
             return 'Essence of Fire';
+        }
+        if(id === 'bottle'){
+            return 'Bottle';
+        }
+        if(id === 'bottlex10'){
+            return 'Bottle x10';
+        }
+        if(id === 'bottlex100'){
+            return 'Bottle x100';
+        }
+        if(id === 'woodplank'){
+            return 'Wood Plank';
+        }
+        if(id === 'aquamarine'){
+            return 'Aquamarine';
+        }
+        if(id === 'sunstone'){
+            return 'Sunstone';
+        }
+        if(id === 'euphoralite'){
+            return 'Euphoralite';
         }
     }
     self.getEquip = function(index){
