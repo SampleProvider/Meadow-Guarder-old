@@ -1237,8 +1237,8 @@
             "22":{
                 "trigger":{
                     "type":"spawnMonster",
-                    "questInfo":"spawner4",
-                    "monsterType":"redCherryBomb",
+                    "questInfo":"spawner5",
+                    "monsterType":"lightningLizard",
                     "next":23
                 },
                 "notification":"Wave 5: Lightning Lizard",
