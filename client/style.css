@@ -345,11 +345,115 @@ canvas {
     position: absolute;
     left: 8px;
     top: 65px;
-    width: 375px;
+    width: 390px;
     height: 500px;
     overflow-y: scroll;
-    overflow-x: scroll;
+    overflow-x: visible;
     border: 1px solid #000000;
+}
+.inventorySlot {
+    position: static;
+    font-family: 'pixel';
+    font-size: 13px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #362a1e;
+    border: 1px solid #000000;
+    width: 70px;
+    height: 70px;
+    float: left;
+    margin: 8px;
+}
+.inventoryRow {
+    position: relative;
+    font-family: 'pixel';
+    font-size: 13px;
+    color: #ffffff;
+    cursor: pointer;
+    margin: 8px;
+}
+.itemImage {
+    position: relative;
+    left: 3px;
+    top: 3px;
+    width: 64px;
+    height: 64px;
+    image-rendering: pixelated;
+}
+.itemMenu {
+    display: none;
+    position: absolute;
+    z-index: 10;
+}
+#inventorySlothelmet {
+    position: absolute;
+    left: 50%;
+    top: 3px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotarmor {
+    position: absolute;
+    left: 50%;
+    top: 91px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotboots {
+    position: absolute;
+    left: 50%;
+    top: 179px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotweapon {
+    position: absolute;
+    left: 25%;
+    top: 47px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotweapon2 {
+    position: absolute;
+    left: 75%;
+    top: 47px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotoffhand {
+    position: absolute;
+    left: 25%;
+    top: 179px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotscroll {
+    position: absolute;
+    left: 75%;
+    top: 179px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotkey {
+    position: absolute;
+    left: 37.5%;
+    top: 267px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#inventorySlotcrystal {
+    position: absolute;
+    left: 62.5%;
+    top: 267px;
+    image-rendering: pixelated;
+    transform: translate(-50%, 0%);
+}
+#draggingItem {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    z-index: 10;
+    image-rendering: pixelated;
 }
 #shopItem {
     position: absolute;
@@ -421,21 +525,7 @@ canvas {
     height: 20px;
     border: none;
 }
-#inventoryDismantleButton {
-    position: absolute;
-    left: 54px;
-    top: 37px;
-    height: 20px;
-    color: #ff0000;
-}
-#inventoryDismantleDropdown {
-    position: absolute;
-    left: 158px;
-    top: 37px;
-    height: 26px;
-    color: #ff0000;
-}
-#currentEquipHeader {
+#inventoryEquipHeader {
     position: absolute;
     left: 391px;
     top: 40px;
@@ -444,22 +534,12 @@ canvas {
     background: none;
     border: none;
 }
-#currentEquip {
+#inventoryEquip {
     position: absolute;
-    left: 391px;
+    left: 406px;
     top: 65px;
-    width: 367px;
-    height: 400px;
-    overflow-y: scroll;
-    overflow-x: scroll;
-    border: 1px solid #000000;
-}
-#materials {
-    position: absolute;
-    left: 391px;
-    top: 473px;
-    width: 367px;
-    height: 92px;
+    width: 352px;
+    height: 500px;
     overflow-y: scroll;
     overflow-x: scroll;
     border: 1px solid #000000;

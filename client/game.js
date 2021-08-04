@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '030f2a';
+var VERSION = '0.3.1';
 
 var DEBUG = false;
 
@@ -361,6 +361,27 @@ signDivSignIn.onclick = function(){
             // There was a connection error of some sort
         };
         request.send();
+
+        var request2 = new XMLHttpRequest();
+        request2.open('GET',"/client/item.json",true);
+        request2.onload = function(){
+            if(this.status >= 200 && this.status < 400){
+                // Success!
+                var json = JSON.parse(this.response);
+                for(var i in json){
+                    Img[i] = new Image();
+                    Img[i].src = '/client/img/' + i + '.png';
+                    loadingProgress += 1;
+                }
+            }
+            else{
+                // We reached our target server, but it returned an error
+            }
+        };
+        request2.onerror = function(){
+            // There was a connection error of some sort
+        };
+        request2.send();
     }
 }
 signDivCreateAccount.onclick = function(){
@@ -962,17 +983,21 @@ socket.on('updateItem',function(pack){
     inventory.items = pack.items;
     inventory.refreshItem(pack.index);
 });
-socket.on('updateItems',function(pack){
-    inventory.items = pack.items;
-    inventory.refreshAllItems();
-});
 socket.on('updateEquip',function(pack){
-    inventory.currentEquip = pack.currentEquip;
-    inventory.refreshEquip();
+    inventory.equips = pack.equips;
+    inventory.refreshItem(pack.index);
 });
-socket.on('updateMaterial',function(pack){
-    inventory.materials = pack.materials;
-    inventory.refreshMaterial();
+socket.on('updateShop',function(pack){
+    inventory.shopItems = pack.shopItems;
+    inventory.refreshShop();
+});
+socket.on('updateCraft',function(pack){
+    inventory.craftItems = pack.craftItems;
+    inventory.refreshCraft();
+});
+socket.on('refreshMenu',function(pack){
+    inventory.maxSlots = pack;
+    inventory.refreshMenu();
 });
 
 var disableAllMenu = function(){
@@ -1346,67 +1371,7 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        healthBarText.innerHTML = self.hp + " / " + self.hpMax;
-        healthBarValue.style.width = "" + 150 * self.hp / self.hpMax + "px";
-        manaBarText.innerHTML = self.mana + " / " + self.manaMax;
-        manaBarValue.style.width = "" + 150 * self.mana / self.manaMax + "px";
-        var xpText = self.xp + " ";
-        var xpMaxText = "/ " + self.xpMax;
-        if(self.xp > 999999999999999){
-            xpText = Math.round(self.xp / 100000000000000) / 10 + "Q ";
-        }
-        else if(self.xp > 999999999999){
-            xpText = Math.round(self.xp / 100000000000) / 10 + "T ";
-        }
-        else if(self.xp > 999999999){
-            xpText = Math.round(self.xp / 100000000) / 10 + "B ";
-        }
-        else if(self.xp > 999999){
-            xpText = Math.round(self.xp / 100000) / 10 + "M ";
-        }
-        else if(self.xp > 9999){
-            xpText = Math.round(self.xp / 100) / 10 + "K ";
-        }
-        if(self.xpMax > 999999999999999){
-            xpMaxText = "/ " + Math.round(self.xpMax / 100000000000000) / 10 + "Q";
-        }
-        else if(self.xpMax > 999999999999){
-            xpMaxText = "/ " + Math.round(self.xpMax / 100000000000) / 10 + "T";
-        }
-        else if(self.xpMax > 999999999){
-            xpMaxText = "/ " + Math.round(self.xpMax / 100000000) / 10 + "B";
-        }
-        else if(self.xpMax > 999999){
-            xpMaxText = "/ " + Math.round(self.xpMax / 100000) / 10 + "M";
-        }
-        else if(self.xpMax > 9999){
-            xpMaxText = "/ " + Math.round(self.xpMax / 100) / 10 + "K";
-        }
-        xpBarText.innerHTML = xpText + xpMaxText;
-        xpBarValue.style.width = "" + 150 * self.xp / self.xpMax + "px";
         document.getElementById('stat-text').innerHTML = 'You will deal ' + self.stats.attack + ' damage. You have a ' + Math.round(self.stats.critChance * 100) + '% chance to deal a critical hit.<br>You have ' + self.stats.defense + ' defense.<br>You have ' + Math.round(self.stats.damageReduction * 100) + '% damage reduction.<br>You are level ' + self.level + '.<br>You have an xp modifier of ' + self.stats.xp + '.<br>Your attack spends ' + Math.round(self.attackCost) + ' mana. Your heal spends ' + Math.round(self.healCost) + ' mana. You have a cooldown of ' + self.useTime + ' ticks.';
-        document.getElementById('devcoinDiv').innerHTML = self.devCoins;
-        document.getElementById('goldcoinDiv').innerHTML = Math.floor(self.coins / 10000);
-        document.getElementById('silvercoinDiv').innerHTML = Math.floor(self.coins / 100) % 100;
-        document.getElementById('bronzecoinDiv').innerHTML = self.coins % 100;
-        document.getElementById('dps').innerHTML = self.damageDone + ' DPS';
-        if(self.damageDone > self.maxDamageDone){
-            self.maxDamageDone = self.damageDone;
-        }
-        document.getElementById('maxdps').innerHTML = self.maxDamageDone + ' Max DPS';
-        document.getElementById('debuffs').innerHTML = '';
-        if(self.hp > 0){
-            for(var i in self.debuffs){
-                var time = Math.ceil(self.debuffs[i].time / 20);
-                if(time < 60){
-                    time += 'sec';
-                }
-                else{
-                    time = Math.ceil(time / 60) + 'min';
-                }
-                document.getElementById('debuffs').innerHTML += '<div class="debuff UI-display-light" style="opacity:' + self.debuffs[i].time / 20 + '"><image src="./client/icon/debuffs/' + self.debuffs[i].id + '.png"><br><div style="padding-top: -3px;padding-right: 0px;padding-bottom: 2px;padding-left: 2px;">' + time + '</div>';
-            }
-        }
     }
     self.drawLight = function(){
         if(self.id !== selfId){
@@ -2065,6 +2030,51 @@ var Pet = function(initPack){
     return self;
 }
 Pet.list = {};
+var DroppedItem = function(initPack){
+    var self = {};
+    self.id = initPack.id;
+    self.x = initPack.x;
+    self.y = initPack.y;
+    self.nextX = initPack.x;
+    self.nextY = initPack.y;
+    self.moveX = 0;
+    self.moveY = 0;
+    self.map = initPack.map;
+    self.item = initPack.item;
+    self.allPlayers = initPack.allPlayers;
+    self.parent = initPack.parent;
+    self.type = initPack.type;
+    self.direction = 0;
+    self.updated = true;
+    self.update = function(){
+        if(Math.abs(self.x - self.nextX) > 4){
+            self.x += self.moveX;
+        }
+        if(Math.abs(self.y - self.nextY) > 4){
+            self.y += self.moveY;
+        }
+    }
+    self.draw = function(){
+        if(self.parent !== selfId && !self.allPlayers){
+            return;
+        }
+        ctx0.translate(self.x,self.y);
+        if(self.item.id.includes('trident')){
+            ctx0.scale(Math.cos(self.direction / 180 * Math.PI), 1);
+            ctx0.drawImage(Img[self.item.id],-42,-42,84,84);
+            ctx0.scale(1 / Math.cos(self.direction / 180 * Math.PI), 1);
+        }
+        else{
+            ctx0.scale(Math.cos(self.direction / 180 * Math.PI), 1);
+            ctx0.drawImage(Img[self.item.id],-32,-32,64,64);
+            ctx0.scale(1 / Math.cos(self.direction / 180 * Math.PI), 1);
+        }
+        ctx0.translate(-self.x,-self.y);
+    }
+    DroppedItem.list[self.id] = self;
+    return self;
+}
+DroppedItem.list = {};
 var Particle = function(initPack){
     var self = {};
     self.id = initPack.id;
@@ -2230,6 +2240,9 @@ socket.on('update',function(data){
     for(var i in Pet.list){
         Pet.list[i].updated = false;
     }
+    for(var i in DroppedItem.list){
+        DroppedItem.list[i].updated = false;
+    }
     if(data){
         if(data.player.length > 0){
             for(var i = 0;i < data.player.length;i++){
@@ -2280,21 +2293,109 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].hp !== undefined){
                         Player.list[data.player[i].id].hp = data.player[i].hp;
+                        if(data.player[i].id === selfId){
+                            healthBarText.innerHTML = Player.list[data.player[i].id].hp + " / " + Player.list[data.player[i].id].hpMax;
+                            healthBarValue.style.width = "" + 150 * Player.list[data.player[i].id].hp / Player.list[data.player[i].id].hpMax + "px";
+                        }
                     }
                     if(data.player[i].hpMax !== undefined){
                         Player.list[data.player[i].id].hpMax = data.player[i].hpMax;
+                        if(data.player[i].id === selfId){
+                            healthBarText.innerHTML = Player.list[data.player[i].id].hp + " / " + Player.list[data.player[i].id].hpMax;
+                            healthBarValue.style.width = "" + 150 * Player.list[data.player[i].id].hp / Player.list[data.player[i].id].hpMax + "px";
+                        }
                     }
                     if(data.player[i].xp !== undefined){
                         Player.list[data.player[i].id].xp = data.player[i].xp;
+                        if(data.player[i].id === selfId){
+                            var xpText = Player.list[data.player[i].id].xp + " ";
+                            var xpMaxText = "/ " + Player.list[data.player[i].id].xpMax;
+                            if(Player.list[data.player[i].id].xp > 999999999999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000000000000) / 10 + "Q ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 999999999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000000000) / 10 + "T ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 999999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000000) / 10 + "B ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000) / 10 + "M ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 9999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100) / 10 + "K ";
+                            }
+                            if(Player.list[data.player[i].id].xpMax > 999999999999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000000000000) / 10 + "Q";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 999999999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000000000) / 10 + "T";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 999999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000000) / 10 + "B";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000) / 10 + "M";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 9999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100) / 10 + "K";
+                            }
+                            xpBarText.innerHTML = xpText + xpMaxText;
+                            xpBarValue.style.width = "" + 150 * Player.list[data.player[i].id].xp / Player.list[data.player[i].id].xpMax + "px";
+                        }
                     }
                     if(data.player[i].xpMax !== undefined){
                         Player.list[data.player[i].id].xpMax = data.player[i].xpMax;
+                        if(data.player[i].id === selfId){
+                            var xpText = Player.list[data.player[i].id].xp + " ";
+                            var xpMaxText = "/ " + Player.list[data.player[i].id].xpMax;
+                            if(Player.list[data.player[i].id].xp > 999999999999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000000000000) / 10 + "Q ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 999999999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000000000) / 10 + "T ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 999999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000000) / 10 + "B ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 999999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100000) / 10 + "M ";
+                            }
+                            else if(Player.list[data.player[i].id].xp > 9999){
+                                xpText = Math.round(Player.list[data.player[i].id].xp / 100) / 10 + "K ";
+                            }
+                            if(Player.list[data.player[i].id].xpMax > 999999999999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000000000000) / 10 + "Q";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 999999999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000000000) / 10 + "T";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 999999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000000) / 10 + "B";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 999999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100000) / 10 + "M";
+                            }
+                            else if(Player.list[data.player[i].id].xpMax > 9999){
+                                xpMaxText = "/ " + Math.round(Player.list[data.player[i].id].xpMax / 100) / 10 + "K";
+                            }
+                            xpBarText.innerHTML = xpText + xpMaxText;
+                            xpBarValue.style.width = "" + 150 * Player.list[data.player[i].id].xp / Player.list[data.player[i].id].xpMax + "px";
+                        }
                     }
                     if(data.player[i].mana !== undefined){
                         Player.list[data.player[i].id].mana = Math.round(data.player[i].mana);
+                        if(data.player[i].id === selfId){
+                            manaBarText.innerHTML = Player.list[data.player[i].id].mana + " / " + Player.list[data.player[i].id].manaMax;
+                            manaBarValue.style.width = "" + 150 * Player.list[data.player[i].id].mana / Player.list[data.player[i].id].manaMax + "px";
+                        }
                     }
                     if(data.player[i].manaMax !== undefined){
                         Player.list[data.player[i].id].manaMax = data.player[i].manaMax;
+                        if(data.player[i].id === selfId){
+                            manaBarText.innerHTML = Player.list[data.player[i].id].mana + " / " + Player.list[data.player[i].id].manaMax;
+                            manaBarValue.style.width = "" + 150 * Player.list[data.player[i].id].mana / Player.list[data.player[i].id].manaMax + "px";
+                        }
                     }
                     if(data.player[i].level !== undefined){
                         Player.list[data.player[i].id].level = data.player[i].level;
@@ -2322,6 +2423,21 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].debuffs !== undefined){
                         Player.list[data.player[i].id].debuffs = data.player[i].debuffs;
+                        if(data.player[i].id === selfId){
+                            document.getElementById('debuffs').innerHTML = '';
+                            if(Player.list[data.player[i].id].hp > 0){
+                                for(var i in Player.list[data.player[i].id].debuffs){
+                                    var time = Math.ceil(Player.list[data.player[i].id].debuffs[i].time / 20);
+                                    if(time < 60){
+                                        time += 'sec';
+                                    }
+                                    else{
+                                        time = Math.ceil(time / 60) + 'min';
+                                    }
+                                    document.getElementById('debuffs').innerHTML += '<div class="debuff UI-display-light" style="opacity:' + Player.list[data.player[i].id].debuffs[i].time / 20 + '"><image src="./client/icon/debuffs/' + Player.list[data.player[i].id].debuffs[i].id + '.png"><br><div style="padding-top: -3px;padding-right: 0px;padding-bottom: 2px;padding-left: 2px;">' + time + '</div>';
+                                }
+                            }
+                        }
                     }
                     if(data.player[i].questStats !== undefined){
                         Player.list[data.player[i].id].questStats = data.player[i].questStats;
@@ -2334,7 +2450,7 @@ socket.on('update',function(data){
                                         requirementsMet = false;
                                     }
                                     else if(questData[j].requirements[k].slice(0,4) === 'Lvl '){
-                                        if(parseInt(questData[j].requirements[k].slice(4,questData[j].requirements[k].length),10) > data.player[i].level){
+                                        if(parseInt(questData[j].requirements[k].slice(4,questData[j].requirements[k].length),10) > Player.list[data.player[i].id].level){
                                             requirementsMet = false;
                                         }
                                     }
@@ -2360,12 +2476,27 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].coins !== undefined){
                         Player.list[data.player[i].id].coins = data.player[i].coins;
+                        if(data.player[i].id === selfId){
+                            document.getElementById('goldcoinDiv').innerHTML = Math.floor(Player.list[data.player[i].id].coins / 10000);
+                            document.getElementById('silvercoinDiv').innerHTML = Math.floor(Player.list[data.player[i].id].coins / 100) % 100;
+                            document.getElementById('bronzecoinDiv').innerHTML = Player.list[data.player[i].id].coins % 100;
+                        }
                     }
                     if(data.player[i].devCoins !== undefined){
                         Player.list[data.player[i].id].devCoins = data.player[i].devCoins;
+                        if(data.player[i].id === selfId){
+                            document.getElementById('devcoinDiv').innerHTML = Player.list[data.player[i].id].devCoins;
+                        }
                     }
                     if(data.player[i].damageDone !== undefined){
                         Player.list[data.player[i].id].damageDone = data.player[i].damageDone;
+                        if(data.player[i].id === selfId){
+                            document.getElementById('dps').innerHTML = Player.list[data.player[i].id].damageDone + ' DPS';
+                            if(Player.list[data.player[i].id].damageDone > Player.list[data.player[i].id].maxDamageDone){
+                                Player.list[data.player[i].id].maxDamageDone = Player.list[data.player[i].id].damageDone;
+                                document.getElementById('maxdps').innerHTML = Player.list[data.player[i].id].maxDamageDone + ' Max DPS';
+                            }
+                        }
                     }
                     Player.list[data.player[i].id].updated = true;
                 }
@@ -2580,6 +2711,27 @@ socket.on('update',function(data){
                 }
             }
         }
+        if(data.droppedItem.length > 0){
+            for(var i = 0;i < data.droppedItem.length;i++){
+                if(DroppedItem.list[data.droppedItem[i].id]){
+                    if(data.droppedItem[i].x !== undefined){
+                        DroppedItem.list[data.droppedItem[i].id].nextX = data.droppedItem[i].x;
+                    }
+                    DroppedItem.list[data.droppedItem[i].id].moveX = (DroppedItem.list[data.droppedItem[i].id].nextX - DroppedItem.list[data.droppedItem[i].id].x) / 4;
+                    if(data.droppedItem[i].y !== undefined){
+                        DroppedItem.list[data.droppedItem[i].id].nextY = data.droppedItem[i].y;
+                    }
+                    DroppedItem.list[data.droppedItem[i].id].moveY = (DroppedItem.list[data.droppedItem[i].id].nextY - DroppedItem.list[data.droppedItem[i].id].y) / 4;
+                    if(data.droppedItem[i].direction !== undefined){
+                        DroppedItem.list[data.droppedItem[i].id].direction = data.droppedItem[i].direction;
+                    }
+                    DroppedItem.list[data.droppedItem[i].id].updated = true;
+                }
+                else{
+                    new DroppedItem(data.droppedItem[i]);
+                }
+            }
+        }
         if(data.particle.length > 0){
             for(var i = 0;i < data.particle.length;i++){
                 new Particle(data.particle[i]);
@@ -2637,6 +2789,11 @@ socket.on('update',function(data){
     for(var i in Pet.list){
         if(Pet.list[i].updated === false){
             delete Pet.list[i];
+        }
+    }
+    for(var i in DroppedItem.list){
+        if(DroppedItem.list[i].updated === false){
+            delete DroppedItem.list[i];
         }
     }
 });
@@ -2762,10 +2919,6 @@ socket.on('showInventory',function(data){
     document.getElementById('window').style.display = 'inline-block';
     state.isHidden = false;
 });
-socket.on('toggleSelect',function(data){
-    inventory.select = !inventory.select;
-    inventory.refreshRender();
-});
 socket.on('updateLeaderboard',function(data){
     document.getElementById('leaderboardScreen').innerHTML = '<div style="font-size:18px;">Leaderboards: </div><br><div style="font-size:15px;">Leaderboards update every five minutes.</div><br>';
     var j = 1;
@@ -2878,10 +3031,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 547';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 547 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 672';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 672 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 547){
+        if(loadingProgressDisplay >= 672){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){
@@ -3043,6 +3196,9 @@ setInterval(function(){
     for(var i in Pet.list){
         entities.push(Pet.list[i]);
     }
+    for(var i in DroppedItem.list){
+        entities.push(DroppedItem.list[i]);
+    }
     function compare(a,b){
         var ay = a.y;
         var by = b.y;
@@ -3178,6 +3334,9 @@ setInterval(function(){
     }
     for(var i in Pet.list){
         Pet.list[i].update();
+    }
+    for(var i in DroppedItem.list){
+        DroppedItem.list[i].update();
     }
     for(var i in Particle.list){
         Particle.list[i].draw();
@@ -3398,19 +3557,28 @@ mouseDown = function(event){
     if(!event.isTrusted){
         socket.emit('timeout');
     }
-    if(event.button == 0){
+    if(event.button === 0){
         socket.emit('keyPress',{inputId:'attack',state:true});
     }
-    if(event.button == 2){
+    if(event.button === 2){
         socket.emit('keyPress',{inputId:'second',state:true});
     }
 }
 mouseUp = function(event){
-    if(event.button == 0){
+    if(event.button === 0){
         socket.emit('keyPress',{inputId:'attack',state:false});
     }
-    if(event.button == 2){
+    if(event.button === 2){
         socket.emit('keyPress',{inputId:'second',state:false});
+    }
+}
+dropItem = function(){
+    if(inventory.draggingItem !== -1){
+        socket.emit('dragItem',{
+            index1:inventory.draggingItem,
+            index2:'drop',
+        });
+        inventory.draggingItem = -1;
     }
 }
 mapMouseDown = function(event){
@@ -3436,6 +3604,34 @@ document.onmouseup = function(event){
         mapDrag = false;
         mapX = mapX - 1510 * (mapDragX - mapMouseX) / 600;
         mapY = mapY - 1510 * (mapDragY - mapMouseY) / 600;
+    }
+    if(inventory.draggingItem !== -1){
+        var itemMenu = document.getElementsByClassName('itemMenu');
+        for(var i = 0;i < itemMenu.length;i++){
+            itemMenu[i].style.display = 'none';
+        }
+        if(mouseX + WIDTH / 2 < state.x || mouseX + WIDTH / 2 > state.x + 902 || mouseY + HEIGHT / 2 < state.y || mouseY + HEIGHT / 2 > state.y + 602){
+            dropItem();
+        }
+        else{
+            var draggedItem = false;
+            var inventorySlots = document.getElementsByClassName('inventorySlot');
+            for(var i = 0;i < inventorySlots.length;i++){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left && mouseX + WIDTH / 2 < rect.left + 72 && mouseY + HEIGHT / 2 > rect.top && mouseY + HEIGHT / 2 < rect.top + 72){
+                    socket.emit('dragItem',{
+                        index1:inventory.draggingItem,
+                        index2:inventory.getSlotId(i - 9),
+                    });
+                    inventory.draggingItem = -1;
+                    draggedItem = true;
+                }
+            }
+            if(draggedItem === false){
+                inventory.refreshItem(inventory.draggingItem);
+                inventory.draggingItem = -1;
+            }
+        }
     }
 }
 window.addEventListener('wheel',function(event){
@@ -3504,6 +3700,70 @@ document.onmousemove = function(event){
         mouseY = event.clientY - HEIGHT / 2;
         if(!talking){
             socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
+        }
+        var inSlot = false;
+        var inventorySlots = document.getElementsByClassName('inventorySlot');
+        for(var i = 0;i < inventorySlots.length;i++){
+            if(inventorySlots[i].className.includes('inventoryMenuSlot') && document.getElementById('inventoryScreen').style.display === 'inline-block'){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left){
+                    if(mouseX + WIDTH / 2 < rect.left + 72){
+                        if(mouseY + HEIGHT / 2 > rect.top){
+                            if(mouseY + HEIGHT / 2 < rect.top + 72){
+                                inSlot = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(inventorySlots[i].className.includes('shopMenuSlot') && document.getElementById('shopScreen').style.display === 'inline-block'){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left){
+                    if(mouseX + WIDTH / 2 < rect.left + 72){
+                        if(mouseY + HEIGHT / 2 > rect.top){
+                            if(mouseY + HEIGHT / 2 < rect.top + 72){
+                                inSlot = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(inventorySlots[i].className.includes('craftMenuSlot') && document.getElementById('craftScreen').style.display === 'inline-block'){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left){
+                    if(mouseX + WIDTH / 2 < rect.left + 72){
+                        if(mouseY + HEIGHT / 2 > rect.top){
+                            if(mouseY + HEIGHT / 2 < rect.top + 72){
+                                inSlot = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var itemMenu = document.getElementsByClassName('itemMenu');
+        if(inSlot === false){
+            for(var i = 0;i < itemMenu.length;i++){
+                if(itemMenu[i].style.display === 'inline-block'){
+                    itemMenu[i].style.display = 'none';
+                }
+            }
+        }
+        else{
+            for(var i = 0;i < itemMenu.length;i++){
+                if(itemMenu[i].style.display === 'inline-block'){
+                    itemMenu[i].style.left = (event.clientX + 3) + 'px';
+                    itemMenu[i].style.top = (event.clientY + 3) + 'px';
+                }
+            }
+        }
+        if(inventory.draggingItem !== -1){
+            document.getElementById('draggingItem').style.left = (event.clientX - inventory.draggingX) + 'px';
+            document.getElementById('draggingItem').style.top = (event.clientY - inventory.draggingY) + 'px';
+        }
+        else{
+            document.getElementById('draggingItem').style.left = '-100px';
+            document.getElementById('draggingItem').style.top = '-100px';
         }
     }
 }

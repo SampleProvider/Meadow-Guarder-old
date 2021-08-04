@@ -9,7 +9,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "simplesteelbow":{
         "name":"Simple Steel Bow",
@@ -21,7 +22,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "simpledarksteelbow":{
         "name":"Simple Dark Steel Bow",
@@ -33,7 +35,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "simplegoldenbow":{
         "name":"Simple Golden Bow",
@@ -45,7 +48,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "simplerubybow":{
         "name":"Simple Ruby Bow",
@@ -57,7 +61,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedwoodenbow":{
         "name":"Advanced Wooden Bow",
@@ -69,7 +74,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "advancedsteelbow":{
         "name":"Advanced Steel Bow",
@@ -81,7 +87,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "advanceddarksteelbow":{
         "name":"Advanced Dark Steel Bow",
@@ -93,7 +100,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedgoldenbow":{
         "name":"Advanced Golden Bow",
@@ -105,7 +113,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedrubybow":{
         "name":"Advanced Ruby Bow",
@@ -117,7 +126,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "simplewoodensword":{
         "name":"Simple Wooden Sword",
@@ -129,7 +139,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":3,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "simplesteelsword":{
         "name":"Simple Steel Sword",
@@ -141,7 +152,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":3,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "simpledarksteelsword":{
         "name":"Simple Dark Steel Sword",
@@ -153,7 +165,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":3,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "simplegoldensword":{
         "name":"Simple Golden Sword",
@@ -165,7 +178,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":3,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "simplerubysword":{
         "name":"Simple Ruby Sword",
@@ -177,7 +191,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":3,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedwoodensword":{
         "name":"Advanced Wooden Sword",
@@ -189,7 +204,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":4,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "advancedsteelsword":{
         "name":"Advanced Steel Sword",
@@ -201,7 +217,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":4,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "advanceddarksteelsword":{
         "name":"Advanced Dark Steel Sword",
@@ -213,7 +230,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":4,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedgoldensword":{
         "name":"Advanced Golden Sword",
@@ -225,7 +243,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":4,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedrubysword":{
         "name":"Advanced Ruby Sword",
@@ -237,7 +256,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":4,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "simplewoodenstaff":{
         "name":"Simple Wooden Staff",
@@ -250,7 +270,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "simplesteelstaff":{
         "name":"Simple Steel Staff",
@@ -263,7 +284,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "simpledarksteelstaff":{
         "name":"Simple Dark Steel Staff",
@@ -276,7 +298,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "simplegoldenstaff":{
         "name":"Simple Golden Staff",
@@ -289,7 +312,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "simplerubystaff":{
         "name":"Simple Ruby Staff",
@@ -302,7 +326,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedwoodenstaff":{
         "name":"Advanced Wooden Staff",
@@ -315,7 +340,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "advancedsteelstaff":{
         "name":"Advanced Steel Staff",
@@ -328,7 +354,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":1
+        "rarity":1,
+        "maxStack":1
     },
     "advanceddarksteelstaff":{
         "name":"Advanced Dark Steel Staff",
@@ -341,7 +368,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedgoldenstaff":{
         "name":"Advanced Golden Staff",
@@ -354,7 +382,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "advancedrubystaff":{
         "name":"Advanced Ruby Staff",
@@ -367,7 +396,8 @@
         "knockback":0.1,
         "useTime":10,
         "manaCost":10,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "woodenhood":{
         "name":"Wooden Hood",
@@ -376,6 +406,7 @@
         "enchantments":["smashing"],
         "defense":1,
         "rarity":0,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+5% ranged damage.</span>"
     },
     "steelhood":{
@@ -385,6 +416,7 @@
         "enchantments":["smashing"],
         "defense":3,
         "rarity":1,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+8% ranged damage.</span><br><span style='color: #33ee33'>+5% ranged critical strike chance.</span>"
     },
     "darksteelhood":{
@@ -394,6 +426,7 @@
         "enchantments":["smashing"],
         "defense":6,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+10% ranged damage.</span><br><span style='color: #33ee33'>+10% ranged critical strike chance.</span>"
     },
     "goldenhood":{
@@ -403,6 +436,7 @@
         "enchantments":["smashing"],
         "defense":10,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+20% ranged damage.</span><br><span style='color: #33ee33'>+25% ranged critical strike chance.</span>"
     },
     "rubyhood":{
@@ -412,6 +446,7 @@
         "enchantments":["smashing"],
         "defense":15,
         "rarity":3,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+35% ranged damage.</span><br><span style='color: #33ee33'>+40% ranged critical strike chance.</span>"
     },
     "woodenhelmet":{
@@ -421,6 +456,7 @@
         "enchantments":["smashing"],
         "defense":4,
         "rarity":0,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+3% melee damage.</span>"
     },
     "steelhelmet":{
@@ -430,6 +466,7 @@
         "enchantments":["smashing"],
         "defense":10,
         "rarity":1,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+10% melee damage.</span>"
     },
     "darksteelhelmet":{
@@ -439,6 +476,7 @@
         "enchantments":["smashing"],
         "defense":21,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+18% melee damage.</span><br><span style='color: #33ee33'>+5% melee critical strike chance.</span>"
     },
     "goldenhelmet":{
@@ -448,6 +486,7 @@
         "enchantments":["smashing"],
         "defense":34,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+27% melee damage.</span><br><span style='color: #33ee33'>+8% melee critical strike chance.</span>"
     },
     "rubyhelmet":{
@@ -458,6 +497,7 @@
         "defense":52,
         "damageReduction":0.05,
         "rarity":3,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+45% melee damage.</span><br><span style='color: #33ee33'>+15% melee critical strike chance.</span>"
     },
     "woodenhat":{
@@ -467,6 +507,7 @@
         "enchantments":["smashing"],
         "defense":1,
         "rarity":0,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+10% magic critical strike chance.</span>"
     },
     "steelhat":{
@@ -476,6 +517,7 @@
         "enchantments":["smashing"],
         "defense":2,
         "rarity":1,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+5% magic damage.</span><br><span style='color: #33ee33'>+15% magic critical strike chance.</span>"
     },
     "darksteelhat":{
@@ -485,6 +527,7 @@
         "enchantments":["smashing"],
         "defense":4,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+10% magic damage.</span><br><span style='color: #33ee33'>+30% magic critical strike chance.</span>"
     },
     "goldenhat":{
@@ -494,6 +537,7 @@
         "enchantments":["smashing"],
         "defense":7,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+18% magic damage.</span><br><span style='color: #33ee33'>+45% magic critical strike chance.</span>"
     },
     "rubyhat":{
@@ -503,6 +547,7 @@
         "enchantments":["smashing"],
         "defense":10,
         "rarity":3,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+30% magic damage.</span><br><span style='color: #33ee33'>+65% magic critical strike chance.</span>"
     },
     "sphat":{
@@ -513,6 +558,7 @@
         "defense":0,
         "damageReduction":1,
         "rarity":8,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+???% damage.</span><br><span style='color: #33ee33'>+???% critical strike chance.</span>"
     },
     "woodenarmor":{
@@ -521,7 +567,8 @@
         "event":"",
         "enchantments":["smashing"],
         "defense":2,
-        "rarity":0
+        "rarity":0,
+        "maxStack":1
     },
     "steelarmor":{
         "name":"Steel Armor",
@@ -530,6 +577,7 @@
         "enchantments":["smashing"],
         "defense":5,
         "rarity":1,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+2% damage.</span>"
     },
     "darksteelarmor":{
@@ -539,6 +587,7 @@
         "enchantments":["smashing"],
         "defense":8,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+6% damage.</span><br><span style='color: #33ee33'>+5% critical strike chance.</span>"
     },
     "goldenarmor":{
@@ -548,6 +597,7 @@
         "enchantments":["smashing"],
         "defense":17,
         "rarity":2,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+11% damage.</span><br><span style='color: #33ee33'>+8% critical strike chance.</span>"
     },
     "rubyarmor":{
@@ -557,6 +607,7 @@
         "enchantments":["smashing"],
         "defense":28,
         "rarity":3,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+20% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span>"
     },
     "bronzekey":{
@@ -564,42 +615,48 @@
         "equip":"key",
         "event":"self.textColor = '#904000';",
         "enchantments":["unlocking"],
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "silverkey":{
         "name":"Silver Key",
         "equip":"key",
         "event":"self.textColor = '#909090';",
         "enchantments":["unlocking"],
-        "rarity":2
+        "rarity":2,
+        "maxStack":1
     },
     "goldenkey":{
         "name":"Golden Key",
         "equip":"key",
         "event":"self.textColor = '#dd9000';",
         "enchantments":["unlocking"],
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "developerkey":{
         "name":"Developer Key",
         "equip":"key",
         "event":"self.textColor = '#0090ff';self.stats.luck = -3;",
         "enchantments":["unlocking"],
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "spkey":{
         "name":"SP Key",
         "equip":"key",
         "event":"self.textColor = '#ff0090';self.stats.luck = -3;",
         "enchantments":["unlocking"],
-        "rarity":8
+        "rarity":8,
+        "maxStack":1
     },
     "lightningkey":{
         "name":"Lightning Key",
         "equip":"key",
         "event":"self.textColor = '#ccff00';self.displayName = '⚡' + self.username + '⚡';",
         "enchantments":["unlocking"],
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "firecrystal":{
         "name":"Fire Crystal",
@@ -607,7 +664,8 @@
         "event":"self.passive = 'homingFire';",
         "enchantments":[],
         "description":"Harness the power of fire.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "lightningcrystal":{
         "name":"Lightning Crystal",
@@ -615,7 +673,8 @@
         "event":"self.passive = 'lightningShards';",
         "enchantments":[],
         "description":"Harness the power of lightning.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "emeralditecrystal":{
         "name":"Emeraldite Crystal",
@@ -623,7 +682,8 @@
         "event":"self.passive = 'emeraldite';",
         "enchantments":[],
         "description":"Harness the power of nature.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":1
     },
     "whirlwindcrystal":{
         "name":"Whirlwind Crystal",
@@ -631,7 +691,8 @@
         "event":"self.passive = 'whirlwind';",
         "enchantments":[],
         "description":"Harness the power of water.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":1
     },
     "truefirecrystal":{
         "name":"True Fire Crystal",
@@ -639,7 +700,8 @@
         "event":"self.passive = 'firespirit';",
         "enchantments":[],
         "description":"Harness the power of fire.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":1
     },
     "crabcrystal":{
         "name":"Crab Crystal",
@@ -647,15 +709,17 @@
         "event":"self.passive = 'crab';self.passiveUsetime = 5;",
         "enchantments":[],
         "description":"Harness the power of <span style='color:#ff3333'>crabs</span>.",
-        "rarity":5
+        "rarity":5,
+        "maxStack":1
     },
     "yellowfish":{
         "name":"Yellow Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Forest'){s.spawnMonster('lightningLizard',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('yellowfish',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'The Forest'){s.spawnMonster('lightningLizard',self);}",
         "enchantments":[],
         "description":"Summons the Lightning Lizard.<br>Used in The Forest.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "lightningsaber":{
         "name":"Lightning Saber",
@@ -667,7 +731,8 @@
         "critChance":0.25,
         "knockback":0.6,
         "useTime":0,
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "lightningwand":{
         "name":"Lightning Wand",
@@ -680,7 +745,8 @@
         "knockback":0.8,
         "useTime":4,
         "manaCost":5,
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "bookoflightning":{
         "name":"Book of Lightning",
@@ -692,7 +758,8 @@
         "critChance":0.25,
         "useTime":7,
         "manaCost":9,
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "shieldoflightning":{
         "name":"Shield of Lightning",
@@ -702,6 +769,7 @@
         "defense":20,
         "damageReduction":0.05,
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+20% melee damage.</span><br><span style='color: #33ee33'>+10% melee critical strike chance.</span><br>Increased aggro."
     },
     "ghastlyamulet":{
@@ -710,6 +778,7 @@
         "event":"self.hpMax += 1000;damageIncrease -= 0.5;self.stats.heal += 4;",
         "enchantments":["smashing"],
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+1000 increased max hp.</span><br><span style='color: #33ee33'>Greatly increases life regeneration.</span><br><span style='color: #ff0000'>-50% damage.</span>"
     },
     "ectoglove":{
@@ -719,6 +788,7 @@
         "enchantments":["smashing"],
         "defense":2,
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+50% ranged damage.</span><br><span style='color: #33ee33'>+20% ranged critical strike chance.</span><br><span style='color: #33ee33'>Attacking generates homing spirits.</span>"
     },
     "bookofspirits":{
@@ -733,15 +803,17 @@
         "useTime":3,
         "manaCost":3,
         "rarity":4,
+        "maxStack":1,
         "description":"Spawns homing spirits.<br>Has a reduced mana cost."
     },
     "skullofdeath":{
         "name":"Skull of Death",
         "equip":"consume",
-        "event":"if(self.map === 'The Arena' && ENV.BossRush === false){ENV.BossRush = true;ENV.BossRushStage = 0;}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('skullofdeath',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'The Arena' && ENV.BossRush === false){ENV.BossRush = true;ENV.BossRushStage = 0;}",
         "enchantments":[],
         "description":"Summons the Boss Rush.<br>Used in The Arena.",
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "coinring":{
         "name":"Coin Ring",
@@ -749,6 +821,7 @@
         "event":"self.stats.xp += 5;",
         "enchantments":["smashing"],
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+500% increased xp and coin gain.</span>"
     },
     "leaf":{
@@ -757,55 +830,62 @@
         "event":"self.stats.damageReduction += 1;damageIncrease -= 100;",
         "enchantments":[],
         "rarity":7,
+        "maxStack":1,
         "description":"A small leaf."
     },
     "orangefish":{
         "name":"Orange Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Graveyard'){s.spawnMonster('possessedSpirit',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('orangefish',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'The Graveyard'){s.spawnMonster('possessedSpirit',self);}",
         "enchantments":[],
         "description":"Summons the Possessed Spirit.<br>Used in The Graveyard.",
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "greenfish":{
         "name":"Green Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Forest'){s.spawnMonster('plantera',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('greenfish',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'The Forest'){s.spawnMonster('plantera',self);}",
         "enchantments":[],
         "description":"Summons Plantera.<br>Used in The Forest.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":1
     },
     "redfish":{
         "name":"Red Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The River'){s.spawnMonster('redBird',self);}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('redfish',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'The River'){s.spawnMonster('redBird',self);}",
         "enchantments":[],
         "description":"Summons Red Bird.<br>Used in The River.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "bluefish":{
         "name":"Blue Fish",
         "equip":"consume",
-        "event":"if(self.map === 'Lilypad Temple Room 2'){s.createMonster('whirlwind',{x:1824,y:1408,map:'Lilypad Temple Room 2'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('bluefish',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'Lilypad Temple Room 2'){s.createMonster('whirlwind',{x:1824,y:1408,map:'Lilypad Temple Room 2'});}",
         "enchantments":[],
         "description":"Summons Whirlwind.<br>Used in Lilypad Temple Room 2.",
-        "rarity":6
+        "rarity":6,
+        "maxStack":1
     },
     "purplefish":{
         "name":"Purple Fish",
         "equip":"consume",
-        "event":"s.testDPS();self.inventory.currentEquip['consume'] = {};self.inventory.addItem('purplefish',[]);self.inventory.refreshEquip();",
+        "event":"s.testDPS();",
         "enchantments":[],
         "description":"Summons sp.",
-        "rarity":8
+        "rarity":8,
+        "maxStack":1
     },
     "burntfish":{
         "name":"Burnt Fish",
         "equip":"consume",
-        "event":"if(self.map === 'The Flaming Sea'){s.createMonster('fireSpirit',{x:2400,y:928,map:'The Flaming Sea'});}self.inventory.currentEquip['consume'] = {};self.inventory.addItem('burntfish',[]);self.inventory.refreshEquip();",
+        "event":"if(self.map === 'The Flaming Sea'){s.createMonster('fireSpirit',{x:2400,y:928,map:'The Flaming Sea'});}",
         "enchantments":[],
         "description":"Summons Fire Spirit.<br>Used in The Flaming Sea.",
-        "rarity":6
+        "rarity":6,
+        "maxStack":1
     },
     "ectocannon":{
         "name":"Ecto Cannon",
@@ -818,6 +898,7 @@
         "knockback":0.8,
         "useTime":34,
         "rarity":5,
+        "maxStack":1,
         "description":"Launches a powerful burst of spirits."
     },
     "halibutcannon":{
@@ -831,6 +912,7 @@
         "knockback":0.2,
         "useTime":2,
         "rarity":6,
+        "maxStack":1,
         "description":"Shoots piercing <span style='color:#ff0000'>lasers</span>.<br>Halibut is canon."
     },
     "bookofdeath":{
@@ -845,6 +927,7 @@
         "useTime":10,
         "manaCost":14,
         "rarity":6,
+        "maxStack":1,
         "description":"Shoots 3 homing skulls that pierce and shoot <span style='color:#ff0000'>lasers</span>."
     },
     "unholytrident":{
@@ -858,6 +941,7 @@
         "knockback":0.2,
         "useTime":15,
         "rarity":4,
+        "maxStack":1,
         "description":"Shoots a unholy trident that shoots unholy souls."
     },
     "holytrident":{
@@ -871,15 +955,16 @@
         "knockback":0.2,
         "useTime":11,
         "rarity":6,
+        "maxStack":1,
         "description":"Shoots a holy trident that shoots holy souls."
     },
     "enchantmentbook":{
         "name":"Enchantment Book",
-        "equip":"consume",
-        "event":"if(self.questInfo.quest !== 'Enchant'){socket.emit('toggleSelect');self.questInfo.quest = 'Enchant';self.questInfo.questStage = 1;self.questInfo.item = self.inventory.currentEquip[i];}else{self.inventory.addItem('enchantmentbook',self.inventory.currentEquip['consume'].enchantments);self.inventory.refreshAllItems();}self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "equip":"none",
         "enchantments":["speed","burst","cost","range","reach","smashing","unlocking","focus","sorcery","aim","sharpness","accuracy","power"],
-        "description":"Gives enchantents.",
-        "rarity":3
+        "description":"Drag on an item to use.<br>Gives enchantents.",
+        "rarity":3,
+        "maxStack":1
     },
     "bookoffrost":{
         "name":"Book of Frost",
@@ -893,6 +978,7 @@
         "useTime":10,
         "manaCost":7,
         "rarity":5,
+        "maxStack":1,
         "description":"Shoots a bouncing ball of frost."
     },
     "leafblower":{
@@ -906,6 +992,7 @@
         "knockback":0.3,
         "useTime":3,
         "rarity":5,
+        "maxStack":1,
         "description":"Leaf Blower"
     },
     "bookofnature":{
@@ -920,6 +1007,7 @@
         "useTime":12,
         "manaCost":16,
         "rarity":5,
+        "maxStack":1,
         "description":"This book contains EVERYTHING about nature!"
     },
     "brokenheroshield":{
@@ -930,6 +1018,7 @@
         "defense":45,
         "damageReduction":0.15,
         "rarity":5,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+35% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>Increased aggro.<br>The shield of a fallen hero..."
     },
     "lightningmask":{
@@ -940,6 +1029,7 @@
         "defense":31,
         "damageReduction":0.1,
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+75% damage.</span><br><span style='color: #33ee33'>+55% critical strike chance.</span><br>You inflict the electrified debuff for 5 seconds."
     },
     "lightningarmor":{
@@ -950,6 +1040,7 @@
         "defense":37,
         "damageReduction":0.2,
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+65% damage.</span><br><span style='color: #33ee33'>+45% critical strike chance.</span><br>You gain immunity to the electrified debuff."
     },
     "flamethrower":{
@@ -963,6 +1054,7 @@
         "knockback":0,
         "useTime":4,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "bookofflames":{
@@ -977,6 +1069,7 @@
         "useTime":13,
         "manaCost":39,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "bookoflasers":{
@@ -991,6 +1084,7 @@
         "useTime":20,
         "manaCost":100,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "thedeathrayspiral":{
@@ -1004,6 +1098,7 @@
         "knockback":0.8,
         "useTime":4,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "thegemofsp":{
@@ -1017,32 +1112,36 @@
         "knockback":11.9,
         "useTime":4,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "lightningboots":{
         "name":"Lightning Boots",
-        "equip":"offhand",
+        "equip":"boots",
         "event":"self.maxSpeed += 10;self.offhandPassive = 'lightning';",
         "enchantments":["smashing"],
         "defense":12,
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+10 movement speed.</span><br>Four lightning shards spin around you and protect you."
     },
     "rubypresent":{
         "name":"Ruby Present",
         "equip":"consume",
-        "event":"var rubyItem = Math.random();if(rubyItem < 0.1){var rubyItemToGive = 'simplerubybow';}else if(rubyItem < 0.2){var rubyItemToGive = 'advancedrubybow';}else if(rubyItem < 0.3){var rubyItemToGive = 'simplerubysword';}else if(rubyItem < 0.4){var rubyItemToGive = 'advancedrubysword';}else if(rubyItem < 0.5){var rubyItemToGive = 'simplerubystaff';}else if(rubyItem < 0.6){var rubyItemToGive = 'advancedrubystaff';}else if(rubyItem < 0.7){var rubyItemToGive = 'rubyarmor';}else if(rubyItem < 0.733){var rubyItemToGive = 'rubyhelmet';}else if(rubyItem < 0.766){var rubyItemToGive = 'rubyhood';}else if(rubyItem < 0.8){var rubyItemToGive = 'rubyhat';}else if(rubyItem < 0.9){var rubyItemToGive = 'rubyboots';}else{var rubyItemToGive = 'rubyglove';}self.inventory.currentEquip['consume'] = {};self.inventory.addItem(rubyItemToGive,[]);self.inventory.refreshEquip();",
+        "event":"var rubyItem = Math.random();if(rubyItem < 0.1){var rubyItemToGive = 'simplerubybow';}else if(rubyItem < 0.2){var rubyItemToGive = 'advancedrubybow';}else if(rubyItem < 0.3){var rubyItemToGive = 'simplerubysword';}else if(rubyItem < 0.4){var rubyItemToGive = 'advancedrubysword';}else if(rubyItem < 0.5){var rubyItemToGive = 'simplerubystaff';}else if(rubyItem < 0.6){var rubyItemToGive = 'advancedrubystaff';}else if(rubyItem < 0.7){var rubyItemToGive = 'rubyarmor';}else if(rubyItem < 0.733){var rubyItemToGive = 'rubyhelmet';}else if(rubyItem < 0.766){var rubyItemToGive = 'rubyhood';}else if(rubyItem < 0.8){var rubyItemToGive = 'rubyhat';}else if(rubyItem < 0.9){var rubyItemToGive = 'rubyboots';}else{var rubyItemToGive = 'rubyglove';}if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.addItem(rubyItemToGive,1,[]);self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Gives you a random ruby item.",
-        "rarity":5
+        "rarity":5,
+        "maxStack":1
     },
     "rubyboots":{
         "name":"Ruby Boots",
-        "equip":"offhand",
+        "equip":"boots",
         "event":"self.maxSpeed -= 10;",
         "enchantments":["smashing"],
         "defense":120,
         "rarity":5,
+        "maxStack":1,
         "description":"<span style='color: #ff0000'>-10 movement speed.</span>"
     },
     "rubyglove":{
@@ -1051,15 +1150,17 @@
         "event":"self.useTime *= 0.25;self.attackCooldown *= 0.25;",
         "enchantments":["smashing"],
         "rarity":5,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>-75% attack speed.</span>"
     },
     "anniversarypresent":{
         "name":"Anniversary Present",
         "equip":"consume",
-        "event":"var anniversaryItem = Math.random();if(anniversaryItem < 0.25){var anniversaryItemToGive = 'goldensaber';}else if(anniversaryItem < 0.5){var anniversaryItemToGive = 'goldenbow';}else if(anniversaryItem < 0.75){var anniversaryItemToGive = 'bookofgold';}else{var anniversaryItemToGive = 'goldenscepter';}self.inventory.currentEquip['consume'] = {};self.inventory.addItem(anniversaryItemToGive,[]);self.inventory.refreshEquip();",
+        "event":"var anniversaryItem = Math.random();if(anniversaryItem < 0.25){var anniversaryItemToGive = 'goldensaber';}else if(anniversaryItem < 0.5){var anniversaryItemToGive = 'goldenbow';}else if(anniversaryItem < 0.75){var anniversaryItemToGive = 'bookofgold';}else{var anniversaryItemToGive = 'goldenscepter';}if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.addItem(anniversaryItemToGive,1,[]);self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Happy Anniversary!",
-        "rarity":9
+        "rarity":9,
+        "maxStack":1
     },
     "thetoothoflightning":{
         "name":"The Tooth of Lightning",
@@ -1068,6 +1169,7 @@
         "enchantments":["smashing"],
         "defense":3,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+50% critical strike chance.</span><br><span style='color: #33ee33'>+450% damage.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "heroshield":{
@@ -1078,6 +1180,7 @@
         "defense":72,
         "damageReduction":0.2,
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+35% melee critical strike chance.</span><br>Increased aggro.<br>A hero's shield.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "ringofaspirit":{
@@ -1086,14 +1189,16 @@
         "event":"self.stats.xp += 15;self.stats.luck += 3;",
         "enchantments":["smashing"],
         "rarity":9,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+1500% increased xp and coin gain.</span><br><span style='color: #33ee33'>+300% increased luck.</span><br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "frozentreads":{
         "name":"Frozen Treads",
-        "equip":"offhand",
+        "equip":"boots",
         "event":"self.immuneDebuffs.push('frozen');self.stats.debuffs.push({id:'frozen',time:60});",
         "enchantments":["smashing"],
         "rarity":9,
+        "maxStack":1,
         "description":"Gives immunity to frozen.<br>All of your attacks inflict frozen.<br><span style='color: #00ff90'>The 1% drop chance.</span>"
     },
     "lightningarrow":{
@@ -1102,6 +1207,7 @@
         "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.5;self.stats.speed += 0.5;self.stats.debuffs.push({id:'shocked',time:60});}",
         "enchantments":[],
         "rarity":4,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+50% ranged damage.</span><br><span style='color: #33ee33'>Greatly increased ranged projectile speed.</span><br>Ranged weapons inflict shocked for 3 seconds."
     },
     "voidbook":{
@@ -1116,6 +1222,7 @@
         "useTime":5,
         "manaCost":9,
         "rarity":6,
+        "maxStack":1,
         "description":"Conjure a astral force field to trap your enemies."
     },
     "tsunami":{
@@ -1128,7 +1235,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":5,
-        "rarity":6
+        "rarity":6,
+        "maxStack":1
     },
     "waterslasher":{
         "name":"Water Slasher",
@@ -1140,7 +1248,8 @@
         "critChance":0.04,
         "knockback":1.3,
         "useTime":8,
-        "rarity":6
+        "rarity":6,
+        "maxStack":1
     },
     "staffofthewhirlwind":{
         "name":"Staff Of The Whirlwind",
@@ -1154,6 +1263,7 @@
         "useTime":15,
         "manaCost":6,
         "rarity":6,
+        "maxStack":1,
         "description":"Summons a whirlwind at your cursor location."
     },
     "whirlwindhelmet":{
@@ -1163,6 +1273,7 @@
         "enchantments":["smashing"],
         "defense":19,
         "rarity":7,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+35% ranged damage.</span><br><span style='color: #33ee33'>+20% ranged critical strike chance.</span><br>You inflict the frozen debuff for 3 seconds."
     },
     "whirlwindarmor":{
@@ -1172,6 +1283,7 @@
         "enchantments":["smashing"],
         "defense":26,
         "rarity":7,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+30% ranged damage.</span><br><span style='color: #33ee33'>+35% ranged critical strike chance.</span><br>You gain immunity to the frozen debuff."
     },
     "typhoonstorm":{
@@ -1186,6 +1298,7 @@
         "useTime":15,
         "manaCost":17,
         "rarity":6,
+        "maxStack":1,
         "description":"Shoots a homing piercing typhoon."
     },
     "iceboomerang":{
@@ -1198,14 +1311,16 @@
         "critChance":0.04,
         "knockback":0.6,
         "useTime":10,
-        "rarity":6
+        "rarity":6,
+        "maxStack":1
     },
     "iceflower":{
         "name":"Ice Flower",
         "equip":"offhand",
         "event":"self.manaMax += 50;self.manaRegen += 0.3;",
         "enchantments":["smashing"],
-        "rarity":6
+        "rarity":6,
+        "maxStack":1
     },
     "emeralditehat":{
         "name":"Emeraldite Hat",
@@ -1214,6 +1329,7 @@
         "enchantments":["smashing"],
         "defense":14,
         "rarity":7,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+45% magic damage.</span><br><span style='color: #33ee33'>+45% magic critical strike chance.</span><br><span style='color: #33ee33'>+60 extra mana.</span>"
     },
     "emeralditearmor":{
@@ -1223,6 +1339,7 @@
         "enchantments":["smashing"],
         "defense":18,
         "rarity":7,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+40% magic damage.</span><br><span style='color: #33ee33'>+55% magic critical strike chance.</span><br><span style='color: #33ee33'>+100 extra mana.</span>"
     },
     "emeralditestaff":{
@@ -1237,6 +1354,7 @@
         "useTime":4,
         "manaCost":4,
         "rarity":7,
+        "maxStack":1,
         "description":"Shoots a seed that explodes on impact."
     },
     "whirlwindcannon":{
@@ -1250,6 +1368,7 @@
         "knockback":0.3,
         "useTime":5,
         "rarity":7,
+        "maxStack":1,
         "description":"Shoots a whirlwind."
     },
     "firehelmet":{
@@ -1260,6 +1379,7 @@
         "defense":43,
         "damageReduction":0.15,
         "rarity":7,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+65% melee damage.</span><br><span style='color: #33ee33'>+25% melee critical strike chance.</span><br>You inflict the incinerating debuff for 5 seconds."
     },
     "firearmor":{
@@ -1270,6 +1390,7 @@
         "defense":56,
         "damageReduction":0.35,
         "rarity":7,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+50% melee damage.</span><br><span style='color: #33ee33'>+15% melee critical strike chance.</span><br>You gain immunity to the incinerating debuff."
     },
     "fireboomerang":{
@@ -1283,31 +1404,35 @@
         "knockback":0.6,
         "useTime":10,
         "rarity":7,
+        "maxStack":1,
         "description":"Shoots a flaming boomerang that splits into two flaming boomerangs when hitting an enemy."
     },
     "apple":{
         "name":"Apple",
         "equip":"consume",
-        "event":"self.addDebuff('apple',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('apple',9600);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"An apple a day keeps the monsters away!",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "milk":{
         "name":"Milk",
         "equip":"consume",
-        "event":"self.addDebuff('milk',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('milk',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Want to strengthen your bones? Just drink milk!",
-        "rarity":6
+        "rarity":6,
+        "maxStack":30
     },
     "chocolatechipcookie":{
         "name":"Chocolate Chip Cookie",
         "equip":"consume",
-        "event":"self.addDebuff('chocolatechipcookie',1200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('chocolatechipcookie',1200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
-        "description":"5g of sugar only!",
-        "rarity":6
+        "description":"5g of sugar only!<br><span style='font-size: 8px;'>Disclaimer: Whole cookie is 5g.</span>",
+        "rarity":6,
+        "maxStack":30
     },
     "rockboomerang":{
         "name":"Rock Boomerang",
@@ -1320,6 +1445,7 @@
         "knockback":0.6,
         "useTime":12,
         "rarity":4,
+        "maxStack":1,
         "description":"Shoots a rocky boomerang."
     },
     "bookofrock":{
@@ -1334,6 +1460,7 @@
         "useTime":23,
         "manaCost":13,
         "rarity":4,
+        "maxStack":1,
         "description":"Shoots a rocky tower that shoots homing rocks."
     },
     "bowofrock":{
@@ -1347,6 +1474,7 @@
         "knockback":0.5,
         "useTime":3,
         "rarity":4,
+        "maxStack":1,
         "description":"A bow made of rock. What did you expect?"
     },
     "amuletofrock":{
@@ -1356,151 +1484,170 @@
         "enchantments":["smashing"],
         "defense":24,
         "rarity":4,
+        "maxStack":1,
         "description":"Decreased aggro."
     },
     "lesserhealthboostpotion":{
         "name":"Lesser Health Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserhealthboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserhealthboost',9600);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max life by 10%.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "lesserdefenseboostpotion":{
         "name":"Lesser Defense Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserdefenseboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserdefenseboost',9600);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases defense by 15.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "lesserspeedboostpotion":{
         "name":"Lesser Speed Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserspeedboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserspeedboost',9600);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max speed by 10%.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "lessermanaboostpotion":{
         "name":"Lesser Mana Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lessermanaboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lessermanaboost',9600);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max mana by 50.<br>Increases mana regen by 50%.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "lesserregenboostpotion":{
         "name":"Lesser Regen Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserregenboost',9600);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserregenboost',9600);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases life regen by 50%.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "lesserrandomboostpotion":{
         "name":"Lesser Random Boost Potion",
         "equip":"consume",
-        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'lesserhealthboost';}else if(debuff < 0.3){var debuffToGive = 'lesserdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'lesserspeedboost';}else if(debuff < 0.6){var debuffToGive = 'lessermanaboost';}else if(debuff < 0.75){var debuffToGive = 'lesserregenboost';}else if(debuff < 0.875){var debuffToGive = 'lesserrandomboost1';}else{var debuffToGive = 'lesserrandomboost2';}self.addDebuff(debuffToGive,14400);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'lesserhealthboost';}else if(debuff < 0.3){var debuffToGive = 'lesserdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'lesserspeedboost';}else if(debuff < 0.6){var debuffToGive = 'lessermanaboost';}else if(debuff < 0.75){var debuffToGive = 'lesserregenboost';}else if(debuff < 0.875){var debuffToGive = 'lesserrandomboost1';}else{var debuffToGive = 'lesserrandomboost2';}self.addDebuff(debuffToGive,14400);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Grants a random lesser potion buff.",
-        "rarity":3
+        "rarity":3,
+        "maxStack":30
     },
     "healthboostpotion":{
         "name":"Health Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('healthboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('healthboost',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max life by 35%.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":30
     },
     "defenseboostpotion":{
         "name":"Defense Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('defenseboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('defenseboost',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases defense by 40.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":30
     },
     "speedboostpotion":{
         "name":"Speed Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('speedboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('speedboost',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max speed by 35%.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":30
     },
     "manaboostpotion":{
         "name":"Mana Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('manaboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('manaboost',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max mana by 120.<br>Increases mana regen by 100%.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":30
     },
     "regenboostpotion":{
         "name":"Regen Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('regenboost',19200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('regenboost',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases life regen by 100%.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":30
     },
     "randomboostpotion":{
         "name":"Random Boost Potion",
         "equip":"consume",
-        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'healthboost';}else if(debuff < 0.3){var debuffToGive = 'defenseboost';}else if(debuff < 0.45){var debuffToGive = 'speedboost';}else if(debuff < 0.6){var debuffToGive = 'manaboost';}else if(debuff < 0.75){var debuffToGive = 'regenboost';}else if(debuff < 0.875){var debuffToGive = 'randomboost1';}else{var debuffToGive = 'randomboost2';}self.addDebuff(debuffToGive,28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'healthboost';}else if(debuff < 0.3){var debuffToGive = 'defenseboost';}else if(debuff < 0.45){var debuffToGive = 'speedboost';}else if(debuff < 0.6){var debuffToGive = 'manaboost';}else if(debuff < 0.75){var debuffToGive = 'regenboost';}else if(debuff < 0.875){var debuffToGive = 'randomboost1';}else{var debuffToGive = 'randomboost2';}self.addDebuff(debuffToGive,28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Grants a random potion buff.",
-        "rarity":7
+        "rarity":7,
+        "maxStack":30
     },
     "greaterhealthboostpotion":{
         "name":"Greater Health Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserhealthboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserhealthboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max life by 50%.",
-        "rarity":9
+        "rarity":9,
+        "maxStack":30
     },
     "greaterdefenseboostpotion":{
         "name":"Greater Defense Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserdefenseboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserdefenseboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases defense by 65.",
-        "rarity":9
+        "rarity":9,
+        "maxStack":30
     },
     "greaterspeedboostpotion":{
         "name":"Greater Speed Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserspeedboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserspeedboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max speed by 50%.",
-        "rarity":9
+        "rarity":9,
+        "maxStack":30
     },
     "greatermanaboostpotion":{
         "name":"Greater Mana Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lessermanaboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lessermanaboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max mana by 180.<br>Increases mana regen by 150%.",
-        "rarity":9
+        "rarity":9,
+        "maxStack":30
     },
     "greaterregenboostpotion":{
         "name":"Greater Regen Boost Potion",
         "equip":"consume",
-        "event":"self.addDebuff('lesserregenboost',28800);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"self.addDebuff('lesserregenboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases life regen by 150%.",
-        "rarity":9
+        "rarity":9,
+        "maxStack":30
     },
     "greaterrandomboostpotion":{
         "name":"Greater Random Boost Potion",
         "equip":"consume",
-        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'greaterhealthboost';}else if(debuff < 0.3){var debuffToGive = 'greaterdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'greaterspeedboost';}else if(debuff < 0.6){var debuffToGive = 'greatermanaboost';}else if(debuff < 0.75){var debuffToGive = 'greaterregenboost';}else if(debuff < 0.87){var debuffToGive = 'greaterrandomboost1';}else if(debuff < 0.99){var debuffToGive = 'greaterrandomboost2';}else{var debuffToGive = 'superrandomboost';}self.addDebuff(debuffToGive,43200);self.inventory.currentEquip['consume'] = {};self.inventory.refreshEquip();",
+        "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'greaterhealthboost';}else if(debuff < 0.3){var debuffToGive = 'greaterdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'greaterspeedboost';}else if(debuff < 0.6){var debuffToGive = 'greatermanaboost';}else if(debuff < 0.75){var debuffToGive = 'greaterregenboost';}else if(debuff < 0.87){var debuffToGive = 'greaterrandomboost1';}else if(debuff < 0.99){var debuffToGive = 'greaterrandomboost2';}else{var debuffToGive = 'superrandomboost';}self.addDebuff(debuffToGive,43200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Grants a greater random potion buff.",
-        "rarity":9
+        "rarity":9,
+        "maxStack":30
     },
     "basichealingscepter":{
         "name":"Basic Healing Scepter",
@@ -1513,7 +1660,8 @@
         "knockback":0,
         "useTime":23,
         "manaCost":26,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "healingscepter":{
         "name":"Healing Scepter",
@@ -1526,7 +1674,8 @@
         "knockback":0,
         "useTime":23,
         "manaCost":45,
-        "rarity":4
+        "rarity":4,
+        "maxStack":1
     },
     "advancedhealingscepter":{
         "name":"Advanced Healing Scepter",
@@ -1539,7 +1688,8 @@
         "knockback":0,
         "useTime":23,
         "manaCost":51,
-        "rarity":5
+        "rarity":5,
+        "maxStack":1
     },
     "scepterofregrowth":{
         "name":"Scepter of Regrowth",
@@ -1552,7 +1702,8 @@
         "knockback":0,
         "useTime":20,
         "manaCost":73,
-        "rarity":7
+        "rarity":7,
+        "maxStack":1
     },
     "shieldofbloodlust":{
         "name":"Shield of Bloodlust",
@@ -1561,6 +1712,7 @@
         "enchantments":["smashing"],
         "defense":35,
         "rarity":5,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+50% healing.</span><br><span style='color: #33ee33'>+35% healing speed.</span><br>Greatly increased aggro.<br>All weapons cannot damage enemies."
     },
     "shieldoflife":{
@@ -1570,6 +1722,7 @@
         "enchantments":["smashing"],
         "defense":17,
         "rarity":5,
+        "maxStack":1,
         "description":"<span style='color: #33ee33'>+15% healing.</span><br><span style='color: #33ee33'>-35% mana cost.</span><br><span style='color: #33ee33'>+20% increased max hp.</span><br>Greatly reduced aggro."
     },
     "goldensaber":{
@@ -1582,7 +1735,8 @@
         "critChance":0.04,
         "knockback":0.3,
         "useTime":6,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "goldenbow":{
         "name":"Golden Bow",
@@ -1594,7 +1748,8 @@
         "critChance":0.04,
         "knockback":0.5,
         "useTime":45,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
     },
     "bookofgold":{
         "name":"Book of Gold",
@@ -1605,6 +1760,7 @@
         "useTime":1,
         "manaCost":6,
         "rarity":3,
+        "maxStack":1,
         "description":"Somebody's going to make an AFK farm out of this."
     },
     "goldenscepter":{
@@ -1618,6 +1774,233 @@
         "knockback":0,
         "useTime":3,
         "manaCost":3,
-        "rarity":3
+        "rarity":3,
+        "maxStack":1
+    },
+    "wood":{
+        "name":"Wood",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":0,
+        "maxStack":1000
+    },
+    "woodstick":{
+        "name":"Wood Stick",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":1,
+        "maxStack":1000
+    },
+    "steel":{
+        "name":"Steel",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":2,
+        "maxStack":1000
+    },
+    "gold":{
+        "name":"Gold",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":4,
+        "maxStack":1000
+    },
+    "bottle":{
+        "name":"Bottle",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":4,
+        "maxStack":1000
+    },
+    "ruby":{
+        "name":"Ruby",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":5,
+        "maxStack":1000
+    },
+    "emeraldite":{
+        "name":"Emeraldite",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "essenceofnature":{
+        "name":"Essence of Nature",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "whirlwindbar":{
+        "name":"Whirlwind Bar",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "essenceofwater":{
+        "name":"Essence of Water",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "firebar":{
+        "name":"Fire Bar",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "essenceoffire":{
+        "name":"Essence of Fire",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "rose":{
+        "name":"Rose",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "sunflower":{
+        "name":"Sunflower",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "magicalgem":{
+        "name":"Magical Gem",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":8,
+        "maxStack":1
+    },
+    "bowofembers":{
+        "name":"Bow of Embers",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range","accuracy","power"],
+        "damage":64,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "knockback":0.1,
+        "useTime":2,
+        "rarity":6,
+        "maxStack":1
+    },
+    "burntbookofashes":{
+        "name":"Burnt Book of Ashes",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["burst","range","accuracy","power"],
+        "damage":6,
+        "damageType":"magic",
+        "critChance":0.04,
+        "knockback":0.1,
+        "useTime":1,
+        "manaCost":1,
+        "rarity":6,
+        "maxStack":1
+    },
+    "explosivearrow":{
+        "name":"Explosive Arrow",
+        "equip":"offhand",
+        "event":"if(self.stats.damageType === 'ranged'){damageIncrease += 0.75;self.stats.critChance += 0.35;self.offhandPassive = 'explode';}",
+        "enchantments":["smashing"],
+        "defense":12,
+        "rarity":6,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+75% ranged damage.</span><br><span style='color: #33ee33'>+35% ranged critical strike chance.</span><br><span style='color: #33ee33'>Attacking generates a fire explosion.</span>"
+    },
+    "ringoffire":{
+        "name":"Ring of Fire",
+        "equip":"offhand",
+        "event":"self.offhandPassive = 'firering';self.stats.xp += 9;",
+        "enchantments":["smashing"],
+        "defense":12,
+        "rarity":6,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+900% increased xp and coin gain.</span><br>A ring of fire protects you."
+    },
+    "mountaintreads":{
+        "name":"Mountain Treads",
+        "equip":"boots",
+        "event":"self.pushResist += 0.5;self.maxSpeed += 5;",
+        "enchantments":["smashing"],
+        "defense":12,
+        "rarity":4,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+5 movement speed.</span><br><span style='color: #33ee33'>+50% knockback resistance.</span>"
+    },
+    "raggedleatherscroll":{
+        "name":"Ragged Leather Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 10;",
+        "rarity":3,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+10 slots.</span>"
+    },
+    "tornsteelscroll":{
+        "name":"Torn Steel Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 16;",
+        "rarity":3,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+16 slots.</span>"
+    },
+    "goldenscroll":{
+        "name":"Golden Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 20;",
+        "rarity":4,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+20 slots.</span>"
+    },
+    "shinyrubyscroll":{
+        "name":"Shiny Ruby Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 24;",
+        "rarity":5,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+24 slots.</span>"
+    },
+    "sturdyreinforcedsteelscroll":{
+        "name":"Sturdy Reinforced Steel Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 30;",
+        "rarity":7,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+30 slots.</span>"
+    },
+    "durableemeralditescroll":{
+        "name":"Durable Emeraldite Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 30;",
+        "rarity":7,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+30 slots.</span>"
+    },
+    "soggywetscroll":{
+        "name":"Soggy Wet Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 30;",
+        "rarity":7,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+30 slots.</span>"
+    },
+    "thenightmarescroll":{
+        "name":"The Nightmare Scroll",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 120;",
+        "rarity":8,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+120 slots.</span>"
     }
 }

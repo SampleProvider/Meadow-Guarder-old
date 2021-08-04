@@ -6,26 +6,36 @@
         "shop":[
             {
                 "id":"wood",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
-                "id":"woodx10",
-                "enchantments":[]
+                "id":"wood",
+                "enchantments":[],
+                "stack":10
             },
             {
-                "id":"woodx100",
-                "enchantments":[]
+                "id":"wood",
+                "enchantments":[],
+                "stack":100
             },
             {
                 "id":"apple",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
+            },
+            {
+                "id":"raggedleatherscroll",
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
             100,
             950,
             9250,
-            1000
+            1000,
+            20000
         ],
         "mainItem":"wood",
         "quote":"My friend Mark gave me all this wood, you want some?",
@@ -77,31 +87,38 @@
         "shop":[
             {
                 "id":"redfish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"yellowfish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"orangefish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"greenfish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"bluefish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"burntfish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"purplefish",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
@@ -177,67 +194,83 @@
         "shop":[
             {
                 "id":"steel",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
-                "id":"steelx10",
-                "enchantments":[]
+                "id":"steel",
+                "enchantments":[],
+                "stack":10
             },
             {
-                "id":"steelx100",
-                "enchantments":[]
+                "id":"steel",
+                "enchantments":[],
+                "stack":100
             },
             {
                 "id":"gold",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
-                "id":"goldx10",
-                "enchantments":[]
+                "id":"gold",
+                "enchantments":[],
+                "stack":10
             },
             {
-                "id":"goldx100",
-                "enchantments":[]
+                "id":"gold",
+                "enchantments":[],
+                "stack":100
             },
             {
                 "id":"ruby",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
-                "id":"rubyx10",
-                "enchantments":[]
+                "id":"ruby",
+                "enchantments":[],
+                "stack":10
             },
             {
-                "id":"rubyx100",
-                "enchantments":[]
+                "id":"ruby",
+                "enchantments":[],
+                "stack":100
             },
             {
                 "id":"advancedgoldensword",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"advancedgoldenbow",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"advancedgoldenstaff",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"goldenhelmet",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"goldenhood",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"goldenhat",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"goldenarmor",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
@@ -276,11 +309,13 @@
         "shop":[
             {
                 "id":"chocolatechipcookie",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"milk",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
@@ -312,39 +347,48 @@
         "shop":[
             {
                 "id":"bottle",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
-                "id":"bottlex10",
-                "enchantments":[]
+                "id":"bottle",
+                "enchantments":[],
+                "stack":10
             },
             {
-                "id":"bottlex100",
-                "enchantments":[]
+                "id":"bottle",
+                "enchantments":[],
+                "stack":100
             },
             {
                 "id":"healthboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"defenseboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"speedboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"manaboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"regenboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"randomboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
@@ -376,31 +420,38 @@
         "shop":[
             {
                 "id":"lesserhealthboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"lesserdefenseboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"lesserspeedboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"lessermanaboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"lesserregenboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"lesserrandomboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"basichealingscepter",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
@@ -429,11 +480,13 @@
         "shop":[
             {
                 "id":"lesserrandomboostpotion",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             },
             {
                 "id":"skullofdeath",
-                "enchantments":[]
+                "enchantments":[],
+                "stack":1
             }
         ],
         "shopPrices":[
@@ -465,43 +518,71 @@
         "crafts":{
             "items":[
                 {
+                    "id":"woodstick",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
                     "id":"advancedwoodensword",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedwoodenbow",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedwoodenstaff",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"bronzekey",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"silverkey",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 }
             ],
             "materials":[
                 [
                     {
                         "id":"wood",
-                        "amount":25
+                        "amount":5
                     }
                 ],
                 [
                     {
                         "id":"wood",
                         "amount":25
+                    },
+                    {
+                        "id":"woodstick",
+                        "amount":5
                     }
                 ],
                 [
                     {
                         "id":"wood",
                         "amount":25
+                    },
+                    {
+                        "id":"woodstick",
+                        "amount":5
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"woodstick",
+                        "amount":5
                     }
                 ],
                 [
@@ -538,31 +619,53 @@
             "items":[
                 {
                     "id":"advancedhealingscepter",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"tornsteelscroll",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"goldenscroll",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"sturdyreinforcedsteelscroll",
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedsteelsword",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedsteelbow",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedsteelstaff",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"goldenkey",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"brokenheroshield",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"developerkey",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 }
             ],
             "materials":[
@@ -574,6 +677,36 @@
                     {
                         "id":"gold",
                         "amount":75
+                    }
+                ],
+                [
+                    {
+                        "id":"steel",
+                        "amount":15
+                    }
+                ],
+                [
+                    {
+                        "id":"gold",
+                        "amount":75
+                    },
+                    {
+                        "id":"woodstick",
+                        "amount":5
+                    }
+                ],
+                [
+                    {
+                        "id":"tornsteelscroll",
+                        "amount":25
+                    },
+                    {
+                        "id":"steel",
+                        "amount":1000
+                    },
+                    {
+                        "id":"rose",
+                        "amount":1
                     }
                 ],
                 [
@@ -656,31 +789,52 @@
         "crafts":{
             "items":[
                 {
+                    "id":"shinyrubybundle",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
                     "id":"advancedrubysword",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedrubybow",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"advancedrubystaff",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"firecrystal",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"rubypresent",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"spkey",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 }
             ],
             "materials":[
+                [
+                    {
+                        "id":"ruby",
+                        "amount":75
+                    },
+                    {
+                        "id":"rose",
+                        "amount":1
+                    }
+                ],
                 [
                     {
                         "id":"wood",
@@ -769,87 +923,118 @@
             "items":[
                 {
                     "id":"emeraldite",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"durableemeralditescroll",
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"emeralditecrystal",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"emeralditestaff",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"emeralditehat",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"emeralditearmor",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"whirlwindbar",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"whirlwindcrystal",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"whirlwindcannon",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"whirlwindhelmet",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"whirlwindarmor",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"firebar",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"truefirecrystal",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"fireboomerang",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"firehelmet",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"firearmor",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"greaterhealthboostpotion",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"greaterdefenseboostpotion",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"greaterspeedboostpotion",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"greatermanaboostpotion",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"greaterregenboostpotion",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
                 },
                 {
                     "id":"greaterrandomboostpotion",
-                    "enchantments":[]
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"thenightmarescroll",
+                    "enchantments":[],
+                    "stack":1
                 }
             ],
             "materials":[
@@ -861,6 +1046,16 @@
                     {
                         "id":"ruby",
                         "amount":5
+                    }
+                ],
+                [
+                    {
+                        "id":"emeraldite",
+                        "amount":24
+                    },
+                    {
+                        "id":"rose",
+                        "amount":1
                     }
                 ],
                 [
@@ -1108,6 +1303,24 @@
                     },
                     {
                         "id":"bottle",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"sturdyreinforcedsteelscroll",
+                        "amount":1
+                    },
+                    {
+                        "id":"durableemeralditescroll",
+                        "amount":1
+                    },
+                    {
+                        "id":"soggywetscroll",
+                        "amount":1
+                    },
+                    {
+                        "id":"magicalgem",
                         "amount":1
                     }
                 ]

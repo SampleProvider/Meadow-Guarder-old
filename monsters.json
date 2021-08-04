@@ -53,7 +53,8 @@
             "advancedsteelstaff":0.02,
             "advanceddarksteelstaff":0.01,
             "advancedgoldenstaff":0.005,
-            "advancedrubystaff":0.001
+            "advancedrubystaff":0.001,
+            "wood":3
         }
     },
     "greenBird":{
@@ -735,6 +736,7 @@
             "typhoonstorm":0.5,
             "iceboomerang":0.5,
             "iceflower":0.5,
+            "soggywetscroll":0.5,
             "frozentreads":0.01,
             "enchantmentbook":9,
             "essenceofwater":10
@@ -768,7 +770,8 @@
             "sphat":1,
             "bookoflasers":0.01,
             "thedeathrayspiral":0.01,
-            "thegemofsp":0.01
+            "thegemofsp":0.01,
+            "magicalgem":0.001
         }
     },
     "tianmuGuarder":{
@@ -912,6 +915,12 @@
         "moveSpeed":20,
         "itemDrops":{
             "essenceoffire":10,
+            "rose":0.1,
+            "sunflower":0.1,
+            "bowofembers":0.5,
+            "burntbookofashes":0.5,
+            "explosivearrow":0.5,
+            "ringoffire":0.5,
             "enchantmentbook":9,
             "bookofflames":0.01
         }
@@ -944,6 +953,7 @@
             "rockboomerang":0.01,
             "bowofrock":0.01,
             "bookofrock":0.01,
+            "mountaintreads":0.01,
             "amuletofrock":0.01
         }
     }

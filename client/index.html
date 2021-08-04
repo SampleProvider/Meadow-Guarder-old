@@ -65,6 +65,24 @@
 				<div class="pageStackOuter UI-display-light">
 					<div class="pageStackInner">
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
+							8/4/2021
+						</div>
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
+							Fixed many bugs.
+							<br>
+							Completely revamped inventory format.
+							<br>
+							Added more items.
+							<br>
+							Added more materials.
+							<br>
+							Released 0.3.1.
+						</div>
+					</div>
+				</div>
+				<div class="pageStackOuter UI-display-light">
+					<div class="pageStackInner">
+						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff; font-size: 30px">
 							8/1/2021
 						</div>
 						<div class="UI-text-light" style="position: static;top: 8px;left: 8px;color: #ffffff">
@@ -1056,7 +1074,7 @@
 	<div id="loadingDiv" style="display:none;">
 		<div id="loadingHolder">
 			<div id="loadingProgress"></div>
-			<div id="loadingBar">0 / 547</div>
+			<div id="loadingBar">0 / 672</div>
 		</div>
 	</div>
 	<noscript><meta http-equiv="refresh" content="0; url=./client/nojs.html"/></noscript>
@@ -1071,25 +1089,25 @@
 		<audio id="audioCalm" controls>
 			<source src="/client/websiteAssets/2003042901_04.mp3" type="audio/mpeg">
 		</audio>
-		<div id="blackShade" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
+		<div id="blackShade" onmousedown="mouseDown(event)" onmouseup="mouseUp(event);dropItem(event)"></div>
 		<div id="spectator" style="display:none;" onmouseover="mouseUp(event)">
 			<div class="death-screen"></div>
 			<div id="respawnTimer"></div>
 			<button id="respawn" onclick="respawn()" style="display:none;">Respawn</button>
 		</div>
-		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
+		<div id="mapName" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event);dropItem(event)"></div>
 		<div id="fps" class="UI-text-light"></div>
 		<div id="dps" class="UI-text-light"></div>
 		<div id="maxdps" class="UI-text-light"></div>
-		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+		<div id="chat-text" class="UI-text-light" onmousedown="mouseDown(event)" onmouseup="mouseUp(event);dropItem(event)">
 			
 		</div>
-		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event)">
+		<form id="chat-form" autocomplete="off" onmouseover="mouseUp(event);dropItem(event)">
 			<input id="chat-input" class="UI-input-light" type="text"></input>
 		</form>
 		<div id="bossHealth" onmouseover="mouseUp(event)"></div>
 		<div id="bossbar" onmouseover="mouseUp(event)"></div>
-		<div id="questObjectiveDiv" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+		<div id="questObjectiveDiv" onmousedown="mouseDown(event)" onmouseup="mouseUp(event);dropItem(event)">
 			<div id="questObjectiveName" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
 			<div id="questObjective" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"></div>
 		</div>
@@ -1121,19 +1139,10 @@
 						<image class="coinImage" src="/client/img/devcoin.png"></image><div id="devcoinDiv" class="coinDiv">0</div>
 						<div id="coinDiv">Coins:</div>
 					</div>
-					<div id="currentEquip"></div>
-					<div id="materials"></div>
+					<div id="inventoryEquip"></div>
 					<div id="inventoryItem"></div>
-					<div id="currentEquipHeader" class="UI-display-light">Equipped Items</div>
+					<div id="inventoryEquipHeader" class="UI-display-light">Equipped Items</div>
 					<div id="inventoryItemHeader" class="UI-display-light">Items</div>
-					<div id="inventoryDismantleButton" class="UI-button-light">Dismantle All</div>
-					<select id="inventoryDismantleDropdown" class="UI-button-light">
-						<option>Common Items</option>
-						<option>Rare Items</option>
-						<option>Enchantment Books</option>
-						<option>Whirlwind Items</option>
-						<option>SP Items</option>
-					</select>
 				</div>
 				<div id="debugScreen" class="menuDisplay" style="display: none;">
 					<div class="window-body">
@@ -1310,13 +1319,13 @@
 				<button id="signOut" class="UI-button-light" onclick="history.go(0)">Log Out</button>
 			</div>
 		</div>
-		<div id="notificationsHolder" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+		<div id="notificationsHolder" onmousedown="mouseDown(event)" onmouseup="mouseUp(event);dropItem(event)">
 			<div id="notifications" class="UI-display-light"></div>
 		</div>
 		<div id="debuffHolder">
 			<div id="debuffs" class="UI-display-light" onmouseover="mouseUp(event)"></div>
 		</div>
-		<div id="interactMenu" class="UI-display-light" style="display:none;" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)">
+		<div id="interactMenu" class="UI-display-light" style="display:none;" onmousedown="mouseDown(event)" onmouseup="mouseUp(event);dropItem(event)">
 			<div id="interactMenuText" class="UI-text-light"></div>
 			<button id="interactMenuButton1" class="interactMenuButton UI-button-light" onclick="response(1)"></button>
 			<button id="interactMenuButton2" class="interactMenuButton UI-button-light" onclick="response(2)"></button>

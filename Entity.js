@@ -523,18 +523,11 @@ Entity.getFrameUpdateData = function(){
                 if(Monster.list[i].spawnId){
                     Spawner.list[Monster.list[i].spawnId].spawned = false;
                 }
-                if(Monster.list[i].monsterType === 'lightningLizard'){
-                    if(!pack[Monster.list[i].map]){
-                        pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
-                    }
-                    var updatePack = Monster.list[i].getUpdatePack();
-                    pack[Monster.list[i].map].monster.push(updatePack);
-                }
                 delete Monster.list[i];
             }
             else{
                 if(!pack[Monster.list[i].map]){
-                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+                    pack[Monster.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
                 }
                 var updatePack = Monster.list[i].getUpdatePack();
                 pack[Monster.list[i].map].monster.push(updatePack);
@@ -545,7 +538,7 @@ Entity.getFrameUpdateData = function(){
         if(Player.list[i]){
             Player.list[i].update();
             if(!pack[Player.list[i].map]){
-                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+                pack[Player.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
             }
             var updatePack = Player.list[i].getUpdatePack();
             pack[Player.list[i].map].player.push(updatePack);
@@ -559,7 +552,7 @@ Entity.getFrameUpdateData = function(){
             Npc.list[i].update();
             if(playerMap[Npc.list[i].map] > 0){
                 if(!pack[Npc.list[i].map]){
-                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+                    pack[Npc.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
                 }
                 if(Npc.list[i].toRemove){
                     delete Npc.list[i];
@@ -576,7 +569,7 @@ Entity.getFrameUpdateData = function(){
             Particle.list[i].update();
             if(playerMap[Particle.list[i].map] > 0){
                 if(!pack[Particle.list[i].map]){
-                    pack[Particle.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+                    pack[Particle.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
                 }
                 var updatePack = Particle.list[i].getInitPack();
                 pack[Particle.list[i].map].particle.push(updatePack);
@@ -584,10 +577,28 @@ Entity.getFrameUpdateData = function(){
         }
         delete Particle.list[i];
     }
+    for(var i in DroppedItem.list){
+        if(!Player.list[DroppedItem.list[i].parent] && DroppedItem.list[i].allPlayers === false){
+            delete DroppedItem.list[i];
+        }
+        else{
+            DroppedItem.list[i].update();
+            if(DroppedItem.list[i].toRemove === true){
+                delete DroppedItem.list[i];
+            }
+            else if(playerMap[DroppedItem.list[i].map] > 0){
+                if(!pack[DroppedItem.list[i].map]){
+                    pack[DroppedItem.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
+                }
+                var updatePack = DroppedItem.list[i].getUpdatePack();
+                pack[DroppedItem.list[i].map].droppedItem.push(updatePack);
+            }
+        }
+    }
     for(var i in Pet.list){
         Pet.list[i].update();
         if(!pack[Pet.list[i].map]){
-            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+            pack[Pet.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
         }
         if(Pet.list[i].toRemove){
             delete Pet.list[i];
@@ -629,7 +640,7 @@ Entity.getFrameUpdateData = function(){
 	updateCrashes();
     for(var i in Projectile.list){
         if(!pack[Projectile.list[i].map]){
-            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+            pack[Projectile.list[i].map] = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
         }
         if(Projectile.list[i].updateNextFrame){
             pack[Projectile.list[i].map].projectile.push(Projectile.list[i].getUpdatePack());
@@ -1519,6 +1530,68 @@ Actor = function(param){
     self.followEntity = function(pt){
         self.followingEntity = pt;
     }
+    self.dropItems = function(pt){
+        if(pt.parentType === 'Player' && self.type === 'Monster'){
+            for(var i in self.itemDrops){
+                if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
+                    var amount = Math.max(Math.round(self.itemDrops[i] * Player.list[pt.parent].stats.luck * (1 + Math.random())),1);
+                    var enchantments = [];
+                    for(var j in Item.list[i].enchantments){
+                        for(var k in Enchantment.list){
+                            if(k === Item.list[i].enchantments[j]){
+                                var enchantment = Enchantment.list[k];
+                                if(Math.random() < enchantment.dropChance * Player.list[pt.parent].stats.luck){
+                                    enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel * 1000 + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
+                                }
+                            }
+                        }
+                    }
+                    new DroppedItem({
+                        id:pt.parent,
+                        item:{id:i,enchantments:enchantments},
+                        amount:amount,
+                        x:self.x,
+                        y:self.y,
+                        map:self.map,
+                        leftPlayer:true,
+                        allPlayers:false,
+                    });
+                }
+            }
+            Player.list[pt.parent].xp += self.xpGain * Math.round((5 + Math.random() * 2) * Player.list[pt.parent].stats.xp);
+            Player.list[pt.parent].coins += self.xpGain * Math.round((300 + Math.random() * 150) * Player.list[pt.parent].stats.xp);
+        }
+        if(pt.type === 'Player' && self.type === 'Monster'){
+            for(var i in self.itemDrops){
+                if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                    var amount = Math.max(Math.round(self.itemDrops[i] * pt.stats.luck * (1 + Math.random())),1);
+                    var enchantments = [];
+                    for(var j in Item.list[i].enchantments){
+                        for(var k in Enchantment.list){
+                            if(k === Item.list[i].enchantments[j]){
+                                var enchantment = Enchantment.list[k];
+                                if(Math.random() < enchantment.dropChance * pt.stats.luck){
+                                    enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel * 1000 + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
+                                }
+                            }
+                        }
+                    }
+                    new DroppedItem({
+                        id:pt.id,
+                        item:{id:i,enchantments:enchantments},
+                        amount:amount,
+                        x:self.x,
+                        y:self.y,
+                        map:self.map,
+                        leftPlayer:true,
+                        allPlayers:false,
+                    });
+                }
+            }
+            pt.xp += Math.round(self.xpGain * (5 + Math.random() * 2) * pt.stats.xp);
+            pt.coins += Math.round(self.xpGain * (300 + Math.random() * 150) * pt.stats.xp);
+        }
+    }
     self.doDebuffs = function(){
         var hp = self.hp;
         if(self.invincible || self.type === 'Pet'){
@@ -1906,80 +1979,7 @@ Actor = function(param){
             }
             if(pt){
                 if(self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
-                    if(pt.parentType === 'Player' && self.type === 'Monster'){
-                        if(Player.list[pt.parent].isDead === false){
-                            if(self.itemDrops === {}){
-                                
-                            }
-                            else{
-                                for(var i in self.itemDrops){
-                                    if(i === 'enchantmentbook' && pt.stats.luck > 0){
-                                        for(var j = 0;j < self.itemDrops[i];j++){
-                                            pt.inventory.addRandomItemAndRandomizedEnchantments(i,3);
-                                        }
-                                        addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
-                                    }
-                                    else{
-                                        var materialAdded = false;
-                                        for(var j in pt.inventory.materials){
-                                            if(i === j){
-                                                materialAdded = true;
-                                                var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
-                                                pt.inventory.materials[i] += materialAmount;
-                                                pt.inventory.refreshMaterial();
-                                                addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + pt.inventory.getMaterialName(i) + " x" + materialAmount + ".");
-                                            }
-                                        }
-                                        if(materialAdded === false){
-                                            if(self.itemDrops[i] * pt.stats.luck > Math.random()){
-                                                var itemIndex = pt.inventory.addRandomItemAndRandomizedEnchantments(i,pt.stats.luck);
-                                                var item = pt.inventory.items[itemIndex];
-                                                addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            Player.list[pt.parent].xp += self.xpGain * Math.round((5 + Math.random() * 2) * Player.list[pt.parent].stats.xp);
-                            Player.list[pt.parent].coins += self.xpGain * Math.round((300 + Math.random() * 150) * Player.list[pt.parent].stats.xp);
-                        }
-                    }
-                    if(pt.type === 'Player' && self.type === 'Monster'){
-                        if(self.itemDrops === {}){
-                                
-                        }
-                        else{
-                            for(var i in self.itemDrops){
-                                if(i === 'enchantmentbook' && pt.stats.luck > 0){
-                                    for(var j = 0;j < self.itemDrops[i];j++){
-                                        pt.inventory.addRandomItemAndRandomizedEnchantments(i,3);
-                                    }
-                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
-                                }
-                                else{
-                                    var materialAdded = false;
-                                    for(var j in pt.inventory.materials){
-                                        if(i === j){
-                                            materialAdded = true;
-                                            var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
-                                            pt.inventory.materials[i] += materialAmount;
-                                            pt.inventory.refreshMaterial();
-                                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + pt.inventory.getMaterialName(i) + " x" + materialAmount + ".");
-                                        }
-                                    }
-                                    if(materialAdded === false){
-                                        if(self.itemDrops[i] * pt.stats.luck > Math.random()){
-                                            var itemIndex = pt.inventory.addRandomItemAndRandomizedEnchantments(i,pt.stats.luck);
-                                            var item = pt.inventory.items[itemIndex];
-                                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        pt.xp += Math.round(self.xpGain * (5 + Math.random() * 2) * pt.stats.xp);
-                        pt.coins += Math.round(self.xpGain * (300 + Math.random() * 150) * pt.stats.xp);
-                    }
+                    self.dropItems(pt);
                 }
             }
             self.willBeDead = true;
@@ -2109,80 +2109,7 @@ Actor = function(param){
             }
         }
         if(self.hp < 1 && self.willBeDead === false && self.isDead === false && self.toRemove === false && pt.toRemove === false && pt.isDead === false){
-            if(pt.parentType === 'Player' && self.type === 'Monster'){
-                if(Player.list[pt.parent].isDead === false){
-                    if(self.itemDrops === {}){
-                        
-                    }
-                    else{
-                        for(var i in self.itemDrops){
-                            if(i === 'enchantmentbook' && Player.list[pt.parent].stats.luck > 0){
-                                for(var j = 0;j < self.itemDrops[i];j++){
-                                    Player.list[pt.parent].inventory.addRandomItemAndRandomizedEnchantments(i,3);
-                                }
-                                addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
-                            }
-                            else{
-                                var materialAdded = false;
-                                for(var j in Player.list[pt.parent].inventory.materials){
-                                    if(i === j){
-                                        materialAdded = true;
-                                        var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
-                                        Player.list[pt.parent].inventory.materials[i] += materialAmount;
-                                        Player.list[pt.parent].inventory.refreshMaterial();
-                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Player.list[pt.parent].inventory.getMaterialName(i) + " x" + materialAmount + ".");
-                                    }
-                                }
-                                if(materialAdded === false){
-                                    if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
-                                        var itemIndex = Player.list[pt.parent].inventory.addRandomItemAndRandomizedEnchantments(i,Player.list[pt.parent].stats.luck);
-                                        var item = Player.list[pt.parent].inventory.items[itemIndex];
-                                        addToChat('style="color: ' + Player.list[pt.parent].textColor + '">',Player.list[pt.parent].displayName + " got a " + Item.list[item.id].name + ".");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    Player.list[pt.parent].xp += self.xpGain * Math.round((5 + Math.random() * 2) * Player.list[pt.parent].stats.xp);
-                    Player.list[pt.parent].coins += self.xpGain * Math.round((300 + Math.random() * 150) * Player.list[pt.parent].stats.xp);
-                }
-            }
-            if(pt.type === 'Player' && self.type === 'Monster'){
-                if(self.itemDrops === {}){
-                        
-                }
-                else{
-                    for(var i in self.itemDrops){
-                        if(i === 'enchantmentbook' && pt.stats.luck > 0){
-                            for(var j = 0;j < self.itemDrops[i];j++){
-                                pt.inventory.addRandomItemAndRandomizedEnchantments(i,3);
-                            }
-                            addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a Enchantment Book x" + Math.round(self.itemDrops[i]) + ".");
-                        }
-                        else{
-                            var materialAdded = false;
-                            for(var j in pt.inventory.materials){
-                                if(i === j){
-                                    materialAdded = true;
-                                    var materialAmount = Math.round(self.itemDrops[i] * (Math.random() + 0.5))
-                                    pt.inventory.materials[i] += materialAmount;
-                                    pt.inventory.refreshMaterial();
-                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + pt.inventory.getMaterialName(i) + " x" + materialAmount + ".");
-                                }
-                            }
-                            if(materialAdded === false){
-                                if(self.itemDrops[i] * pt.stats.luck > Math.random()){
-                                    var itemIndex = pt.inventory.addRandomItemAndRandomizedEnchantments(i,pt.stats.luck);
-                                    var item = pt.inventory.items[itemIndex];
-                                    addToChat('style="color: ' + pt.textColor + '">',pt.displayName + " got a " + Item.list[item.id].name + ".");
-                                }
-                            }
-                        }
-                    }
-                }
-                pt.xp += Math.round(self.xpGain * (5 + Math.random() * 2) * pt.stats.xp);
-                pt.coins += Math.round(self.xpGain * (300 + Math.random() * 150) * pt.stats.xp);
-            }
+            self.dropItems(pt);
             self.willBeDead = true;
             self.toRemove = true;
         }
@@ -2837,28 +2764,43 @@ Player = function(param){
     self.inventory = new Inventory(socket,true);
     self.selectedItem = false;
     if(param.param.inventory !== undefined){
+        var newAccount = true;
         for(var i in param.param.inventory){
-            self.inventory.addItem(param.param.inventory[i].id,param.param.inventory[i].enchantments);
+            if(param.param.inventory[i].id && param.param.inventory[i].stack === undefined){
+                newAccount = false;
+            }
+        }
+        if(newAccount === true){
+            self.inventory.items = param.param.inventory;
+        }
+        else{
+            for(var i in param.param.inventory){
+                self.inventory.addItem(param.param.inventory[i].id,1,param.param.inventory[i].enchantments);
+            }
+        }
+        for(var i in self.inventory.items){
+            if(self.inventory.items[i].stack === undefined){
+                self.inventory.items[i].stack = 1;
+            }
+            self.inventory.refreshItem(i);
+        }
+    }
+    if(param.param.equips !== undefined){
+        self.inventory.equips = param.param.equips;
+        for(var i in self.inventory.equips){
+            if(self.inventory.equips[i].stack === undefined){
+                self.inventory.equips[i].stack = 1;
+            }
+            self.inventory.refreshItem(i);
         }
     }
     if(param.param.currentEquip !== undefined){
-        for(var i in param.param.currentEquip){
-            if(self.inventory.currentEquip[i] === undefined){
-                self.inventory.addItem(param.param.currentEquip[i].id,param.param.currentEquip[i].enchantments);
+        self.inventory.equips = param.param.currentEquip;
+        for(var i in self.inventory.equips){
+            if(self.inventory.equips[i].stack === undefined){
+                self.inventory.equips[i].stack = 1;
             }
-            else if(Item.list[param.param.currentEquip[i].id]){
-                self.inventory.currentEquip[i] = param.param.currentEquip[i];
-            }
-        }
-    }
-    if(param.param.materials !== undefined){
-        for(var i in param.param.materials){
-            if(self.inventory.materials[i] === undefined){
-                
-            }
-            else{
-                self.inventory.materials[i] = param.param.materials[i];
-            }
+            self.inventory.refreshItem(i);
         }
     }
     if(param.param.xp !== undefined){
@@ -2907,7 +2849,6 @@ Player = function(param){
     self.oldMaxSpeed = self.maxSpeed;
     self.oldManaRegen = self.manaRegen;
     self.oldManaMax = self.manaMax;
-    self.inventory.refreshRender();
     self.stats = {
         attack:0,
         defense:0,
@@ -3050,6 +2991,9 @@ Player = function(param){
         self.damageArray.splice(0,1);
         self.damageArray.push(0);
     }
+    self.useItem = function(event,index){
+        eval(event);
+    }
     self.checkQuestRequirements = function(quest){
         for(var i in questData){
             if(i === quest){
@@ -3166,16 +3110,15 @@ Player = function(param){
         addToChat('style="color: ' + self.textColor + '">',self.displayName + " completed the quest " + self.quest + ".");
         if(questData[self.quest].items){
             var item = questData[self.quest].items[Math.floor(questData[self.quest].items.length * Math.random())];
-            self.inventory.addItem(item);
+            self.inventory.addItem(item,1);
             self.sendNotification('This quest gave you a ' + Item.list[item].name + '.');
         }
         if(questData[self.quest].materials){
             for(var i in questData[self.quest].materials){
                 var amount = Math.round(questData[self.quest].materials[i].amount * (1 + Math.random()));
-                self.inventory.materials[questData[self.quest].materials[i].id] += amount;
-                self.sendNotification('This quest gave you ' + self.inventory.getMaterialName(questData[self.quest].materials[i].id) + ' x' + amount + '.');
+                self.inventory.addItem(questData[self.quest].materials[i].amount.id,amount);
+                self.sendNotification('This quest gave you ' + Item.list[questData[self.quest].materials[i].id].name + ' x' + amount + '.');
             }
-            self.inventory.refreshMaterial();
         }
         if(questData[self.quest].rewards){
             if(questData[self.quest].rewards === 'strongerPet' && self.questStats[self.quest] === false){
@@ -4209,9 +4152,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Cherrier.');
                 }
-                else if(self.inventory.materials.ruby >= 25){
-                    self.inventory.materials.ruby -= 25;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',25)){
+                    self.inventory.removeItem('ruby',25);
                     self.petType = 'Cherrier';
                     self.spawnPet();
                     self.sendNotification('You used 25 rubies to change your pet into a Cherrier.');
@@ -4247,9 +4189,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Sphere.');
                 }
-                else if(self.inventory.materials.ruby >= 200){
-                    self.inventory.materials.ruby -= 200;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',200)){
+                    self.inventory.removeItem('ruby',200);
                     self.petType = 'Sphere';
                     self.spawnPet();
                     self.sendNotification('You used 200 rubies to change your pet into a Sphere.');
@@ -4265,9 +4206,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Sphere.');
                 }
-                else if(self.inventory.materials.ruby >= 200){
-                    self.inventory.materials.ruby -= 200;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',200)){
+                    self.inventory.removeItem('ruby',200);
                     self.petType = 'Sphere';
                     self.spawnPet();
                     self.sendNotification('You used 200 rubies to change your pet into a Sphere.');
@@ -4283,9 +4223,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Cherrier.');
                 }
-                else if(self.inventory.materials.ruby >= 25){
-                    self.inventory.materials.ruby -= 25;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',25)){
+                    self.inventory.removeItem('ruby',25);
                     self.petType = 'Cherrier';
                     self.spawnPet();
                     self.sendNotification('You used 25 rubies to change your pet into a Cherrier.');
@@ -4301,9 +4240,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Cherrier.');
                 }
-                else if(self.inventory.materials.ruby >= 25){
-                    self.inventory.materials.ruby -= 25;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',25)){
+                    self.inventory.removeItem('ruby',25);
                     self.petType = 'Cherrier';
                     self.spawnPet();
                     self.sendNotification('You used 25 rubies to change your pet into a Cherrier.');
@@ -4327,9 +4265,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Thunderbird.');
                 }
-                else if(self.inventory.materials.ruby >= 500){
-                    self.inventory.materials.ruby -= 500;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',500)){
+                    self.inventory.removeItem('ruby',500);
                     self.petType = 'Thunderbird';
                     self.spawnPet();
                     self.sendNotification('You used 500 rubies to change your pet into a Thunderbird.');
@@ -4345,9 +4282,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Thunderbird.');
                 }
-                else if(self.inventory.materials.ruby >= 500){
-                    self.inventory.materials.ruby -= 500;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',500)){
+                    self.inventory.removeItem('ruby',500);
                     self.petType = 'Thunderbird';
                     self.spawnPet();
                     self.sendNotification('You used 500 rubies to change your pet into a Thunderbird.');
@@ -4363,9 +4299,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Thunderbird.');
                 }
-                else if(self.inventory.materials.ruby >= 500){
-                    self.inventory.materials.ruby -= 500;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',500)){
+                    self.inventory.removeItem('ruby',500);
                     self.petType = 'Thunderbird';
                     self.spawnPet();
                     self.sendNotification('You used 500 rubies to change your pet into a Thunderbird.');
@@ -4381,9 +4316,8 @@ Player = function(param){
                     self.spawnPet();
                     self.sendNotification('You changed your pet into a Sphere.');
                 }
-                else if(self.inventory.materials.ruby >= 200){
-                    self.inventory.materials.ruby -= 200;
-                    self.inventory.refreshMaterial();
+                else if(self.inventory.hasItem('ruby',200)){
+                    self.inventory.removeItem('ruby',200);
                     self.petType = 'Sphere';
                     self.spawnPet();
                     self.sendNotification('You used 200 rubies to change your pet into a Sphere.');
@@ -4401,47 +4335,6 @@ Player = function(param){
         if(self.currentResponse === 4 && self.questInfo.questStage === 2 && self.questInfo.petUpgrade === true){
             self.questInfo = {};
             self.endDialogue();
-        }
-
-        if(self.selectedItem !== false && self.questInfo.questStage === 1 && self.questInfo.quest === 'Enchant'){
-            var item = Item.list[self.inventory.items[self.selectedItem].id];
-            var book = self.questInfo.item;
-            var canEnchant = false;
-            for(var i in book.enchantments){
-                for(var j in item.enchantments){
-                    if(book.enchantments[i].id === item.enchantments[j]){
-                        canEnchant = true;
-                    }
-                }
-            }
-            if(item.enchantments.length === 0 || canEnchant === false){
-                socket.emit('hideInventory');
-                self.startDialogue('I can\'t enchant this item...','...');
-                self.selectedItem = false;
-                self.questInfo.questStage = 2;
-            }
-            else{
-                for(var i in book.enchantments){
-                    for(var j in item.enchantments){
-                        if(book.enchantments[i].id === item.enchantments[j]){
-                            self.inventory.enchantItem(self.selectedItem,book.enchantments[i].id,book.enchantments[i].level);
-                        }
-                    }
-                }
-                self.inventory.refreshAllItems();
-                socket.emit('toggleSelect');
-                self.questInfo.quest = false;
-                socket.emit('dialogueLine',{
-                    state:'remove',
-                });
-                self.selectedItem = false;
-                self.currentResponse = 0;
-            }
-        }
-        if(self.currentResponse === 1 && self.questInfo.questStage === 2 && self.questInfo.quest === 'Enchant'){
-            self.questInfo.questStage = 1;
-            self.endDialogue();
-            socket.emit('showInventory');
         }
     }
     self.updateStats = function(){
@@ -4462,6 +4355,8 @@ Player = function(param){
                 debuffs:[],
                 aggro:1,
             }
+            var maxSlots = self.inventory.maxSlots;
+            self.inventory.maxSlots = 30;
             self.passive = '';
             self.offhandPassive = '';
             self.textColor = '#ffff00';
@@ -4480,18 +4375,19 @@ Player = function(param){
             }
             self.maxSpeed = 20 + Math.floor(self.level / 10);
             self.pushPower = 3;
+            self.pushResist = 0;
             self.immuneDebuffs = [];
             damageIncrease = 1;
             self.useTime = 0;
             self.passiveUsetime = 10;
             self.offhandPassiveUsetime = 10;
-            for(var i in self.inventory.currentEquip){
-                if(self.inventory.currentEquip[i].id !== undefined){
+            for(var i in self.inventory.equips){
+                if(self.inventory.equips[i].id !== undefined){
                     if(i !== 'weapon2'){
-                        var item = Item.list[self.inventory.currentEquip[i].id];
+                        var item = Item.list[self.inventory.equips[i].id];
                         if(item.damageType){
                             self.stats.damageType = item.damageType;
-                            self.ability.ability = self.inventory.currentEquip[i].id;
+                            self.ability.ability = self.inventory.equips[i].id;
                         }
                         if(item.manaCost){
                             self.attackCost = item.manaCost;
@@ -4499,10 +4395,10 @@ Player = function(param){
                     }
                 }
             }
-            for(var i in self.inventory.currentEquip){
-                if(self.inventory.currentEquip[i].id !== undefined){
+            for(var i in self.inventory.equips){
+                if(self.inventory.equips[i].id !== undefined){
                     if(i !== 'weapon2'){
-                        var item = Item.list[self.inventory.currentEquip[i].id];
+                        var item = Item.list[self.inventory.equips[i].id];
                         if(item.damage){
                             self.stats.attack += item.damage;
                         }
@@ -4523,9 +4419,9 @@ Player = function(param){
                         }
                         try{
                             eval(item.event);
-                            for(var j in self.inventory.currentEquip[i].enchantments){
-                                var enchantment = Enchantment.list[self.inventory.currentEquip[i].enchantments[j].id];
-                                var value = self.inventory.currentEquip[i].enchantments[j].level;
+                            for(var j in self.inventory.equips[i].enchantments){
+                                var enchantment = Enchantment.list[self.inventory.equips[i].enchantments[j].id];
+                                var value = self.inventory.equips[i].enchantments[j].level;
                                 eval(enchantment.event);
                             }
                         }
@@ -4535,8 +4431,8 @@ Player = function(param){
                     }
                 }
             }
-            if(self.inventory.currentEquip['weapon'].id){
-                self.currentItem = self.inventory.currentEquip['weapon'].id;
+            if(self.inventory.equips['weapon'].id){
+                self.currentItem = self.inventory.equips['weapon'].id;
             }
             else{
                 self.currentItem = '';
@@ -4556,6 +4452,30 @@ Player = function(param){
             self.oldHpMax = self.hpMax;
             self.oldManaRegen = self.manaRegen;
             self.oldManaMax = self.manaMax;
+            if(maxSlots !== self.inventory.maxSlots){
+                self.inventory.refreshMenu();
+                for(var i = 0;i < self.inventory.items.length;i++){
+                    if(self.inventory.items[i] === null){
+                        self.inventory.items[i] = {};
+                    }
+                    if(i >= self.inventory.maxSlots){
+                        if(self.inventory.items[i].id){
+                            new DroppedItem({
+                                id:self.id,
+                                item:self.inventory.items[i],
+                                amount:self.inventory.items[i].stack,
+                                x:self.x,
+                                y:self.y,
+                                map:self.map,
+                                leftPlayer:false,
+                                allPlayers:false,
+                            });
+                        }
+                        self.inventory.items.splice(i,1);
+                        i -= 1;
+                    }
+                }
+            }
         }
     }
     self.updateMap = function(){
@@ -4816,6 +4736,77 @@ Player = function(param){
                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningSpit',32 + 32 * i,function(t){return 0},30,self.stats,'playerSplaser');
             }
         }
+        if(self.offhandPassive === 'explode'){
+            var speed = self.stats.speed;
+            self.stats.speed = 0;
+            var projectileWidth = 0;
+            var projectileHeight = 0;
+            for(var i in projectileData){
+                if(i === 'fireBullet'){
+                    projectileWidth = projectileData[i].width;
+                    projectileHeight = projectileData[i].height;
+                }
+            }
+            var projectile = Projectile({
+                id:self.id,
+                projectileType:'fireBullet',
+                angle:0,
+                direction:0,
+                x:self.mouseX,
+                y:self.mouseY,
+                map:self.map,
+                parentType:self.type,
+                mapWidth:self.mapWidth,
+                mapHeight:self.mapHeight,
+                width:projectileWidth,
+                height:projectileHeight,
+                spin:function(t){return 25},
+                pierce:0,
+                projectilePattern:'stationary',
+                stats:self.stats,
+                onCollision:function(self,pt){
+                    for(var i = 0;i < 15;i++){
+                        var stats = self.stats;
+                        stats.attack *= 0.3;
+                        var projectile = Projectile({
+                            id:self.parent,
+                            projectileType:'fireBullet',
+                            angle:i * 24,
+                            direction:i * 24,
+                            x:self.x,
+                            y:self.y,
+                            map:self.map,
+                            parentType:self.parentType,
+                            mapWidth:self.mapWidth,
+                            mapHeight:self.mapHeight,
+                            width:projectileWidth,
+                            height:projectileHeight,
+                            spin:function(t){return 25},
+                            pierce:1000,
+                            projectilePattern:'accellerateNoCollision',
+                            stats:stats,
+                            onCollision:function(self,pt){
+                                if(self.pierce === 0){
+                                    self.toRemove = true;
+                                }
+                                else{
+                                    self.pierce -= 1;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+            self.stats.speed = speed;
+        }
+        if(self.offhandPassive === 'firering'){
+            var speed = self.stats.speed;
+            self.stats.speed = 0.2;
+            for(var i = 0;i < 15;i++){
+                self.shootProjectile(self.id,'Player',i * 24,i * 24,'fireBullet',128,function(t){return 0},1000,self.stats,'spinAroundPlayer');
+            }
+            self.stats.speed = speed;
+        }
     }
     self.updateAttack = function(){
         var isFireMap = firableMap(self.map);
@@ -5058,6 +5049,36 @@ Player = function(param){
                             if(isFireMap){
                                 for(var j = 0;j < 10;j++){
                                     self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'bullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                                }
+                            }
+                            break;
+                        case "bowofembersAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'flame',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                                }
+                                for(var j = 0;j < 10;j++){
+                                    if(Math.random() < 0.1){
+                                        var attack = self.stats.attack;
+                                        self.stats.attack *= 10;
+                                        self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'fireBullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats,'monsterHoming');
+                                        self.stats.attack = attack;
+                                    }
+                                }
+                            }
+                            break;
+                        case "burntbookofashesAttack":
+                            if(isFireMap){
+                                for(var j = 0;j < 10;j++){
+                                    self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'fireBullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats);
+                                }
+                                for(var j = 0;j < 100;j++){
+                                    if(Math.random() < 0.01){
+                                        var attack = self.stats.attack;
+                                        self.stats.attack *= 10;
+                                        self.shootProjectile(self.id,'Player',self.direction - 10 + Math.random() * 20,self.direction - 10 + Math.random() * 20,'fireBullet',54 + 24 * Math.random(),function(t){return 0},30,self.stats,'monsterHoming');
+                                        self.stats.attack = attack;
+                                    }
                                 }
                             }
                             break;
@@ -5610,12 +5631,14 @@ Player = function(param){
             }
         }
         if(self.keyPress.switch === true){
-            if(self.inventory.currentEquip.weapon.id && self.inventory.currentEquip.weapon2.id){
-                var weapon = JSON.parse(JSON.stringify(self.inventory.currentEquip.weapon));
-                var weapon2 = JSON.parse(JSON.stringify(self.inventory.currentEquip.weapon2));
-                self.inventory.currentEquip.weapon = weapon2;
-                self.inventory.currentEquip.weapon2 = weapon;
-                self.inventory.refreshEquip();
+            if(self.inventory.equips.weapon.id && self.inventory.equips.weapon2.id){
+                var weapon = JSON.parse(JSON.stringify(self.inventory.equips.weapon));
+                var weapon2 = JSON.parse(JSON.stringify(self.inventory.equips.weapon2));
+                self.inventory.equips.weapon = weapon2;
+                self.inventory.equips.weapon2 = weapon;
+                self.inventory.refreshItem('weapon');
+                self.inventory.refreshItem('weapon2');
+                self.inventory.refresh = true;
             }
             else{
                 self.sendNotification('[!] Have both a weapon and a secondary weapon equipped to swap weapons.');
@@ -6275,7 +6298,7 @@ Player.onDisconnect = function(socket){
 Player.getAllInitPack = function(socket){
     try{
         var player = Player.list[socket.id];
-        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],sound:[]};
+        var pack = {player:[],projectile:[],monster:[],npc:[],pet:[],particle:[],droppedItem:[]};
         for(var i in Player.list){
             if(Player.list[i].map === player.map){
                 pack.player.push(Player.list[i].getInitPack());
@@ -6304,6 +6327,11 @@ Player.getAllInitPack = function(socket){
         for(var i in Particle.list){
             if(Particle.list[i].map === player.map){
                 pack.particle.push(Particle.list[i].getInitPack());
+            }
+        }
+        for(var i in DroppedItem.list){
+            if(DroppedItem.list[i].map === player.map){
+                pack.droppedItem.push(DroppedItem.list[i].getInitPack());
             }
         }
         socket.emit('update',pack);
@@ -10803,6 +10831,123 @@ Projectile = function(param){
 }
 Projectile.list = {};
 
+DroppedItem = function(param){
+	var self = Entity(param);
+	self.id = Math.random();
+    self.parent = param.id;
+    self.width = 64;
+    self.height = 64;
+    if(param.item.id.includes('trident') === true){
+        self.width = 84;
+        self.height = 84;
+    }
+    self.x += 128 * Math.random() - 64;
+    self.y += 128 * Math.random() - 64;
+    self.spdX = Math.random() * 20 - 10;
+    self.spdY = Math.random() * 20 - 10;
+    self.leftPlayer = param.leftPlayer;
+    self.allPlayers = param.allPlayers;
+    self.timer = 300000;
+    self.mapWidth = Maps[self.map].width;
+    self.mapHeight = Maps[self.map].height;
+    self.direction = 0;
+    self.item = param.item;
+    self.amount = param.amount;
+    self.toRemove = false;
+    self.type = 'DroppedItem';
+    var lastSelf = {};
+	var super_update = self.update;
+	self.update = function(){
+        super_update();
+        self.timer -= 1;
+        if(self.timer <= 0){
+            self.toRemove = true;
+        }
+        self.spdX *= 0.9;
+        self.spdY *= 0.9;
+        if(self.x < self.width / 2){
+            self.x = self.width / 2;
+        }
+        if(self.x > self.mapWidth - self.width / 2){
+            self.x = self.mapWidth - self.width / 2;
+        }
+        if(self.y < self.height / 2){
+            self.y = self.height / 2;
+        }
+        if(self.y > self.mapHeight - self.height / 2){
+            self.y = self.mapHeight - self.height / 2;
+        }
+        self.direction += 16;
+        if(Player.list[self.parent]){
+            if(Player.list[self.parent].map === self.map){
+                if(self.getDistance(Player.list[self.parent]) < 192 && self.leftPlayer === true){
+                    self.spdX += Math.cos(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 4;
+                    self.spdY += Math.sin(Math.atan2(Player.list[self.parent].y - self.y,Player.list[self.parent].x - self.x)) * 4;
+                }
+            }
+            if(self.getDistance(Player.list[self.parent]) > 192){
+                self.leftPlayer = true;
+            }
+        }
+        else{
+            self.toRemove = true;
+        }
+    }
+	self.getUpdatePack = function(){
+        var pack = {};
+        pack.id = self.id;
+        if(lastSelf.x !== self.x){
+            pack.x = self.x;
+            lastSelf.x = self.x;
+        }
+        if(lastSelf.y !== self.y){
+            pack.y = self.y;
+            lastSelf.y = self.y;
+        }
+        if(lastSelf.map !== self.map){
+            pack.map = self.map;
+            lastSelf.map = self.map;
+        }
+        if(lastSelf.item === undefined){
+            pack.item = self.item;
+            lastSelf.item = self.item;
+        }
+        if(lastSelf.direction !== self.direction){
+            pack.direction = self.direction;
+            lastSelf.direction = self.direction;
+        }
+        if(lastSelf.parent !== self.parent){
+            pack.parent = self.parent;
+            lastSelf.parent = self.parent;
+        }
+        if(lastSelf.allPlayers !== self.allPlayers){
+            pack.allPlayers = self.allPlayers;
+            lastSelf.allPlayers = self.allPlayers;
+        }
+        if(lastSelf.type !== self.type){
+            pack.type = self.type;
+            lastSelf.type = self.type;
+        }
+        return pack;
+	}
+    self.getInitPack = function(){
+        var pack = {};
+        pack.id = self.id;
+        pack.x = self.x;
+        pack.y = self.y;
+        pack.map = self.map;
+        pack.item = self.item;
+        pack.parent = self.parent;
+        pack.direction = self.direction;
+        pack.allPlayers = self.allPlayers;
+        pack.type = self.type;
+        return pack;
+    }
+	DroppedItem.list[self.id] = self;
+	return self;
+}
+DroppedItem.list = {};
+
 var renderLayer = function(layer,data,loadedMap){
     playerMap[loadedMap] = 0;
     var size = data.tilewidth;
@@ -11513,6 +11658,52 @@ updateCrashes = function(){
             }
         }
     }
+    for(var i in DroppedItem.list){
+        if(DroppedItem.list[i].allPlayers === false){
+            if(Player.list[DroppedItem.list[i].parent]){
+                if(DroppedItem.list[i].leftPlayer === true && Player.list[DroppedItem.list[i].parent].isColliding(DroppedItem.list[i])){
+                    Player.list[DroppedItem.list[i].parent].inventory.addItem(DroppedItem.list[i].item.id,DroppedItem.list[i].amount,DroppedItem.list[i].item.enchantments);
+                    DroppedItem.list[i].toRemove = true;
+                    for(var j = 0;j < 25;j++){
+                        var particle = new Particle({
+                            x:DroppedItem.list[i].x + Math.random() * DroppedItem.list[i].width - DroppedItem.list[i].width / 2,
+                            y:DroppedItem.list[i].y + Math.random() * DroppedItem.list[i].height - DroppedItem.list[i].height / 2,
+                            map:DroppedItem.list[i].map,
+                            particleType:'kill',
+                        });
+                    }
+                }
+            }
+        }
+        else{
+            for(var j in Player.list){
+                if(j === '' + DroppedItem.list[i].parent && DroppedItem.list[i].leftPlayer === true && Player.list[j].isColliding(DroppedItem.list[i])){
+                    Player.list[j].inventory.addItem(DroppedItem.list[i].item.id,DroppedItem.list[i].amount,DroppedItem.list[i].item.enchantments);
+                    DroppedItem.list[i].toRemove = true;
+                    for(var k = 0;k < 25;k++){
+                        var particle = new Particle({
+                            x:DroppedItem.list[i].x + Math.random() * DroppedItem.list[i].width - DroppedItem.list[i].width / 2,
+                            y:DroppedItem.list[i].y + Math.random() * DroppedItem.list[i].height - DroppedItem.list[i].height / 2,
+                            map:DroppedItem.list[i].map,
+                            particleType:'kill',
+                        });
+                    }
+                }
+                else if(j !== '' + DroppedItem.list[i].parent && Player.list[j].isColliding(DroppedItem.list[i])){
+                    Player.list[j].inventory.addItem(DroppedItem.list[i].item.id,DroppedItem.list[i].amount,DroppedItem.list[i].item.enchantments);
+                    DroppedItem.list[i].toRemove = true;
+                    for(var k = 0;k < 25;k++){
+                        var particle = new Particle({
+                            x:DroppedItem.list[i].x + Math.random() * DroppedItem.list[i].width - DroppedItem.list[i].width / 2,
+                            y:DroppedItem.list[i].y + Math.random() * DroppedItem.list[i].height - DroppedItem.list[i].height / 2,
+                            map:DroppedItem.list[i].map,
+                            particleType:'kill',
+                        });
+                    }
+                }
+            }
+        }
+    }
 }
 
 spawnEnemies = function(){
@@ -11566,6 +11757,7 @@ getRandomNpcItem = function(){
 	return {
 		id:item,
 		enchantments:enchantments,
+        stack:1,
 	};
 }
 
@@ -11574,11 +11766,13 @@ setInterval(function(){
     npc.shop = [
         {
             id:'lesserrandomboostpotion',
-            enchantments:[]
+            enchantments:[],
+            stack:1
         },
         {
             id:'skullofdeath',
-            enchantments:[]
+            enchantments:[],
+            stack:1
         }
     ];
     npc.shop[2] = getRandomNpcItem();
@@ -11598,11 +11792,13 @@ setTimeout(function(){
     npc.shop = [
         {
             id:'lesserrandomboostpotion',
-            enchantments:[]
+            enchantments:[],
+            stack:1
         },
         {
             id:'skullofdeath',
-            enchantments:[]
+            enchantments:[],
+            stack:1
         }
     ];
     npc.shop[2] = getRandomNpcItem();
