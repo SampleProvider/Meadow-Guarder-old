@@ -1396,7 +1396,7 @@
     "fireboomerang":{
         "name":"Fire Boomerang",
         "equip":"weapon",
-        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];self.stats.speed += 2;",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
         "enchantments":["speed","burst","aim","sharpness"],
         "damage":1923,
         "damageType":"melee",

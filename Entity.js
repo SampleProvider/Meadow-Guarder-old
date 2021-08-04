@@ -4815,8 +4815,14 @@ Player = function(param){
                 if(i === 'fireBullet'){
                     projectileWidth = projectileData[i].width;
                     projectileHeight = projectileData[i].height;
+                    projectileStats = Object.create(projectileData[i].stats);
                 }
             }
+            for(var i in projectileStats){
+                projectileStats[i] *= self.stats[i];
+            }
+            projectileStats.damageReduction = 0;
+            projectileStats.debuffs = stats.debuffs;
             var projectile = Projectile({
                 id:self.id,
                 projectileType:'fireBullet',
@@ -4833,10 +4839,10 @@ Player = function(param){
                 spin:function(t){return 25},
                 pierce:0,
                 projectilePattern:'stationary',
-                stats:self.stats,
+                stats:projectileStats,
                 onCollision:function(self,pt){
                     for(var i = 0;i < 15;i++){
-                        var stats = self.stats;
+                        var stats = projectileStats;
                         stats.attack *= 0.3;
                         var projectile = Projectile({
                             id:self.parent,
@@ -5300,8 +5306,14 @@ Player = function(param){
                                     if(i === 'waterTower'){
                                         projectileWidth = projectileData[i].width;
                                         projectileHeight = projectileData[i].height;
+                                        projectileStats = Object.create(projectileData[i].stats);
                                     }
                                 }
+                                for(var i in projectileStats){
+                                    projectileStats[i] *= self.stats[i];
+                                }
+                                projectileStats.damageReduction = 0;
+                                projectileStats.debuffs = stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'waterTower',
@@ -5318,7 +5330,7 @@ Player = function(param){
                                     spin:function(t){return 0},
                                     pierce:0,
                                     projectilePattern:'stationary',
-                                    stats:self.stats,
+                                    stats:projectileStats,
                                     onCollision:function(self,pt){
                                         
                                     }
@@ -5362,8 +5374,14 @@ Player = function(param){
                                     if(i === 'rockTower'){
                                         projectileWidth = projectileData[i].width;
                                         projectileHeight = projectileData[i].height;
+                                        projectileStats = Object.create(projectileData[i].stats);
                                     }
                                 }
+                                for(var i in projectileStats){
+                                    projectileStats[i] *= self.stats[i];
+                                }
+                                projectileStats.damageReduction = 0;
+                                projectileStats.debuffs = stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'rockTower',
@@ -5380,7 +5398,7 @@ Player = function(param){
                                     spin:function(t){return 0},
                                     pierce:0,
                                     projectilePattern:'stationary',
-                                    stats:self.stats,
+                                    stats:projectileStats,
                                     onCollision:function(self,pt){
                                         
                                     }
@@ -5442,8 +5460,14 @@ Player = function(param){
                                     if(i === 'seed'){
                                         projectileWidth = projectileData[i].width;
                                         projectileHeight = projectileData[i].height;
+                                        projectileStats = Object.create(projectileData[i].stats);
                                     }
                                 }
+                                for(var i in projectileStats){
+                                    projectileStats[i] *= self.stats[i];
+                                }
+                                projectileStats.damageReduction = 0;
+                                projectileStats.debuffs = stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'seed',
@@ -5460,7 +5484,7 @@ Player = function(param){
                                     spin:function(t){return 0},
                                     pierce:0,
                                     projectilePattern:'monsterHomingSpin',
-                                    stats:self.stats,
+                                    stats:projectileStats,
                                     onCollision:function(self,pt){
                                         if(self.pierce === 0){
                                             self.toRemove = true;
@@ -5491,8 +5515,14 @@ Player = function(param){
                                     if(i === 'waterBullet'){
                                         projectileWidth = projectileData[i].width;
                                         projectileHeight = projectileData[i].height;
+                                        projectileStats = Object.create(projectileData[i].stats);
                                     }
                                 }
+                                for(var i in projectileStats){
+                                    projectileStats[i] *= self.stats[i];
+                                }
+                                projectileStats.damageReduction = 0;
+                                projectileStats.debuffs = stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'waterBullet',
@@ -5509,7 +5539,7 @@ Player = function(param){
                                     spin:function(t){return 25},
                                     pierce:0,
                                     projectilePattern:'bounceOffCollisions',
-                                    stats:self.stats,
+                                    stats:projectileStats,
                                     onCollision:function(self,pt){
                                         if(self.pierce === 0){
                                             self.toRemove = true;
@@ -5545,8 +5575,14 @@ Player = function(param){
                                     if(i === 'thedeathrayspiral'){
                                         projectileWidth = projectileData[i].width;
                                         projectileHeight = projectileData[i].height;
+                                        projectileStats = Object.create(projectileData[i].stats);
                                     }
                                 }
+                                for(var i in projectileStats){
+                                    projectileStats[i] *= self.stats[i];
+                                }
+                                projectileStats.damageReduction = 0;
+                                projectileStats.debuffs = stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'thedeathrayspiral',
@@ -5563,7 +5599,7 @@ Player = function(param){
                                     spin:function(t){return 25},
                                     pierce:1000,
                                     projectilePattern:'boomerang',
-                                    stats:self.stats,
+                                    stats:projectileStats,
                                     onCollision:function(self,pt){
                                         if(Player.list[self.parent]){
                                             var x = Player.list[self.parent].x
@@ -5620,8 +5656,14 @@ Player = function(param){
                                     if(i === 'fireboomerang'){
                                         projectileWidth = projectileData[i].width;
                                         projectileHeight = projectileData[i].height;
+                                        projectileStats = Object.create(projectileData[i].stats);
                                     }
                                 }
+                                for(var i in projectileStats){
+                                    projectileStats[i] *= self.stats[i];
+                                }
+                                projectileStats.damageReduction = 0;
+                                projectileStats.debuffs = stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'fireboomerang',
@@ -5638,7 +5680,7 @@ Player = function(param){
                                     spin:function(t){return 25},
                                     pierce:1000,
                                     projectilePattern:'boomerang',
-                                    stats:self.stats,
+                                    stats:projectileStats,
                                     onCollision:function(self,pt){
                                         if(Player.list[self.parent]){
                                             var x = Player.list[self.parent].x
