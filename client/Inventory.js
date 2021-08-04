@@ -444,7 +444,7 @@ Inventory = function(socket,server){
                         document.getElementById('draggingItem').style.top = (rect.top - 3) + 'px';
                     }
                 }
-                else{
+                else if(self.equips[index].length === 0){
                     slot.innerHTML = "<image class='outlineImage' src='/client/img/outline" + index + ".png'></image>";
                 }
             }
