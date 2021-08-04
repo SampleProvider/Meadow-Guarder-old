@@ -1545,6 +1545,7 @@ Actor = function(param){
                                     }
                                 }
                             }
+                        }
                         new DroppedItem({
                             id:pt.parent,
                             item:{id:i,enchantments:enchantments},
