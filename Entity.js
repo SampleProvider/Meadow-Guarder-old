@@ -1533,8 +1533,37 @@ Actor = function(param){
     self.dropItems = function(pt){
         if(pt.parentType === 'Player' && self.type === 'Monster'){
             for(var i in self.itemDrops){
-                if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
-                    var amount = Math.max(Math.round(self.itemDrops[i] * Player.list[pt.parent].stats.luck * (1 + Math.random())),1);
+                if(i === 'enchantmentbook'){
+                    for(var enchantmentBook = 0;enchantmentBook < self.itemDrops[i];enchantmentBook++){
+                        var enchantments = [];
+                        for(var j in Item.list[i].enchantments){
+                            for(var k in Enchantment.list){
+                                if(k === Item.list[i].enchantments[j]){
+                                    var enchantment = Enchantment.list[k];
+                                    if(Math.random() < enchantment.dropChance * Player.list[pt.parent].stats.luck){
+                                        enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel * 1000 + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
+                                    }
+                                }
+                            }
+                        new DroppedItem({
+                            id:pt.parent,
+                            item:{id:i,enchantments:enchantments},
+                            amount:1,
+                            x:self.x,
+                            y:self.y,
+                            map:self.map,
+                            leftPlayer:true,
+                            allPlayers:false,
+                        });
+                    }
+                }
+                else if(self.itemDrops[i] * Player.list[pt.parent].stats.luck > Math.random()){
+                    if(Item.list[i].maxStack !== 1){
+                        var amount = Math.max(Math.round(self.itemDrops[i] * Player.list[pt.parent].stats.luck * (1 + Math.random())),1);
+                    }
+                    else{
+                        var amount = 1;
+                    }
                     var enchantments = [];
                     for(var j in Item.list[i].enchantments){
                         for(var k in Enchantment.list){
@@ -1563,8 +1592,38 @@ Actor = function(param){
         }
         if(pt.type === 'Player' && self.type === 'Monster'){
             for(var i in self.itemDrops){
-                if(self.itemDrops[i] * pt.stats.luck > Math.random()){
-                    var amount = Math.max(Math.round(self.itemDrops[i] * pt.stats.luck * (1 + Math.random())),1);
+                if(i === 'enchantmentbook'){
+                    for(var enchantmentBook = 0;enchantmentBook < self.itemDrops[i];enchantmentBook++){
+                        var enchantments = [];
+                        for(var j in Item.list[i].enchantments){
+                            for(var k in Enchantment.list){
+                                if(k === Item.list[i].enchantments[j]){
+                                    var enchantment = Enchantment.list[k];
+                                    if(Math.random() < enchantment.dropChance * pt.stats.luck){
+                                        enchantments.push({id:k,level:Math.min(Math.max(0.001,Math.round(enchantment.averageLevel * 1000 + (Math.random() * 2 - 1) * enchantment.deviation * 1000) / 1000),enchantment.maxLevel)});
+                                    }
+                                }
+                            }
+                        }
+                        new DroppedItem({
+                            id:pt.id,
+                            item:{id:i,enchantments:enchantments},
+                            amount:1,
+                            x:self.x,
+                            y:self.y,
+                            map:self.map,
+                            leftPlayer:true,
+                            allPlayers:false,
+                        });
+                    }
+                }
+                else if(self.itemDrops[i] * pt.stats.luck > Math.random()){
+                    if(Item.list[i].maxStack !== 1){
+                        var amount = Math.max(Math.round(self.itemDrops[i] * pt.stats.luck * (1 + Math.random())),1);
+                    }
+                    else{
+                        var amount = 1;
+                    }
                     var enchantments = [];
                     for(var j in Item.list[i].enchantments){
                         for(var k in Enchantment.list){
