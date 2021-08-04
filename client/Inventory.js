@@ -292,6 +292,10 @@ Inventory = function(socket,server){
                     gameDiv.appendChild(div);
                     image.onmouseover = function(){
                         if(self.draggingItem === -1){
+                            var itemMenu = document.getElementsByClassName('itemMenu');
+                            for(var i = 0;i < itemMenu.length;i++){
+                                itemMenu[i].style.display = 'none';
+                            }
                             div.style.display = 'inline-block';
                             div.style.left = (mouseX + WIDTH / 2 + 3) + 'px';
                             div.style.top = (mouseY + HEIGHT / 2 + 3) + 'px';
@@ -302,6 +306,10 @@ Inventory = function(socket,server){
                     }
                     div.onmouseover = function(){
                         if(self.draggingItem === -1){
+                            var itemMenu = document.getElementsByClassName('itemMenu');
+                            for(var i = 0;i < itemMenu.length;i++){
+                                itemMenu[i].style.display = 'none';
+                            }
                             div.style.display = 'inline-block';
                             div.style.left = (mouseX + WIDTH / 2 + 3) + 'px';
                             div.style.top = (mouseY + HEIGHT / 2 + 3) + 'px';
@@ -394,6 +402,10 @@ Inventory = function(socket,server){
                     var image = document.getElementById('itemImage' + index);
                     image.onmouseover = function(){
                         if(self.draggingItem === -1){
+                            var itemMenu = document.getElementsByClassName('itemMenu');
+                            for(var i = 0;i < itemMenu.length;i++){
+                                itemMenu[i].style.display = 'none';
+                            }
                             div.style.display = 'inline-block';
                             div.style.left = (mouseX + WIDTH / 2 + 3) + 'px';
                             div.style.top = (mouseY + HEIGHT / 2 + 3) + 'px';
@@ -404,6 +416,10 @@ Inventory = function(socket,server){
                     }
                     div.onmouseover = function(){
                         if(self.draggingItem === -1){
+                            var itemMenu = document.getElementsByClassName('itemMenu');
+                            for(var i = 0;i < itemMenu.length;i++){
+                                itemMenu[i].style.display = 'none';
+                            }
                             div.style.display = 'inline-block';
                             div.style.left = (mouseX + WIDTH / 2 + 3) + 'px';
                             div.style.top = (mouseY + HEIGHT / 2 + 3) + 'px';
@@ -422,11 +438,14 @@ Inventory = function(socket,server){
                         for(var i = 0;i < itemMenu.length;i++){
                             itemMenu[i].style.display = 'none';
                         }
-                        slot.innerHTML = "";
+                        slot.innerHTML = "<image class='outlineImage' src='/client/img/outline" + index + ".png'></image>";
                         document.getElementById('draggingItem').innerHTML = "<image class='itemImage' draggable=false src='/client/img/" + self.equips[index].id + ".png'></image>";
                         document.getElementById('draggingItem').style.left = (rect.left - 3) + 'px';
                         document.getElementById('draggingItem').style.top = (rect.top - 3) + 'px';
                     }
+                }
+                else{
+                    slot.innerHTML = "<image class='outlineImage' src='/client/img/outline" + index + ".png'></image>";
                 }
             }
         }
@@ -838,6 +857,16 @@ Inventory = function(socket,server){
                         self.refreshItem(index1);
                     }
                     else{
+                        var item1 = self.equips[index1];
+                        var item2 = self.equips[index2];
+                        if(Item.list[item2.id].equip === index1 || Item.list[item2.id].equip + '2' === index1){
+                            if(Item.list[item1.id].equip === index2 || Item.list[item1.id].equip + '2' === index2){
+                                self.equips[index1] = item2;
+                                self.equips[index2] = item1;
+                                self.refreshItem(index2);
+                                self.refresh = true;
+                            }
+                        }
                         self.refreshItem(index1);
                     }
                 }
