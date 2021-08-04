@@ -2426,15 +2426,15 @@ socket.on('update',function(data){
                         if(data.player[i].id === selfId){
                             document.getElementById('debuffs').innerHTML = '';
                             if(Player.list[data.player[i].id].hp > 0){
-                                for(var i in Player.list[data.player[i].id].debuffs){
-                                    var time = Math.ceil(Player.list[data.player[i].id].debuffs[i].time / 20);
+                                for(var j in Player.list[data.player[i].id].debuffs){
+                                    var time = Math.ceil(Player.list[data.player[i].id].debuffs[j].time / 20);
                                     if(time < 60){
                                         time += 'sec';
                                     }
                                     else{
                                         time = Math.ceil(time / 60) + 'min';
                                     }
-                                    document.getElementById('debuffs').innerHTML += '<div class="debuff UI-display-light" style="opacity:' + Player.list[data.player[i].id].debuffs[i].time / 20 + '"><image src="./client/icon/debuffs/' + Player.list[data.player[i].id].debuffs[i].id + '.png"><br><div style="padding-top: -3px;padding-right: 0px;padding-bottom: 2px;padding-left: 2px;">' + time + '</div>';
+                                    document.getElementById('debuffs').innerHTML += '<div class="debuff UI-display-light" style="opacity:' + Player.list[data.player[i].id].debuffs[j].time / 20 + '"><image src="./client/icon/debuffs/' + Player.list[data.player[i].id].debuffs[j].id + '.png"><br><div style="padding-top: -3px;padding-right: 0px;padding-bottom: 2px;padding-left: 2px;">' + time + '</div>';
                                 }
                             }
                         }
