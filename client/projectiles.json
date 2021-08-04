@@ -215,7 +215,7 @@
             "defense":1,
             "heal":1,
             "range":100,
-            "speed":2,
+            "speed":3,
             "critChance":1,
             "knockback":1
         }
@@ -228,7 +228,7 @@
             "defense":1,
             "heal":1,
             "range":100,
-            "speed":1,
+            "speed":2,
             "critChance":1,
             "knockback":1
         }
@@ -241,7 +241,7 @@
             "defense":1,
             "heal":1,
             "range":100,
-            "speed":1,
+            "speed":3,
             "critChance":1,
             "knockback":1
         }
@@ -254,6 +254,162 @@
             "defense":1,
             "heal":1,
             "range":100,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "simplewoodensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "simplesteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "simpledarksteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "simplegoldensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "simplerubysword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "advancedwoodensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "advancedsteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "advanceddarksteelsword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "advancedgoldensword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "advancedrubysword":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "waterslasher":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
+            "speed":1,
+            "critChance":1,
+            "knockback":1
+        }
+    },
+    "goldensaber":{
+        "width":64,
+        "height":64,
+        "stats":{
+            "attack":1,
+            "defense":1,
+            "heal":1,
+            "range":1,
             "speed":1,
             "critChance":1,
             "knockback":1
