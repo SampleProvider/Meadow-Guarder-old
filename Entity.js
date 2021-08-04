@@ -2766,7 +2766,12 @@ Player = function(param){
     if(param.param.inventory !== undefined){
         var newAccount = true;
         for(var i in param.param.inventory){
-            if(param.param.inventory[i].id && param.param.inventory[i].stack === undefined){
+            if(param.param.inventory[i]){
+                if(param.param.inventory[i].id && param.param.inventory[i].stack === undefined){
+                    newAccount = false;
+                }
+            }
+            else{
                 newAccount = false;
             }
         }
@@ -2775,7 +2780,9 @@ Player = function(param){
         }
         else{
             for(var i in param.param.inventory){
-                self.inventory.addItem(param.param.inventory[i].id,1,param.param.inventory[i].enchantments);
+                if(param.param.inventory[i]){
+                    self.inventory.addItem(param.param.inventory[i].id,1,param.param.inventory[i].enchantments);
+                }
             }
         }
         for(var i in self.inventory.items){
