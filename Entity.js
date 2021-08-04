@@ -3967,9 +3967,11 @@ Player = function(param){
             self.questStage = 3;
             self.endDialogue();
         }
-        if(self.questStage === 3 && self.quest === 'Tutorial' && self.inventory.equip.weapon.id !== undefined){
-            self.questStage = 4;
-            self.startQuestObjective('Walk towards the guard.');
+        if(self.questStage === 3 && self.quest === 'Tutorial'){
+            if(self.inventory.equip.weapon.id){
+                self.questStage = 4;
+                self.startQuestObjective('Walk towards the guard.');
+            }
         }
         if(self.questStage === 3 && self.quest === 'Tutorial' && self.mapChange > 10){
             for(var i in QuestInfo.list){
