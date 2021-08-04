@@ -348,7 +348,7 @@ Inventory = function(socket,server){
                     }
                 }
             }
-            if(self.equips[index]){
+            else if(self.equips[index]){
                 if(self.equips[index].id){
                     var item = Item.list[self.equips[index].id];
                     var div = document.createElement('div');
@@ -444,7 +444,7 @@ Inventory = function(socket,server){
                         document.getElementById('draggingItem').style.top = (rect.top - 3) + 'px';
                     }
                 }
-                else if(self.equips[index].length === 0){
+                else{
                     slot.innerHTML = "<image class='outlineImage' src='/client/img/outline" + index + ".png'></image>";
                 }
             }
@@ -796,17 +796,6 @@ Inventory = function(socket,server){
                                 self.refreshItem(index1);
                                 self.refreshItem(index2);
                                 return;
-                            }
-                            else if(self.equips[index2]){
-                                if(self.equips[index2].id){
-                                    for(var i in self.items[index1].enchantments){
-                                        self.enchantItem(index2,self.items[index1].enchantments[i].id,self.items[index1].enchantments[i].level);
-                                    }
-                                    self.items[index1] = {};
-                                    self.refreshItem(index1);
-                                    self.refreshItem(index2);
-                                    return;
-                                }
                             }
                         }
                     }

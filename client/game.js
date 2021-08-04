@@ -3031,10 +3031,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 672';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 672 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 684';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 684 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 672){
+        if(loadingProgressDisplay >= 684){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){
