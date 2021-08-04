@@ -187,6 +187,9 @@ Inventory = function(socket,server){
             if(self.items[i].id === item){
                 if(amountFound + self.items[i].stack >= amount){
                     self.items[i].stack = self.items[i].stack - (amount - amountFound);
+                    if(self.items[i].stack === 0){
+                        self.items[i] = {};
+                    }
                     self.refreshItem(i);
                     return true;
                 }

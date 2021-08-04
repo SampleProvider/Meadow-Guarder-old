@@ -3906,7 +3906,7 @@ Player = function(param){
             self.questStage = 3;
             self.endDialogue();
         }
-        if(self.questStage === 3 && self.quest === 'Tutorial' && self.inventory.currentEquip.weapon.id !== undefined){
+        if(self.questStage === 3 && self.quest === 'Tutorial' && self.inventory.equip.weapon.id !== undefined){
             self.questStage = 4;
             self.startQuestObjective('Walk towards the guard.');
         }
