@@ -2844,6 +2844,7 @@ Player = function(param){
                     self.inventory.addItem(param.param.inventory[i].id,1,param.param.inventory[i].enchantments);
                 }
             }
+            self.inventory.refreshMenu();
         }
         for(var i in self.inventory.items){
             if(self.inventory.items[i].stack === undefined){
