@@ -213,18 +213,36 @@ Inventory = function(socket,server){
         return false;
     }
     self.enchantItem = function(index,enchantment,level){
-        var item = self.items[index];
-        for(var i in Item.list[item.id].enchantments){
-            if(Item.list[item.id].enchantments[i] === enchantment){
-                for(var j in item.enchantments){
-                    if(item.enchantments[j].id === enchantment){
-                        item.enchantments[j].level = Math.min(Math.round(item.enchantments[j].level * 1000 + (1.01 - item.enchantments[j].level) * level * 1000) / 1000,1);
-                        return true;
+        if(self.items[index]){
+            var item = self.items[index];
+            for(var i in Item.list[item.id].enchantments){
+                if(Item.list[item.id].enchantments[i] === enchantment){
+                    for(var j in item.enchantments){
+                        if(item.enchantments[j].id === enchantment){
+                            item.enchantments[j].level = Math.min(Math.round(item.enchantments[j].level * 1000 + (1.01 - item.enchantments[j].level) * level * 1000) / 1000,1);
+                            return true;
+                        }
                     }
+                    item.enchantments.push({id:enchantment,level:level});
+                    //self.refreshItem(index);
+                    return true;
                 }
-                item.enchantments.push({id:enchantment,level:level});
-                //self.refreshItem(index);
-                return true;
+            }
+        }
+        else if(self.equips[index].id){
+            var item = self.equips[index];
+            for(var i in Item.list[item.id].enchantments){
+                if(Item.list[item.id].enchantments[i] === enchantment){
+                    for(var j in item.enchantments){
+                        if(item.enchantments[j].id === enchantment){
+                            item.enchantments[j].level = Math.min(Math.round(item.enchantments[j].level * 1000 + (1.01 - item.enchantments[j].level) * level * 1000) / 1000,1);
+                            return true;
+                        }
+                    }
+                    item.enchantments.push({id:enchantment,level:level});
+                    //self.refreshItem(index);
+                    return true;
+                }
             }
         }
     }
@@ -796,6 +814,17 @@ Inventory = function(socket,server){
                                 self.refreshItem(index1);
                                 self.refreshItem(index2);
                                 return;
+                            }
+                            else if(self.equips[index2]){
+                                if(self.equips[index2].id){
+                                    for(var i in self.items[index1].enchantments){
+                                        self.enchantItem(index2,self.items[index1].enchantments[i].id,self.items[index1].enchantments[i].level);
+                                    }
+                                    self.items[index1] = {};
+                                    self.refreshItem(index1);
+                                    self.refreshItem(index2);
+                                    return;
+                                }
                             }
                         }
                     }
