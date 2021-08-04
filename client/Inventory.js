@@ -868,14 +868,14 @@ Inventory = function(socket,server){
         self.socket.on("craftItem",function(data){
             try{
                 for(var i in self.craftItems.materials[data]){
-                    if(!self.hasItem(i,self.craftItems.materials[data][i])){
+                    if(!self.hasItem(self.craftItems.materials[data][i].id,self.craftItems.materials[data][i].amount)){
                         Player.list[socket.id].sendNotification('[!] You do not have the required materials to craft ' + Item.list[self.craftItems.items[data].id].name + ' x' + self.craftItems.items[data].stack + '.');
                         return;
                     }
                 }
                 self.addItem(self.craftItems.items[data].id,self.craftItems.items[data].stack,self.craftItems.items[data].enchantments);
                 for(var i in self.craftItems.materials[data]){
-                    self.removeItem(i,self.craftItems.materials[data][i]);
+                    self.removeItem(self.craftItems.materials[data][i].id,self.craftItems.materials[data][i].amount);
                 }
                 Player.list[socket.id].sendNotification('You successfully crafted ' + Item.list[self.craftItems.items[data].id].name + ' x' + self.craftItems.items[data].stack + '.');
             }

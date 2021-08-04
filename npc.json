@@ -698,7 +698,7 @@
                 [
                     {
                         "id":"tornsteelscroll",
-                        "amount":25
+                        "amount":1
                     },
                     {
                         "id":"steel",
@@ -789,7 +789,7 @@
         "crafts":{
             "items":[
                 {
-                    "id":"shinyrubybundle",
+                    "id":"shinyrubyscroll",
                     "enchantments":[],
                     "stack":1
                 },
