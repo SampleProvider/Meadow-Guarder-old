@@ -1518,7 +1518,7 @@ var Projectile = function(initPack){
             x += Player.list[self.relativeToPlayer].x;
             y += Player.list[self.relativeToPlayer].y;
         }
-        if(projectileData[self.projectileType]){
+        if(projectileData[self.projectileType] && showParticles){
             var light = Object.create(projectileData[self.projectileType].light);
             for(var i in Projectile.list){
                 var pX = Projectile.list[i].x;
