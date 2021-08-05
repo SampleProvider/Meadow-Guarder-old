@@ -66,7 +66,13 @@ io.sockets.on('connection',function(socket){
 		});
 	});
 	socket.on('createAccount',function(data){
-		if(data.username.includes(' ') || data.password.includes(' ')){
+		var allSpaces = true;
+		for(var i in data.username){
+			if(data.username[i] !== ' '){
+				allSpaces = false;
+			}
+		}
+		if(allSpaces){
 			socket.emit('createAccountResponse',{success:3});
 			return;
 		}
