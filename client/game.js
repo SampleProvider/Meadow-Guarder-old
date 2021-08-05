@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '0.3.1';
+var VERSION = '031f1a';
 
 var DEBUG = false;
 
@@ -110,6 +110,7 @@ tileset.onload = function(){
     loadingProgress += 1;
 };
 
+var lightList = [];
 var projectileData = {};
 var questData = {};
 var renderLayers = function(json,name){
@@ -235,6 +236,67 @@ var renderLayers = function(json,name){
                 }
             }
         }
+        else if(json.layers[i].type === "tilelayer" && json.layers[i].name.includes('LightMarker')){
+            var size = json.tilewidth;
+            for(var j = 0;j < json.layers[i].data.length;j++){
+                tile_idx = json.layers[i].data[j];
+                if(tile_idx !== 0){
+                    if(tile_idx === 2648){
+                        var type = "";
+                        var typej = 0;
+                        var r = "";
+                        var rj = 0;
+                        var g = "";
+                        var gj = 0;
+                        var b = "";
+                        var bj = 0;
+                        var a = "";
+                        var aj = 0;
+                        var radius = "";
+                        for(var k = 0;k < json.layers[i].name.length;k++){
+                            if(json.layers[i].name[k] === ':'){
+                                if(type === ""){
+                                    type = json.layers[i].name.substr(0,k);
+                                    typej = k;
+                                }
+                                else if(r === ""){
+                                    r = json.layers[i].name.substr(typej + 1,k - typej - 1);
+                                    rj = k;
+                                }
+                                else if(g === ""){
+                                    g = json.layers[i].name.substr(rj + 1,k - rj - 1);
+                                    gj = k;
+                                }
+                                else if(b === ""){
+                                    b = json.layers[i].name.substr(gj + 1,k - gj - 1);
+                                    bj = k;
+                                }
+                                else if(a === ""){
+                                    a = json.layers[i].name.substr(bj + 1,k - bj - 1);
+                                    aj = k;
+                                }
+                                else if(radius === ""){
+                                    radius = json.layers[i].name.substr(aj + 1,json.layers[i].name.length - aj - 2);
+                                }
+                            }
+                        }
+                        s_x = (j % json.layers[i].width) * size;
+                        s_y = ~~(j / json.layers[i].width) * size;
+                        lightList.push({
+                            x:Math.round(s_x * 4),
+                            y:Math.round(s_y * 4),
+                            map:name,
+                            r:r,
+                            g:g,
+                            b:b,
+                            a:a,
+                            radius:parseInt(radius),
+                        });
+                    }
+                    loadingProgress += 1;
+                }
+            }
+        }
         loadingProgress += 1;
     }
     loadedMap[name] = {
@@ -339,6 +401,7 @@ signDivSignIn.onclick = function(){
         loadMap("Garage");
         loadMap("Secret Tunnel Part 1");
         loadMap("The Hideout");
+        loadMap("The Dripping Caverns");
         
         var request = new XMLHttpRequest();
         request.open('GET',"/client/projectiles.json",true);
@@ -728,6 +791,8 @@ Img.rocopter = new Image();
 Img.rocopter.src = '/client/img/rocopter.png';
 Img.crab = new Image();
 Img.crab.src = '/client/img/crab.png';
+Img.beetle = new Image();
+Img.beetle.src = '/client/img/beetle.png';
 Img.kiol = new Image();
 Img.kiol.src = '/client/img/kiol.png';
 Img.cherrier = new Image();
@@ -873,6 +938,7 @@ document.getElementById('difficulty').onclick = function(){
         difficulty = 'Classic';
     }
 }
+
 
 var currentMap = '';
 var tempMap = {};
@@ -1377,7 +1443,16 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave" && self.map !== "Secret Tunnel Part 1"){
+        for(var i in lightList){
+            if(self.map === lightList[i].map){
+                var grd = ctx1.createRadialGradient(lightList[i].x,lightList[i].y,50,lightList[i].x,lightList[i].y,lightList[i].radius);
+                grd.addColorStop(0,"rgba(" + lightList[i].r + "," + lightList[i].g + "," + lightList[i].b + "," + lightList[i].a + ")");
+                grd.addColorStop(1,"rgba(" + lightList[i].r + "," + lightList[i].g + "," + lightList[i].b + ",0)");
+                ctx1.fillStyle = grd;
+                ctx1.fillRect(lightList[i].x - WIDTH,lightList[i].y - HEIGHT,WIDTH * 2,HEIGHT * 2);
+            }
+        }
+        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave" && self.map !== "Secret Tunnel Part 1" && self.map !== "The Dripping Caverns"){
             return;
         }
         var grd = ctx1.createRadialGradient(self.x,self.y,50,self.x,self.y,500);
@@ -1806,6 +1881,9 @@ var Monster = function(initPack){
         if(self.monsterType === 'crab'){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.crab,self.animation * 14,9 * 0,13,8,self.x - 26,self.y - 16,52,32);
+        }
+        if(self.monsterType === 'cyanBeetle'){
+            ctx0.drawImage(Img.beetle,Math.floor(self.animation) * 15,11 * 0,14,10,self.x - 28,self.y - 20,56,40);
         }
     }
     self.drawCtx1 = function(){
@@ -3031,10 +3109,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 684';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 684 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 714';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 714 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 684){
+        if(loadingProgressDisplay >= 714){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){

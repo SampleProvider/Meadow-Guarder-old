@@ -356,6 +356,9 @@ Inventory = function(socket,server){
                             if(item.equip === 'consume'){
                                 socket.emit('useItem',index);
                             }
+                            else if(item.equip === 'none'){
+
+                            }
                             else{
                                 socket.emit('dragItem',{
                                     index1:index,
@@ -806,6 +809,7 @@ Inventory = function(socket,server){
                     var index2 = data.index2;
                     if(self.items[index1]){
                         if(self.items[index1].id === 'enchantmentbook' && index1 !== index2){
+                            console.log(index1,index2)
                             if(self.items[index2]){
                                 if(self.items[index2].id){
                                     for(var i in self.items[index1].enchantments){
@@ -909,7 +913,7 @@ Inventory = function(socket,server){
                     Player.list[socket.id].sendNotification('[!] You do not have enough money to buy ' + Item.list[self.shopItems.items[data].id].name + ' x' + self.shopItems.items[data].stack + '.');
                     return;
                 }
-                self.addItem(self.shopItems.items[data].id,self.shopItems.items[data].stack,self.shopItems.items[data].enchantments);
+                self.addItem(self.shopItems.items[data].id,self.shopItems.items[data].stack,JSON.parse(JSON.stringify(self.shopItems.items[data].enchantments)));
                 Player.list[socket.id].coins -= self.shopItems.prices[data];
                 Player.list[socket.id].sendNotification('You successfully bought ' + Item.list[self.shopItems.items[data].id].name + ' x' + self.shopItems.items[data].stack + '.');
             }

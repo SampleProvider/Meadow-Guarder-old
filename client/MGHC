@@ -32,6 +32,13 @@ hackedCollumn4.style.top = '260px';
 hackedCollumn4.style.backgroundColor = 'rgb(0,0,0,125);';
 hackedCollumn4.style.opacity = 0.6;
 
+var hackedCollumn5 = document.createElement('div');
+hackedCollumn5.className = 'UI-display-light';
+hackedDiv.appendChild(hackedCollumn5);
+hackedCollumn5.style.top = '300px';
+hackedCollumn5.style.backgroundColor = 'rgb(0,0,0,125);';
+hackedCollumn5.style.opacity = 0.6;
+
 var monsterTracers = document.createElement('button');
 monsterTracers.className = 'UI-button-light';
 monsterTracers.style.position = 'static';
@@ -250,6 +257,29 @@ autoEnchant.onclick = function(){
     }
 };
 
+var itemTracers = document.createElement('button');
+itemTracers.className = 'UI-button-light';
+itemTracers.style.position = 'static';
+itemTracers.style.top = '8px';
+itemTracers.innerHTML = 'Item Tracers';
+hackedCollumn5.appendChild(itemTracers);
+
+itemTracers.style.color = '#ffffff';
+itemTracers.style.backgroundColor = '#000000';
+
+var itemTracersState = false;
+itemTracers.onclick = function(){
+    itemTracersState = !itemTracersState;
+    if(itemTracersState){
+        itemTracers.style.color = '#000000';
+        itemTracers.style.backgroundColor = '#ffffff';
+    }
+    else{
+        itemTracers.style.color = '#ffffff';
+        itemTracers.style.backgroundColor = '#000000';
+    }
+};
+
 var getDistance = function(pt1,pt2){
     return (pt1.x - pt2.x)**2 + (pt1.y - pt2.y)**2;
 };
@@ -367,6 +397,10 @@ MGHC = function(){
                 ctx1.strokeStyle = '#612408';
                 ctx1.lineWidth = 2;
             }
+            if(Monster.list[i].monsterType === 'crab'){
+                ctx1.strokeStyle = '#ff0000';
+                ctx1.lineWidth = 2;
+            }
             ctx1.beginPath();
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
             ctx1.lineTo(Monster.list[i].x,Monster.list[i].y);
@@ -397,6 +431,32 @@ MGHC = function(){
             ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
             ctx1.lineTo(Npc.list[i].x,Npc.list[i].y);
             ctx1.stroke();
+        }
+        ctx1.restore();
+    }
+    if(itemTracersState){
+        ctx1.save();
+        ctx1.translate(cameraX,cameraY);
+        for(var i in DroppedItem.list){
+            ctx1.strokeStyle = '#00ff90';
+            ctx1.lineWidth = 6;
+            ctx1.beginPath();
+            ctx1.moveTo(Player.list[selfId].x,Player.list[selfId].y);
+            ctx1.lineTo(DroppedItem.list[i].x,DroppedItem.list[i].y);
+            ctx1.stroke();
+            var x = DroppedItem.list[i].x - Player.list[selfId].x;
+            var y = DroppedItem.list[i].y - Player.list[selfId].y;
+            var angle = Math.atan2(y,x);
+            var xPos = Math.cos(angle) * 250 + Player.list[selfId].x;
+            var yPos = Math.sin(angle) * 250 + Player.list[selfId].y;
+            ctx1.translate(xPos,yPos);
+            if(DroppedItem.list[i].item.id.includes('trident')){
+                ctx1.drawImage(Img[DroppedItem.list[i].item.id],-42,-42,84,84);
+            }
+            else{
+                ctx1.drawImage(Img[DroppedItem.list[i].item.id],-32,-32,64,64);
+            }
+            ctx1.translate(-xPos,-yPos);
         }
         ctx1.restore();
     }
@@ -538,28 +598,76 @@ MGHC1 = function(){
 };
 document.onmousemove = function(event){
     if(Player.list[selfId]){
-        if(freeCamState){
-            var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
-            var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
-        }
-        else{
-            var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
-            var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
-        }
-        if(event.clientY <= 0){
-            socket.emit('keyPress',{inputId:'releaseAll'});
-        }
-        if(event.clientY >= window.innerHeight){
-            socket.emit('keyPress',{inputId:'releaseAll'});
-        }
-        if(event.clientX <= 0){
-            socket.emit('keyPress',{inputId:'releaseAll'});
-        }
-        if(event.clientX >= window.innerWidth){
-            socket.emit('keyPress',{inputId:'releaseAll'});
-        }
+        var x = -1 * cameraX - Player.list[selfId].x + event.clientX;
+        var y = -1 * cameraY - Player.list[selfId].y + event.clientY;
         mouseX = event.clientX - WIDTH / 2;
         mouseY = event.clientY - HEIGHT / 2;
-        socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
+        if(!talking){
+            socket.emit('keyPress',{inputId:'direction',state:{x:x,y:y}});
+        }
+        var inSlot = false;
+        var inventorySlots = document.getElementsByClassName('inventorySlot');
+        for(var i = 0;i < inventorySlots.length;i++){
+            if(inventorySlots[i].className.includes('inventoryMenuSlot') && document.getElementById('inventoryScreen').style.display === 'inline-block'){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left){
+                    if(mouseX + WIDTH / 2 < rect.left + 72){
+                        if(mouseY + HEIGHT / 2 > rect.top){
+                            if(mouseY + HEIGHT / 2 < rect.top + 72){
+                                inSlot = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(inventorySlots[i].className.includes('shopMenuSlot') && document.getElementById('shopScreen').style.display === 'inline-block'){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left){
+                    if(mouseX + WIDTH / 2 < rect.left + 72){
+                        if(mouseY + HEIGHT / 2 > rect.top){
+                            if(mouseY + HEIGHT / 2 < rect.top + 72){
+                                inSlot = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if(inventorySlots[i].className.includes('craftMenuSlot') && document.getElementById('craftScreen').style.display === 'inline-block'){
+                var rect = inventorySlots[i].getBoundingClientRect();
+                if(mouseX + WIDTH / 2 > rect.left){
+                    if(mouseX + WIDTH / 2 < rect.left + 72){
+                        if(mouseY + HEIGHT / 2 > rect.top){
+                            if(mouseY + HEIGHT / 2 < rect.top + 72){
+                                inSlot = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var itemMenu = document.getElementsByClassName('itemMenu');
+        if(inSlot === false){
+            for(var i = 0;i < itemMenu.length;i++){
+                if(itemMenu[i].style.display === 'inline-block'){
+                    itemMenu[i].style.display = 'none';
+                }
+            }
+        }
+        else{
+            for(var i = 0;i < itemMenu.length;i++){
+                if(itemMenu[i].style.display === 'inline-block'){
+                    itemMenu[i].style.left = (event.clientX + 3) + 'px';
+                    itemMenu[i].style.top = (event.clientY + 3) + 'px';
+                }
+            }
+        }
+        if(inventory.draggingItem !== -1){
+            document.getElementById('draggingItem').style.left = (event.clientX - inventory.draggingX) + 'px';
+            document.getElementById('draggingItem').style.top = (event.clientY - inventory.draggingY) + 'px';
+        }
+        else{
+            document.getElementById('draggingItem').style.left = '-100px';
+            document.getElementById('draggingItem').style.top = '-100px';
+        }
     }
 }

@@ -166,6 +166,9 @@ var firableMap = function(map){
     if(map === 'Garage'){
         isFireMap = true;
     }
+    if(map === 'The Dripping Caverns'){
+        isFireMap = true;
+    }
     if(map === 'Secret Tunnel Part 1'){
         isFireMap = true;
     }
@@ -4830,7 +4833,7 @@ Player = function(param){
                 projectileStats[i] *= self.stats[i];
             }
             projectileStats.damageReduction = 0;
-            projectileStats.debuffs = stats.debuffs;
+            projectileStats.debuffs = self.stats.debuffs;
             var projectile = Projectile({
                 id:self.id,
                 projectileType:'fireBullet',
@@ -4868,7 +4871,7 @@ Player = function(param){
                             spin:function(t){return 25},
                             pierce:1000,
                             projectilePattern:'accellerateNoCollision',
-                            stats:projectileStats,
+                            stats:stats,
                             onCollision:function(self,pt){
                                 if(self.pierce === 0){
                                     self.toRemove = true;
@@ -6754,6 +6757,7 @@ Monster = function(param){
         }
     }
     self.debuffInflicted = false;
+    self.immuneDebuffs = param.immuneDebuffs;
     self.randomWalk(true,false,self.x,self.y);
     self.boss = param.boss;
     self.stopAttackOnKill = true;
@@ -7271,6 +7275,30 @@ Monster = function(param){
                 self.animation += 1;
                 if(self.animation >= 4){
                     self.animation = 0;
+                }
+                break;
+            case "attackCyanBeetle":
+                if(self.spdX < 0){
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
+                    }
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                }
+                else{
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
+                    }
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
                 }
                 break;
         }
@@ -9021,6 +9049,21 @@ Monster = function(param){
                     if(self.reload % 5 === 0 && self.target.invincible === false && self.reload > 10){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'crabBullet',16,function(t){return 25},0,self.stats,'spinAroundPoint');
                         self.shootProjectile(self.id,'Monster',self.direction + 180,self.direction + 180,'crabBullet',16,function(t){return 25},0,self.stats,'spinAroundPoint');
+                    }
+                    self.reload += 1;
+                    break;
+                case "attackCyanBeetle":
+                    if(self.reload % 5 === 0 && self.target.invincible === false && self.reload > 10){
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'waterBullet',16,function(t){return 25},0,self.stats,'bounceOffCollisions');
+                    }
+                    if(self.reload % 20 === 0 && self.target.invincible === false && self.hp < self.hpMax / 2){
+                        var attack = self.stats.attack;
+                        self.stats.attack *= 5;
+                        var speed = self.stats.speed;
+                        self.stats.speed *= 0.2;
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'typhoon',16,function(t){return 25},0,self.stats,'playerHoming');
+                        self.stats.attack = attack;
+                        self.stats.speed = speed;
                     }
                     self.reload += 1;
                     break;
@@ -11679,6 +11722,7 @@ load("The Battlefield");
 load("Garage");
 load("Secret Tunnel Part 1");
 load("The Hideout");
+load("The Dripping Caverns");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;
@@ -11687,8 +11731,6 @@ var compareMaps = function(a,b){
 }
 fs.readFile("./client/maps/World.world","utf8",function(err,data){
     worldMap = JSON.parse(data).maps;
-    worldMap["Lilypad Temple Room 0"];
-    worldMap["Lilypad Temple Room 1"];
     worldMap.sort(compareMaps);
     for(var i in worldMap){
         load(worldMap[i].fileName.slice(0,-4));

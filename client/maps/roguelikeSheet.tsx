@@ -25,6 +25,8 @@
   <terrain name="Sand Brick" tile="3133"/>
   <terrain name="Glass" tile="3481"/>
   <terrain name="Clean Pond" tile="1004"/>
+  <terrain name="Cave Water" tile="1004"/>
+  <terrain name="Waterfall" tile="1348"/>
  </terraintypes>
  <tile id="0" terrain="1,1,1,1"/>
  <tile id="1" terrain="1,1,1,1"/>
@@ -82,18 +84,30 @@
  <tile id="867" terrain=",4,,4"/>
  <tile id="868" terrain="4,4,4,4"/>
  <tile id="869" terrain="4,,4,"/>
+ <tile id="917" terrain=",,,23"/>
+ <tile id="918" terrain=",,23,23"/>
+ <tile id="919" terrain=",,23,"/>
+ <tile id="920" terrain="23,23,23,"/>
+ <tile id="921" terrain="23,23,,23"/>
  <tile id="948" terrain=",6,,"/>
  <tile id="949" terrain="6,6,,"/>
  <tile id="950" terrain="6,,,"/>
  <tile id="953" terrain=",4,,"/>
  <tile id="954" terrain="4,4,,"/>
  <tile id="955" terrain="4,,,"/>
- <tile id="1004" terrain="22,22,22,22"/>
+ <tile id="1003" terrain=",23,,23"/>
+ <tile id="1004" terrain="23,23,23,23"/>
+ <tile id="1005" terrain="23,,23,"/>
+ <tile id="1006" terrain="23,,23,23"/>
+ <tile id="1007" terrain=",23,23,23"/>
  <tile id="1032" terrain="7,7,7,"/>
  <tile id="1033" terrain="7,7,,7"/>
  <tile id="1034" terrain=",,,7"/>
  <tile id="1035" terrain=",,7,7"/>
  <tile id="1036" terrain=",,7,"/>
+ <tile id="1089" terrain=",23,,"/>
+ <tile id="1090" terrain="23,23,,"/>
+ <tile id="1091" terrain="23,,,"/>
  <tile id="1118" terrain="7,,7,7"/>
  <tile id="1119" terrain=",7,7,7"/>
  <tile id="1120" terrain=",7,,7"/>
@@ -102,6 +116,9 @@
  <tile id="1206" terrain=",7,,"/>
  <tile id="1207" terrain="7,7,,"/>
  <tile id="1208" terrain="7,,,"/>
+ <tile id="1262" terrain=",,,24"/>
+ <tile id="1263" terrain=",,24,24"/>
+ <tile id="1264" terrain=",,24,"/>
  <tile id="1290" terrain="8,8,8,"/>
  <tile id="1291" terrain="8,8,,8"/>
  <tile id="1292" terrain=",,,8"/>
@@ -136,6 +153,10 @@
  <tile id="1328" terrain=",11,,11"/>
  <tile id="1329" terrain="11,11,11,11"/>
  <tile id="1330" terrain="11,,11,"/>
+ <tile id="1347" terrain=",24,,24"/>
+ <tile id="1348" terrain="24,24,24,24"/>
+ <tile id="1349" terrain="24,,24,"/>
+ <tile id="1350" terrain="24,24,24,24" probability="0.125"/>
  <tile id="1376" terrain="8,,8,8"/>
  <tile id="1377" terrain=",8,8,8"/>
  <tile id="1378" terrain=",8,,8"/>
@@ -158,6 +179,10 @@
  <tile id="1414" terrain=",,,11"/>
  <tile id="1415" terrain=",,11,11"/>
  <tile id="1416" terrain=",,11,"/>
+ <tile id="1433" terrain=",24,,"/>
+ <tile id="1434" terrain="24,24,,"/>
+ <tile id="1435" terrain="24,,,"/>
+ <tile id="1436" terrain="24,24,24,24" probability="0.125"/>
  <tile id="1464" terrain=",8,,"/>
  <tile id="1465" terrain="8,8,,"/>
  <tile id="1466" terrain="8,,,"/>

@@ -1601,7 +1601,7 @@
         "event":"self.addDebuff('lesserhealthboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max life by 50%.",
-        "rarity":9,
+        "rarity":8,
         "maxStack":30
     },
     "greaterdefenseboostpotion":{
@@ -1610,7 +1610,7 @@
         "event":"self.addDebuff('lesserdefenseboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases defense by 65.",
-        "rarity":9,
+        "rarity":8,
         "maxStack":30
     },
     "greaterspeedboostpotion":{
@@ -1619,7 +1619,7 @@
         "event":"self.addDebuff('lesserspeedboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max speed by 50%.",
-        "rarity":9,
+        "rarity":8,
         "maxStack":30
     },
     "greatermanaboostpotion":{
@@ -1628,7 +1628,7 @@
         "event":"self.addDebuff('lessermanaboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases max mana by 180.<br>Increases mana regen by 150%.",
-        "rarity":9,
+        "rarity":8,
         "maxStack":30
     },
     "greaterregenboostpotion":{
@@ -1637,7 +1637,7 @@
         "event":"self.addDebuff('lesserregenboost',28800);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Increases life regen by 150%.",
-        "rarity":9,
+        "rarity":8,
         "maxStack":30
     },
     "greaterrandomboostpotion":{
@@ -1646,7 +1646,7 @@
         "event":"var debuff = Math.random();if(debuff < 0.15){var debuffToGive = 'greaterhealthboost';}else if(debuff < 0.3){var debuffToGive = 'greaterdefenseboost';}else if(debuff < 0.45){var debuffToGive = 'greaterspeedboost';}else if(debuff < 0.6){var debuffToGive = 'greatermanaboost';}else if(debuff < 0.75){var debuffToGive = 'greaterregenboost';}else if(debuff < 0.87){var debuffToGive = 'greaterrandomboost1';}else if(debuff < 0.99){var debuffToGive = 'greaterrandomboost2';}else{var debuffToGive = 'superrandomboost';}self.addDebuff(debuffToGive,43200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
         "enchantments":[],
         "description":"Grants a greater random potion buff.",
-        "rarity":9,
+        "rarity":8,
         "maxStack":30
     },
     "basichealingscepter":{
@@ -1856,6 +1856,20 @@
     },
     "essenceoffire":{
         "name":"Essence of Fire",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "aquamarine":{
+        "name":"Aquamarine",
+        "equip":"none",
+        "enchantments":[],
+        "rarity":7,
+        "maxStack":1000
+    },
+    "sunstone":{
+        "name":"Sunstone",
         "equip":"none",
         "enchantments":[],
         "rarity":7,

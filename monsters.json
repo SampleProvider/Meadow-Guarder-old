@@ -53,8 +53,7 @@
             "advancedsteelstaff":0.02,
             "advanceddarksteelstaff":0.01,
             "advancedgoldenstaff":0.005,
-            "advancedrubystaff":0.001,
-            "wood":3
+            "advancedrubystaff":0.001
         }
     },
     "greenBird":{
@@ -591,7 +590,7 @@
             "attack":75,
             "defense":50,
             "heal":0,
-            "speed":0,
+            "speed":1,
             "range":1,
             "critChance":0,
             "damageReduction":0,
@@ -654,7 +653,7 @@
             "attack":75,
             "defense":100,
             "heal":0,
-            "speed":0,
+            "speed":1,
             "range":1,
             "critChance":0,
             "damageReduction":0,
@@ -687,7 +686,7 @@
             "attack":1,
             "defense":50,
             "heal":0,
-            "speed":0,
+            "speed":1,
             "range":1,
             "critChance":0,
             "damageReduction":0,
@@ -879,7 +878,7 @@
                 "time":20
             }]
         },
-        "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
+        "immuneDebuffs":["frozen","wet","shocked","death","thundered","burning","incinerating"],
         "pushResist":0,
         "moveSpeed":20,
         "itemDrops":{
@@ -910,7 +909,7 @@
                 "time":30
             }]
         },
-        "immuneDebuffs":["frozen","shocked","death","thundered","burning","incinerating"],
+        "immuneDebuffs":["frozen","wet","shocked","death","thundered","burning","incinerating"],
         "pushResist":1,
         "moveSpeed":20,
         "itemDrops":{
@@ -955,6 +954,37 @@
             "bookofrock":0.01,
             "mountaintreads":0.01,
             "amuletofrock":0.01
+        }
+    },
+    "cyanBeetle":{
+        "spawnChance":1,
+        "xpGain":2,
+        "width":56,
+        "height":40,
+        "attackState":"CyanBeetle",
+        "aggro":8,
+        "boss":false,
+        "trackDistance":"random",
+        "hp":5000,
+        "stats":{
+            "attack":105,
+            "defense":15,
+            "heal":0,
+            "speed":0.8,
+            "range":1,
+            "critChance":0,
+            "damageReduction":0.35,
+            "knockback":1,
+            "debuffs":[{
+                "id":"wet",
+                "time":5
+            }]
+        },
+        "immuneDebuffs":["wet","frostbite","frostburn"],
+        "pushResist":1,
+        "moveSpeed":20,
+        "itemDrops":{
+            "aquamarine":0.05
         }
     }
 }
