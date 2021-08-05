@@ -9699,7 +9699,7 @@ Projectile = function(param){
         }
         self.lastX = self.x;
         self.lastY = self.y;
-        if(self.timer > 0){
+        if(self.timer > 1){
             if(self.doCollision){
                 var largestSpeedRatio = 1;
                 if(largestSpeedRatio < Math.abs(self.spdX) / self.width){

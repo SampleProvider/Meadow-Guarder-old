@@ -2670,11 +2670,6 @@ socket.on('update',function(data){
                     if(data.projectile[i].canCollide !== undefined){
                         Projectile.list[data.projectile[i].id].canCollide = data.projectile[i].canCollide;
                     }
-                    if(Projectile.list[data.projectile[i].id].projectileType.includes('plaser')){
-                        Projectile.list[data.projectile[i].id].x = Projectile.list[data.projectile[i].id].nextX;
-                        Projectile.list[data.projectile[i].id].y = Projectile.list[data.projectile[i].id].nextY;
-                        Projectile.list[data.projectile[i].id].moveNumber = 0;
-                    }
                     Projectile.list[data.projectile[i].id].updated = true;
                 }
                 else{
