@@ -463,7 +463,7 @@ Inventory = function(socket,server){
                     }
                 }
                 else{
-                    slot.innerHTML = "<image class='outlineImage' src='/client/img/outline" + index + ".png'></image>";
+                    slot.innerHTML = "<image class='outlineImage' draggable='false' src='/client/img/outline" + index + ".png'></image>";
                 }
             }
         }
@@ -806,14 +806,16 @@ Inventory = function(socket,server){
                     var index2 = data.index2;
                     if(self.items[index1]){
                         if(self.items[index1].id === 'enchantmentbook' && index1 !== index2){
-                            if(self.items[index2].id){
-                                for(var i in self.items[index1].enchantments){
-                                    self.enchantItem(index2,self.items[index1].enchantments[i].id,self.items[index1].enchantments[i].level);
+                            if(self.items[index2]){
+                                if(self.items[index2].id){
+                                    for(var i in self.items[index1].enchantments){
+                                        self.enchantItem(index2,self.items[index1].enchantments[i].id,self.items[index1].enchantments[i].level);
+                                    }
+                                    self.items[index1] = {};
+                                    self.refreshItem(index1);
+                                    self.refreshItem(index2);
+                                    return;
                                 }
-                                self.items[index1] = {};
-                                self.refreshItem(index1);
-                                self.refreshItem(index2);
-                                return;
                             }
                             else if(self.equips[index2]){
                                 if(self.equips[index2].id){

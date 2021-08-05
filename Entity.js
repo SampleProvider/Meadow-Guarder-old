@@ -3375,40 +3375,48 @@ Player = function(param){
                                 var fourthTile = "" + self.map + ":" + Math.round(self.x / 64) * 64 + ":" + Math.round(self.y / 64) * 64 + ":";
                                 if(QuestInfo.list[firstTile]){
                                     if(QuestInfo.list[firstTile].quest === self.quest){
-                                        if(QuestInfo.list[firstTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
-                                            if(self.isColliding(QuestInfo.list[firstTile])){
-                                                self.questStage = questData[self.quest].data[self.questStage].trigger.next;
-                                                self.questInfo.didQuest = false;
+                                        if(questData[self.quest].data[self.questStage].trigger){
+                                            if(QuestInfo.list[firstTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
+                                                if(self.isColliding(QuestInfo.list[firstTile])){
+                                                    self.questStage = questData[self.quest].data[self.questStage].trigger.next;
+                                                    self.questInfo.didQuest = false;
+                                                }
                                             }
                                         }
                                     }
                                 }
                                 if(QuestInfo.list[secondTile]){
                                     if(QuestInfo.list[secondTile].quest === self.quest){
-                                        if(QuestInfo.list[secondTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
-                                            if(self.isColliding(QuestInfo.list[secondTile])){
-                                                self.questStage = questData[self.quest].data[self.questStage].trigger.next;
-                                                self.questInfo.didQuest = false;
+                                        if(questData[self.quest].data[self.questStage].trigger){
+                                            if(QuestInfo.list[secondTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
+                                                if(self.isColliding(QuestInfo.list[secondTile])){
+                                                    self.questStage = questData[self.quest].data[self.questStage].trigger.next;
+                                                    self.questInfo.didQuest = false;
+                                                }
                                             }
                                         }
                                     }
                                 }
                                 if(QuestInfo.list[thirdTile]){
                                     if(QuestInfo.list[thirdTile].quest === self.quest){
-                                        if(QuestInfo.list[thirdTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
-                                            if(self.isColliding(QuestInfo.list[thirdTile])){
-                                                self.questStage = questData[self.quest].data[self.questStage].trigger.next;
-                                                self.questInfo.didQuest = false;
+                                        if(questData[self.quest].data[self.questStage].trigger){
+                                            if(QuestInfo.list[thirdTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
+                                                if(self.isColliding(QuestInfo.list[thirdTile])){
+                                                    self.questStage = questData[self.quest].data[self.questStage].trigger.next;
+                                                    self.questInfo.didQuest = false;
+                                                }
                                             }
                                         }
                                     }
                                 }
                                 if(QuestInfo.list[fourthTile]){
                                     if(QuestInfo.list[fourthTile].quest === self.quest){
-                                        if(QuestInfo.list[fourthTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
-                                            if(self.isColliding(QuestInfo.list[fourthTile])){
-                                                self.questStage = questData[self.quest].data[self.questStage].trigger.next;
-                                                self.questInfo.didQuest = false;
+                                        if(questData[self.quest].data[self.questStage].trigger){
+                                            if(QuestInfo.list[fourthTile].info === questData[self.quest].data[self.questStage].trigger.questInfo){
+                                                if(self.isColliding(QuestInfo.list[fourthTile])){
+                                                    self.questStage = questData[self.quest].data[self.questStage].trigger.next;
+                                                    self.questInfo.didQuest = false;
+                                                }
                                             }
                                         }
                                     }
