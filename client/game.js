@@ -111,6 +111,7 @@ tileset.onload = function(){
 };
 
 var lightList = [];
+var entityLightList = {};
 var projectileData = {};
 var questData = {};
 var renderLayers = function(json,name){
@@ -1186,6 +1187,10 @@ var arrayIsEqual = function(arr1,arr2){
 	return true;
 };
 
+getDistance = function(x1,y1,x2,y2){
+    return Math.sqrt(Math.pow(x1 - x2,2) + Math.pow(y1 - y2,2))
+}
+
 var Player = function(initPack){
     var self = {};
     self.id = initPack.id;
@@ -1443,13 +1448,24 @@ var Player = function(initPack){
         if(self.id !== selfId){
             return;
         }
-        for(var i in lightList){
-            if(self.map === lightList[i].map){
-                var grd = ctx1.createRadialGradient(lightList[i].x,lightList[i].y,50,lightList[i].x,lightList[i].y,lightList[i].radius);
-                grd.addColorStop(0,"rgba(" + lightList[i].r + "," + lightList[i].g + "," + lightList[i].b + "," + lightList[i].a + ")");
-                grd.addColorStop(1,"rgba(" + lightList[i].r + "," + lightList[i].g + "," + lightList[i].b + ",0)");
-                ctx1.fillStyle = grd;
-                ctx1.fillRect(lightList[i].x - WIDTH,lightList[i].y - HEIGHT,WIDTH * 2,HEIGHT * 2);
+        if(showParticles){
+            for(var i in lightList){
+                if(self.map === lightList[i].map){
+                    var grd = ctx1.createRadialGradient(lightList[i].x,lightList[i].y,50,lightList[i].x,lightList[i].y,lightList[i].radius);
+                    grd.addColorStop(0,"rgba(" + lightList[i].r + "," + lightList[i].g + "," + lightList[i].b + "," + lightList[i].a + ")");
+                    grd.addColorStop(1,"rgba(" + lightList[i].r + "," + lightList[i].g + "," + lightList[i].b + ",0)");
+                    ctx1.fillStyle = grd;
+                    ctx1.fillRect(lightList[i].x - WIDTH,lightList[i].y - HEIGHT,WIDTH * 2,HEIGHT * 2);
+                }
+            }
+            for(var i in entityLightList){
+                if(self.map === entityLightList[i].map){
+                    var grd = ctx1.createRadialGradient(entityLightList[i].x,entityLightList[i].y,30,entityLightList[i].x,entityLightList[i].y,entityLightList[i].radius);
+                    grd.addColorStop(0,"rgba(" + entityLightList[i].r + "," + entityLightList[i].g + "," + entityLightList[i].b + "," + entityLightList[i].a + ")");
+                    grd.addColorStop(1,"rgba(" + entityLightList[i].r + "," + entityLightList[i].g + "," + entityLightList[i].b + ",0)");
+                    ctx1.fillStyle = grd;
+                    ctx1.fillRect(entityLightList[i].x - WIDTH,entityLightList[i].y - HEIGHT,WIDTH * 2,HEIGHT * 2);
+                }
             }
         }
         if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave" && self.map !== "Secret Tunnel Part 1" && self.map !== "The Dripping Caverns"){
@@ -1496,6 +1512,40 @@ var Projectile = function(initPack){
         self.moveNumber -= 1;
     }
     self.draw = function(){
+        var x = self.x;
+        var y = self.y;
+        if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
+            x += Player.list[self.relativeToPlayer].x;
+            y += Player.list[self.relativeToPlayer].y;
+        }
+        if(projectileData[self.projectileType]){
+            var light = Object.create(projectileData[self.projectileType].light);
+            for(var i in Projectile.list){
+                var pX = Projectile.list[i].x;
+                var pY = Projectile.list[i].y;
+                if(Projectile.list[i].relativeToPlayer && Player.list[Projectile.list[i].relativeToPlayer]){
+                    pX += Player.list[Projectile.list[i].relativeToPlayer].x;
+                    pY += Player.list[Projectile.list[i].relativeToPlayer].y;
+                }
+                if(getDistance(x,y,pX,pY) < light.radius && i !== self.id){
+                    light.r += (255 - light.r) / 15;
+                    light.g += (255 - light.g) / 15;
+                    light.b += (255 - light.b) / 15;
+                    light.a *= 0.95;
+                    light.radius *= 0.98;
+                }
+            }
+            entityLightList[self.id] = {
+                x:Math.round(x),
+                y:Math.round(y),
+                map:self.map,
+                r:Math.min(light.r,255),
+                g:Math.min(light.g,255),
+                b:Math.min(light.b,255),
+                a:Math.max(light.a,0.05),
+                radius:Math.max(light.radius,40),
+            }
+        }
         if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){
             ctx0.translate(self.x + Player.list[self.relativeToPlayer].x,self.y + Player.list[self.relativeToPlayer].y);
         }
@@ -2615,6 +2665,11 @@ socket.on('update',function(data){
                     if(data.projectile[i].canCollide !== undefined){
                         Projectile.list[data.projectile[i].id].canCollide = data.projectile[i].canCollide;
                     }
+                    if(Projectile.list[data.projectile[i].id].projectileType.includes('plaser')){
+                        Projectile.list[data.projectile[i].id].x = Projectile.list[data.projectile[i].id].nextX;
+                        Projectile.list[data.projectile[i].id].y = Projectile.list[data.projectile[i].id].nextY;
+                        Projectile.list[data.projectile[i].id].moveNumber = 0;
+                    }
                     Projectile.list[data.projectile[i].id].updated = true;
                 }
                 else{
@@ -3219,6 +3274,7 @@ setInterval(function(){
         }
     }
     MGHC1();
+    entityLightList = {};
 
     map0.save();
     map0.translate(Math.round(cameraX),Math.round(cameraY));

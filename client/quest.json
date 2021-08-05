@@ -1911,30 +1911,30 @@
                 },
                 "objective":"Find Riley's Candies."
             },
-            "5":{
+            "4":{
                 "dialogue":{
                     "message":"I found Riley's Candies! I should return them to Riley.",
                     "response1":{
                         "text":"...",
-                        "next":6
+                        "next":5
                     }
                 },
                 "objective":"Find Riley's Candies."
             },
-            "6":{
+            "5":{
                 "trigger":{
                     "type":"talkToNpc",
                     "npcId":"riley",
-                    "next":7
+                    "next":6
                 },
                 "objective":"Return to Riley."
             },
-            "7":{
+            "6":{
                 "dialogue":{
                     "message":"Yay! You found my candies!",
                     "response1":{
                         "text":"*End conversation*",
-                        "next":8
+                        "next":7
                     }
                 },
                 "objective":"Return to Riley."

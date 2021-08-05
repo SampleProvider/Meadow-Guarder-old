@@ -10,6 +10,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "earthBullet":{
@@ -23,6 +30,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":255,
+            "b":255,
+            "a":0.1,
+            "radius":64
         }
     },
     "crabBullet":{
@@ -36,6 +50,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "stoneArrow":{
@@ -49,6 +70,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "goldArrow":{
@@ -62,6 +90,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "rockTower":{
@@ -75,6 +110,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "waterTower":{
@@ -88,6 +130,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "typhoon":{
@@ -101,6 +150,13 @@
             "speed":3,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "ballBullet":{
@@ -114,6 +170,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "fireBullet":{
@@ -127,6 +190,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":125,
+            "b":0,
+            "a":0.3,
+            "radius":128
         }
     },
     "waterBullet":{
@@ -140,6 +210,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":55,
+            "g":55,
+            "b":255,
+            "a":0.1,
+            "radius":128
         }
     },
     "frostBullet":{
@@ -153,6 +230,13 @@
             "speed":0.3,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":125,
+            "g":125,
+            "b":255,
+            "a":0.1,
+            "radius":128
         }
     },
     "lizardSpit":{
@@ -166,6 +250,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "lightningSpit":{
@@ -179,6 +270,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":255,
+            "b":0,
+            "a":0.4,
+            "radius":128
         }
     },
     "void":{
@@ -192,6 +290,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0.3,
+            "radius":384
         }
     },
     "healingring":{
@@ -205,6 +310,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "iceboomerang":{
@@ -218,6 +330,13 @@
             "speed":3,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":125,
+            "g":125,
+            "b":255,
+            "a":0.1,
+            "radius":128
         }
     },
     "rockboomerang":{
@@ -231,6 +350,13 @@
             "speed":2,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "fireboomerang":{
@@ -244,6 +370,13 @@
             "speed":3,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":125,
+            "b":0,
+            "a":0.2,
+            "radius":128
         }
     },
     "thedeathrayspiral":{
@@ -257,6 +390,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "simplewoodensword":{
@@ -270,6 +410,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "simplesteelsword":{
@@ -283,6 +430,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "simpledarksteelsword":{
@@ -296,6 +450,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "simplegoldensword":{
@@ -309,6 +470,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "simplerubysword":{
@@ -322,6 +490,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "advancedwoodensword":{
@@ -335,6 +510,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "advancedsteelsword":{
@@ -348,6 +530,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "advanceddarksteelsword":{
@@ -361,6 +550,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "advancedgoldensword":{
@@ -374,6 +570,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "advancedrubysword":{
@@ -387,6 +590,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "waterslasher":{
@@ -400,6 +610,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":255,
+            "a":0.08,
+            "radius":128
         }
     },
     "goldensaber":{
@@ -413,6 +630,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "thegemofsp":{
@@ -426,6 +650,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "unholytrident":{
@@ -439,6 +670,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "holytrident":{
@@ -452,6 +690,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "soul":{
@@ -465,6 +710,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "possessedSoul":{
@@ -478,6 +730,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "bullet":{
@@ -491,6 +750,13 @@
             "speed":2,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "flame":{
@@ -504,6 +770,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":125,
+            "b":0,
+            "a":0.1,
+            "radius":64
         }
     },
     "skull":{
@@ -517,6 +790,13 @@
             "speed":0.3,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":125,
+            "b":0,
+            "a":0.1,
+            "radius":128
         }
     },
     "unholySoul":{
@@ -530,6 +810,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "holySoul":{
@@ -543,6 +830,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "seed":{
@@ -556,6 +850,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "splaser":{
@@ -569,6 +870,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":255,
+            "b":255,
+            "a":0.1,
+            "radius":128
         }
     },
     "giantsplaser":{
@@ -582,6 +890,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":255,
+            "g":255,
+            "b":255,
+            "a":0.4,
+            "radius":256
         }
     },
     "spgem":{
@@ -595,6 +910,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     },
     "rock":{
@@ -608,6 +930,13 @@
             "speed":1,
             "critChance":1,
             "knockback":1
+        },
+        "light":{
+            "r":0,
+            "g":0,
+            "b":0,
+            "a":0,
+            "radius":0
         }
     }
 }

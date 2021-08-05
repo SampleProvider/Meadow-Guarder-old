@@ -881,16 +881,6 @@ Inventory = function(socket,server){
                         self.refreshItem(index1);
                     }
                     else{
-                        var item1 = self.equips[index1];
-                        var item2 = self.equips[index2];
-                        if(Item.list[item2.id].equip === index1 || Item.list[item2.id].equip + '2' === index1){
-                            if(Item.list[item1.id].equip === index2 || Item.list[item1.id].equip + '2' === index2){
-                                self.equips[index1] = item2;
-                                self.equips[index2] = item1;
-                                self.refreshItem(index2);
-                                self.refresh = true;
-                            }
-                        }
                         self.refreshItem(index1);
                     }
                 }

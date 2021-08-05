@@ -1050,16 +1050,16 @@ Entity.getFrameUpdateData = function(){
                     for(var i in Player.list){
                         if(Player.list[i].map === 'The Arena'){
                             Player.list[i].xp += 5000 * Player.list[i].stats.xp;
-                            Player.list[i].inventory.addItem('leaf',[]);
-                            Player.list[i].inventory.addItem('purplefish',[]);
+                            Player.list[i].inventory.addItem('leaf',1,[]);
+                            Player.list[i].inventory.addItem('purplefish',1,[]);
                             if(Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('halibutcannon',[]);
+                                Player.list[i].inventory.addItem('halibutcannon',1,[]);
                             }
                             if(Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('bookofdeath',[]);
+                                Player.list[i].inventory.addItem('bookofdeath',1,[]);
                             }
                             if(Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('holytrident',[]);
+                                Player.list[i].inventory.addItem('holytrident',1,[]);
                             }
                         }
                     }
@@ -1075,16 +1075,16 @@ Entity.getFrameUpdateData = function(){
                     for(var i in Player.list){
                         if(Player.list[i].map === 'The Arena'){
                             Player.list[i].xp += 5000 * Player.list[i].stats.xp;
-                            Player.list[i].inventory.addItem('leaf',[]);
-                            Player.list[i].inventory.addItem('purplefish',[]);
+                            Player.list[i].inventory.addItem('leaf',1,[]);
+                            Player.list[i].inventory.addItem('purplefish',1,[]);
                             if(Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('halibutcannon',[]);
+                                Player.list[i].inventory.addItem('halibutcannon',1,[]);
                             }
                             if(Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('bookofdeath',[]);
+                                Player.list[i].inventory.addItem('bookofdeath',1,[]);
                             }
                             if(Math.random() < 0.1){
-                                Player.list[i].inventory.addItem('holytrident',[]);
+                                Player.list[i].inventory.addItem('holytrident',1,[]);
                             }
                         }
                     }
@@ -4807,92 +4807,101 @@ Player = function(param){
                 self.stats.speed = speed;
             }
         }
-        if(self.offhandPassive === 'spirit'){
-            self.shootProjectile(self.id,'Player',self.direction,self.direction,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
-            self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
-            self.shootProjectile(self.id,'Player',self.direction + 240,self.direction + 240,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
-        }
-        if(self.offhandPassive === 'lightning'){
-            for(var i = 0;i < 15;i++){
-                self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningSpit',32 + 32 * i,function(t){return 0},30,self.stats,'playerSplaser');
+        if(self.offhandPassiveCooldown <= 0){
+            self.offhandPassiveCooldown = self.offhandPassiveUsetime;
+            if(self.offhandPassive === 'spirit'){
+                self.shootProjectile(self.id,'Player',self.direction,self.direction,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
+                self.shootProjectile(self.id,'Player',self.direction + 120,self.direction + 120,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
+                self.shootProjectile(self.id,'Player',self.direction + 240,self.direction + 240,'soul',32,function(t){return 25},0,self.stats,'playerSoul');
             }
-        }
-        if(self.offhandPassive === 'explode'){
-            var speed = self.stats.speed;
-            self.stats.speed = 0;
-            var projectileWidth = 0;
-            var projectileHeight = 0;
-            for(var i in projectileData){
-                if(i === 'fireBullet'){
-                    projectileWidth = projectileData[i].width;
-                    projectileHeight = projectileData[i].height;
-                    projectileStats = Object.create(projectileData[i].stats);
+            if(self.offhandPassive === 'lightning'){
+                var range = self.stats.range;
+                self.stats.range = 0.25;
+                for(var i = 0;i < 15;i++){
+                    self.shootProjectile(self.id,'Player',self.direction,self.direction,'lightningSpit',32 + 32 * i,function(t){return 0},30,self.stats,'playerSplaser');
                 }
+                self.stats.range = range;
             }
-            for(var i in projectileStats){
-                projectileStats[i] *= self.stats[i];
-            }
-            projectileStats.damageReduction = 0;
-            projectileStats.debuffs = self.stats.debuffs;
-            var projectile = Projectile({
-                id:self.id,
-                projectileType:'fireBullet',
-                angle:0,
-                direction:0,
-                x:self.mouseX,
-                y:self.mouseY,
-                map:self.map,
-                parentType:self.type,
-                mapWidth:self.mapWidth,
-                mapHeight:self.mapHeight,
-                width:projectileWidth,
-                height:projectileHeight,
-                spin:function(t){return 25},
-                pierce:0,
-                projectilePattern:'stationary',
-                stats:projectileStats,
-                onCollision:function(self,pt){
-                    for(var i = 0;i < 15;i++){
-                        var stats = projectileStats;
-                        stats.attack *= 0.3;
-                        var projectile = Projectile({
-                            id:self.parent,
-                            projectileType:'fireBullet',
-                            angle:i * 24,
-                            direction:i * 24,
-                            x:self.x,
-                            y:self.y,
-                            map:self.map,
-                            parentType:self.parentType,
-                            mapWidth:self.mapWidth,
-                            mapHeight:self.mapHeight,
-                            width:projectileWidth,
-                            height:projectileHeight,
-                            spin:function(t){return 25},
-                            pierce:1000,
-                            projectilePattern:'accellerateNoCollision',
-                            stats:stats,
-                            onCollision:function(self,pt){
-                                if(self.pierce === 0){
-                                    self.toRemove = true;
-                                }
-                                else{
-                                    self.pierce -= 1;
-                                }
-                            }
-                        });
+            if(self.offhandPassive === 'explode'){
+                var speed = self.stats.speed;
+                self.stats.speed = 0;
+                var projectileWidth = 0;
+                var projectileHeight = 0;
+                for(var i in projectileData){
+                    if(i === 'fireBullet'){
+                        projectileWidth = projectileData[i].width;
+                        projectileHeight = projectileData[i].height;
+                        projectileStats = Object.create(projectileData[i].stats);
                     }
                 }
-            });
-            self.stats.speed = speed;
-        }
-        if(self.offhandPassive === 'firering'){
-            var speed = self.stats.speed;
-            self.stats.speed = 0.2;
-            for(var i = 0;i < 15;i++){
-                self.shootProjectile(self.id,'Player',i * 24,i * 24,'fireBullet',128,function(t){return 0},1000,self.stats,'spinAroundPlayer');
+                for(var i in projectileStats){
+                    projectileStats[i] *= self.stats[i];
+                }
+                projectileStats.damageReduction = 0;
+                projectileStats.debuffs = self.stats.debuffs;
+                var projectile = Projectile({
+                    id:self.id,
+                    projectileType:'fireBullet',
+                    angle:0,
+                    direction:0,
+                    x:self.mouseX,
+                    y:self.mouseY,
+                    map:self.map,
+                    parentType:self.type,
+                    mapWidth:self.mapWidth,
+                    mapHeight:self.mapHeight,
+                    width:projectileWidth,
+                    height:projectileHeight,
+                    spin:function(t){return 25},
+                    pierce:0,
+                    projectilePattern:'stationary',
+                    stats:projectileStats,
+                    onCollision:function(self,pt){
+                        for(var i = 0;i < 15;i++){
+                            var stats = projectileStats;
+                            stats.attack *= 0.3;
+                            var projectile = Projectile({
+                                id:self.parent,
+                                projectileType:'fireBullet',
+                                angle:i * 24,
+                                direction:i * 24,
+                                x:self.x,
+                                y:self.y,
+                                map:self.map,
+                                parentType:self.parentType,
+                                mapWidth:self.mapWidth,
+                                mapHeight:self.mapHeight,
+                                width:projectileWidth,
+                                height:projectileHeight,
+                                spin:function(t){return 25},
+                                pierce:1000,
+                                projectilePattern:'accellerateNoCollision',
+                                stats:stats,
+                                onCollision:function(self,pt){
+                                    if(self.pierce === 0){
+                                        self.toRemove = true;
+                                    }
+                                    else{
+                                        self.pierce -= 1;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                self.stats.speed = speed;
             }
-            self.stats.speed = speed;
+            if(self.offhandPassive === 'firering'){
+                var speed = self.stats.speed;
+                self.stats.speed = 0.2;
+                var range = self.stats.range;
+                self.stats.range = 0.25;
+                for(var i = 0;i < 15;i++){
+                    self.shootProjectile(self.id,'Player',i * 24,i * 24,'fireBullet',128,function(t){return 0},1000,self.stats,'spinAroundPlayer');
+                }
+                self.stats.speed = speed;
+                self.stats.range = range;
+            }
         }
     }
     self.updateAttack = function(){
@@ -5324,7 +5333,7 @@ Player = function(param){
                                     projectileStats[i] *= self.stats[i];
                                 }
                                 projectileStats.damageReduction = 0;
-                                projectileStats.debuffs = stats.debuffs;
+                                projectileStats.debuffs = self.stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'waterTower',
@@ -5392,7 +5401,7 @@ Player = function(param){
                                     projectileStats[i] *= self.stats[i];
                                 }
                                 projectileStats.damageReduction = 0;
-                                projectileStats.debuffs = stats.debuffs;
+                                projectileStats.debuffs = self.stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'rockTower',
@@ -5478,7 +5487,7 @@ Player = function(param){
                                     projectileStats[i] *= self.stats[i];
                                 }
                                 projectileStats.damageReduction = 0;
-                                projectileStats.debuffs = stats.debuffs;
+                                projectileStats.debuffs = self.stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'seed',
@@ -5533,7 +5542,7 @@ Player = function(param){
                                     projectileStats[i] *= self.stats[i];
                                 }
                                 projectileStats.damageReduction = 0;
-                                projectileStats.debuffs = stats.debuffs;
+                                projectileStats.debuffs = self.stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'waterBullet',
@@ -5593,7 +5602,7 @@ Player = function(param){
                                     projectileStats[i] *= self.stats[i];
                                 }
                                 projectileStats.damageReduction = 0;
-                                projectileStats.debuffs = stats.debuffs;
+                                projectileStats.debuffs = self.stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'thedeathrayspiral',
@@ -5674,7 +5683,7 @@ Player = function(param){
                                     projectileStats[i] *= self.stats[i];
                                 }
                                 projectileStats.damageReduction = 0;
-                                projectileStats.debuffs = stats.debuffs;
+                                projectileStats.debuffs = self.stats.debuffs;
                                 var projectile = Projectile({
                                     id:self.id,
                                     projectileType:'fireboomerang',
@@ -9675,12 +9684,12 @@ Projectile = function(param){
 	self.update = function(){
         self.timer += 1;
         if(param.stats.range !== undefined){
-            if(self.timer > 40 * param.stats.range){
+            if(self.timer >= 40 * param.stats.range){
                 self.toRemove = true;
             }
         }
         else{
-            if(self.timer > 40){
+            if(self.timer >= 40){
                 self.toRemove = true;
             }
         }
@@ -9689,7 +9698,7 @@ Projectile = function(param){
         }
         self.lastX = self.x;
         self.lastY = self.y;
-        if(self.timer !== 1){
+        if(self.timer > 0){
             if(self.doCollision){
                 var largestSpeedRatio = 1;
                 if(largestSpeedRatio < Math.abs(self.spdX) / self.width){
@@ -9869,7 +9878,7 @@ Projectile = function(param){
                 self.x += -Math.sin(self.angle) * param.distance;
                 self.y += Math.cos(self.angle) * param.distance;
                 self.angle += param.stats.speed / 2;
-                self.direction = self.angle * 180 / Math.PI + 75;
+                self.direction = self.angle * 180 / Math.PI + 90;
             }
             else{
                 self.toRemove = true;
@@ -9879,9 +9888,9 @@ Projectile = function(param){
             if(Player.list[self.parent]){
                 self.x = Player.list[self.parent].x;
                 self.y = Player.list[self.parent].y;
-                self.x += -Math.sin((Player.list[self.parent].direction - 90) / 180 * Math.PI) * param.distance;
-                self.y += Math.cos((Player.list[self.parent].direction - 90) / 180 * Math.PI) * param.distance;
                 self.direction = Player.list[self.parent].direction;
+                self.x += Math.cos((Player.list[self.parent].direction) / 180 * Math.PI) * param.distance;
+                self.y += Math.sin((Player.list[self.parent].direction) / 180 * Math.PI) * param.distance;
             }
             else{
                 self.toRemove = true;
@@ -10989,6 +10998,7 @@ Projectile = function(param){
         pack.direction = self.direction;
         return pack;
     }
+    // self.update();
 	Projectile.list[self.id] = self;
 	return self;
 }
