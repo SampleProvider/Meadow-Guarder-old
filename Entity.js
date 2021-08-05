@@ -4860,7 +4860,7 @@ Player = function(param){
                             spin:function(t){return 25},
                             pierce:1000,
                             projectilePattern:'accellerateNoCollision',
-                            stats:stats,
+                            stats:projectileStats,
                             onCollision:function(self,pt){
                                 if(self.pierce === 0){
                                     self.toRemove = true;
