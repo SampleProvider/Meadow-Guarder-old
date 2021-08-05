@@ -67,7 +67,7 @@ io.sockets.on('connection',function(socket){
 	});
 	socket.on('createAccount',function(data){
 		var allSpaces = true;
-		for(var i in data.username){
+		for(var i = 0;i < data.username.length;i++){
 			if(data.username[i] !== ' '){
 				allSpaces = false;
 			}
