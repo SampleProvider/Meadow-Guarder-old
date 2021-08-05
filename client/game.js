@@ -1519,31 +1519,36 @@ var Projectile = function(initPack){
             y += Player.list[self.relativeToPlayer].y;
         }
         if(projectileData[self.projectileType] && showParticles){
-            var light = Object.create(projectileData[self.projectileType].light);
-            for(var i in Projectile.list){
-                var pX = Projectile.list[i].x;
-                var pY = Projectile.list[i].y;
-                if(Projectile.list[i].relativeToPlayer && Player.list[Projectile.list[i].relativeToPlayer]){
-                    pX += Player.list[Projectile.list[i].relativeToPlayer].x;
-                    pY += Player.list[Projectile.list[i].relativeToPlayer].y;
-                }
-                if(getDistance(x,y,pX,pY) < light.radius && i !== self.id){
-                    light.r += (255 - light.r) / 15;
-                    light.g += (255 - light.g) / 15;
-                    light.b += (255 - light.b) / 15;
-                    light.a *= 0.95;
-                    light.radius *= 0.98;
-                }
+            if(projectileData[self.projectileType].light.a === 0){
+
             }
-            entityLightList[self.id] = {
-                x:Math.round(x),
-                y:Math.round(y),
-                map:self.map,
-                r:Math.min(light.r,255),
-                g:Math.min(light.g,255),
-                b:Math.min(light.b,255),
-                a:Math.max(light.a,0.05),
-                radius:Math.max(light.radius,40),
+            else{
+                var light = Object.create(projectileData[self.projectileType].light);
+                for(var i in Projectile.list){
+                    var pX = Projectile.list[i].x;
+                    var pY = Projectile.list[i].y;
+                    if(Projectile.list[i].relativeToPlayer && Player.list[Projectile.list[i].relativeToPlayer]){
+                        pX += Player.list[Projectile.list[i].relativeToPlayer].x;
+                        pY += Player.list[Projectile.list[i].relativeToPlayer].y;
+                    }
+                    if(getDistance(x,y,pX,pY) < light.radius && i !== self.id){
+                        light.r += (255 - light.r) / 15;
+                        light.g += (255 - light.g) / 15;
+                        light.b += (255 - light.b) / 15;
+                        light.a *= 0.95;
+                        light.radius *= 0.98;
+                    }
+                }
+                entityLightList[self.id] = {
+                    x:Math.round(x),
+                    y:Math.round(y),
+                    map:self.map,
+                    r:Math.min(light.r,255),
+                    g:Math.min(light.g,255),
+                    b:Math.min(light.b,255),
+                    a:Math.max(light.a,0.05),
+                    radius:Math.max(light.radius,40),
+                }
             }
         }
         if(self.relativeToPlayer && Player.list[self.relativeToPlayer]){

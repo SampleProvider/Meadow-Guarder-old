@@ -3061,6 +3061,7 @@ Player = function(param){
         self.pushPt = undefined;
         self.damageArray.splice(0,1);
         self.damageArray.push(0);
+        self.hp = Math.round(self.hp);
     }
     self.useItem = function(event,index){
         eval(event);
