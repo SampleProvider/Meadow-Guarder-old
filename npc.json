@@ -898,12 +898,6 @@
                         "id":"ruby",
                         "amount":10000
                     }
-                ],
-                [
-                    {
-                        "id":"wood",
-                        "amount":1
-                    }
                 ]
             ]
         },
@@ -1333,6 +1327,54 @@
             "Lvl 13"
         ]
     },
+    "forestdungeonegg":{
+        "name":"Forest Dungeon Egg",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "crafts":{
+            "items":[
+                {
+                    "id":"scrollofnature",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"leafycandy",
+                    "enchantments":[],
+                    "stack":5
+                }
+            ],
+            "materials":[
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"bookofnature",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"sunflower",
+                        "amount":1
+                    },
+                    {
+                        "id":"rose",
+                        "amount":1
+                    }
+                ]
+            ]
+        },
+        "mainCraft":"forest items",
+        "quote":"A fragment of nature.",
+        "requirements":[
+            "Wood Delivery",
+            "Lvl 8"
+        ]
+    },
     "andrew":{
         "name":"Andrew",
         "randomWalk":"wander",
@@ -1380,7 +1422,7 @@
     "tutorialguard":{
         "name":"Tutorial Guard",
         "randomWalk":"none",
-        "canChangeMap":true,
+        "canChangeMap":false,
         "shop":false
     },
     "riley":{
@@ -1391,6 +1433,21 @@
         "dialogues":[
             "I lost my candies!",
             "I love Fibb's new candies!"
+        ]
+    },
+    "forestdungeon":{
+        "name":"Forest Dungeon",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "dungeon":{
+            "x":192,
+            "y":192,
+            "map":"Forest Dungeon Room 1"
+        },
+        "requirements":[
+            "Wood Delivery",
+            "Lvl 8"
         ]
     }
 }

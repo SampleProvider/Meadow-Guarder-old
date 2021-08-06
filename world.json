@@ -57,6 +57,12 @@
         ],
         "The Dripping Caverns": [
             "cyanBeetle"
+        ],
+        "The Pathway": [
+            "greenBird","blueBall"
+        ],
+        "Forest Dungeon Room 1": [
+            "forestBird"
         ]
     }
 }

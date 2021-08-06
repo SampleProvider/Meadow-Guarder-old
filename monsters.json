@@ -172,7 +172,37 @@
         "pushResist":0,
         "moveSpeed":5,
         "itemDrops":{
-            "lightningarrow":0.01
+            "lightningarrow":0.01,
+            "desertmask":0.01,
+            "desertarmor":0.01
+        }
+    },
+    "forestBird":{
+        "spawnChance":1,
+        "xpGain":2,
+        "width":44,
+        "height":40,
+        "attackState":"ForestBird",
+        "aggro":8,
+        "boss":false,
+        "trackDistance":"random",
+        "hp":2500,
+        "stats":{
+            "attack":56,
+            "defense":26,
+            "heal":0,
+            "speed":1,
+            "range":1,
+            "critChance":0,
+            "damageReduction":0,
+            "knockback":0.3,
+            "debuffs":[]
+        },
+        "immuneDebuffs":[],
+        "pushResist":0,
+        "moveSpeed":10,
+        "itemDrops":{
+            "leafycandy":0.25
         }
     },
     "blueBall":{

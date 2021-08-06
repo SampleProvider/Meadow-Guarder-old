@@ -142,6 +142,9 @@ var firableMap = function(map){
     if(map.includes('Arena')){
         isFireMap = true;
     }
+    if(map.includes('Dungeon')){
+        isFireMap = true;
+    }
     if(map === 'Lilypad Kingdom'){
         isFireMap = false;
     }
@@ -1933,6 +1936,24 @@ Actor = function(param){
                     stats.attack += 35;
                     stats.defense += 25;
                 }
+                if(self.debuffs[i].id === 'leafycandy'){
+                    var damage = 15;
+                    var particleType = 'greenDamage';
+                    self.hp += damage;
+                    if(damage){
+                        var particle = new Particle({
+                            x:self.x + Math.random() * 64 - 32,
+                            y:self.y + Math.random() * 64 - 32,
+                            map:self.map,
+                            particleType:particleType,
+                            value:'+' + Math.round(damage),
+                        });
+                    }
+                    stats.attack += 15;
+                    stats.defense += 20;
+                    stats.heal += 0.3;
+                    hpMax *= 1.25;
+                }
                 if(self.debuffs[i].id === 'lesserhealthboost'){
                     hpMax *= 1.1;
                 }
@@ -3676,6 +3697,11 @@ Player = function(param){
                         }
                     }
                     if(self.mapChange > 20 && Npc.list[i].x - 64 < self.mouseX && Npc.list[i].x + 64 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 64 > self.mouseY && self.invincible === false){
+                        if(Npc.list[i].type === 'StaticNpc' && self.getDistance(Npc.list[i]) > 256){
+                            self.sendNotification('[!] Get closer to ' + Npc.list[i].name + ' to interact with it.');
+                            self.keyPress.second = false;
+                            continue;
+                        }
                         var response1 = undefined;
                         var response2 = undefined;
                         var response3 = undefined;
@@ -3883,6 +3909,65 @@ Player = function(param){
                                 }
                             }
                         }
+                        if(Npc.list[i].dungeon){
+                            if(self.checkNpcRequirements(i)){
+                                if(response1 === undefined){
+                                    response1 = '*Enter ' + Npc.list[i].name + '*';
+                                    self.questInfo.response1 = Npc.list[i].name;
+                                }
+                                else if(response2 === undefined){
+                                    response2 = '*Enter ' + Npc.list[i].name + '*';
+                                    self.questInfo.response2 = Npc.list[i].name;
+                                }
+                                else if(response3 === undefined){
+                                    response3 = '*Enter ' + Npc.list[i].name + '*';
+                                    self.questInfo.response3 = Npc.list[i].name;
+                                }
+                                else if(response4 === undefined){
+                                    response4 = '*Enter ' + Npc.list[i].name + '*';
+                                    self.questInfo.response4 = Npc.list[i].name;
+                                }
+                            }
+                            else{
+                                var requirements = 'Requires ';
+                                for(var j in npcData[i].requirements){
+                                    if(self.questStats[npcData[i].requirements[j]] === false){
+                                        if(requirements === 'Requires '){
+                                            requirements += npcData[i].requirements[j];
+                                        }
+                                        else{
+                                            requirements += ' and ' + npcData[i].requirements[j];
+                                        }
+                                    }
+                                    else if(npcData[i].requirements[j].slice(0,4) === 'Lvl '){
+                                        if(parseInt(npcData[i].requirements[j].slice(4,npcData[i].requirements[j].length),10) > self.level){
+                                            if(requirements === 'Requires '){
+                                                requirements += 'Level ' + npcData[i].requirements[j].slice(4,npcData[i].requirements[j].length);
+                                            }
+                                            else{
+                                                requirements += ' and Level ' + npcData[i].requirements[j].slice(4,npcData[i].requirements[j].length);
+                                            }
+                                        }
+                                    }
+                                }
+                                if(response1 === undefined){
+                                    response1 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">' + requirements + '.</span>';
+                                    self.questInfo.response1 = 'None';
+                                }
+                                else if(response2 === undefined){
+                                    response2 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">' + requirements + '.</span>';
+                                    self.questInfo.response2 = 'None';
+                                }
+                                else if(response3 === undefined){
+                                    response3 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">' + requirements + '.</span>';
+                                    self.questInfo.response3 = 'None';
+                                }
+                                else if(response4 === undefined){
+                                    response4 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">' + requirements + '.</span>';
+                                    self.questInfo.response4 = 'None';
+                                }
+                            }
+                        }
                         if(i === 'petmaster'){
                             if(response1 === undefined){
                                 response1 = '*Upgrade your Pet*';
@@ -3952,6 +4037,12 @@ Player = function(param){
                         self.endDialogue();
                         self.inventory.craftItems = Npc.list[i].crafts;
                         socket.emit('openCraft',{name:Npc.list[i].name,quote:Npc.list[i].quote,crafts:Npc.list[i].crafts});
+                    }
+                }
+                if(Npc.list[i].dungeon){
+                    if(Npc.list[i].name === self.questInfo[response]){
+                        self.endDialogue();
+                        self.teleport(Npc.list[i].dungeon.x,Npc.list[i].dungeon.y,Npc.list[i].dungeon.map);
                     }
                 }
             }
@@ -7311,6 +7402,17 @@ Monster = function(param){
                     }
                 }
                 break;
+            case "attackForestBird":
+                if(self.animation === -1){
+                    self.animation = 0;
+                }
+                else{
+                    self.animation += 0.5;
+                    if(self.animation > 5){
+                        self.animation = 0;
+                    }
+                }
+                break;
         }
     }
     self.updateAttack = function(){
@@ -9074,6 +9176,17 @@ Monster = function(param){
                         self.shootProjectile(self.id,'Monster',self.direction,self.direction,'typhoon',16,function(t){return 25},0,self.stats,'playerHoming');
                         self.stats.attack = attack;
                         self.stats.speed = speed;
+                    }
+                    self.reload += 1;
+                    break;
+                case "attackForestBird":
+                    if(self.reload % 2 === 0 && self.target.invincible === false && self.reload > 10){
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'seed',16,function(t){return 0},0,self.stats,'bounceOffCollisions');
+                    }
+                    if(self.reload % 20 === 0 && self.target.invincible === false && self.hp < self.hpMax / 2){
+                        for(var i = 0;i < 8;i++){
+                            self.shootProjectile(self.id,'Monster',self.direction + i * 45,self.direction + i * 45,'seed',16,function(t){return 0},0,self.stats,'seed');
+                        }
                     }
                     self.reload += 1;
                     break;
@@ -11380,6 +11493,9 @@ var renderLayer = function(layer,data,loadedMap){
                         if(npcData[id].quote !== false){
                             npc.quote = npcData[id].quote;
                         }
+                        if(npcData[id].dungeon !== undefined){
+                            npc.dungeon = npcData[id].dungeon;
+                        }
                     }
                 }
                 if(type === 'WayPoint'){
@@ -11734,6 +11850,7 @@ load("Garage");
 load("Secret Tunnel Part 1");
 load("The Hideout");
 load("The Dripping Caverns");
+load("Forest Dungeon Room 1");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

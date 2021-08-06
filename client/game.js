@@ -36,7 +36,7 @@ var cameraY = 0;
 var audioTense = document.getElementById('audioTense');
 var audioCalm = document.getElementById('audioCalm');
 
-var VERSION = '031f1a';
+var VERSION = '031f2a';
 
 var DEBUG = false;
 
@@ -375,6 +375,8 @@ signDivSignIn.onclick = function(){
         loading = true;
         loadingProgress = 0;
         loadingProgressDisplay = 0;
+        document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 741';
+        document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 741 * 100 + '%';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
@@ -403,6 +405,7 @@ signDivSignIn.onclick = function(){
         loadMap("Secret Tunnel Part 1");
         loadMap("The Hideout");
         loadMap("The Dripping Caverns");
+        loadMap("Forest Dungeon Room 1");
         
         var request = new XMLHttpRequest();
         request.open('GET',"/client/projectiles.json",true);
@@ -1780,6 +1783,10 @@ var Monster = function(initPack){
         if(self.monsterType === 'charredBird'){
             self.animation = Math.round(self.animation);
             ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 4,11,13,self.x - 22,self.y - 32,44,52);
+        }
+        if(self.monsterType === 'forestBird'){
+            self.animation = Math.round(self.animation);
+            ctx0.drawImage(Img.bird,self.animation % 2 * 12,14 * 5,11,13,self.x - 22,self.y - 32,44,52);
         }
         if(self.monsterType === 'blueBall'){
             ctx0.translate(self.x,self.y);
@@ -3164,10 +3171,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 714';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 714 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 741';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 741 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 714){
+        if(loadingProgressDisplay >= 741){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){

@@ -111,6 +111,13 @@
             "width": 800,
             "x": -800,
             "y": 1600
+        },
+        {
+            "fileName": "The Pathway.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 800,
+            "y": -1600
         }
     ],
     "onlyShowAdjacentMaps": false,

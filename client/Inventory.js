@@ -213,7 +213,7 @@ Inventory = function(socket,server){
         return false;
     }
     self.enchantItem = function(index,enchantment,level){
-        if(self.items[index]){
+        if(self.items[index] !== undefined){
             var item = self.items[index];
             for(var i in Item.list[item.id].enchantments){
                 if(Item.list[item.id].enchantments[i] === enchantment){
@@ -229,7 +229,7 @@ Inventory = function(socket,server){
                 }
             }
         }
-        else if(self.equips[index].id){
+        else if(self.equips[index] !== undefined){
             var item = self.equips[index];
             for(var i in Item.list[item.id].enchantments){
                 if(Item.list[item.id].enchantments[i] === enchantment){
@@ -809,7 +809,6 @@ Inventory = function(socket,server){
                     var index2 = data.index2;
                     if(self.items[index1]){
                         if(self.items[index1].id === 'enchantmentbook' && index1 !== index2){
-                            console.log(index1,index2)
                             if(self.items[index2]){
                                 if(self.items[index2].id){
                                     for(var i in self.items[index1].enchantments){

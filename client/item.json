@@ -1434,6 +1434,15 @@
         "rarity":6,
         "maxStack":30
     },
+    "leafycandy":{
+        "name":"Leafy Candy",
+        "equip":"consume",
+        "event":"self.addDebuff('leafycandy',19200);if(self.inventory.items[index].stack === 1){self.inventory.items[index] = {};}else{self.inventory.items[index].stack -= 1;}self.inventory.refreshItem(index);",
+        "enchantments":[],
+        "description":"It has a distinct leafy smell.",
+        "rarity":7,
+        "maxStack":30
+    },
     "rockboomerang":{
         "name":"Rock Boomerang",
         "equip":"weapon",
@@ -1913,7 +1922,7 @@
         "name":"Burnt Book of Ashes",
         "equip":"weapon",
         "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
-        "enchantments":["burst","range","accuracy","power"],
+        "enchantments":["burst","focus","sorcery"],
         "damage":6,
         "damageType":"magic",
         "critChance":0.04,
@@ -2009,6 +2018,14 @@
         "maxStack":1,
         "description":"<span style='color: #33ee33'>+30 slots.</span>"
     },
+    "scrollofnature":{
+        "name":"Scroll Of Nature",
+        "equip":"scroll",
+        "event":"self.inventory.maxSlots += 20;",
+        "rarity":7,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+20 slots.</span>"
+    },
     "thenightmarescroll":{
         "name":"The Nightmare Scroll",
         "equip":"scroll",
@@ -2016,5 +2033,27 @@
         "rarity":8,
         "maxStack":1,
         "description":"<span style='color: #33ee33'>+120 slots.</span>"
+    },
+    "desertmask":{
+        "name":"Desert Mask",
+        "equip":"helmet",
+        "event":"damageIncrease += 0.65;self.stats.critChance += 0.25;self.stats.debuffs.push({id:'burning',time:100});self.stats.debuffs.push({id:'electrified',time:100});self.stats.debuffs.push({id:'death',time:100});self.stats.debuffs.push({id:'frostburn',time:100});self.stats.debuffs.push({id:'frostbite',time:100});self.stats.debuffs.push({id:'frozen',time:100});self.stats.debuffs.push({id:'shocked',time:100});self.stats.debuffs.push({id:'wet',time:100});self.stats.debuffs.push({id:'thundered',time:100});self.stats.debuffs.push({id:'incinerating',time:100});self.stats.debuffs.push({id:'apple',time:100});self.stats.debuffs.push({id:'milk',time:100});self.stats.debuffs.push({id:'chocolatechipcookie',time:100});self.stats.debuffs.push({id:'lesserhealthboostpotion',time:100});self.stats.debuffs.push({id:'lesserdefenseboost',time:100});self.stats.debuffs.push({id:'lesserspeedboost',time:100});self.stats.debuffs.push({id:'lessermanaboost',time:100});self.stats.debuffs.push({id:'lesserregenboost',time:100});self.stats.debuffs.push({id:'lesserrandomboost1',time:100});self.stats.debuffs.push({id:'lesserrandomboost2',time:100});self.stats.debuffs.push({id:'healthboostpotion',time:100});self.stats.debuffs.push({id:'defenseboost',time:100});self.stats.debuffs.push({id:'speedboost',time:100});self.stats.debuffs.push({id:'manaboost',time:100});self.stats.debuffs.push({id:'regenboost',time:100});self.stats.debuffs.push({id:'randomboost1',time:100});self.stats.debuffs.push({id:'randomboost2',time:100});self.stats.debuffs.push({id:'greaterhealthboostpotion',time:100});self.stats.debuffs.push({id:'greaterdefenseboost',time:100});self.stats.debuffs.push({id:'greaterspeedboost',time:100});self.stats.debuffs.push({id:'greatermanaboost',time:100});self.stats.debuffs.push({id:'greaterregenboost',time:100});self.stats.debuffs.push({id:'greaterrandomboost1',time:100});self.stats.debuffs.push({id:'greaterrandomboost2',time:100});self.stats.debuffs.push({id:'superrandomboost',time:100});",
+        "enchantments":["smashing"],
+        "defense":35,
+        "damageReduction":0.15,
+        "rarity":7,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+365% damage.</span><br><span style='color: #33ee33'>+85% critical strike chance.</span><br>You inflict all debuffs and buffs for 5 seconds."
+    },
+    "desertarmor":{
+        "name":"Desert Armor",
+        "equip":"armor",
+        "event":"damageIncrease += 0.5;self.stats.critChance += 0.15;self.immuneDebuffs.push('burning');self.immuneDebuffs.push('electrified');self.immuneDebuffs.push('death');self.immuneDebuffs.push('frostburn');self.immuneDebuffs.push('frostbite');self.immuneDebuffs.push('frozen');self.immuneDebuffs.push('shocked');self.immuneDebuffs.push('wet');self.immuneDebuffs.push('thundered');self.immuneDebuffs.push('incinerating');self.immuneDebuffs.push('apple');self.immuneDebuffs.push('milk');self.immuneDebuffs.push('chocolatechipcookie');self.immuneDebuffs.push('lesserhealthboostpotion');self.immuneDebuffs.push('lesserdefenseboost');self.immuneDebuffs.push('lesserspeedboost');self.immuneDebuffs.push('lessermanaboost');self.immuneDebuffs.push('lesserregenboost');self.immuneDebuffs.push('lesserrandomboost1');self.immuneDebuffs.push('lesserrandomboost2');self.immuneDebuffs.push('healthboostpotion');self.immuneDebuffs.push('defenseboost');self.immuneDebuffs.push('speedboost');self.immuneDebuffs.push('manaboost');self.immuneDebuffs.push('regenboost');self.immuneDebuffs.push('randomboost1');self.immuneDebuffs.push('randomboost2');self.immuneDebuffs.push('greaterhealthboostpotion');self.immuneDebuffs.push('greaterdefenseboost');self.immuneDebuffs.push('greaterspeedboost');self.immuneDebuffs.push('greatermanaboost');self.immuneDebuffs.push('greaterregenboost');self.immuneDebuffs.push('greaterrandomboost1');self.immuneDebuffs.push('greaterrandomboost2');self.immuneDebuffs.push('superrandomboost');",
+        "enchantments":["smashing"],
+        "defense":38,
+        "damageReduction":0.05,
+        "rarity":7,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+35% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span><br>You gain immunity to all debuffs and buffs."
     }
 }
