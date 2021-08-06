@@ -5383,6 +5383,11 @@ Player = function(param){
                                 }
                             }
                             break;
+                        case "drippingbowAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',70,function(t){return 25},0,self.stats,'bounceOffCollisions');
+                            }
+                            break;
                         case "waterslasherAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'waterslasher',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
@@ -5391,6 +5396,13 @@ Player = function(param){
                                 self.shootProjectile(self.id,'Player',self.direction + 90,self.direction + 90,'waterslasher',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 25},0,self.stats,'bounceOffCollisions');
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 25},0,self.stats,'bounceOffCollisions');
+                            }
+                            break;
+                        case "wateryswordAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction + 270,self.direction + 270,'waterysword',54,function(t){return 0},0,self.stats,'spinAroundPlayer');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',64,function(t){return 25},0,self.stats,'playerSeed');
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',84,function(t){return 25},0,self.stats,'playerSeed');
                             }
                             break;
                         case "flamethrowerAttack":
@@ -5821,6 +5833,11 @@ Player = function(param){
                         case "bookoffrostAttack":
                             if(isFireMap){
                                 self.shootProjectile(self.id,'Player',self.direction,self.direction,'frostBullet',0,function(t){return 10},30,self.stats,'bounceOffCollisions');
+                            }
+                            break;
+                        case "bookofwaterAttack":
+                            if(isFireMap){
+                                self.shootProjectile(self.id,'Player',self.direction,self.direction,'waterBullet',0,function(t){return 10},30,self.stats,'bounceOffCollisions');
                             }
                             break;
                         case "goldensaberAttack":
@@ -6392,6 +6409,9 @@ Player.onConnect = function(socket,username){
                 player.sendNotification('[!] Waypoints have been disabled in this quest.');
             }
             else if(player.map === 'The Pet Arena' || player.map === 'Mysterious Room' || player.map === 'The Tutorial' || player.map === 'The Battlefield' || player.map === 'Secret Tunnel Part 1'){
+                player.sendNotification('[!] Waypoints have been disabled in this map.');
+            }
+            else if(player.map.includes('Dungeon')){
                 player.sendNotification('[!] Waypoints have been disabled in this map.');
             }
             else if(data === 'The Village'){
@@ -7194,6 +7214,30 @@ Monster = function(param){
                     }
                 }
                 break;
+            case "attackWaterLizard":
+                if(self.spdX > 0){
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 0;
+                    }
+                    if(self.animation >= 2){
+                        self.animation = 0;
+                    }
+                }
+                else{
+                    if(self.animation !== -1){
+                        self.animation += 0.2;
+                    }
+                    else{
+                        self.animation = 2;
+                    }
+                    if(self.animation >= 4){
+                        self.animation = 2;
+                    }
+                }
+                break;
             case "attackLightningLizard":
                 if(self.spdX > 0){
                     if(self.animation !== -1){
@@ -7779,6 +7823,12 @@ Monster = function(param){
                         self.trackingEntity = undefined;
                         self.followingEntity = undefined;
                     }
+                    break;
+                case "attackWaterLizard":
+                    if(self.reload % 4 === 0 && self.reload > 10 && self.target.invincible === false){
+                        self.shootProjectile(self.id,'Monster',self.direction,self.direction,'waterBullet',0,function(t){return 0},0,self.stats,"bounceOffCollisions");
+                    }
+                    self.reload += 1;
                     break;
                 case "attackLightningLizard":
                     self.trackEntity(self.target,0);
@@ -11859,6 +11909,7 @@ load("Secret Tunnel Part 1");
 load("The Hideout");
 load("The Dripping Caverns");
 load("Forest Dungeon Room 1");
+load("Riverside Dungeon Room 1");
 var compareMaps = function(a,b){
     if(a.y === b.y){
         return a.x - b.x;

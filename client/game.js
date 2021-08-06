@@ -375,8 +375,8 @@ signDivSignIn.onclick = function(){
         loading = true;
         loadingProgress = 0;
         loadingProgressDisplay = 0;
-        document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 741';
-        document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 741 * 100 + '%';
+        document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 756';
+        document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 756 * 100 + '%';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
@@ -406,6 +406,7 @@ signDivSignIn.onclick = function(){
         loadMap("The Hideout");
         loadMap("The Dripping Caverns");
         loadMap("Forest Dungeon Room 1");
+        loadMap("Riverside Dungeon Room 1");
         
         var request = new XMLHttpRequest();
         request.open('GET',"/client/projectiles.json",true);
@@ -1843,6 +1844,14 @@ var Monster = function(initPack){
                 ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13 - 26,9 * 1,12,8,self.x - 24,self.y - 16,48,32);
             }
         }
+        if(self.monsterType === 'waterLizard'){
+            if(self.animation < 2){
+                ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13,9 * 4,12,8,self.x - 24,self.y - 16,48,32);
+            }
+            else{
+                ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13 - 26,9 * 5,12,8,self.x - 24,self.y - 16,48,32);
+            }
+        }
         if(self.monsterType === 'lightningLizard'){
             if(self.animation < 2){
                 ctx0.drawImage(Img.lizard,Math.floor(self.animation) * 13,9 * 2,12,8,self.x - 48,self.y - 32,96,64);
@@ -3171,10 +3180,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 741';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 741 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 756';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 756 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 741){
+        if(loadingProgressDisplay >= 756){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){

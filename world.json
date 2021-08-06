@@ -63,6 +63,9 @@
         ],
         "Forest Dungeon Room 1": [
             "forestBird"
+        ],
+        "Riverside Dungeon Room 1": [
+            "waterLizard"
         ]
     }
 }

@@ -2018,14 +2018,6 @@
         "maxStack":1,
         "description":"<span style='color: #33ee33'>+30 slots.</span>"
     },
-    "scrollofnature":{
-        "name":"Scroll Of Nature",
-        "equip":"scroll",
-        "event":"self.inventory.maxSlots += 20;",
-        "rarity":7,
-        "maxStack":1,
-        "description":"<span style='color: #33ee33'>+20 slots.</span>"
-    },
     "thenightmarescroll":{
         "name":"The Nightmare Scroll",
         "equip":"scroll",
@@ -2055,5 +2047,55 @@
         "rarity":7,
         "maxStack":1,
         "description":"<span style='color: #33ee33'>+35% damage.</span><br><span style='color: #33ee33'>+15% critical strike chance.</span><br>You gain immunity to all debuffs and buffs."
+    },
+    "waterysword":{
+        "name":"Watery Sword",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","reach","aim","sharpness"],
+        "damage":72,
+        "damageType":"melee",
+        "critChance":0.04,
+        "knockback":0.4,
+        "useTime":15,
+        "rarity":4,
+        "maxStack":1
+    },
+    "drippingbow":{
+        "name":"Dripping Bow",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","range","accuracy","power"],
+        "damage":65,
+        "damageType":"ranged",
+        "critChance":0.04,
+        "knockback":0.1,
+        "useTime":2,
+        "rarity":4,
+        "maxStack":1
+    },
+    "bookofwater":{
+        "name":"Book of Water",
+        "equip":"weapon",
+        "event":"self.ability.attackPattern = [0];self.ability.secondPattern = [0];self.ability.healPattern = [0,20,40,60];",
+        "enchantments":["speed","burst","cost","focus","sorcery"],
+        "damage":87,
+        "damageType":"magic",
+        "critChance":0.04,
+        "knockback":0.2,
+        "useTime":10,
+        "manaCost":9,
+        "rarity":4,
+        "maxStack":1
+    },
+    "amuletofwater":{
+        "name":"Amulet of Water",
+        "equip":"offhand",
+        "event":"self.stats.critChance += 0.25;self.stats.debuffs.push({id:'wet',time:80});",
+        "enchantments":["smashing"],
+        "defense":8,
+        "rarity":4,
+        "maxStack":1,
+        "description":"<span style='color: #33ee33'>+25% critical strike chance.</span><br>You inflict the wet debuff for 4 seconds."
     }
 }

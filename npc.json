@@ -1335,7 +1335,7 @@
         "crafts":{
             "items":[
                 {
-                    "id":"scrollofnature",
+                    "id":"durableemeralditescroll",
                     "enchantments":[],
                     "stack":1
                 },
@@ -1373,6 +1373,84 @@
         "requirements":[
             "Wood Delivery",
             "Lvl 8"
+        ]
+    },
+    "riversidedungeonegg":{
+        "name":"Riverside Dungeon Egg",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "crafts":{
+            "items":[
+                {
+                    "id":"amuletofwater",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"waterysword",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"drippingbow",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"bookofwater",
+                    "enchantments":[],
+                    "stack":1
+                }
+            ],
+            "materials":[
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"amuletofrock",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"advancedrubysword",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"advancedrubybow",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"wood",
+                        "amount":25
+                    },
+                    {
+                        "id":"advancedrubystaff",
+                        "amount":1
+                    }
+                ]
+            ]
+        },
+        "mainCraft":"water items",
+        "quote":"A fragment of water.",
+        "requirements":[
+            "Weird Tower",
+            "Lvl 4"
         ]
     },
     "andrew":{
@@ -1448,6 +1526,21 @@
         "requirements":[
             "Wood Delivery",
             "Lvl 8"
+        ]
+    },
+    "riversidedungeon":{
+        "name":"Riverside Dungeon",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "dungeon":{
+            "x":192,
+            "y":192,
+            "map":"Riverside Dungeon Room 1"
+        },
+        "requirements":[
+            "Weird Tower",
+            "Lvl 4"
         ]
     }
 }
