@@ -677,7 +677,7 @@
         "aggro":8,
         "boss":false,
         "trackDistance":"random",
-        "hp":1500,
+        "hp":5000,
         "stats":{
             "attack":275,
             "defense":15,

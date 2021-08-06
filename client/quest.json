@@ -913,30 +913,30 @@
                 },
                 "objective":"Talk to Wally."
             },
-            "5":{
+            "4":{
                 "dialogue":{
                     "message":"My wood delivery is here? Great! Go say thanks to Bob for me.",
                     "response1":{
                         "text":"*End conversation*",
-                        "next":6
+                        "next":5
                     }
                 },
                 "objective":"Talk to Wally."
             },
-            "6":{
+            "5":{
                 "trigger":{
                     "type":"talkToNpc",
                     "npcId":"bob",
-                    "next":7
+                    "next":6
                 },
                 "objective":"Return to Bob."
             },
-            "7":{
+            "6":{
                 "dialogue":{
                     "message":"Wally said thanks? Well that's nice!",
                     "response1":{
                         "text":"*End conversation*",
-                        "next":8
+                        "next":7
                     }
                 },
                 "objective":"Return to Bob."
