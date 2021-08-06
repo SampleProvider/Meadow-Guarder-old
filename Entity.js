@@ -3911,21 +3911,41 @@ Player = function(param){
                         }
                         if(Npc.list[i].dungeon){
                             if(self.checkNpcRequirements(i)){
-                                if(response1 === undefined){
-                                    response1 = '*Enter ' + Npc.list[i].name + '*';
-                                    self.questInfo.response1 = Npc.list[i].name;
+                                if(self.quest === false){
+                                    if(response1 === undefined){
+                                        response1 = '*Enter ' + Npc.list[i].name + '*';
+                                        self.questInfo.response1 = Npc.list[i].name;
+                                    }
+                                    else if(response2 === undefined){
+                                        response2 = '*Enter ' + Npc.list[i].name + '*';
+                                        self.questInfo.response2 = Npc.list[i].name;
+                                    }
+                                    else if(response3 === undefined){
+                                        response3 = '*Enter ' + Npc.list[i].name + '*';
+                                        self.questInfo.response3 = Npc.list[i].name;
+                                    }
+                                    else if(response4 === undefined){
+                                        response4 = '*Enter ' + Npc.list[i].name + '*';
+                                        self.questInfo.response4 = Npc.list[i].name;
+                                    }
                                 }
-                                else if(response2 === undefined){
-                                    response2 = '*Enter ' + Npc.list[i].name + '*';
-                                    self.questInfo.response2 = Npc.list[i].name;
-                                }
-                                else if(response3 === undefined){
-                                    response3 = '*Enter ' + Npc.list[i].name + '*';
-                                    self.questInfo.response3 = Npc.list[i].name;
-                                }
-                                else if(response4 === undefined){
-                                    response4 = '*Enter ' + Npc.list[i].name + '*';
-                                    self.questInfo.response4 = Npc.list[i].name;
+                                else{
+                                    if(response1 === undefined){
+                                        response1 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                        self.questInfo.response1 = 'None';
+                                    }
+                                    else if(response2 === undefined){
+                                        response2 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                        self.questInfo.response2 = 'None';
+                                    }
+                                    else if(response3 === undefined){
+                                        response3 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                        self.questInfo.response3 = 'None';
+                                    }
+                                    else if(response4 === undefined){
+                                        response4 = '<span style="color:#aaaaaa">*Enter ' + Npc.list[i].name + '*</span> <span style="font-size:13px; float:right; color:#aaaaaa">Finish the quest ' + self.quest + '.</span>';
+                                        self.questInfo.response4 = 'None';
+                                    } 
                                 }
                             }
                             else{
@@ -6816,8 +6836,6 @@ StaticNpc = function(param){
 	return self;
 }
 
-
-
 Monster = function(param){
     var self = Actor(param);
     self.spawnId = param.spawnId;
@@ -9324,8 +9342,6 @@ Monster = function(param){
 }
 Monster.list = {};
 
-
-
 Pet = function(param){
 	var self = Actor(param);
 	self.id = Math.random();
@@ -9679,7 +9695,6 @@ Pet = function(param){
 	return self;
 }
 Pet.list = {};
-
 
 Projectile = function(param){
 	var self = Entity(param);
