@@ -10704,6 +10704,14 @@ Projectile = function(param){
                 self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
             }
         }
+        else if(param.projectilePattern === 'bounceOffCollisions'){
+            if(param.spin(self.timer) !== 0){
+                self.direction += param.spin(self.timer);
+            }
+            else{
+                self.direction = Math.atan2(self.spdY,self.spdX) / Math.PI * 180;
+            }
+        }
         else{
             if(param.spin !== undefined){
                 self.direction += param.spin(self.timer);
