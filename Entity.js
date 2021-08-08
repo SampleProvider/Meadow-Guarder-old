@@ -2083,9 +2083,14 @@ Actor = function(param){
         }
     }
     self.addDebuff = function(debuff,time){
-        for(var j in self.debuffs){
-            if(debuff === self.debuffs[j].id){
-                self.debuffs[j].time = Math.max(time,self.debuffs[j].time);
+        for(var i in self.immuneDebuffs){
+            if(i === debuff){
+                return;
+            }
+        }
+        for(var i in self.debuffs){
+            if(debuff === self.debuffs[i].id){
+                self.debuffs[i].time = Math.max(time,self.debuffs[i].time);
                 return;
             }
         }

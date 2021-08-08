@@ -131,7 +131,16 @@ var renderLayers = function(json,name){
     var glUpper = tempUpper.getContext('2d');
     resetCanvas(glLower);
     resetCanvas(glUpper);
-    var tile = json.tilesets[0];
+    var tile = {
+        "columns":86,
+        "firstgid":1,
+        "image":"roguelikeSheet.png",
+        "imageheight":1138,
+        "imagewidth":1461,
+        "margin":0,
+        "name":"roguelikeSheet",
+        "spacing":1,
+    };
     mapTiles[name] = {
         tile:tile,
         width:json.layers[0].width,
