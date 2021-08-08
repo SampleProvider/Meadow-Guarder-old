@@ -118,19 +118,25 @@ var renderLayers = function(json,name){
     if(isFirefox){
         var tempLower = document.createElement('canvas');
         var tempUpper = document.createElement('canvas');
+        var tempHighest = document.createElement('canvas');
         tempLower.canvas.width = json.layers[0].width * 64;
-        tempLower.canvas.heiht = json.layers[0].height * 64;
+        tempLower.canvas.height = json.layers[0].height * 64;
         tempUpper.canvas.width = json.layers[0].width * 64;
-        tempUpper.canvas.heiht = json.layers[0].height * 64;
+        tempUpper.canvas.height = json.layers[0].height * 64;
+        tempHighest.canvas.width = json.layers[0].width * 64;
+        tempHighest.canvas.height = json.layers[0].height * 64;
     }
     else{
         var tempLower = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
         var tempUpper = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
+        var tempHighest = new OffscreenCanvas(json.layers[0].width * 64,json.layers[0].height * 64);
     }
     var glLower = tempLower.getContext('2d');
     var glUpper = tempUpper.getContext('2d');
+    var glHighest = tempHighest.getContext('2d');
     resetCanvas(glLower);
     resetCanvas(glUpper);
+    resetCanvas(glHighest);
     var tile = {
         "columns":86,
         "firstgid":1,
@@ -159,6 +165,9 @@ var renderLayers = function(json,name){
                     s_y = ~~(j / json.layers[i].width) * size;
                     if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1'){
                         glUpper.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
+                    }
+                    else if(json.layers[i].name === 'Highest1' || json.layers[i].name === 'Highest2'){
+                        glHighest.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
                     }
                     else{
                         glLower.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
@@ -312,6 +321,7 @@ var renderLayers = function(json,name){
     loadedMap[name] = {
         lower:tempLower,
         upper:tempUpper,
+        highest:tempHighest,
     }
     loadingProgress += 1;
 }
@@ -1217,6 +1227,7 @@ var Player = function(initPack){
     self.nextY = initPack.y;
     self.spdX = initPack.spdX;
     self.spdY = initPack.spdY;
+    self.zindex = initPack.zindex;
     self.img = initPack.img;
     if(self.img.body[2] === 0){
         document.getElementById('bodySlider').value = Math.round(self.img.body[1] / 250 * 50);
@@ -1349,6 +1360,9 @@ var Player = function(initPack){
         self.moveNumber -= 1;
     }
     self.draw = function(){
+        if(self.zindex === 1){
+            return;
+        }
         if(Img[self.currentItem]){
             ctx0.translate(self.x,self.y);
             var turnAmount = 135;
@@ -1440,6 +1454,101 @@ var Player = function(initPack){
             drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
         }
     }
+    self.drawCtx1 = function(){
+        if(self.zindex === 0){
+            return;
+        }
+        if(Img[self.currentItem]){
+            ctx1.translate(self.x,self.y);
+            var turnAmount = 135;
+            var drawX = -70;
+            var drawY = -70;
+            if(self.currentItem.includes('bow')){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem.includes('cannon')){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'tsunami'){
+                turnAmount = 225;
+                var drawX = -49;
+                var drawY = -15;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem.includes('book')){
+                turnAmount = 90;
+                var drawX = -35;
+                var drawY = -79;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'thegemofsp'){
+                turnAmount = 90;
+                var drawX = -35;
+                var drawY = -79;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'typhoonstorm'){
+                turnAmount = 270;
+                var drawX = -35;
+                var drawY = 15;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem.includes('trident')){
+                turnAmount = 45;
+                var drawX = 5;
+                var drawY = -89;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,84,84);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'leafblower'){
+                turnAmount = 0;
+                var drawX = -8;
+                var drawY = -32;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else if(self.currentItem === 'flamethrower'){
+                turnAmount = 0;
+                var drawX = -8;
+                var drawY = -32;
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            else{
+                ctx1.rotate((self.direction + turnAmount) * Math.PI / 180);
+                ctx1.drawImage(Img[self.currentItem],drawX,drawY,64,64);
+                ctx1.rotate((-self.direction - turnAmount) * Math.PI / 180);
+            }
+            ctx1.translate(-self.x,-self.y);
+        }
+        self.animation = Math.round(self.animation);
+        drawPlayer(self.render,ctx1,self.animationDirection,self.animation,self.x,self.y,4);
+        if(self.id === selfId){
+            settingsPlayerDisplay.clearRect(0,0,10,17);
+            drawPlayer(self.render,settingsPlayerDisplay,self.animationDirection,self.animation,5,15,1);
+        }
+    }
     self.drawName = function(){
         ctx1.font = "15px pixel";
         ctx1.fillStyle = '#ff7700';
@@ -1509,13 +1618,13 @@ var Projectile = function(initPack){
     self.height = initPack.height;
     self.direction = initPack.direction;
     self.projectileType = initPack.projectileType;
-    self.canCollide = initPack.canCollide;
     self.relativeToPlayer = initPack.relativeToPlayer;
     self.type = initPack.type;
     self.moveNumber = 4;
     self.hp = initPack.hp;
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
+    self.zindex = initPack.zindex;
     self.updated = true;
     self.update = function(){
         if(self.moveNumber > 0){
@@ -1674,6 +1783,7 @@ var Monster = function(initPack){
     self.direction = initPack.direction;
     self.width = initPack.width;
     self.height = initPack.height;
+    self.zindex = initPack.zindex;
     self.moveNumber = 4;
     self.updated = true;
     if(self.monsterType === 'lightningLizard'){
@@ -2084,6 +2194,7 @@ var Npc = function(initPack){
     self.hpMax = initPack.hpMax;
     self.map = initPack.map;
     self.name = initPack.name;
+    self.zindex = initPack.zindex;
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){
@@ -2131,6 +2242,7 @@ var Pet = function(initPack){
     self.manaMax = initPack.manaMax;
     self.petType = initPack.petType;
     self.animation = initPack.animation;
+    self.zindex = initPack.zindex;
     self.type = initPack.type;
     self.updated = true;
     self.update = function(){
@@ -2656,6 +2768,9 @@ socket.on('update',function(data){
                             }
                         }
                     }
+                    if(data.player[i].zindex !== undefined){
+                        Player.list[data.player[i].id].zindex = data.player[i].zindex;
+                    }
                     Player.list[data.player[i].id].updated = true;
                 }
                 else{
@@ -2692,8 +2807,8 @@ socket.on('update',function(data){
                     if(data.projectile[i].direction !== undefined){
                         Projectile.list[data.projectile[i].id].direction = data.projectile[i].direction;
                     }
-                    if(data.projectile[i].canCollide !== undefined){
-                        Projectile.list[data.projectile[i].id].canCollide = data.projectile[i].canCollide;
+                    if(data.projectile[i].zindex !== undefined){
+                        Projectile.list[data.projectile[i].id].zindex = data.projectile[i].zindex;
                     }
                     Projectile.list[data.projectile[i].id].updated = true;
                 }
@@ -2759,8 +2874,8 @@ socket.on('update',function(data){
                     if(data.monster[i].direction !== undefined){
                         Monster.list[data.monster[i].id].direction = data.monster[i].direction;
                     }
-                    if(data.monster[i].canCollide !== undefined){
-                        Monster.list[data.monster[i].id].canCollide = data.monster[i].canCollide;
+                    if(data.monster[i].zindex !== undefined){
+                        Monster.list[data.monster[i].id].zindex = data.monster[i].zindex;
                     }
                     if(data.monster[i].width !== undefined){
                         Monster.list[data.monster[i].id].width = data.monster[i].width;
@@ -2826,6 +2941,9 @@ socket.on('update',function(data){
                     if(data.npc[i].animation !== undefined){
                         Npc.list[data.npc[i].id].animation = data.npc[i].animation;
                     }
+                    if(data.npc[i].zindex !== undefined){
+                        Npc.list[data.npc[i].id].zindex = data.npc[i].zindex;
+                    }
                     Npc.list[data.npc[i].id].updated = true;
                 }
                 else{
@@ -2861,6 +2979,9 @@ socket.on('update',function(data){
                     }
                     if(data.pet[i].name !== undefined){
                         Pet.list[data.pet[i].id].name = data.pet[i].name;
+                    }
+                    if(data.pet[i].zindex !== undefined){
+                        Pet.list[data.pet[i].id].zindex = data.pet[i].zindex;
                     }
                     Pet.list[data.pet[i].id].updated = true;
                 }
@@ -3406,8 +3527,24 @@ setInterval(function(){
     map1.restore();
     ctx1.save();
     ctx1.translate(cameraX,cameraY);
+    for(var i in Monster.list){
+        if(Monster.list[i].zindex > 0){
+            Monster.list[i].drawCtx1();
+        }
+    }
+    for(var i in Player.list){
+        if(Player.list[i].zindex > 0){
+            Player.list[i].drawCtx1();
+        }
+    }
+    if(loadedMap[Player.list[selfId].map]){
+        ctx1.drawImage(loadedMap[Player.list[selfId].map].highest,0,0);
+    }
+    else{
+        loadMap(Player.list[selfId].map);
+    }
     for(var i in Projectile.list){
-        if(Projectile.list[i].canCollide === false){
+        if(Projectile.list[i].zindex === 1){
             Projectile.list[i].drawCtx1();
         }
     }
@@ -3471,11 +3608,6 @@ setInterval(function(){
                 document.getElementById('bossHealth').style.width = window.innerWidth / 2 * Monster.list[i].hp / Monster.list[i].hpMax + 'px';
                 document.getElementById('bossbar').innerHTML = 'sp ' + Monster.list[i].hp + '/' + Monster.list[i].hpMax;
             }
-        }
-    }
-    for(var i in Monster.list){
-        if(Monster.list[i].canCollide === false){
-            Monster.list[i].drawCtx1();
         }
     }
     for(var i in Monster.list){

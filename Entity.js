@@ -471,6 +471,7 @@ Entity = function(param){
     self.spdY = 0;
     self.map = 'The Village';
     self.type = 'Entity';
+    self.zindex = 0;
     self.updateNextFrame = true;
     if(param){
         if(param.id){
@@ -2327,97 +2328,241 @@ Actor = function(param){
                 self.doTransport(Transporter.list[fourthTile]);
             }
         }
+        if(Slope.list[firstTile]){
+            var firstSlope = self.doSlope(Slope.list[firstTile]);
+        }
+        if(Slope.list[secondTile]){
+            var secondSlope = self.doSlope(Slope.list[secondTile]);
+        }
+        if(Slope.list[thirdTile]){
+            var thirdSlope = self.doSlope(Slope.list[thirdTile]);
+        }
+        if(Slope.list[fourthTile]){
+            var fourthSlope = self.doSlope(Slope.list[fourthTile]);
+        }
+        var contains = function(value){
+            if(firstSlope === value){
+                return true;
+            }
+            if(secondSlope === value){
+                return true;
+            }
+            if(thirdSlope === value){
+                return true;
+            }
+            if(fourthSlope === value){
+                return true;
+            }
+            return false;
+        }
+        if(self.zindex === 0){
+            if(contains(2)){
+                self.zindex = 2;
+            }
+            else if(!contains(0) && contains(1)){
+                self.zindex = 1;
+            }
+        }
+        else if(self.zindex === 1){
+            if(contains(2)){
+                self.zindex = 2;
+            }
+            else if(contains(0) && contains(1)){
+                self.zindex = 0;
+            }
+        }
+        else if(self.zindex === 2){
+            if(contains(1) && contains(2)){
+                self.zindex = 1;
+            }
+        }
         if(self.canCollide === false){
             return;
         }
-        if(self.spdX <= 0){
-            if(self.spdY <= 0){
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+        if(self.zindex === 0){
+            if(self.spdX <= 0){
+                if(self.spdY <= 0){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
                 }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                else if(self.spdY > 0){
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
                     }
                 }
             }
-            else if(self.spdY > 0){
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+            else if(self.spdX > 0){
+                if(self.spdY <= 0){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
                 }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                else if(self.spdY > 0){
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
                     }
                 }
             }
         }
-        else if(self.spdX > 0){
-            if(self.spdY <= 0){
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+        else{
+            if(self.spdX <= 0){
+                if(self.spdY <= 0){
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
                 }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                else if(self.spdY > 0){
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
                     }
                 }
             }
-            else if(self.spdY > 0){
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+            else if(self.spdX > 0){
+                if(self.spdY <= 0){
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
                 }
-                if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                else if(self.spdY > 0){
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y - 64) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                    if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x - 64) / 64),Math.round((self.y) / 64));
+                        }
                     }
-                }
-                if(Collision.list[self.map][Math.round((self.x) / 64)]){
-                    if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                        self.doCollision(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y - 64) / 64));
+                        }
+                    }
+                    if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                        if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                            self.doCollision2(self.map,Math.round((self.x) / 64),Math.round((self.y) / 64));
+                        }
                     }
                 }
             }
@@ -2444,24 +2589,48 @@ Actor = function(param){
             }
         }
 
-        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
-                self.justCollided = true;
+        if(self.zindex === 0){
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                    self.justCollided = true;
+                }
+            }
+            if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
+                if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                    self.justCollided = true;
+                }
+            }
+            if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                    self.justCollided = true;
+                }
+            }
+            if(Collision.list[self.map][Math.round((self.x) / 64)]){
+                if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                    self.justCollided = true;
+                }
             }
         }
-        if(Collision.list[self.map][Math.round((self.x - 64) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
-                self.justCollided = true;
+        else{
+            if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y - 64) / 64)]){
+                    self.justCollided = true;
+                }
             }
-        }
-        if(Collision.list[self.map][Math.round((self.x) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
-                self.justCollided = true;
+            if(Collision2.list[self.map][Math.round((self.x - 64) / 64)]){
+                if(Collision2.list[self.map][Math.round((self.x - 64) / 64)][Math.round((self.y) / 64)]){
+                    self.justCollided = true;
+                }
             }
-        }
-        if(Collision.list[self.map][Math.round((self.x) / 64)]){
-            if(Collision.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
-                self.justCollided = true;
+            if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y - 64) / 64)]){
+                    self.justCollided = true;
+                }
+            }
+            if(Collision2.list[self.map][Math.round((self.x) / 64)]){
+                if(Collision2.list[self.map][Math.round((self.x) / 64)][Math.round((self.y) / 64)]){
+                    self.justCollided = true;
+                }
             }
         }
     }
@@ -2624,6 +2793,165 @@ Actor = function(param){
             }
         }
     }
+    self.doCollision2 = function(map,x,y){
+        var collision2 = {
+            map:map,
+            x:x * 64,
+            y:y * 64,
+        };
+        if(Collision2.list[map][x][y] === 1){
+            collision2.width = 64;
+            collision2.height = 64;
+            collision2.x += 32;
+            collision2.y += 32;
+        }
+        if(Collision2.list[map][x][y] === 2){
+            collision2.width = 64;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 48;
+        }
+        if(Collision2.list[map][x][y] === 3){
+            collision2.width = 64;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 16;
+        }
+        if(Collision2.list[map][x][y] === 4){
+            collision2.width = 32;
+            collision2.height = 64;
+            collision2.x += 16;
+            collision2.y += 32;
+        }
+        if(Collision2.list[map][x][y] === 5){
+            collision2.width = 32;
+            collision2.height = 64;
+            collision2.x += 48;
+            collision2.y += 32;
+        }
+        if(Collision2.list[map][x][y] === 6){
+            collision2.width = 32;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 32;
+        }
+        if(Collision2.list[map][x][y] === 7){
+            collision2.width = 32;
+            collision2.height = 32;
+            collision2.x += 16;
+            collision2.y += 48;
+        }
+        if(Collision2.list[map][x][y] === 8){
+            collision2.width = 32;
+            collision2.height = 32;
+            collision2.x += 48;
+            collision2.y += 48;
+        }
+        if(Collision2.list[map][x][y] === 9){
+            collision2.width = 32;
+            collision2.height = 32;
+            collision2.x += 48;
+            collision2.y += 16;
+        }
+        if(Collision2.list[map][x][y] === 10){
+            collision2.width = 32;
+            collision2.height = 32;
+            collision2.x += 16;
+            collision2.y += 16;
+        }
+        if(Collision2.list[map][x][y] === 11){
+            var collision3 = {
+                map:map,
+                x:x * 64 + 48,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision2.width = 64;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 48;
+        }
+        if(Collision2.list[map][x][y] === 12){
+            var collision3 = {
+                map:map,
+                x:x * 64 + 16,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision2.width = 64;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 16;
+        }
+        if(Collision2.list[map][x][y] === 13){
+            var collision3 = {
+                map:map,
+                x:x * 64 + 48,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision2.width = 64;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 16;
+        }
+        if(Collision2.list[map][x][y] === 14){
+            var collision3 = {
+                map:map,
+                x:x * 64 + 16,
+                y:y * 64 + 32,
+                width:32,
+                height:64,
+            };
+            collision2.width = 64;
+            collision2.height = 32;
+            collision2.x += 32;
+            collision2.y += 48;
+        }
+        if(self.isColliding(collision2)){
+            var x1 = self.x;
+            self.x = self.lastX;
+            if(self.isColliding(collision2)){
+                self.x = x1;
+                self.y = self.lastY;
+                if(self.isColliding(collision2)){
+                    self.x = self.lastX;
+                    self.y = self.lastY;
+                }
+                else{
+                    
+                }
+            }
+            else{
+                
+            }
+        }
+        if(Collision2.list[map][x]){
+            if(Collision2.list[map][x][y] > 10){
+                if(self.isColliding(collision3)){
+                    var x1 = self.x;
+                    self.x = self.lastX;
+                    if(self.isColliding(collision3)){
+                        self.x = x1;
+                        self.y = self.lastY;
+                        if(self.isColliding(collision3)){
+                            self.x = self.lastX;
+                            self.y = self.lastY;
+                        }
+                        else{
+                            
+                        }
+                    }
+                    else{
+                        
+                    }
+                }
+            }
+        }
+    }
     self.doTransport = function(transporter){
         if(!self.canChangeMap){
             return;
@@ -2640,6 +2968,11 @@ Actor = function(param){
                 self.mapChange = 0;
             }
             self.transporter = transporter;
+        }
+    }
+    self.doSlope = function(slope){
+        if(self.isColliding(slope)){
+            return slope.layer;
         }
     }
     self.doSlowDown = function(map,x,y){
@@ -6085,6 +6418,10 @@ Player = function(param){
             pack.damageDone = self.damageDone;
             lastSelf.damageDone = self.damageDone;
         }
+        if(lastSelf.zindex !== self.zindex){
+            pack.zindex = self.zindex;
+            lastSelf.zindex = self.zindex;
+        }
         for(var i in self.stats){
             if(lastSelf.stats !== undefined){
                 if(lastSelf.stats[i] !== undefined){
@@ -6186,6 +6523,7 @@ Player = function(param){
         pack.coins = self.coins;
         pack.devCoins = self.devCoins;
         pack.damageDone = self.damageDone;
+        pack.zindex = self.zindex;
         pack.stats = self.stats;
         pack.debuffs = self.debuffs;
         pack.questStats = self.questStats;
@@ -6772,6 +7110,10 @@ Npc = function(param){
             pack.map = self.map;
             lastSelf.map = self.map;
         }
+        if(lastSelf.zindex !== self.zindex){
+            pack.zindex = self.zindex;
+            lastSelf.zindex = self.zindex;
+        }
         for(var i in self.img){
             if(lastSelf.img){
                 if(lastSelf.img[i]){
@@ -6812,6 +7154,7 @@ Npc = function(param){
         pack.animationDirection = self.animationDirection;
         pack.animation = self.animation;
         pack.name = self.name;
+        pack.zindex = self.zindex;
         pack.type = self.type;
         return pack;
     }
@@ -7037,6 +7380,9 @@ Monster = function(param){
     }
     if(self.monsterType === 'rocopter'){
         self.canCollide = false;
+    }
+    if(self.canCollide === false){
+        self.zindex = 1;
     }
     self.oldMaxSpeed = self.maxSpeed;
     self.oldHpMax = self.hpMax;
@@ -9305,10 +9651,6 @@ Monster = function(param){
             pack.direction = self.direction;
             lastSelf.direction = self.direction;
         }
-        if(lastSelf.canCollide !== self.canCollide){
-            pack.canCollide = self.canCollide;
-            lastSelf.canCollide = self.canCollide;
-        }
         if(lastSelf.width !== self.width){
             pack.width = self.width;
             lastSelf.width = self.width;
@@ -9320,6 +9662,10 @@ Monster = function(param){
         if(lastSelf.img !== self.img){
             pack.img = self.img;
             lastSelf.img = self.img;
+        }
+        if(lastSelf.zindex !== self.zindex){
+            pack.zindex = self.zindex;
+            lastSelf.zindex = self.zindex;
         }
         return pack;
     }
@@ -9335,10 +9681,10 @@ Monster = function(param){
         pack.animation = self.animation;
         pack.animationDirection = self.animationDirection;
         pack.direction = self.direction;
-        pack.canCollide = self.canCollide;
         pack.width = self.width;
         pack.height = self.height;
         pack.img = self.img;
+        pack.zindex = self.zindex;
         pack.type = self.type;
         return pack;
     }
@@ -9680,6 +10026,10 @@ Pet = function(param){
             pack.animation = self.animation;
             lastSelf.animation = self.animation;
         }
+        if(lastSelf.zindex !== self.zindex){
+            pack.zindex = self.zindex;
+            lastSelf.zindex = self.zindex;
+        }
         return pack;
 	}
     self.getInitPack = function(){
@@ -9693,6 +10043,7 @@ Pet = function(param){
         pack.manaMax = self.manaMax;
         pack.petType = self.petType;
         pack.animation = self.animation;
+        pack.zindex = self.zindex;
         pack.type = self.type;
         return pack;
     }
@@ -9860,6 +10211,10 @@ Projectile = function(param){
         self.spdX = 0;
         self.spdY = 0;
         self.relativeToPlayer = self.parent;
+        self.outOfBounds = true;
+    }
+    if(self.canCollide === false){
+        self.zindex = 1;
     }
     self.pushPower = self.stats.knockback;
     self.doUpdate = true;
@@ -9909,7 +10264,6 @@ Projectile = function(param){
             }
         }
         if(self.x < self.width / 2 && self.outOfBounds === false){
-            self.x = self.width / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdX = -self.spdX;
             }
@@ -9918,7 +10272,6 @@ Projectile = function(param){
             }
         }
         if(self.x > self.mapWidth - self.width / 2 && self.outOfBounds === false){
-            self.x = self.mapWidth - self.width / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdX = -self.spdX;
             }
@@ -9927,7 +10280,6 @@ Projectile = function(param){
             }
         }
         if(self.y < self.height / 2 && self.outOfBounds === false){
-            self.y = self.height / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdY = -self.spdY;
             }
@@ -9936,7 +10288,6 @@ Projectile = function(param){
             }
         }
         if(self.y > self.mapHeight - self.height / 2 && self.outOfBounds === false){
-            self.y = self.mapHeight - self.height / 2;
             if(param.projectilePattern === 'bounceOffCollisions'){
                 self.spdY = -self.spdY;
             }
@@ -11153,13 +11504,13 @@ Projectile = function(param){
             pack.projectileType = self.projectileType;
             lastSelf.projectileType = self.projectileType;
         }
+        if(lastSelf.zindex !== self.zindex){
+            pack.zindex = self.zindex;
+            lastSelf.zindex = self.zindex;
+        }
         if(lastSelf.direction !== self.direction){
             pack.direction = self.direction;
             lastSelf.direction = self.direction;
-        }
-        if(lastSelf.canCollide !== self.canCollide){
-            pack.canCollide = self.canCollide;
-            lastSelf.canCollide = self.canCollide;
         }
         if(lastSelf.relativeToPlayer !== self.relativeToPlayer){
             pack.relativeToPlayer = self.relativeToPlayer;
@@ -11185,12 +11536,11 @@ Projectile = function(param){
         pack.map = self.map;
         pack.type = self.type;
         pack.projectileType = self.projectileType;
-        pack.canCollide = self.canCollide;
+        pack.zindex = self.zindex;
         pack.relativeToPlayer = self.relativeToPlayer;
         pack.direction = self.direction;
         return pack;
     }
-    // self.update();
 	Projectile.list[self.id] = self;
 	return self;
 }
@@ -11345,6 +11695,22 @@ var renderLayer = function(layer,data,loadedMap){
                 Collision.list[loadedMap][x / size] = [];
                 Collision.list[loadedMap][x / size][y / size] = 0;
             }
+            if(Collision2.list[loadedMap]){
+                if(Collision2.list[loadedMap][x / size]){
+                    if(Collision2.list[loadedMap][x / size][y / size] === undefined){
+                        Collision2.list[loadedMap][x / size][y / size] = 0;
+                    }
+                }
+                else{
+                    Collision2.list[loadedMap][x / size] = [];
+                    Collision2.list[loadedMap][x / size][y / size] = 0;
+                }
+            }
+            else{
+                Collision2.list[loadedMap] = [];
+                Collision2.list[loadedMap][x / size] = [];
+                Collision2.list[loadedMap][x / size][y / size] = 0;
+            }
             if(SlowDown.list[loadedMap]){
                 if(SlowDown.list[loadedMap][x / size]){
                     if(SlowDown.list[loadedMap][x / size][y / size] === undefined){
@@ -11360,22 +11726,6 @@ var renderLayer = function(layer,data,loadedMap){
                 SlowDown.list[loadedMap] = [];
                 SlowDown.list[loadedMap][x / size] = [];
                 SlowDown.list[loadedMap][x / size][y / size] = 0;
-            }
-            if(ProjectileCollision.list[loadedMap]){
-                if(ProjectileCollision.list[loadedMap][x / size]){
-                    if(ProjectileCollision.list[loadedMap][x / size][y / size] === undefined){
-                        ProjectileCollision.list[loadedMap][x / size][y / size] = 0;
-                    }
-                }
-                else{
-                    ProjectileCollision.list[loadedMap][x / size] = [];
-                    ProjectileCollision.list[loadedMap][x / size][y / size] = 0;
-                }
-            }
-            else{
-                ProjectileCollision.list[loadedMap] = [];
-                ProjectileCollision.list[loadedMap][x / size] = [];
-                ProjectileCollision.list[loadedMap][x / size][y / size] = 0;
             }
             if(tile_idx === 2121){
                 var collision = new Collision({
@@ -11490,11 +11840,115 @@ var renderLayer = function(layer,data,loadedMap){
                 });
             }
             if(tile_idx === 2293){
-                var projectileCollision = new ProjectileCollision({
+                var collision2 = new Collision2({
                     x:x,
                     y:y,
                     map:map,
                     type:1,
+                });
+            }
+            if(tile_idx === 2294){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:2,
+                });
+            }
+            if(tile_idx === 2295){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:3,
+                });
+            }
+            if(tile_idx === 2296){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:4,
+                });
+            }
+            if(tile_idx === 2297){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:5,
+                });
+            }
+            if(tile_idx === 2298){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:11,
+                });
+            }
+            if(tile_idx === 2299){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:12,
+                });
+            }
+            if(tile_idx === 2300){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:13,
+                });
+            }
+            if(tile_idx === 2301){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:14,
+                });
+            }
+            if(tile_idx === 2379){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:6,
+                });
+            }
+            if(tile_idx === 2380){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:7,
+                });
+            }
+            if(tile_idx === 2381){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:8,
+                });
+            }
+            if(tile_idx === 2382){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:9,
+                });
+            }
+            if(tile_idx === 2383){
+                var collision2 = new Collision2({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:10,
                 });
             }
             if(tile_idx === 1949){
@@ -11657,6 +12111,36 @@ var renderLayer = function(layer,data,loadedMap){
                     map:map,
                     info:info,
                     quest:quest,
+                });
+            }
+            if(tile_idx === 1692){
+                var slope = new Slope({
+                    x:x + size / 2,
+                    y:y + size / 2,
+                    width:size,
+                    height:size,
+                    map:map,
+                    layer:0,
+                });
+            }
+            if(tile_idx === 1693){
+                var slope = new Slope({
+                    x:x + size / 2,
+                    y:y + size / 2,
+                    width:size,
+                    height:size,
+                    map:map,
+                    layer:1,
+                });
+            }
+            if(tile_idx === 1694){
+                var slope = new Slope({
+                    x:x + size / 2,
+                    y:y + size / 2,
+                    width:size,
+                    height:size,
+                    map:map,
+                    layer:2,
                 });
             }
             if(tile_idx === 2035){

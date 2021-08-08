@@ -13,19 +13,19 @@ Collision = function(param){
 }
 Collision.list = {};
 
-ProjectileCollision = function(param){
+Collision2 = function(param){
     var self = {};
     self.map = param.map;
     self.x = param.x;
     self.y = param.y;
-    if(ProjectileCollision.list[self.map]){
-        if(ProjectileCollision.list[self.map][Math.round(self.x / 64)]){
-            ProjectileCollision.list[self.map][Math.round(self.x / 64)][Math.round(self.y / 64)] = param.type;
+    if(Collision2.list[self.map]){
+        if(Collision2.list[self.map][Math.round(self.x / 64)]){
+            Collision2.list[self.map][Math.round(self.x / 64)][Math.round(self.y / 64)] = param.type;
         }
     }
     return self;
 }
-ProjectileCollision.list = {};
+Collision2.list = {};
 
 SlowDown = function(param){
     var self = {};
@@ -104,6 +104,23 @@ QuestInfo = function(param){
     return self;
 }
 QuestInfo.list = {};
+
+Slope = function(param){
+    var self = Entity(param);
+    self.id = "" + self.map + ":" + Math.floor(self.x / 64) * 64 + ":" + Math.floor(self.y / 64) * 64 + ":";
+    self.layer = param.layer;
+    self.width = param.width;
+    self.height = param.height;
+    self.toRemove = false;
+    self.type = 'Slope';
+    var super_update = self.update;
+    self.update = function(){
+        super_update();
+    }
+    Slope.list[self.id] = self;
+    return self;
+}
+Slope.list = {};
 
 WayPoint = function(param){
     var self = Entity(param);
