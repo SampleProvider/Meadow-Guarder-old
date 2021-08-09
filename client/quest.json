@@ -312,7 +312,8 @@
         "materials":[{"id":"wood","amount":20}],
         "startStage":1,
         "requirements":[
-            "Deliver News Lvl 1"
+            "Deliver News",
+            "Lvl 1"
         ],
         "multiplePlayers":false,
         "startNpc":"bob",
@@ -451,7 +452,8 @@
         "items":["advancedrubysword","advancedrubybow","advancedrubystaff","healingscepter"],
         "startStage":1,
         "requirements":[
-            "Deliver News Lvl 2"
+            "Deliver News",
+            "Lvl 2"
         ],
         "multiplePlayers":true,
         "startNpc":"cyber",
