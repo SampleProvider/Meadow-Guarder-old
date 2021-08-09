@@ -1336,24 +1336,26 @@ var Player = function(initPack){
     self.stats = initPack.stats;
     self.debuffs = initPack.debuffs;
     self.questStats = initPack.questStats;
-    document.getElementById('questDropdown').innerHTML = '';
-    for(var i in questData){
-        var requirementsMet = true;
-        for(var j in questData[i].requirements){
-            if(self.questStats[questData[i].requirements[j]] === false){
-                requirementsMet = false;
-            }
-            else if(questData[i].requirements[j].slice(0,4) === 'Lvl '){
-                if(parseInt(questData[i].requirements[j].slice(4,questData[i].requirements[j].length),10) > self.level){
+    if(self.id === selfId){
+        document.getElementById('questDropdown').innerHTML = '';
+        for(var i in questData){
+            var requirementsMet = true;
+            for(var j in questData[i].requirements){
+                if(self.questStats[questData[i].requirements[j]] === false){
                     requirementsMet = false;
                 }
+                else if(questData[i].requirements[j].slice(0,4) === 'Lvl '){
+                    if(parseInt(questData[i].requirements[j].slice(4,questData[i].requirements[j].length),10) > self.level){
+                        requirementsMet = false;
+                    }
+                }
+            }
+            if(requirementsMet){
+                document.getElementById('questDropdown').innerHTML += '<option>' + i + '</option>';
             }
         }
-        if(requirementsMet){
-            document.getElementById('questDropdown').innerHTML += '<option>' + i + '</option>';
-        }
+        questChange();
     }
-    questChange();
     self.type = initPack.type;
     self.moveNumber = 4;
     self.update = function(){
@@ -2718,7 +2720,7 @@ socket.on('update',function(data){
                     }
                     if(data.player[i].questStats !== undefined){
                         Player.list[data.player[i].id].questStats = data.player[i].questStats;
-                        if(questData !== {}){
+                        if(data.player[i].id === selfId){
                             document.getElementById('questDropdown').innerHTML = '';
                             for(var j in questData){
                                 var requirementsMet = true;

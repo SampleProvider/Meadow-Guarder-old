@@ -1145,7 +1145,7 @@ Actor = function(param){
     self.toRemove = false;
     self.isDead = false;
     self.willBeDead = false;
-    self.pushPower = 1;
+    self.pushPower = 0.3;
     self.pushResist = 0;
     self.dazed = 0;
     self.animate = true;
@@ -1222,7 +1222,7 @@ Actor = function(param){
             self.canMove = false;
             self.zindex = 0;
             for(var i in Player.list){
-                if(Player.list[i]){
+                if(Player.list[i].map === self.map){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
                 }
             }
@@ -3661,8 +3661,10 @@ Player = function(param){
             moveSpeed:5 + self.level / 5,
         });
         self.pet = pet.id;
-        for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+        for(var i in Player.list){
+            if(Player.list[i].map === self.map){
+                SOCKET_LIST[i].emit('initEntity',pet.getInitPack());
+            }
         }
     }
     self.updateQuest = function(){
@@ -6486,17 +6488,17 @@ Player = function(param){
                 if(lastSelf.questStats[i] !== undefined){
                     if(self.questStats[i] !== lastSelf.questStats[i]){
                         pack.questStats = self.questStats;
-                        lastSelf.questStats = Object.create(self.questStats);
+                        lastSelf.questStats = JSON.parse(JSON.stringify(self.questStats));
                     }
                 }
                 else{
                     pack.questStats = self.questStats;
-                    lastSelf.questStats = Object.create(self.questStats);
+                    lastSelf.questStats = JSON.parse(JSON.stringify(self.questStats));
                 }
             }
             else{
                 pack.questStats = self.questStats;
-                lastSelf.questStats = Object.create(self.questStats);
+                lastSelf.questStats = JSON.parse(JSON.stringify(self.questStats));
             }
         }
         return pack;
@@ -6563,8 +6565,10 @@ Player.onConnect = function(socket,username){
         if(!ENV.Peaceful){
             player.spawnPet();
         }
-        for(var i in SOCKET_LIST){
-            SOCKET_LIST[i].emit('initEntity',player.getInitPack());
+        for(var i in Player.list){
+            if(Player.list[i].map === player.map){
+                SOCKET_LIST[i].emit('initEntity',player.getInitPack());
+            }
         }
         socket.emit('selfId',{id:socket.id});
 
@@ -9728,6 +9732,7 @@ Pet = function(param){
         range:1,
         speed:1,
         damageReduction:0,
+        knockback:0.1,
         debuffs:[],
     }
     self.animate = false;
@@ -9741,6 +9746,7 @@ Pet = function(param){
             range:1,
             speed:1,
             damageReduction:0,
+            knockback:0.1,
             debuffs:[],
         }
     }
@@ -9754,6 +9760,7 @@ Pet = function(param){
             range:1,
             speed:1,
             damageReduction:0,
+            knockback:0.1,
             debuffs:[],
         }
     }
@@ -9768,6 +9775,7 @@ Pet = function(param){
             range:10,
             speed:5,
             damageReduction:0,
+            knockback:0.1,
             debuffs:[
                 {id:'frozen',time:200},
                 {id:'frostbite',time:200},
@@ -9798,7 +9806,7 @@ Pet = function(param){
             self.y = Player.list[self.parent].y;
             self.map = Player.list[self.parent].map;
             for(var i in Player.list){
-                if(Player.list[i]){
+                if(Player.list[i].map === self.map){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
                 }
             }
