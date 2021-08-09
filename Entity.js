@@ -3556,7 +3556,7 @@ Player = function(param){
         if(questData[self.quest].materials){
             for(var i in questData[self.quest].materials){
                 var amount = Math.round(questData[self.quest].materials[i].amount * (1 + Math.random()));
-                self.inventory.addItem(questData[self.quest].materials[i].amount.id,amount);
+                self.inventory.addItem(questData[self.quest].materials[i].id,amount);
                 self.sendNotification('This quest gave you ' + Item.list[questData[self.quest].materials[i].id].name + ' x' + amount + '.');
             }
         }
@@ -10384,8 +10384,8 @@ Projectile = function(param){
                         projectileType:'bullet',
                         angle:Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180,
                         direction:Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / Math.PI * 180,
-                        x:self.x + Math.cos(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / 180 * Math.PI) * 32,
-                        y:self.y + Math.sin(Math.atan2(closestMonster.y - self.y,closestMonster.x - self.x) / 180 * Math.PI) * 32,
+                        x:self.x,
+                        y:self.y,
                         distance:32,
                         map:self.map,
                         parentType:'Player',

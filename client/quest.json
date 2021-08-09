@@ -208,13 +208,111 @@
             }
         }
     },
+    "Deliver News":{
+        "description":"Tell everyone in The Village that the Monster Raid has been defeated.",
+        "xp":540,
+        "startStage":1,
+        "requirements":[
+            "Monster Raid"
+        ],
+        "multiplePlayers":true,
+        "startNpc":"john",
+        "data":{
+            "1":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"john",
+                    "next":2
+                },
+                "objective":"Talk to John."
+            },
+            "2":{
+                "dialogue":{
+                    "message":"Hey, can you tell Bob that the Monster Raid has been defeated? Bob lives in a house south of here.",
+                    "response1":{
+                        "text":"Sure!",
+                        "next":3
+                    }
+                },
+                "objective":"Talk to John."
+            },
+            "3":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"bob",
+                    "next":4
+                },
+                "objective":"Talk to Bob."
+            },
+            "4":{
+                "dialogue":{
+                    "message":"The Monster Raid has been defeated? That's great! Tell this news to Cyber.",
+                    "response1":{
+                        "text":"Okay!",
+                        "next":6
+                    },
+                    "response2":{
+                        "text":"Where does Cyber live?",
+                        "next":5
+                    }
+                },
+                "objective":"Talk to Bob."
+            },
+            "5":{
+                "dialogue":{
+                    "message":"He lives northwest from here.",
+                    "response1":{
+                        "text":"Thanks!",
+                        "next":6
+                    }
+                },
+                "objective":"Talk to Bob."
+            },
+            "6":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"cyber",
+                    "next":7
+                },
+                "objective":"Talk to Cyber."
+            },
+            "7":{
+                "dialogue":{
+                    "message":"Great! Now I can finally stop worrying about Monsters! Tell John thank you.",
+                    "response1":{
+                        "text":"I can tell John.",
+                        "next":8
+                    }
+                },
+                "objective":"Talk to Cyber."
+            },
+            "8":{
+                "trigger":{
+                    "type":"talkToNpc",
+                    "npcId":"john",
+                    "next":9
+                },
+                "objective":"Return to John."
+            },
+            "9":{
+                "dialogue":{
+                    "message":"They said thanks? Great! Thank you for defeating the Monster Raid. I think Cyber still needs your help though.",
+                    "response1":{
+                        "text":"*End conversation*",
+                        "next":10
+                    }
+                },
+                "objective":"Return to John."
+            }
+        }
+    },
     "Missing Person":{
-        "description":"Find Mark who has been missing in the map The River. Test out some new quest mechanics.",
+        "description":"Find Mark who has been missing in the map The River. Stop the Monster King's freeze spell.",
         "xp":800,
         "materials":[{"id":"wood","amount":20}],
         "startStage":1,
         "requirements":[
-            "Lvl 1"
+            "Deliver News Lvl 1"
         ],
         "multiplePlayers":false,
         "startNpc":"bob",
@@ -353,7 +451,7 @@
         "items":["advancedrubysword","advancedrubybow","advancedrubystaff","healingscepter"],
         "startStage":1,
         "requirements":[
-            "Lvl 2"
+            "Deliver News Lvl 2"
         ],
         "multiplePlayers":true,
         "startNpc":"cyber",

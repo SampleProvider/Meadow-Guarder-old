@@ -3362,6 +3362,29 @@ setInterval(function(){
     }
 
 
+    for(var i in Player.list){
+        Player.list[i].update();
+    }
+    for(var i in Monster.list){
+        Monster.list[i].update();
+    }
+    for(var i in Projectile.list){
+        Projectile.list[i].update();
+    }
+    for(var i in Npc.list){
+        Npc.list[i].update();
+    }
+    for(var i in Particle.list){
+        if(Particle.list[i].toRemove){
+            delete Particle.list[i];
+        }
+        else{
+            Particle.list[i].update();
+        }
+    }
+    for(var i in Pet.list){
+        Pet.list[i].update();
+    }
     if(WIDTH !== window.innerWidth || HEIGHT !== window.innerHeight){
         ctx0Raw.style.width = window.innerWidth;
         ctx0Raw.style.height = window.innerHeight;
@@ -3559,7 +3582,6 @@ setInterval(function(){
     }
     for(var i in Projectile.list){
         Projectile.list[i].drawHp();
-        Projectile.list[i].update();
     }
     var bossAlive = false;
     for(var i in Monster.list){
@@ -3621,7 +3643,6 @@ setInterval(function(){
     }
     for(var i in Monster.list){
         Monster.list[i].drawHp();
-        Monster.list[i].update();
     }
     for(var i in Npc.list){
         Npc.list[i].drawName();
@@ -3629,25 +3650,11 @@ setInterval(function(){
     for(var i in Pet.list){
         Pet.list[i].drawName();
     }
-    for(var i in Npc.list){
-        Npc.list[i].update();
-    }
-    for(var i in Pet.list){
-        Pet.list[i].update();
-    }
     for(var i in DroppedItem.list){
         DroppedItem.list[i].update();
     }
     for(var i in Particle.list){
         Particle.list[i].draw();
-    }
-    for(var i in Particle.list){
-        if(Particle.list[i].toRemove){
-            delete Particle.list[i];
-        }
-        else{
-            Particle.list[i].update();
-        }
     }
     
     for(var i in Player.list){
@@ -3655,9 +3662,6 @@ setInterval(function(){
     }
     for(var i in Player.list){
         Player.list[i].drawLight();
-    }
-    for(var i in Player.list){
-        Player.list[i].update();
     }
 
     ctx1.fillStyle = '#000000';

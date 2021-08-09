@@ -125,6 +125,13 @@
             "width": 800,
             "x": 2399,
             "y": 800
+        },
+        {
+            "fileName": "Lilypad Shrine.tmx",
+            "height": 800,
+            "width": 800,
+            "x": 800,
+            "y": 1600
         }
     ],
     "onlyShowAdjacentMaps": false,
