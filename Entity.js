@@ -1220,6 +1220,7 @@ Actor = function(param){
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
             self.canMove = false;
+            self.zindex = 0;
             for(var i in Player.list){
                 if(Player.list[i]){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
@@ -2364,7 +2365,7 @@ Actor = function(param){
             }
         }
         else if(self.zindex === 1){
-            if(contains(2)){
+            if(contains(2) && !contains(1)){
                 self.zindex = 2;
             }
             else if(contains(0) && contains(1)){
@@ -5059,6 +5060,7 @@ Player = function(param){
                 socket.emit('closeShop');
                 socket.emit('closeCraft');
             }
+            self.zindex = 0;
             Player.getAllInitPack(socket);
             for(var i in Player.list){
                 if(Player.list[i]){
@@ -7059,6 +7061,7 @@ Npc = function(param){
             self.mapWidth = self.transporter.mapx;
             self.mapHeight = self.transporter.mapy;
             self.canMove = false;
+            self.zindex = 0;
             for(var i in Player.list){
                 if(Player.list[i].map === self.map){
                     SOCKET_LIST[i].emit('initEntity',self.getInitPack());
