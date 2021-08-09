@@ -163,7 +163,13 @@ var renderLayers = function(json,name){
                     img_y = ~~(tile_idx / ((tile.imagewidth + tile.spacing) / (size + tile.spacing))) * (size + tile.spacing);
                     s_x = (j % json.layers[i].width) * size;
                     s_y = ~~(j / json.layers[i].width) * size;
-                    if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1'){
+                    if(json.layers[i].offsetx){
+                        s_x += json.layers[i].offsetx;
+                    }
+                    if(json.layers[i].offsety){
+                        s_y += json.layers[i].offsety;
+                    }
+                    if(json.layers[i].name === 'Above0' || json.layers[i].name === 'Above1' || json.layers[i].name === 'Above2'){
                         glUpper.drawImage(tileset,Math.round(img_x),Math.round(img_y),size,size,Math.round(s_x * 4),Math.round(s_y * 4),64,64);
                     }
                     else if(json.layers[i].name === 'Highest1' || json.layers[i].name === 'Highest2'){
@@ -394,8 +400,8 @@ signDivSignIn.onclick = function(){
         loading = true;
         loadingProgress = 0;
         loadingProgressDisplay = 0;
-        document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 756';
-        document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 756 * 100 + '%';
+        document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 814';
+        document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 814 * 100 + '%';
         disconnectedDiv.style.display = 'none';
         spectatorDiv.style.display = 'none';
         pageDiv.style.display = 'none';
@@ -422,6 +428,7 @@ signDivSignIn.onclick = function(){
         loadMap("The Battlefield");
         loadMap("Garage");
         loadMap("Secret Tunnel Part 1");
+        loadMap("Secret Tunnel Part 2");
         loadMap("The Hideout");
         loadMap("The Dripping Caverns");
         loadMap("Forest Dungeon Room 1");
@@ -1590,7 +1597,7 @@ var Player = function(initPack){
                 }
             }
         }
-        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave" && self.map !== "Secret Tunnel Part 1" && self.map !== "The Dripping Caverns"){
+        if(self.map !== "Lilypad Temple Room 1" && self.map !== "Town Cave" && self.map !== "Secret Tunnel Part 1" && self.map !== "Secret Tunnel Part 2" && self.map !== "The Dripping Caverns"){
             return;
         }
         var grd = ctx1.createRadialGradient(self.x,self.y,50,self.x,self.y,500);
@@ -3310,10 +3317,10 @@ setInterval(function(){
     if(loading){
         if(loadingProgress > loadingProgressDisplay){
             loadingProgressDisplay += Math.ceil(Math.min(Math.min((loadingProgress - loadingProgressDisplay) / 4,10 + 10 * Math.random()),loadingProgressDisplay / 5 + 1));
-            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 756';
-            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 756 * 100 + '%';
+            document.getElementById('loadingBar').innerHTML = loadingProgressDisplay + ' / 814';
+            document.getElementById('loadingProgress').style.width = loadingProgressDisplay / 814 * 100 + '%';
         }
-        if(loadingProgressDisplay >= 756){
+        if(loadingProgressDisplay >= 814){
             if(loading){
                 setTimeout(function(){
                     if(signingIn){

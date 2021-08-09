@@ -817,11 +817,6 @@
                     "id":"rubypresent",
                     "enchantments":[],
                     "stack":1
-                },
-                {
-                    "id":"spkey",
-                    "enchantments":[],
-                    "stack":1
                 }
             ],
             "materials":[
@@ -879,24 +874,6 @@
                     {
                         "id":"ruby",
                         "amount":50
-                    }
-                ],
-                [
-                    {
-                        "id":"wood",
-                        "amount":10000
-                    },
-                    {
-                        "id":"steel",
-                        "amount":10000
-                    },
-                    {
-                        "id":"gold",
-                        "amount":10000
-                    },
-                    {
-                        "id":"ruby",
-                        "amount":10000
                     }
                 ]
             ]
@@ -1451,6 +1428,66 @@
         "requirements":[
             "Weird Tower",
             "Lvl 4"
+        ]
+    },
+    "easteregg":{
+        "name":"Easter Egg",
+        "randomWalk":"wander",
+        "canChangeMap":false,
+        "shop":false,
+        "crafts":{
+            "items":[
+                {
+                    "id":"magicalgem",
+                    "enchantments":[],
+                    "stack":1
+                },
+                {
+                    "id":"spkey",
+                    "enchantments":[],
+                    "stack":1
+                }
+            ],
+            "materials":[
+                [
+                    {
+                        "id":"magicalgem",
+                        "amount":1
+                    }
+                ],
+                [
+                    {
+                        "id":"magicalgem",
+                        "amount":10
+                    }
+                ]
+            ]
+        },
+        "mainCraft":"easter eggs",
+        "quote":"Congratulations, you found me! Also play our sister games Mountain Guarder and Bob Guarder",
+        "requirements":[
+            "Tutorial",
+            "Monster Raid",
+            "Tutorial",
+            "Missing Person",
+            "Monster Raid",
+            "Secret Tunnels",
+            "Broken Sword",
+            "Lightning Lizard Boss",
+            "Wood Delivery",
+            "Possessed Spirit",
+            "Plantera",
+            "Whirlwind",
+            "sp",
+            "Lost Rubies",
+            "Broken Piano",
+            "Pet Training",
+            "Monster Search",
+            "Missing Candies",
+            "Cherrier",
+            "Sphere",
+            "Thunderbird",
+            "Lvl 50"
         ]
     },
     "andrew":{

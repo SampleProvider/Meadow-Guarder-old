@@ -3012,10 +3012,18 @@ Actor = function(param){
             slowDown.y += 32;
         }
         if(SlowDown.list[map][x][y] === 6){
-            slowDown.width = 32;
-            slowDown.height = 32;
-            slowDown.x += 32;
-            slowDown.y += 32;
+            if(self.zindex > 0){
+                slowDown.width = 64;
+                slowDown.height = 64;
+                slowDown.x += 32;
+                slowDown.y += 32;
+            }
+            else{
+                slowDown.width = 0;
+                slowDown.height = 0;
+                slowDown.x = -64;
+                slowDown.y = -64;
+            }
         }
         if(SlowDown.list[map][x][y] === 7){
             slowDown.width = 32;
@@ -4035,7 +4043,7 @@ Player = function(param){
                         }
                     }
                     if(self.mapChange > 20 && Npc.list[i].x - 64 < self.mouseX && Npc.list[i].x + 64 > self.mouseX && Npc.list[i].y - 64 < self.mouseY && Npc.list[i].y + 64 > self.mouseY && self.invincible === false){
-                        if(Npc.list[i].type === 'StaticNpc' && self.getDistance(Npc.list[i]) > 256){
+                        if(Npc.list[i].type === 'StaticNpc' && self.getDistance(Npc.list[i]) > 128){
                             self.sendNotification('[!] Get closer to ' + Npc.list[i].name + ' to interact with it.');
                             self.keyPress.second = false;
                             continue;
@@ -12079,6 +12087,14 @@ var renderLayer = function(layer,data,loadedMap){
                     type:5,
                 });
             }
+            if(tile_idx === 1868){
+                var slowDown = new SlowDown({
+                    x:x,
+                    y:y,
+                    map:map,
+                    type:6,
+                });
+            }
             if(tile_idx === 1777){
                 var spawner = new Spawner({
                     x:x + size / 2,
@@ -12410,6 +12426,7 @@ load("The Tutorial");
 load("The Battlefield");
 load("Garage");
 load("Secret Tunnel Part 1");
+load("Secret Tunnel Part 2");
 load("The Hideout");
 load("The Dripping Caverns");
 load("Forest Dungeon Room 1");
