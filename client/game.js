@@ -3324,12 +3324,12 @@ setInterval(function(){
         }
         if(loadingProgressDisplay >= 814){
             if(loading){
+                loading = false;
                 setTimeout(function(){
                     if(signingIn){
                         socket.emit('signIn',{username:username,password:password});
                         signingIn = false;
                     }
-                    loading = false;
                     worldMap.save();
                     worldMap.fillStyle = '#000000';
                     worldMap.fillRect(0,0,1510,1130);
@@ -3348,9 +3348,11 @@ setInterval(function(){
                         }
                     }
                     worldMap.restore();
+                    setTimeout(function(){
+                        loadingDiv.style.display = 'none';
+                    },1000);
                 },1000);
             }
-            //loadingDiv.style.display = 'none';
         }
     }
 
@@ -3413,7 +3415,7 @@ setInterval(function(){
     }
     WIDTH = window.innerWidth;
     HEIGHT = window.innerHeight;
-    map0.fillRect(0,0,WIDTH,HEIGHT);
+    map0.clearRect(0,0,WIDTH,HEIGHT);
     ctx0.clearRect(0,0,WIDTH,HEIGHT);
     ctx1.clearRect(0,0,WIDTH,HEIGHT);
     map1.clearRect(0,0,WIDTH,HEIGHT);
@@ -3486,14 +3488,26 @@ setInterval(function(){
     for(var i in Projectile.list){
         if(Projectile.list[i].relativeToPlayer){
             if(Player.list[Projectile.list[i].relativeToPlayer]){
-                if(Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
-                    entities.push(Projectile.list[i]);
+                if(Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x + Projectile.list[i].width / 2 + cameraX > 0){
+                    if(Projectile.list[i].x + Player.list[Projectile.list[i].relativeToPlayer].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth){
+                        if(Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y + Projectile.list[i].height / 2 + cameraY > 0){
+                            if(Projectile.list[i].y + Player.list[Projectile.list[i].relativeToPlayer].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
+                                entities.push(Projectile.list[i]);
+                            }
+                        }
+                    }
                 }
             }
         }
         else{
-            if(Projectile.list[i].x + Projectile.list[i].width / 2 + cameraX > 0 && Projectile.list[i].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth && Projectile.list[i].y + Projectile.list[i].height / 2 + cameraY > 0 && Projectile.list[i].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
-                entities.push(Projectile.list[i]);
+            if(Projectile.list[i].x + Projectile.list[i].width / 2 + cameraX > 0){
+                if(Projectile.list[i].x - Projectile.list[i].width / 2 + cameraX < window.innerWidth){
+                    if(Projectile.list[i].y + Projectile.list[i].height / 2 + cameraY > 0){
+                        if(Projectile.list[i].y - Projectile.list[i].height / 2 + cameraY < window.innerHeight){
+                            entities.push(Projectile.list[i]);
+                        }
+                    }
+                }
             }
         }
     }

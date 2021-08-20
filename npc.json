@@ -47,7 +47,14 @@
             "My friend Mark gave me all this wood, you want some?",
             "Have you talked to my friend Cyber yet?",
             "I LOVE helping my friend Mark collect wood."
-        ]
+        ],
+        "img":{
+            "body":[0,0,0,0],
+            "shirt":[125,125,0,0.3],
+            "pants":[55,55,255,0.7],
+            "hair":[255,125,0,0.4],
+            "hairType":"shortHair"
+        }
     },
     "john":{
         "name":"John",
@@ -58,7 +65,14 @@
             "Do you want to check out my garage?",
             "My friend Billy went on a mission to the east. Maybe you should check up on him?",
             "Have you checked out the Wandering Trader yet? He can sell some really rare items."
-        ]
+        ],
+        "img":{
+            "body":[0,0,0,0],
+            "shirt":[0,0,255,0.5],
+            "pants":[55,255,0,0.5],
+            "hair":[0,0,0,0.5],
+            "hairType":"shortHat"
+        }
     },
     "wizard":{
         "name":"Wizard",
@@ -67,7 +81,14 @@
         "shop":false,
         "dialogues":[
             "I. Hate. Monsters."
-        ]
+        ],
+        "img":{
+            "body":[255,0,255,0.1],
+            "shirt":[0,0,0,0.3],
+            "pants":[0,55,0,0.9],
+            "hair":[255,55,255,0.4],
+            "hairType":"longHat"
+        }
     },
     "sally":{
         "name":"Sally",
@@ -78,7 +99,14 @@
             "Mia's piano playing is great!",
             "I LOVE cooking!",
             "The Pet Master gave me a brand new Cherrier! I love this new car!"
-        ]
+        ],
+        "img":{
+            "body":[255,125,0,0.1],
+            "shirt":[0,255,0,0.4],
+            "pants":[125,55,255,0.4],
+            "hair":[175,125,55,0.7],
+            "hairType":"longHair"
+        }
     },
     "fisherman":{
         "name":"Fisherman",
@@ -140,7 +168,14 @@
             "Hey, if you ever want to buy some fish, just talk to me.",
             "I just caught a rare GLOWING fish! I think it summons sp or something.",
             "Do you know about some secret tunnels? Oh never mind."
-        ]
+        ],
+        "img":{
+            "body":[0,0,0,0],
+            "shirt":[255,255,0,0.5],
+            "pants":[0,55,255,0.3],
+            "hair":[255,255,255,0.7],
+            "hairType":"vikingHat"
+        }
     },
     "joe":{
         "name":"Joe",
@@ -151,7 +186,14 @@
             "I hate being stuck on this island.",
             "There were some lilypads west of here.",
             "I heard somewhere there is a desert. I want to go there one day!"
-        ]
+        ],
+        "img":{
+            "body":[0,0,0,0],
+            "shirt":[255,0,0,0.5],
+            "pants":[175,125,55,0.3],
+            "hair":[55,55,255,0.7],
+            "hairType":"shortHair"
+        }
     },
     "kyle":{
         "name":"Kyle",
@@ -163,7 +205,14 @@
             "I just killed a Cherry Bomb!",
             "Don't you think these lilypads are pretty?",
             "I hate Snow Balls because they keep freezing me."
-        ]
+        ],
+        "img":{
+            "body":[0,0,0,0],
+            "shirt":[255,255,0,0.5],
+            "pants":[0,55,255,0.3],
+            "hair":[0,0,0,0],
+            "hairType":"bald"
+        }
     },
     "mia":{
         "name":"Mia",

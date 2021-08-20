@@ -6993,6 +6993,11 @@ Npc = function(param){
     self.name = param.name;
     self.id = param.entityId;
     self.entityId = param.entityId;
+    if(npcData[self.id]){
+        if(npcData[self.id].img){
+            self.img = npcData[self.id].img;
+        }
+    }
     self.animationDirection = 4;
     var lastSelf = {};
 	var super_update = self.update;
