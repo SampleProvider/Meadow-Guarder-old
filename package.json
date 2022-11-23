@@ -9,7 +9,7 @@
     "fs": "0.0.1-security",
     "pathfinding": "^0.4.18",
     "pg": "^8.6.0",
-    "socket.io": "^2.4.1"
+    "socket.io": "^2.5.0"
   },
   "engines": {
     "node": "12.16.3",
